@@ -8,7 +8,7 @@ _Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
 
 ## Usage
 
-1. Download `todoist.js` from the [latest release]().
+1. Download `todoist.js` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
 2. Place this into your `~/volcano/plugins` directory.
 3. Copy your [Todoist API token](https://todoist.com/prefs/integrations) into `.obsidian/todoist-token`. (If you are synchronizing your vault, I recommend ignoring this file for safety reasons).
 4. Open Obsidian and ensure that the Todoist plugin is enabled.
