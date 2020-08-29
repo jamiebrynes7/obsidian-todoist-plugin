@@ -30,3 +30,35 @@ _Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
 | -------- | :------: | ---------------------------------------------------------------------------------------- | ------ | ------- |
 | `name`   |    ✓     | The title for the materialized query.                                                    | string |         |
 | `filter` |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters) | string |         |
+
+
+## CSS
+
+There are a few CSS classes in the generated DOM, which you can use to customize the rendering of the list: 
+
+- `.todoist-query-title`: Attached to the header that contains the query title.
+- `.todoist-refresh-button`: Attached to the refresh button.
+- `.todoist-refresh-spin`: Attached to the refresh icon _when_ the plugin is refreshing the Todoist data.
+
+My CSS for this in the demo above was: 
+
+```css
+.todoist-query-title {
+  display: inline;
+}
+
+.todoist-refresh-button {
+  display: inline;
+  margin-left: 8px;
+}
+
+.todoist-refresh-spin {
+  animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+```
