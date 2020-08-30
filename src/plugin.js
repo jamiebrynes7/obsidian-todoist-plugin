@@ -3,7 +3,7 @@ import TodoistQuery from "./TodoistQuery.svelte";
 let token = null;
 
 export default class TodoistPlugin {
-  constructor() {
+  constructor(createSettingsFunc) {
     this.id = "todoist-query-renderer";
     this.name = "Todoist";
     this.description = "Materialize Todoist queries in an Obsidian note.";
@@ -11,14 +11,19 @@ export default class TodoistPlugin {
 
     this.app = null;
     this.instance = null;
+    this.options = {};
 
     this.observer = [];
     this.injections = [];
+
+    this.createSettingsFunc = createSettingsFunc;
   }
 
   init(app, instance) {
     this.app = app;
     this.instance = instance;
+
+    this.instance.registerSettingTab(this.createSettingsFunc(app, instance, this));
 
     // Read in Todoist API token.
     const fs = app.vault.adapter.fs;
@@ -34,7 +39,8 @@ export default class TodoistPlugin {
     }
   }
 
-  onEnable() {
+  async onEnable() {
+    await this.loadOptions();
     // TODO: Find more elegant way of finding DOM entries. A hook of some kind?
     this.intervalId = setInterval(this.injectQueries.bind(this), 1000);
 
@@ -99,5 +105,18 @@ export default class TodoistPlugin {
 
       this.injections.push({component: queryNode, workspaceLeaf: root.closest(".workspace-leaf")});
     }
+  }
+
+  async loadOptions() {
+    const options = await this.instance.loadData();
+
+    this.options = {
+      fadeToggle: true, 
+      autoRefreshToggle: false, 
+      autoRefreshInterval: 60,
+      ...(options || {})
+    };
+
+    this.instance.saveData(this.options);
   }
 }
