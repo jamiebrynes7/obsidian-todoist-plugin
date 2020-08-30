@@ -37,8 +37,6 @@
   $: todos = tasks.filter(task => !tasksPendingClose.includes(task.id));
 
   onMount(async () => {
-
-    }
     await fetchTodos();
   });
 
