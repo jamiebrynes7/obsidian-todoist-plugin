@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     .todoist-p1 input[type=checkbox] {
         /* This matches against the input element rendered for a priority 1 task. */
     }
-    ``` 
+    ```
+
+### 🔃 Changes
+
+- The rendered task list now uses the ordering as defined by the Todoist API.
 
 ## [1.0.0] - 2020-08-29
 
