@@ -69,19 +69,27 @@
   }
 
   async function fetchTodos() {
-    fetching = true;
-    const url = new URL(`https://api.todoist.com/rest/v1/tasks?filter=${encodeURIComponent(query.filter)}`);
-    const res = await fetch(url, {
-      headers: new Headers({
-        'Authorization': `Bearer ${token}`
-      }),
-    });
+    if (fetching) {
+      return;
+    }
+    
+    try {
+      fetching = true;
+      const url = new URL(`https://api.todoist.com/rest/v1/tasks?filter=${encodeURIComponent(query.filter)}`);
+      const res = await fetch(url, {
+        headers: new Headers({
+          'Authorization': `Bearer ${token}`
+        }),
+      });
 
-    let newTodos = await res.json();
-    newTodos.forEach(task => task.done = false);
-    newTodos.sort((first, second) => first.order - second.order);
-    tasks = newTodos;
-    fetching = false;
+      let newTodos = await res.json();
+      newTodos.forEach(task => task.done = false);
+      newTodos.sort((first, second) => first.order - second.order);
+      tasks = newTodos;
+    }
+    finally {
+      fetching = false;
+    }
   }
 
   // For some reason, the Todoist API returns priority in reverse order from
