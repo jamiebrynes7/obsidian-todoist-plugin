@@ -25,11 +25,21 @@ _Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
 
 ## Inputs
 
-| Name          | Required | Description                                                                                 | Type   | Default |
-| ------------- | :------: | ------------------------------------------------------------------------------------------- | ------ | ------- |
-| `name`        |    ✓     | The title for the materialized query.                                                       | string |         |
-| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)    | string |         |
-| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query will not auto-refresh. | number | null    |
+| Name          | Required | Description                                                                                           | Type   | Default |
+| ------------- | :------: | ----------------------------------------------------------------------------------------------------- | ------ | ------- |
+| `name`        |    ✓     | The title for the materialized query.                                                                 | string |         |
+| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)              | string |         |
+| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings. | number | null    |
+
+## Settings
+
+This plugin adds a setting tab to the Obsidian settings menu. This controls global settings for this plugin.
+
+| Name                  | What does it control?                                                                       | Default |
+| --------------------- | ------------------------------------------------------------------------------------------- | ------- |
+| Task fade animation   | Whether tasks should fade in and out when added or removed.                                 | true    |
+| Auto-refresh          | Whether queries should auto-refresh at a set interval.                                      | false   |
+| Auto-refresh interval | The interval (in seconds) that queries should auto-refresh by default. Integer numbers only | 60      |
 
 ## CSS
 
