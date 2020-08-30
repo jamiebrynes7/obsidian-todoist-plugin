@@ -10,7 +10,11 @@ module.exports = ({ SettingTab }) => {
 
     display() {
       this.containerEl.empty();
+      this.fadeAnimationSettings();
+      this.autoRefreshSettings();
+    }
 
+    fadeAnimationSettings() {
       const fadeToggle = this.addToggleSetting(
         "Task fade animation", 
         "Whether tasks should fade in and out when added or removed.");
@@ -18,13 +22,15 @@ module.exports = ({ SettingTab }) => {
       fadeToggle.onChange(() => {
         this.plugin.writeOptions(old => old.fadeToggle = fadeToggle.getValue());
       });
+    }
 
+    autoRefreshSettings() {
       const autoRefreshToggle = this.addToggleSetting(
         "Auto-refresh", 
         "Whether queries should auto-refresh at a set interval.");
-      autoRefreshToggle.setValue(this.plugin.options.autoRefresh);
+      autoRefreshToggle.setValue(this.plugin.options.autoRefreshToggle);
       autoRefreshToggle.onChange(() => {
-        this.plugin.writeOptions(old => old.autoRefreshSetting = autoRefreshToggle.getValue());
+        this.plugin.writeOptions(old => old.autoRefreshToggle = autoRefreshToggle.getValue());
       });
 
       const autoRefreshInterval = this.addTextSetting(
@@ -33,6 +39,11 @@ module.exports = ({ SettingTab }) => {
       autoRefreshInterval.setValue(`${this.plugin.options.autoRefreshInterval}`);
       autoRefreshInterval.onChange(() => {
         const newSetting = autoRefreshInterval.getValue().trim();
+
+        if (newSetting.length == 0) {
+          return;
+        }
+
         if (isPositiveInteger(newSetting)) {
           this.plugin.writeOptions(old => old.autoRefreshInterval = toInt(newSetting));
         } else {

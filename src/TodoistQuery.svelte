@@ -1,25 +1,50 @@
 <script>
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
+  import { Settings } from "./settings";
 
   export let query;
   export let token;
+
+  let settings;
+  let autoRefreshIntervalId = null;
+
+  const settingsUnsub = Settings.subscribe(value => { settings = value; });
+
+  $: {
+
+    if (query?.autorefresh) {
+      // First, if query.autorefresh is set.. we always use that value.
+      if (autoRefreshIntervalId == null) {
+        autoRefreshIntervalId = setInterval(async () => { await fetchTodos(); }, query.autorefresh * 1000);
+      }
+    } else {
+      // Otherwise we use the settings value.
+      if (autoRefreshIntervalId != null) {
+        clearInterval(autoRefreshIntervalId);
+        autoRefreshIntervalId = null;
+      }
+
+      if (settings.autoRefreshToggle) {
+        autoRefreshIntervalId = setInterval(async () => { await fetchTodos(); }, settings.autoRefreshInterval * 1000);
+      }
+    }
+  }
 
   let fetching = false;
   let tasks = [];
   let tasksPendingClose = [];
   $: todos = tasks.filter(task => !tasksPendingClose.includes(task.id));
 
-  let autoRefreshIntervalId = null;
+  onMount(async () => {
 
-  onMount(async () => { 
-    await fetchTodos();
-    if (query?.autorefresh) {
-      autoRefreshIntervalId = setInterval(async () => { await fetchTodos(); }, query.autorefresh * 1000);
     }
+    await fetchTodos();
   });
 
   onDestroy(() => {
+    settingsUnsub();
+
     if (autoRefreshIntervalId != null) {
       clearInterval(autoRefreshIntervalId);
     }
@@ -97,7 +122,7 @@
 <ul>
 {#each todos as todo (todo.id)}
 <li 
-  transition:fade 
+  transition:fade="{{ duration: settings.fadeToggle ? 400 : 0}}" 
   class="task-list-item {getPriorityClass(todo.priority)}"
 >
   <input 
