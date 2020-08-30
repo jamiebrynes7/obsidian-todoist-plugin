@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
     ```
 
+- When a task is removed or added, it now transitions with a smooth fading effect, rather than immediately being added/removed. 
+
 ### 🔃 Changes
 
 - The rendered task list now uses the ordering as defined by the Todoist API.

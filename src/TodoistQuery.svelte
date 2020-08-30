@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   export let query;
   export let token;
@@ -81,8 +82,11 @@
 </button>
 <br/>
 <ul>
-{#each todos as todo}
-<li class="task-list-item {getPriorityClass(todo.priority)}">
+{#each todos as todo (todo.id)}
+<li 
+  transition:fade 
+  class="task-list-item {getPriorityClass(todo.priority)}"
+>
   <input 
     data-line="1" 
     class="task-list-item-checkbox"
