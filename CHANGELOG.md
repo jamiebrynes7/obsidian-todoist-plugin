@@ -15,11 +15,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
     ```
 
-- When a task is removed or added, it now transitions with a smooth fading effect, rather than immediately being added/removed. 
+- When a task is removed or added, it now transitions with a smooth fading effect, rather than immediately being added/removed.
+- Each query can now auto-refresh if configured to do so. Note that the `autorefresh` field is in seconds.
+    `````markdown
+    ```json
+    {
+        "name": "My Tasks",
+        "filter" "today | overdue",
+        "autorefresh": 30
+    }
+    ```
+    `````
 
 ### 🔃 Changes
 
 - The rendered task list now uses the ordering as defined by the Todoist API.
+
+### 🐛 Bug Fixes
+
+- The injected Todoist query components are correctly destroyed when removed from the DOM.
 
 ## [1.0.0] - 2020-08-29
 

@@ -11,6 +11,9 @@ export default class TodoistPlugin {
 
     this.app = null;
     this.instance = null;
+
+    this.observer = [];
+    this.injections = [];
   }
 
   init(app, instance) {
@@ -33,11 +36,41 @@ export default class TodoistPlugin {
 
   onEnable() {
     // TODO: Find more elegant way of finding DOM entries. A hook of some kind?
-    this.intervalId = setInterval(this.injectQueries, 1000);
+    this.intervalId = setInterval(this.injectQueries.bind(this), 1000);
+
+    // We need to manually call destroy on the injected Svelte components when they are removed.
+    this.observer = new MutationObserver((mutations, observer) => {
+      if (this.injections.length == 0) {
+        return;
+      }
+      
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach(removed => {
+          const removedIndex = this.injections.findIndex((ele) => ele.workspaceLeaf == removed);
+
+          if (removedIndex == -1) { 
+            return;
+          }
+
+          const { workspaceLeaf, component } = this.injections[removedIndex];
+          this.injections.splice(removedIndex, 1);
+          component.$destroy();
+        });
+      })
+    });
+
+    const workspaceRoot = document.getElementsByClassName("workspace")[0];
+    this.observer.observe(workspaceRoot, { childList: true, subtree: true})
   }
 
   onDisable() {
     clearInterval(this.intervalId);
+
+    this.observer.disconnect();
+    this.observer = null;
+
+    this.injections.forEach(injection => injection.component.$destroy());
+    this.injections = [];
   }
 
   injectQueries() {
@@ -56,13 +89,15 @@ export default class TodoistPlugin {
       const root = node.parentElement;
       root.removeChild(node);
       
-      new TodoistQuery({
+      const queryNode = new TodoistQuery({
         target: root,
         props: {
           query: query,
           token: token,
         }
       });
+
+      this.injections.push({component: queryNode, workspaceLeaf: root.closest(".workspace-leaf")});
     }
   }
 }
