@@ -1,4 +1,5 @@
 import TodoistQuery from "./TodoistQuery.svelte";
+import { Settings } from "./settings";
 
 let token = null;
 
@@ -12,6 +13,9 @@ export default class TodoistPlugin {
     this.app = null;
     this.instance = null;
     this.options = {};
+
+    // TODO: This leaks a subscription. Does JS have destructors?
+    Settings.subscribe(value => { this.options = value});
 
     this.observer = [];
     this.injections = [];
@@ -110,13 +114,21 @@ export default class TodoistPlugin {
   async loadOptions() {
     const options = await this.instance.loadData();
 
-    this.options = {
-      fadeToggle: true, 
-      autoRefreshToggle: false, 
-      autoRefreshInterval: 60,
-      ...(options || {})
-    };
+    Settings.update(old => {
+      return { 
+        ...old, 
+        ...(options || {})
+      };
+    });
 
+    this.instance.saveData(this.options);
+  }
+
+  writeOptions(changeOpts) {
+    Settings.update((old) => {
+      changeOpts(old);
+      return old;
+    });
     this.instance.saveData(this.options);
   }
 }
