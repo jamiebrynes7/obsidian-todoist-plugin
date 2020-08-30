@@ -42,6 +42,7 @@
 
     let newTodos = await res.json();
     newTodos.forEach(task => task.done = false);
+    newTodos.sort((first, second) => first.order - second.order);
     tasks = newTodos;
     fetching = false;
   }
