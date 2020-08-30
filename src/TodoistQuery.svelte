@@ -45,6 +45,21 @@
     tasks = newTodos;
     fetching = false;
   }
+
+  // For some reason, the Todoist API returns priority in reverse order from
+  // the p1/p2/p3/p4 fluent entry notation.
+  function getPriorityClass(priority) {
+    switch (priority) {
+      case 1:
+        return "todoist-p4";
+      case 2:
+        return "todoist-p3";
+      case 3:
+        return "todoist-p2";
+      case 4:
+        return "todoist-p1";
+    }
+  }
 </script>
 
 <h4 class="todoist-query-title">{ query.name }</h4> 
@@ -66,7 +81,7 @@
 <br/>
 <ul>
 {#each todos as todo}
-<li class="task-list-item">
+<li class="task-list-item {getPriorityClass(todo.priority)}">
   <input 
     data-line="1" 
     class="task-list-item-checkbox"
