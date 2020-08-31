@@ -1,33 +1,52 @@
 import TodoistQuery from "./TodoistQuery.svelte";
-import { Settings } from "./settings";
+import type IQuery from "./query";
+import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api";
+import type { App, Settings, PluginInstance } from "./obsidian";
 
-export default class TodoistPlugin {
-  constructor(createSettingsFunc) {
+interface IInjection {
+  component: TodoistQuery,
+  workspaceLeaf: Node
+}
+
+export default class TodoistPlugin<TBase extends Settings> {
+  public id: string;
+  public name: string;
+  public description: string;
+  public defaultOn: boolean;
+  public options: ISettings;
+
+  private instance: PluginInstance<ISettings>;
+  private api: TodoistApi;
+
+  private intervalId: number;
+  private observer: MutationObserver;
+  private injections: IInjection[]; 
+
+  private settingsBase : TBase;
+
+  constructor(SettingsBase : TBase) {
     this.id = "todoist-query-renderer";
     this.name = "Todoist";
     this.description = "Materialize Todoist queries in an Obsidian note.";
     this.defaultOn = true;
 
-    this.app = null;
     this.instance = null;
-    this.options = {};
+    this.options = null;
     this.api = null;
 
     // TODO: This leaks a subscription. Does JS have destructors?
-    Settings.subscribe(value => { this.options = value});
+    SettingsInstance.subscribe(value => { this.options = value});
 
-    this.observer = [];
+    this.observer = null;
     this.injections = [];
 
-    this.createSettingsFunc = createSettingsFunc;
+    this.settingsBase = SettingsBase;
   }
 
-  init(app, instance) {
-    this.app = app;
+  init(app: App, instance: PluginInstance<ISettings>) {
     this.instance = instance;
-
-    this.instance.registerSettingTab(this.createSettingsFunc(app, instance, this));
+    this.instance.registerSettingTab(new (SettingsTab(this.settingsBase))(app, instance, this));
 
     // Read in Todoist API token.
     const fs = app.vault.adapter.fs;
@@ -89,12 +108,12 @@ export default class TodoistPlugin {
       return;
     }
 
-    const nodes = document.querySelectorAll('pre[class*="language-todoist"]');
+    const nodes = document.querySelectorAll<HTMLPreElement>('pre[class*="language-todoist"]');
 
     for (var i = 0; i < nodes.length; i++) {
       const node = nodes[i];
       // TODO: Error handling.
-      const query = JSON.parse(node.innerText);
+      const query = JSON.parse(node.innerText) as IQuery;
       
       const root = node.parentElement;
       root.removeChild(node);
@@ -112,9 +131,9 @@ export default class TodoistPlugin {
   }
 
   async loadOptions() {
-    const options = await this.instance.loadData();
+    const options = await this.instance.loadData<ISettings>();
 
-    Settings.update(old => {
+    SettingsInstance.update(old => {
       return { 
         ...old, 
         ...(options || {})
@@ -124,8 +143,8 @@ export default class TodoistPlugin {
     this.instance.saveData(this.options);
   }
 
-  writeOptions(changeOpts) {
-    Settings.update((old) => {
+  writeOptions(changeOpts: (settings: ISettings) => void) {
+    SettingsInstance.update((old) => {
       changeOpts(old);
       return old;
     });

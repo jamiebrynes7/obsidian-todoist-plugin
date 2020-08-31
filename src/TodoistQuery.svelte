@@ -1,15 +1,8 @@
-<script lang="ts" context="module">
-  export interface IQuery {
-    name: string,
-    filter: string,
-    autorefresh?: number
-  }
-</script>
-
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
-  import { Settings, ISettings } from "./settings";
+  import { SettingsInstance, ISettings } from "./settings";
+  import type IQuery from "./query";
   import type { TodoistApi, ITask, ID } from "./api";
 
   export let query : IQuery;
@@ -18,7 +11,7 @@
   let settings : ISettings = null;
   let autoRefreshIntervalId : number = null;
 
-  const settingsUnsub = Settings.subscribe(value => { settings = value; });
+  const settingsUnsub = SettingsInstance.subscribe(value => { settings = value; });
 
   $: {
     if (query?.autorefresh) {
