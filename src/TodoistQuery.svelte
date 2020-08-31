@@ -1,18 +1,34 @@
-<script>
+<script lang="ts" context="module">
+  export interface IQuery {
+    name: string,
+    filter: string,
+    autorefresh?: number
+  }
+
+  export type ID = string;
+
+  export interface ITask {
+    id: ID,
+    priority: number,
+    content: string,
+    order: number
+  }
+</script>
+
+<script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
-  import { Settings } from "./settings";
+  import { Settings, ISettings } from "./settings";
 
-  export let query;
-  export let token;
+  export let query : IQuery;
+  export let token : string;
 
-  let settings;
-  let autoRefreshIntervalId = null;
+  let settings : ISettings = null;
+  let autoRefreshIntervalId : number = null;
 
   const settingsUnsub = Settings.subscribe(value => { settings = value; });
 
   $: {
-
     if (query?.autorefresh) {
       // First, if query.autorefresh is set.. we always use that value.
       if (autoRefreshIntervalId == null) {
@@ -31,9 +47,9 @@
     }
   }
 
-  let fetching = false;
-  let tasks = [];
-  let tasksPendingClose = [];
+  let fetching : boolean = false;
+  let tasks : ITask[] = [];
+  let tasksPendingClose : ID[] = [];
   $: todos = tasks.filter(task => !tasksPendingClose.includes(task.id));
 
   onMount(async () => {
@@ -48,7 +64,7 @@
     }
   });
 
-  async function onClickTask(task) {
+  async function onClickTask(task: ITask) {
     tasksPendingClose.push(task.id);
     tasksPendingClose = tasksPendingClose;
 
@@ -75,16 +91,14 @@
     
     try {
       fetching = true;
-      const url = new URL(`https://api.todoist.com/rest/v1/tasks?filter=${encodeURIComponent(query.filter)}`);
-      const res = await fetch(url, {
+      const res = await fetch(`https://api.todoist.com/rest/v1/tasks?filter=${encodeURIComponent(query.filter)}`, {
         headers: new Headers({
           'Authorization': `Bearer ${token}`
         }),
       });
 
-      let newTodos = await res.json();
-      newTodos.forEach(task => task.done = false);
-      newTodos.sort((first, second) => first.order - second.order);
+      let newTodos = await res.json() as ITask[];
+      newTodos.sort((first: ITask, second: ITask) => first.order - second.order);
       tasks = newTodos;
     }
     finally {
@@ -94,7 +108,7 @@
 
   // For some reason, the Todoist API returns priority in reverse order from
   // the p1/p2/p3/p4 fluent entry notation.
-  function getPriorityClass(priority) {
+  function getPriorityClass(priority: number) : string {
     switch (priority) {
       case 1:
         return "todoist-p4";
