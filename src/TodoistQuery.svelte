@@ -4,24 +4,16 @@
     filter: string,
     autorefresh?: number
   }
-
-  export type ID = string;
-
-  export interface ITask {
-    id: ID,
-    priority: number,
-    content: string,
-    order: number
-  }
 </script>
 
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { fade } from "svelte/transition";
   import { Settings, ISettings } from "./settings";
+  import type { TodoistApi, ITask, ID } from "./api";
 
   export let query : IQuery;
-  export let token : string;
+  export let api : TodoistApi;
 
   let settings : ISettings = null;
   let autoRefreshIntervalId : number = null;
@@ -68,14 +60,7 @@
     tasksPendingClose.push(task.id);
     tasksPendingClose = tasksPendingClose;
 
-    const res = await fetch(`https://api.todoist.com/rest/v1/tasks/${task.id}/close`, {
-      headers: new Headers({
-        'Authorization': `Bearer ${token}`
-      }),
-      method: 'POST'
-    });
-
-    if (res.ok) {
+    if (await api.closeTask(task.id)) {
       tasks.filter(otherTask => otherTask.id == task.id);
       tasks = tasks;
     }
@@ -91,13 +76,7 @@
     
     try {
       fetching = true;
-      const res = await fetch(`https://api.todoist.com/rest/v1/tasks?filter=${encodeURIComponent(query.filter)}`, {
-        headers: new Headers({
-          'Authorization': `Bearer ${token}`
-        }),
-      });
-
-      let newTodos = await res.json() as ITask[];
+      let newTodos = await api.getTasks(query.filter);
       newTodos.sort((first: ITask, second: ITask) => first.order - second.order);
       tasks = newTodos;
     }

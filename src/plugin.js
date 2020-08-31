@@ -1,7 +1,6 @@
 import TodoistQuery from "./TodoistQuery.svelte";
 import { Settings } from "./settings";
-
-let token = null;
+import { TodoistApi } from "./api";
 
 export default class TodoistPlugin {
   constructor(createSettingsFunc) {
@@ -13,6 +12,7 @@ export default class TodoistPlugin {
     this.app = null;
     this.instance = null;
     this.options = {};
+    this.api = null;
 
     // TODO: This leaks a subscription. Does JS have destructors?
     Settings.subscribe(value => { this.options = value});
@@ -36,7 +36,8 @@ export default class TodoistPlugin {
 
     const tokenPath = path.join(basePath, ".obsidian", "todoist-token");
     if (fs.existsSync(tokenPath)) {
-      token = fs.readFileSync(tokenPath).toString('utf-8');
+      const token = fs.readFileSync(tokenPath).toString('utf-8');
+      this.api = new TodoistApi(token);
     }
     else {
       alert(`Could not load Todoist token at: ${tokenPath}`)
@@ -84,8 +85,7 @@ export default class TodoistPlugin {
   }
 
   injectQueries() {
-    if (token == null) {
-      console.log("No token!");
+    if (this.api == null) {
       return;
     }
 
@@ -103,7 +103,7 @@ export default class TodoistPlugin {
         target: root,
         props: {
           query: query,
-          token: token,
+          api: this.api,
         }
       });
 
