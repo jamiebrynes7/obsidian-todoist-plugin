@@ -1,5 +1,7 @@
 # Obsidian x Todoist Plugin
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jamiebrynes7/obsidian-todoist-plugin/premerge?style=for-the-badge) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jamiebrynes7/obsidian-todoist-plugin?style=for-the-badge)
+
 An experimental [Obsidian](https://obsidian.md/) plugin using [Volcano](https://github.com/kognise/volcano) to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
 _Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
