@@ -5,8 +5,8 @@ import { TodoistApi } from "./api";
 import type { App, Settings, PluginInstance } from "./obsidian";
 
 interface IInjection {
-  component: TodoistQuery,
-  workspaceLeaf: Node
+  component: TodoistQuery;
+  workspaceLeaf: Node;
 }
 
 export default class TodoistPlugin<TBase extends Settings> {
@@ -21,11 +21,11 @@ export default class TodoistPlugin<TBase extends Settings> {
 
   private intervalId: number;
   private observer: MutationObserver;
-  private injections: IInjection[]; 
+  private injections: IInjection[];
 
-  private settingsBase : TBase;
+  private settingsBase: TBase;
 
-  constructor(SettingsBase : TBase) {
+  constructor(SettingsBase: TBase) {
     this.id = "todoist-query-renderer";
     this.name = "Todoist";
     this.description = "Materialize Todoist queries in an Obsidian note.";
@@ -36,7 +36,9 @@ export default class TodoistPlugin<TBase extends Settings> {
     this.api = null;
 
     // TODO: This leaks a subscription. Does JS have destructors?
-    SettingsInstance.subscribe(value => { this.options = value});
+    SettingsInstance.subscribe((value) => {
+      this.options = value;
+    });
 
     this.observer = null;
     this.injections = [];
@@ -46,7 +48,9 @@ export default class TodoistPlugin<TBase extends Settings> {
 
   init(app: App, instance: PluginInstance<ISettings>) {
     this.instance = instance;
-    this.instance.registerSettingTab(new (SettingsTab(this.settingsBase))(app, instance, this));
+    this.instance.registerSettingTab(
+      new (SettingsTab(this.settingsBase))(app, instance, this)
+    );
 
     // Read in Todoist API token.
     const fs = app.vault.adapter.fs;
@@ -55,11 +59,10 @@ export default class TodoistPlugin<TBase extends Settings> {
 
     const tokenPath = path.join(basePath, ".obsidian", "todoist-token");
     if (fs.existsSync(tokenPath)) {
-      const token = fs.readFileSync(tokenPath).toString('utf-8');
+      const token = fs.readFileSync(tokenPath).toString("utf-8");
       this.api = new TodoistApi(token);
-    }
-    else {
-      alert(`Could not load Todoist token at: ${tokenPath}`)
+    } else {
+      alert(`Could not load Todoist token at: ${tokenPath}`);
     }
   }
 
@@ -73,12 +76,14 @@ export default class TodoistPlugin<TBase extends Settings> {
       if (this.injections.length == 0) {
         return;
       }
-      
-      mutations.forEach((mutation) => {
-        mutation.removedNodes.forEach(removed => {
-          const removedIndex = this.injections.findIndex((ele) => ele.workspaceLeaf == removed);
 
-          if (removedIndex == -1) { 
+      mutations.forEach((mutation) => {
+        mutation.removedNodes.forEach((removed) => {
+          const removedIndex = this.injections.findIndex(
+            (ele) => ele.workspaceLeaf == removed
+          );
+
+          if (removedIndex == -1) {
             return;
           }
 
@@ -86,11 +91,11 @@ export default class TodoistPlugin<TBase extends Settings> {
           this.injections.splice(removedIndex, 1);
           component.$destroy();
         });
-      })
+      });
     });
 
     const workspaceRoot = document.getElementsByClassName("workspace")[0];
-    this.observer.observe(workspaceRoot, { childList: true, subtree: true})
+    this.observer.observe(workspaceRoot, { childList: true, subtree: true });
   }
 
   onDisable() {
@@ -99,7 +104,7 @@ export default class TodoistPlugin<TBase extends Settings> {
     this.observer.disconnect();
     this.observer = null;
 
-    this.injections.forEach(injection => injection.component.$destroy());
+    this.injections.forEach((injection) => injection.component.$destroy());
     this.injections = [];
   }
 
@@ -108,35 +113,40 @@ export default class TodoistPlugin<TBase extends Settings> {
       return;
     }
 
-    const nodes = document.querySelectorAll<HTMLPreElement>('pre[class*="language-todoist"]');
+    const nodes = document.querySelectorAll<HTMLPreElement>(
+      'pre[class*="language-todoist"]'
+    );
 
     for (var i = 0; i < nodes.length; i++) {
       const node = nodes[i];
       // TODO: Error handling.
       const query = JSON.parse(node.innerText) as IQuery;
-      
+
       const root = node.parentElement;
       root.removeChild(node);
-      
+
       const queryNode = new TodoistQuery({
         target: root,
         props: {
           query: query,
           api: this.api,
-        }
+        },
       });
 
-      this.injections.push({component: queryNode, workspaceLeaf: root.closest(".workspace-leaf")});
+      this.injections.push({
+        component: queryNode,
+        workspaceLeaf: root.closest(".workspace-leaf"),
+      });
     }
   }
 
   async loadOptions() {
     const options = await this.instance.loadData<ISettings>();
 
-    SettingsInstance.update(old => {
-      return { 
-        ...old, 
-        ...(options || {})
+    SettingsInstance.update((old) => {
+      return {
+        ...old,
+        ...(options || {}),
       };
     });
 

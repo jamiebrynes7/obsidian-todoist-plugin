@@ -18,17 +18,17 @@ export class TodoistApi {
       }),
     });
 
-    return await result.json() as ITask[];
+    return (await result.json()) as ITask[];
   }
 
-  async closeTask(id: ID) : Promise<boolean> {
+  async closeTask(id: ID): Promise<boolean> {
     const url = `https://api.todoist.com/rest/v1/tasks/${id}/close`;
 
     const result = await fetch(url, {
       headers: new Headers({
         Authorization: `Bearer ${this.token}`,
       }),
-      method: 'POST'
+      method: "POST",
     });
 
     return result.ok;
