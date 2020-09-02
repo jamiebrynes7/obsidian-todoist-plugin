@@ -1,9 +1,9 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { fade } from "svelte/transition";
   import { SettingsInstance, ISettings } from "./settings";
   import type IQuery from "./query";
-  import type { TodoistApi, ITask, ID } from "./api";
+  import type { TodoistApi, Task, ID } from "./api";
+  import TaskList from "./TaskList.svelte";
 
   export let query: IQuery;
   export let api: TodoistApi;
@@ -38,10 +38,8 @@
     }
   }
 
+  let tasks: Task[] = [];
   let fetching: boolean = false;
-  let tasks: ITask[] = [];
-  let tasksPendingClose: ID[] = [];
-  $: todos = tasks.filter((task) => !tasksPendingClose.includes(task.id));
 
   onMount(async () => {
     await fetchTodos();
@@ -55,19 +53,6 @@
     }
   });
 
-  async function onClickTask(task: ITask) {
-    tasksPendingClose.push(task.id);
-    tasksPendingClose = tasksPendingClose;
-
-    if (await api.closeTask(task.id)) {
-      tasks.filter((otherTask) => otherTask.id == task.id);
-      tasks = tasks;
-    }
-
-    tasksPendingClose.filter((id) => id == task.id);
-    tasksPendingClose = tasksPendingClose;
-  }
-
   async function fetchTodos() {
     if (fetching) {
       return;
@@ -76,27 +61,11 @@
     try {
       fetching = true;
       let newTodos = await api.getTasks(query.filter);
-      newTodos.sort(
-        (first: ITask, second: ITask) => first.order - second.order
-      );
+      console.log(newTodos);
+      newTodos.sort((first: Task, second: Task) => first.order - second.order);
       tasks = newTodos;
     } finally {
       fetching = false;
-    }
-  }
-
-  // For some reason, the Todoist API returns priority in reverse order from
-  // the p1/p2/p3/p4 fluent entry notation.
-  function getPriorityClass(priority: number): string {
-    switch (priority) {
-      case 1:
-        return "todoist-p4";
-      case 2:
-        return "todoist-p3";
-      case 3:
-        return "todoist-p2";
-      case 4:
-        return "todoist-p1";
     }
   }
 </script>
@@ -122,19 +91,4 @@
   </svg>
 </button>
 <br />
-<ul>
-  {#each todos as todo (todo.id)}
-    <li
-      transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
-      class="task-list-item {getPriorityClass(todo.priority)}">
-      <input
-        data-line="1"
-        class="task-list-item-checkbox"
-        type="checkbox"
-        on:click|preventDefault={async () => {
-          await onClickTask(todo);
-        }} />
-      {todo.content}
-    </li>
-  {/each}
-</ul>
+<TaskList {tasks} {settings} {api} />
