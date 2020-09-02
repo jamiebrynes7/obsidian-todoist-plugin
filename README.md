@@ -30,8 +30,10 @@ _Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
 | Name          | Required | Description                                                                                           | Type   | Default |
 | ------------- | :------: | ----------------------------------------------------------------------------------------------------- | ------ | ------- |
 | `name`        |    ✓     | The title for the materialized query.                                                                 | string |         |
-| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)              | string |         |
+| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)*             | string |         |
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings. | number | null    |
+
+_* Except for section filters like "/My Section"_
 
 ## Settings
 
