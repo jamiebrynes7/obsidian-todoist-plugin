@@ -65,8 +65,8 @@ export class Task {
   static buildTree(tasks: IApiTask[]): Task[] {
     const mapping = new Map<ID, Task>();
 
-    tasks.forEach(task => mapping.set(task.id, new Task(task)));
-    tasks.forEach(task => {
+    tasks.forEach((task) => mapping.set(task.id, new Task(task)));
+    tasks.forEach((task) => {
       if (task.parent == null || !mapping.has(task.parent)) {
         return;
       }
@@ -78,6 +78,6 @@ export class Task {
       parent.children.push(self);
     });
 
-    return Array.from(mapping.values()).filter(task => task.parent == null);
+    return Array.from(mapping.values()).filter((task) => task.parent == null);
   }
 }
