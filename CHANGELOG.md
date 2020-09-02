@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- Subtasks are now nested under their parent if both are included in the filter. If a subtask is captured by a filter, but the parent is not, it will be listed as a top level item. You may need to adjust your priority CSS to accommodate these changes. For example:
+    ```diff
+    + .todoist-p1 > input[type="checkbox"] {
+    - .todoist-p1 input[type="checkbox"] {
+        /* This matches against the input element rendered for a priority 1 task. */
+    }
+    ```
+
 ### ⚙ Internal
 
 - Ported the plugin to (almost entirely) Typescript.
