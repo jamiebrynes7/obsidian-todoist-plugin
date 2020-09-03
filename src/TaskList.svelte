@@ -43,15 +43,25 @@
   {#each todos as todo (todo.id)}
     <li
       transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
-      class="task-list-item {getPriorityClass(todo.priority)}">
-      <input
-        data-line="1"
-        class="task-list-item-checkbox"
-        type="checkbox"
-        on:click|preventDefault={async () => {
-          await onClickTask(todo);
-        }} />
-      {todo.content}
+      class="task-list-item">
+      <div class="{getPriorityClass(todo.priority)}">
+        <input
+          data-line="1"
+          class="task-list-item-checkbox"
+          type="checkbox"
+          on:click|preventDefault={async () => {
+            await onClickTask(todo);
+          }} />
+        {todo.content}
+      </div>
+      {#if todo.date}
+      <span class="task-date {todo.isOverdue() ? "task-overdue" : ""}">
+        <svg class="task-calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+        </svg>
+        {todo.date}
+      </span>
+      {/if}
       {#if todo.children.length != 0}
         <svelte:self tasks={todo.children} {settings} {api} />
       {/if}
