@@ -1,3 +1,5 @@
+import moment, { Moment, CalendarSpec } from "moment";
+
 export class TodoistApi {
   private token: string;
 
@@ -44,6 +46,11 @@ interface IApiTask {
   content: string;
   order: number;
   parent?: ID;
+  due?: {
+    recurring: boolean,
+    date: string,
+    datetime?: string
+  }
 }
 
 export class Task {
@@ -53,6 +60,19 @@ export class Task {
   public order: number;
   public parent?: Task;
   public children: Task[];
+  public date?: string;
+
+  private datetime?: Moment;
+  private hasTime?: boolean;
+
+  private static dateOnlyCalendarSpec: CalendarSpec = {
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    nextWeek: 'dddd',
+    lastDay: '[Yesterday]',
+    lastWeek: '[Last] dddd',
+    sameElse: 'MMM Do'
+  };
 
   constructor(raw: IApiTask) {
     this.id = raw.id;
@@ -60,6 +80,30 @@ export class Task {
     this.content = raw.content;
     this.order = raw.order;
     this.children = [];
+
+    if (raw.due) {
+      if (raw.due.datetime) {
+        this.hasTime = true;
+        this.datetime = moment(raw.due.datetime);
+        this.date = this.datetime.calendar();
+      } else {
+        this.hasTime = false;
+        this.datetime = moment(raw.due.date);
+        this.date = this.datetime.calendar(Task.dateOnlyCalendarSpec);
+      }
+    }
+  }
+
+  isOverdue(): boolean {
+    if (!this.datetime) {
+      return false;
+    }
+
+    if (this.hasTime) {
+      return this.datetime.isBefore();
+    }
+
+    return this.datetime.add(1, 'day').isBefore();
   }
 
   static buildTree(tasks: IApiTask[]): Task[] {
