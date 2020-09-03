@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { SettingsInstance, ISettings } from "./settings";
   import type IQuery from "./query";
-  import type { TodoistApi, Task, ID } from "./api";
+  import type { TodoistApi, Task } from "./api";
   import TaskList from "./TaskList.svelte";
 
   export let query: IQuery;
@@ -61,7 +61,6 @@
     try {
       fetching = true;
       let newTodos = await api.getTasks(query.filter);
-      console.log(newTodos);
       newTodos.sort((first: Task, second: Task) => first.order - second.order);
       tasks = newTodos;
     } finally {
