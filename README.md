@@ -30,10 +30,10 @@ _Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
 | Name          | Required | Description                                                                                           | Type   | Default |
 | ------------- | :------: | ----------------------------------------------------------------------------------------------------- | ------ | ------- |
 | `name`        |    ✓     | The title for the materialized query.                                                                 | string |         |
-| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)*             | string |         |
+| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)\*            | string |         |
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings. | number | null    |
 
-_* Except for section filters like "/My Section"_
+_\* Except for section filters like "/My Section"_
 
 ## Settings
 
@@ -44,6 +44,8 @@ This plugin adds a setting tab to the Obsidian settings menu. This controls glob
 | Task fade animation   | Whether tasks should fade in and out when added or removed.                                 | true    |
 | Auto-refresh          | Whether queries should auto-refresh at a set interval.                                      | false   |
 | Auto-refresh interval | The interval (in seconds) that queries should auto-refresh by default. Integer numbers only | 60      |
+| Render dates          | Whether dates should be rendered with tasks.                                                | true    |
+| Render date icon      | Whether rendered dates should include an icon.                                              | true    |
 
 ## CSS
 
@@ -87,5 +89,19 @@ For example:
 ```css
 .todoist-p1 > input[type="checkbox"] {
   /* This matches against the input element rendered for a priority 1 task. */
+}
+```
+
+### Dates
+
+Any date will be rendered in a `span` element with the `task-date` class on it. You can use this class to align and adjust the position of this date. Any tasks that are overdue will also have the `task-overdue` class attached to the `span`.
+
+The icon rendered with the date has the `task-calendar-icon` class on it. I recommend using at least the following CSS:
+
+```css
+.task-calendar-icon {
+  vertical-align: middle;
+  height: 17px;
+  width: 17px;
 }
 ```

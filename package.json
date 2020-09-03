@@ -11,6 +11,7 @@
   "dependencies": {
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
+    "moment": "^2.27.0",
     "rollup": "^2.26.7",
     "rollup-plugin-svelte": "^6.0.0",
     "svelte": "^3.24.1",

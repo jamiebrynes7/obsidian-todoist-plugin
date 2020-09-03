@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         /* This matches against the input element rendered for a priority 1 task. */
     }
     ```
+- Tasks now render dates under them by default. This can be toggled in the settings (along with some the accompanying icon). If you choose to use icons, I recommend you _at least_ add the following CSS to your own (tweaking may be required based on your theme):
+    ```css
+    .task-calendar-icon {
+        vertical-align: middle;
+        height: 17px;
+        width: 17px;
+    }
+    ```
 
 ### ⚙ Internal
 

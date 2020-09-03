@@ -12,12 +12,16 @@ export const SettingsInstance = writable<ISettings>({
   fadeToggle: true,
   autoRefreshToggle: false,
   autoRefreshInterval: 60,
+  renderDate: true,
+  renderDateIcon: true
 });
 
 export interface ISettings {
   fadeToggle: boolean;
   autoRefreshToggle: boolean;
   autoRefreshInterval: number;
+  renderDate: boolean;
+  renderDateIcon: boolean;
 }
 
 export function SettingsTab<TBase extends Settings>(Base: TBase) {
@@ -38,6 +42,7 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
       this.containerEl.empty();
       this.fadeAnimationSettings();
       this.autoRefreshSettings();
+      this.dateSettings();
     }
 
     fadeAnimationSettings() {
@@ -88,6 +93,20 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
             `${this.plugin.options.autoRefreshInterval}`
           );
         }
+      });
+    }
+
+    dateSettings() {
+      const renderDateToggle = this.addToggleSetting("Render dates", "Whether dates should be rendered with tasks.");
+      renderDateToggle.setValue(this.plugin.options.renderDate);
+      renderDateToggle.onChange(() => {
+        this.plugin.writeOptions((old) => (old.renderDate = renderDateToggle.getValue()));
+      });
+
+      const renderDateIconToggle = this.addToggleSetting("Render date icon", "Whether rendered dates should include an icon.");
+      renderDateIconToggle.setValue(this.plugin.options.renderDateIcon);
+      renderDateIconToggle.onChange(() => {
+        this.plugin.writeOptions((old) => (old.renderDateIcon = renderDateIconToggle.getValue()));
       });
     }
   };
