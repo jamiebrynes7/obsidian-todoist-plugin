@@ -106,6 +106,53 @@ export class Task {
     return this.datetime.add(1, 'day').isBefore();
   }
 
+  compareTo(other: Task, sorting_options: string[]): number {
+    console.log(sorting_options);
+    for (let sort of sorting_options) {
+      switch (sort) {
+        case "priority":
+          // Higher priority comes first.
+          const diff = other.priority - this.priority;
+          if (diff == 0) {
+            continue;
+          }
+
+          return diff;
+        case "date":
+          // We want to sort using the following criteria:
+          // 1. Any items without a datetime always are sorted after those with.
+          // 2. Any items on the same day without time always are sorted after those with.
+          if (this.datetime && !other.datetime) {
+            return -1;
+          } else if (!this.datetime && other.datetime) {
+            return 1;
+          } else if (!this.datetime && !other.datetime) {
+            continue;
+          }
+
+          // Now compare dates.
+          if (this.datetime.isAfter(other.datetime, 'day')) {
+            return 1;
+          } else if (this.datetime.isBefore(other.datetime, 'day')) {
+            return -1;
+          }
+
+          // We are the same day, lets look at time.
+          if (this.hasTime && !other.hasTime) {
+            return -1;
+          } else if (!this.hasTime && !other.hasTime) {
+            return 1;
+          } else if (!this.hasTime && !this.hasTime) {
+            continue;
+          }
+
+          return this.datetime.isBefore(other.datetime) ? -1 : 1;
+      }
+    }
+
+    return this.order - other.order;
+  }
+
   static buildTree(tasks: IApiTask[]): Task[] {
     const mapping = new Map<ID, Task>();
 

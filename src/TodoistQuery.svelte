@@ -60,9 +60,7 @@
 
     try {
       fetching = true;
-      let newTodos = await api.getTasks(query.filter);
-      newTodos.sort((first: Task, second: Task) => first.order - second.order);
-      tasks = newTodos;
+      tasks = await api.getTasks(query.filter);
     } finally {
       fetching = false;
     }
@@ -90,4 +88,4 @@
   </svg>
 </button>
 <br />
-<TaskList {tasks} {settings} {api} />
+<TaskList {tasks} {settings} {api} sorting={query.sorting ?? []}/>

@@ -6,9 +6,10 @@
   export let tasks: Task[];
   export let settings: ISettings;
   export let api: TodoistApi;
+  export let sorting: string[];
 
   let tasksPendingClose: ID[] = [];
-  $: todos = tasks.filter((task) => !tasksPendingClose.includes(task.id));
+  $: todos = tasks.filter((task) => !tasksPendingClose.includes(task.id)).sort((first: Task, second: Task) => first.compareTo(second, sorting));
 
   async function onClickTask(task: Task) {
     tasksPendingClose.push(task.id);
