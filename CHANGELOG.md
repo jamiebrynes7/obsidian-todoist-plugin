@@ -23,6 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         width: 17px;
     }
     ```
+- Added support for controlling the ordering of the rendered tasks. This can be done by either priority or date, or a combination of them (e.g. - sort by priority, then by date). To use this feature, amend your queries:
+    ``````markdown
+    ```json
+    {
+        "name": "My Tasks",
+        "filter": "today | overdue",
+        "autorefresh": 30,
+        "sorting": ["date", "priority"]
+    }
+    ```
+    ``````
 
 ### ⚙ Internal
 
@@ -44,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     ```json
     {
         "name": "My Tasks",
-        "filter" "today | overdue",
+        "filter": "today | overdue",
         "autorefresh": 30
     }
     ```
