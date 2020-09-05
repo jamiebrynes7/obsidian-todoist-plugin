@@ -107,7 +107,6 @@ export class Task {
   }
 
   compareTo(other: Task, sorting_options: string[]): number {
-    console.log(sorting_options);
     for (let sort of sorting_options) {
       switch (sort) {
         case "priority":
