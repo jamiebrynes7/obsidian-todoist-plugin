@@ -4,7 +4,7 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin using [Volcano](https://github.com/kognise/volcano) to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.8.4 and Volcano 1.0.6, your results may vary!_
+_Tested with Obsidian 0.8.9 and Volcano 1.2.1, your results may vary!_
 
 ![Example gif](./.github/obsidian-todoist-sync.gif)
 
