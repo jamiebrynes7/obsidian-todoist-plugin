@@ -103,7 +103,7 @@ export class Task {
       return this.datetime.isBefore();
     }
 
-    return this.datetime.add(1, 'day').isBefore();
+    return this.datetime.clone().add(1, 'day').isBefore();
   }
 
   compareTo(other: Task, sorting_options: string[]): number {
