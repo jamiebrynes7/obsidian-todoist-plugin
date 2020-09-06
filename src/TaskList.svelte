@@ -66,7 +66,7 @@
       </span>
       {/if}
       {#if todo.children.length != 0}
-        <svelte:self tasks={todo.children} {settings} {api} />
+        <svelte:self tasks={todo.children} {settings} {api} {sorting}/>
       {/if}
     </li>
   {/each}
