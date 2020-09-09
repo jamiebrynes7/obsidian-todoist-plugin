@@ -9,7 +9,9 @@
   export let sorting: string[];
 
   let tasksPendingClose: ID[] = [];
-  $: todos = tasks.filter((task) => !tasksPendingClose.includes(task.id)).sort((first: Task, second: Task) => first.compareTo(second, sorting));
+  $: todos = tasks
+    .filter((task) => !tasksPendingClose.includes(task.id))
+    .sort((first: Task, second: Task) => first.compareTo(second, sorting));
 
   async function onClickTask(task: Task) {
     tasksPendingClose.push(task.id);
@@ -40,12 +42,12 @@
   }
 </script>
 
-<ul>
+<ul class="contains-task-list">
   {#each todos as todo (todo.id)}
     <li
       transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
       class="task-list-item">
-      <div class="{getPriorityClass(todo.priority)}">
+      <div class={getPriorityClass(todo.priority)}>
         <input
           data-line="1"
           class="task-list-item-checkbox"
@@ -56,17 +58,24 @@
         {todo.content}
       </div>
       {#if settings.renderDate && todo.date}
-      <span class="task-date {todo.isOverdue() ? "task-overdue" : ""}">
-        {#if settings.renderDateIcon}
-          <svg class="task-calendar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-          </svg>
-        {/if}
-        {todo.date}
-      </span>
+        <span class="task-date {todo.isOverdue() ? 'task-overdue' : ''}">
+          {#if settings.renderDateIcon}
+            <svg
+              class="task-calendar-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                clip-rule="evenodd" />
+            </svg>
+          {/if}
+          {todo.date}
+        </span>
       {/if}
       {#if todo.children.length != 0}
-        <svelte:self tasks={todo.children} {settings} {api} {sorting}/>
+        <svelte:self tasks={todo.children} {settings} {api} {sorting} />
       {/if}
     </li>
   {/each}
