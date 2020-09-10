@@ -138,7 +138,7 @@ export class Task {
           // We are the same day, lets look at time.
           if (this.hasTime && !other.hasTime) {
             return -1;
-          } else if (!this.hasTime && !other.hasTime) {
+          } else if (!this.hasTime && other.hasTime) {
             return 1;
           } else if (!this.hasTime && !this.hasTime) {
             continue;
