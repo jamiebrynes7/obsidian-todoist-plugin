@@ -103,6 +103,7 @@ describe("Task comparisons", () => {
     });
 
     assert.isBelow(first.compareTo(second, []), 0);
+    assert.isAbove(second.compareTo(first, []), 0);
   });
 
   it("Tasks are sorted by priority (high to low)", () => {
@@ -121,6 +122,7 @@ describe("Task comparisons", () => {
     });
 
     assert.isBelow(highPriority.compareTo(lowPriority, ["priority"]), 0);
+    assert.isAbove(lowPriority.compareTo(highPriority, ["priority"]), 0);
   });
 
   it("Tasks fallback to Todoist ordering if priority is the same", () => {
@@ -140,6 +142,7 @@ describe("Task comparisons", () => {
 
 
     assert.isBelow(first.compareTo(second, []), 0);
+    assert.isAbove(second.compareTo(first, []), 0);
   });
 
   it("Tasks are sorted by date (earliest -> latest).", () => {
@@ -168,6 +171,7 @@ describe("Task comparisons", () => {
     });
    
     assert.isBelow(first.compareTo(second, ["date"]), 0);    
+    assert.isAbove(second.compareTo(first, ["date"]), 0);    
   });
 
   it("Tasks on the same day are sorted in time order (earliest -> latest -> no time)", () => {
@@ -211,6 +215,11 @@ describe("Task comparisons", () => {
     assert.isBelow(first.compareTo(second, ["date"]), 0);    
     assert.isBelow(first.compareTo(third, ["date"]), 0);    
     assert.isBelow(second.compareTo(third, ["date"]), 0);    
+    
+    assert.isAbove(second.compareTo(first, ["date"]), 0);    
+    assert.isAbove(third.compareTo(first, ["date"]), 0);    
+    assert.isAbove(third.compareTo(second, ["date"]), 0);    
+
   });
 
   it("Task ordered by priority falls to the next if equal", () => {
@@ -239,6 +248,7 @@ describe("Task comparisons", () => {
     });
 
     assert.isBelow(first.compareTo(second, ["priority", "date"]), 0);
+    assert.isAbove(second.compareTo(first, ["priority", "date"]), 0);
   });
 
   it("Task ordered by date falls to the next if equal", () => {
@@ -267,5 +277,6 @@ describe("Task comparisons", () => {
     });
 
     assert.isBelow(first.compareTo(second, ["date", "priority"]), 0);
+    assert.isAbove(second.compareTo(first, ["date", "priority"]), 0);
   });
 });
