@@ -40,7 +40,7 @@ export class TodoistApi {
 
 export type ID = number;
 
-interface IApiTask {
+export interface IApiTask {
   id: ID;
   priority: number;
   content: string;
@@ -61,9 +61,8 @@ export class Task {
   public parent?: Task;
   public children: Task[];
   public date?: string;
-
-  private datetime?: Moment;
-  private hasTime?: boolean;
+  public hasTime?: boolean;
+  public rawDatetime?: Moment;
 
   private static dateOnlyCalendarSpec: CalendarSpec = {
     sameDay: '[Today]',
@@ -84,26 +83,26 @@ export class Task {
     if (raw.due) {
       if (raw.due.datetime) {
         this.hasTime = true;
-        this.datetime = moment(raw.due.datetime);
-        this.date = this.datetime.calendar();
+        this.rawDatetime = moment(raw.due.datetime);
+        this.date = this.rawDatetime.calendar();
       } else {
         this.hasTime = false;
-        this.datetime = moment(raw.due.date);
-        this.date = this.datetime.calendar(Task.dateOnlyCalendarSpec);
+        this.rawDatetime = moment(raw.due.date);
+        this.date = this.rawDatetime.calendar(Task.dateOnlyCalendarSpec);
       }
     }
   }
 
   isOverdue(): boolean {
-    if (!this.datetime) {
+    if (!this.rawDatetime) {
       return false;
     }
 
     if (this.hasTime) {
-      return this.datetime.isBefore();
+      return this.rawDatetime.isBefore();
     }
 
-    return this.datetime.clone().add(1, 'day').isBefore();
+    return this.rawDatetime.clone().add(1, 'day').isBefore();
   }
 
   compareTo(other: Task, sorting_options: string[]): number {
@@ -121,31 +120,31 @@ export class Task {
           // We want to sort using the following criteria:
           // 1. Any items without a datetime always are sorted after those with.
           // 2. Any items on the same day without time always are sorted after those with.
-          if (this.datetime && !other.datetime) {
+          if (this.rawDatetime && !other.rawDatetime) {
             return -1;
-          } else if (!this.datetime && other.datetime) {
+          } else if (!this.rawDatetime && other.rawDatetime) {
             return 1;
-          } else if (!this.datetime && !other.datetime) {
+          } else if (!this.rawDatetime && !other.rawDatetime) {
             continue;
           }
 
           // Now compare dates.
-          if (this.datetime.isAfter(other.datetime, 'day')) {
+          if (this.rawDatetime.isAfter(other.rawDatetime, 'day')) {
             return 1;
-          } else if (this.datetime.isBefore(other.datetime, 'day')) {
+          } else if (this.rawDatetime.isBefore(other.rawDatetime, 'day')) {
             return -1;
           }
 
           // We are the same day, lets look at time.
           if (this.hasTime && !other.hasTime) {
             return -1;
-          } else if (!this.hasTime && !other.hasTime) {
+          } else if (!this.hasTime && other.hasTime) {
             return 1;
           } else if (!this.hasTime && !this.hasTime) {
             continue;
           }
 
-          return this.datetime.isBefore(other.datetime) ? -1 : 1;
+          return this.rawDatetime.isBefore(other.rawDatetime) ? -1 : 1;
       }
     }
 
