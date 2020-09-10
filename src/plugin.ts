@@ -46,11 +46,22 @@ export default class TodoistPlugin<TBase extends Settings> {
     this.settingsBase = SettingsBase;
   }
 
-  init(app: App, instance: PluginInstance<ISettings>) {
+  async init(app: App, instance: PluginInstance<ISettings>) {
     this.instance = instance;
     this.instance.registerSettingTab(
       new (SettingsTab(this.settingsBase))(app, instance, this)
     );
+    this.instance.registerGlobalCommand({
+      id: "todoist-refresh-metadata",
+      name: "Todoist: Refresh Metadata",
+      callback: async () => {
+        if (this.api != null) {
+          await this.api.fetchMetadata();
+        }
+
+        // TODO: Think I need to force a re-render?
+      }
+    });
 
     // Read in Todoist API token.
     const fs = app.vault.adapter.fs;
@@ -68,6 +79,8 @@ export default class TodoistPlugin<TBase extends Settings> {
 
   async onEnable() {
     await this.loadOptions();
+
+    await this.api.fetchMetadata();
     // TODO: Find more elegant way of finding DOM entries. A hook of some kind?
     this.intervalId = setInterval(this.injectQueries.bind(this), 1000);
 

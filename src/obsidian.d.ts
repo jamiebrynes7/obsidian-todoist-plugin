@@ -52,4 +52,11 @@ export class PluginInstance<TData = {}> {
   saveData<TData>(value: TData);
 
   registerSettingTab(settingsTab: ISettingsTab);
+  registerGlobalCommand(command: IObsidianCommand);
+}
+
+export interface IObsidianCommand {
+  id: string,
+  name: string,
+  callback: () => void
 }
