@@ -72,6 +72,7 @@ export default class TodoistPlugin<TBase extends Settings> {
     if (fs.existsSync(tokenPath)) {
       const token = fs.readFileSync(tokenPath).toString("utf-8");
       this.api = new TodoistApi(token);
+      await this.api.fetchMetadata();
     } else {
       alert(`Could not load Todoist token at: ${tokenPath}`);
     }
@@ -80,7 +81,6 @@ export default class TodoistPlugin<TBase extends Settings> {
   async onEnable() {
     await this.loadOptions();
 
-    await this.api.fetchMetadata();
     // TODO: Find more elegant way of finding DOM entries. A hook of some kind?
     this.intervalId = setInterval(this.injectQueries.bind(this), 1000);
 

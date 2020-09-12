@@ -1,14 +1,32 @@
 import moment, { Moment, CalendarSpec } from "moment";
+import { writable, Writable } from "svelte/store";
+
+class ProxyMap<K,V> extends Map<K, V> {
+  get_or(key: K, defaultValue: () => V) {
+    if (this.has(key)) {
+      return this.get(key);
+    }
+
+    return defaultValue();
+  }
+}
+
+export interface ITodoistMetadata {
+  projects: ProxyMap<ProjectID, string>,
+  sections: ProxyMap<SectionID, string>
+}
 
 export class TodoistApi {
+  public metadata: Writable<ITodoistMetadata>;
+  
   private token: string;
-  private projects: Map<ProjectID, string>;
-  private sections: Map<SectionID, string>;
 
   constructor(token: string) {
     this.token = token;
-    this.projects = new Map<ProjectID, string>();
-    this.sections = new Map<SectionID, string>();
+    this.metadata = writable({
+      projects: new ProxyMap<ProjectID, string>(),
+      sections: new ProxyMap<SectionID, string>() 
+    });
   }
 
   async getTasks(filter?: string): Promise<Task[]> {
@@ -25,7 +43,7 @@ export class TodoistApi {
     });
 
     const tasks = (await result.json()) as IApiTask[];
-    return Task.buildTree(tasks, this.projects, this.sections);
+    return Task.buildTree(tasks);
   }
 
   async closeTask(id: ID): Promise<boolean> {
@@ -43,10 +61,16 @@ export class TodoistApi {
 
   async fetchMetadata() : Promise<void> {
     const projects = await this.getProjects();
-    projects.forEach((prj) => this.projects.set(prj.id, prj.name));
-
     const sections = await this.getSections();
-    sections.forEach((sect) => this.sections.set(sect.id, sect.name));
+
+    this.metadata.update(prjs => {
+      prjs.projects.clear();
+      prjs.sections.clear();
+      projects.forEach((prj) => prjs.projects.set(prj.id, prj.name));
+      sections.forEach((sect) => prjs.sections.set(sect.id, sect.name));
+      return prjs;
+    });
+
   }
 
   private async getProjects() : Promise<IApiProject[]> {
@@ -114,8 +138,8 @@ export class Task {
   public priority: number;
   public content: string;
   public order: number;
-  public project: string;
-  public section?: string;
+  public projectID: ProjectID;
+  public sectionID?: SectionID;
   
   public parent?: Task;
   public children: Task[];
@@ -133,13 +157,13 @@ export class Task {
     sameElse: 'MMM Do'
   };
 
-  constructor(raw: IApiTask, project: string, section?: string) {
+  constructor(raw: IApiTask) {
     this.id = raw.id;
     this.priority = raw.priority;
     this.content = raw.content;
     this.order = raw.order;
-    this.project = project;
-    this.section = section;
+    this.projectID = raw.project_id;
+    this.sectionID = raw.section_id != 0 ? raw.section_id : null;
 
     this.children = [];
 
@@ -214,10 +238,10 @@ export class Task {
     return this.order - other.order;
   }
 
-  static buildTree(tasks: IApiTask[], projects: Map<ProjectID, string>, sections: Map<SectionID, string>): Task[] {
+  static buildTree(tasks: IApiTask[]): Task[] {
     const mapping = new Map<ID, Task>();
 
-    tasks.forEach((task) => mapping.set(task.id, new Task(task, projects.get(task.project_id), sections.get(task.section_id))));
+    tasks.forEach((task) => mapping.set(task.id, new Task(task)));
     tasks.forEach((task) => {
       if (task.parent == null || !mapping.has(task.parent)) {
         return;

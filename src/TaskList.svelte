@@ -1,12 +1,18 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import { fade } from "svelte/transition";
-  import type { Task, ID, TodoistApi } from "./api";
+  import type { Task, ID, TodoistApi, ITodoistMetadata } from "./api";
   import type { ISettings } from "./settings";
 
   export let tasks: Task[];
   export let settings: ISettings;
   export let api: TodoistApi;
   export let sorting: string[];
+
+  let metadata: ITodoistMetadata = null;
+  const metadataUnsub = api.metadata.subscribe(value => metadata = value);
+
+  onDestroy(() => {metadataUnsub()});
 
   let tasksPendingClose: ID[] = [];
   $: todos = tasks
@@ -68,8 +74,8 @@
             d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
             clip-rule="evenodd" />
         </svg>
-        {todo.project}
-        {#if todo.section}| {todo.section}{/if}
+        {metadata.projects.get_or(todo.projectID, () => "Unknown project")}
+        {#if todo.sectionID}| {metadata.sections.get_or(todo.sectionID, () => "Unknown section")}{/if}
       </div>
       {#if settings.renderDate && todo.date}
         <div class="task-date {todo.isOverdue() ? 'task-overdue' : ''}">
