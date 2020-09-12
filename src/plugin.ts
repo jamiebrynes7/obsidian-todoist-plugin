@@ -58,9 +58,7 @@ export default class TodoistPlugin<TBase extends Settings> {
         if (this.api != null) {
           await this.api.fetchMetadata();
         }
-
-        // TODO: Think I need to force a re-render?
-      }
+      },
     });
 
     // Read in Todoist API token.
