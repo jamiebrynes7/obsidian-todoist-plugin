@@ -19,6 +19,9 @@ export const SettingsInstance = writable<ISettings>({
 
   renderProject: true,
   renderProjectIcon: true,
+
+  renderLabels: true,
+  renderLabelsIcon: true,
 });
 
 export interface ISettings {
@@ -31,6 +34,9 @@ export interface ISettings {
 
   renderProject: boolean;
   renderProjectIcon: boolean;
+
+  renderLabels: boolean;
+  renderLabelsIcon: boolean;
 }
 
 export function SettingsTab<TBase extends Settings>(Base: TBase) {
@@ -49,10 +55,13 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
 
     display() {
       this.containerEl.empty();
+
       this.fadeAnimationSettings();
       this.autoRefreshSettings();
+
       this.dateSettings();
       this.projectSettings();
+      this.labelsSettings();
     }
 
     fadeAnimationSettings() {
@@ -107,30 +116,74 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
     }
 
     dateSettings() {
-      const renderDateToggle = this.addToggleSetting("Render dates", "Whether dates should be rendered with tasks.");
+      const renderDateToggle = this.addToggleSetting(
+        "Render dates",
+        "Whether dates should be rendered with tasks."
+      );
       renderDateToggle.setValue(this.plugin.options.renderDate);
       renderDateToggle.onChange(() => {
-        this.plugin.writeOptions((old) => (old.renderDate = renderDateToggle.getValue()));
+        this.plugin.writeOptions(
+          (old) => (old.renderDate = renderDateToggle.getValue())
+        );
       });
 
-      const renderDateIconToggle = this.addToggleSetting("Render date icon", "Whether rendered dates should include an icon.");
+      const renderDateIconToggle = this.addToggleSetting(
+        "Render date icon",
+        "Whether rendered dates should include an icon."
+      );
       renderDateIconToggle.setValue(this.plugin.options.renderDateIcon);
       renderDateIconToggle.onChange(() => {
-        this.plugin.writeOptions((old) => (old.renderDateIcon = renderDateIconToggle.getValue()));
+        this.plugin.writeOptions(
+          (old) => (old.renderDateIcon = renderDateIconToggle.getValue())
+        );
       });
     }
 
     projectSettings() {
-      const renderProjectToggle = this.addToggleSetting("Render project & section", "Whether projects & sections should be rendered with tasks.");
+      const renderProjectToggle = this.addToggleSetting(
+        "Render project & section",
+        "Whether projects & sections should be rendered with tasks."
+      );
       renderProjectToggle.setValue(this.plugin.options.renderProject);
       renderProjectToggle.onChange(() => {
-        this.plugin.writeOptions((old) => (old.renderProject = renderProjectToggle.getValue()));
+        this.plugin.writeOptions(
+          (old) => (old.renderProject = renderProjectToggle.getValue())
+        );
       });
 
-      const renderProjectIconToggle = this.addToggleSetting("Render project & section icon", "Whether rendered projects & sections should include an icon.");
+      const renderProjectIconToggle = this.addToggleSetting(
+        "Render project & section icon",
+        "Whether rendered projects & sections should include an icon."
+      );
       renderProjectIconToggle.setValue(this.plugin.options.renderProjectIcon);
       renderProjectIconToggle.onChange(() => {
-        this.plugin.writeOptions((old) => (old.renderProjectIcon = renderProjectIconToggle.getValue()));
+        this.plugin.writeOptions(
+          (old) => (old.renderProjectIcon = renderProjectIconToggle.getValue())
+        );
+      });
+    }
+
+    labelsSettings() {
+      const renderLabelsToggle = this.addToggleSetting(
+        "Render labels",
+        "Whether labels should be rendered with tasks."
+      );
+      renderLabelsToggle.setValue(this.plugin.options.renderLabels);
+      renderLabelsToggle.onChange(() => {
+        this.plugin.writeOptions(
+          (old) => (old.renderLabels = renderLabelsToggle.getValue())
+        );
+      });
+
+      const renderLabelsIconToggle = this.addToggleSetting(
+        "Render labels icon",
+        "Whether rendered labels should include an icon."
+      );
+      renderLabelsIconToggle.setValue(this.plugin.options.renderLabelsIcon);
+      renderLabelsIconToggle.onChange(() => {
+        this.plugin.writeOptions(
+          (old) => (old.renderLabelsIcon = renderLabelsIconToggle.getValue())
+        );
       });
     }
   };
