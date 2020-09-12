@@ -91,14 +91,32 @@ For example:
 }
 ```
 
-### Dates
+### Task Metadata
 
-Any date will be rendered in a `span` element with the `task-date` class on it. You can use this class to align and adjust the position of this date. Any tasks that are overdue will also have the `task-overdue` class attached to the `span`.
+Task metadata (like date and project/section) are rendered under the task element in a `div` with class `task-metadata`. You can use this to configure the alignment / layout of these elements.
 
-The icon rendered with the date has the `task-calendar-icon` class on it. I recommend using at least the following CSS:
+#### Dates
+
+Any date will be rendered in a `div` element with the `task-date` class on it. Any tasks that are overdue will also have the `task-overdue` class attached to the `div`.
+
+The icon rendered with the date has the `task-calendar-icon` class on it. I recommend using CSS to fix the size of the icon (depending on your existing styling). For example:
 
 ```css
 .task-calendar-icon {
+  vertical-align: middle;
+  height: 17px;
+  width: 17px;
+}
+```
+
+#### Project & Section
+
+Any project / section will be rendered in a `div` element with the `task-project` class on it.
+
+The icon rendered with the date has the `task-project-icon` class on it. I recommend using CSS to fix the size of the icon (depending on your existing styling). For example:
+
+```css
+.task-project-icon {
   vertical-align: middle;
   height: 17px;
   width: 17px;
