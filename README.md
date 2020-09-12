@@ -27,21 +27,19 @@ _Tested with Obsidian 0.8.9 and Volcano 1.2.1, your results may vary!_
 
 ## Inputs
 
-| Name          | Required | Description                                                                                           | Type     | Default |
-|---------------|:--------:|-------------------------------------------------------------------------------------------------------|----------|---------|
-| `name`        |    ✓     | The title for the materialized query.                                                                 | string   |         |
-| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)\*            | string   |         |
-| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings. | number   | null    |
-| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.       | string[] | []      |
-
-_\* Except for section filters like "/My Section"_
+| Name          | Required | Description                                                                                                       | Type     | Default |
+| ------------- | :------: | ----------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| `name`        |    ✓     | The title for the materialized query.                                                                             | string   |         |
+| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup> | string   |         |
+| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.             | number   | null    |
+| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
 
 ## Settings
 
 This plugin adds a setting tab to the Obsidian settings menu. This controls global settings for this plugin.
 
 | Name                  | What does it control?                                                                       | Default |
-|-----------------------|---------------------------------------------------------------------------------------------|---------|
+| --------------------- | ------------------------------------------------------------------------------------------- | ------- |
 | Task fade animation   | Whether tasks should fade in and out when added or removed.                                 | true    |
 | Auto-refresh          | Whether queries should auto-refresh at a set interval.                                      | false   |
 | Auto-refresh interval | The interval (in seconds) that queries should auto-refresh by default. Integer numbers only | 60      |
@@ -106,3 +104,7 @@ The icon rendered with the date has the `task-calendar-icon` class on it. I reco
   width: 17px;
 }
 ```
+
+---
+
+<a name="footnote-1">1</a>: There are some exceptions in the Todoist API. Checkout [this issue](https://github.com/jamiebrynes7/obsidian-todoist-plugin/issues/34) for details.
