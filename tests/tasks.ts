@@ -1,4 +1,4 @@
-import 'mocha';
+import "mocha";
 import { assert } from "chai";
 import { Task, IApiTask } from "../src/api";
 
@@ -9,15 +9,19 @@ describe("Task tree parsing", () => {
         id: 1,
         priority: 1,
         order: 0,
-        content: "Parent task"
+        content: "Parent task",
+        project_id: 0,
+        section_id: 0,
       },
       {
         id: 2,
         priority: 2,
         order: 1,
         content: "Subtask",
-        parent: 1
-      }
+        parent: 1,
+        project_id: 0,
+        section_id: 0,
+      },
     ];
 
     const tasks = Task.buildTree(apiTasks);
@@ -38,8 +42,10 @@ describe("Task tree parsing", () => {
         priority: 2,
         order: 1,
         content: "Subtask",
-        parent: 1
-      }
+        parent: 1,
+        project_id: 0,
+        section_id: 0,
+      },
     ];
 
     const tasks = Task.buildTree(apiTasks);
@@ -58,7 +64,9 @@ describe("Task date parsing", () => {
         date: "2019-09-12",
         datetime: null,
         recurring: false,
-      }
+      },
+      project_id: 0,
+      section_id: 0,
     };
 
     const task = new Task(apiTask);
@@ -76,7 +84,9 @@ describe("Task date parsing", () => {
         date: null,
         datetime: "2019-09-12T02:30:00Z",
         recurring: false,
-      }
+      },
+      project_id: 0,
+      section_id: 0,
     };
 
     const task = new Task(apiTask);
@@ -86,20 +96,23 @@ describe("Task date parsing", () => {
 });
 
 describe("Task comparisons", () => {
-
   it("Tasks use Todoist order if no ordering provided", () => {
     const first = new Task({
       id: 1,
       priority: 1,
       order: 0,
-      content: "Parent task"
+      content: "Parent task",
+      project_id: 0,
+      section_id: 0,
     });
 
     const second = new Task({
       id: 2,
       priority: 2,
       order: 1,
-      content: "Subtask"
+      content: "Subtask",
+      project_id: 0,
+      section_id: 0,
     });
 
     assert.isBelow(first.compareTo(second, []), 0);
@@ -111,14 +124,18 @@ describe("Task comparisons", () => {
       id: 1,
       priority: 1,
       order: 0,
-      content: "Parent task"
+      content: "Parent task",
+      project_id: 0,
+      section_id: 0,
     });
 
     const highPriority = new Task({
       id: 2,
       priority: 2,
       order: 1,
-      content: "Subtask"
+      content: "Subtask",
+      project_id: 0,
+      section_id: 0,
     });
 
     assert.isBelow(highPriority.compareTo(lowPriority, ["priority"]), 0);
@@ -130,23 +147,26 @@ describe("Task comparisons", () => {
       id: 1,
       priority: 2,
       order: 0,
-      content: "Parent task"
+      content: "Parent task",
+      project_id: 0,
+      section_id: 0,
     });
 
     const second = new Task({
       id: 2,
       priority: 2,
       order: 1,
-      content: "Subtask"
+      content: "Subtask",
+      project_id: 0,
+      section_id: 0,
     });
-
 
     assert.isBelow(first.compareTo(second, []), 0);
     assert.isAbove(second.compareTo(first, []), 0);
   });
 
   it("Tasks are sorted by date (earliest -> latest).", () => {
-     const first = new Task({
+    const first = new Task({
       id: 1,
       priority: 2,
       order: 0,
@@ -154,8 +174,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-09-01",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     const second = new Task({
@@ -166,16 +188,18 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-09-07",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
-   
-    assert.isBelow(first.compareTo(second, ["date"]), 0);    
-    assert.isAbove(second.compareTo(first, ["date"]), 0);    
+
+    assert.isBelow(first.compareTo(second, ["date"]), 0);
+    assert.isAbove(second.compareTo(first, ["date"]), 0);
   });
 
   it("Tasks on the same day are sorted in time order (earliest -> latest -> no time)", () => {
-     const first = new Task({
+    const first = new Task({
       id: 1,
       priority: 2,
       order: 0,
@@ -183,8 +207,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: null,
-        datetime: "2019-08-01T02:30:00Z"
-      }
+        datetime: "2019-08-01T02:30:00Z",
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     const second = new Task({
@@ -195,8 +221,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: null,
-        datetime: "2019-08-01T03:30:00Z"
-      }
+        datetime: "2019-08-01T03:30:00Z",
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     const third = new Task({
@@ -207,19 +235,19 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-08-01",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
-    
-    assert.isBelow(first.compareTo(second, ["date"]), 0);    
-    assert.isBelow(first.compareTo(third, ["date"]), 0);    
-    assert.isBelow(second.compareTo(third, ["date"]), 0);    
-    
-    assert.isAbove(second.compareTo(first, ["date"]), 0);    
-    assert.isAbove(third.compareTo(first, ["date"]), 0);    
-    assert.isAbove(third.compareTo(second, ["date"]), 0);    
+    assert.isBelow(first.compareTo(second, ["date"]), 0);
+    assert.isBelow(first.compareTo(third, ["date"]), 0);
+    assert.isBelow(second.compareTo(third, ["date"]), 0);
 
+    assert.isAbove(second.compareTo(first, ["date"]), 0);
+    assert.isAbove(third.compareTo(first, ["date"]), 0);
+    assert.isAbove(third.compareTo(second, ["date"]), 0);
   });
 
   it("Task ordered by priority falls to the next if equal", () => {
@@ -231,8 +259,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-08-02",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     const second = new Task({
@@ -243,8 +273,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-08-03",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     assert.isBelow(first.compareTo(second, ["priority", "date"]), 0);
@@ -260,8 +292,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-08-03",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     const second = new Task({
@@ -272,8 +306,10 @@ describe("Task comparisons", () => {
       due: {
         recurring: false,
         date: "2019-08-03",
-        datetime: null
-      }
+        datetime: null,
+      },
+      project_id: 0,
+      section_id: 0,
     });
 
     assert.isBelow(first.compareTo(second, ["date", "priority"]), 0);

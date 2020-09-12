@@ -1,10 +1,32 @@
 import moment, { Moment, CalendarSpec } from "moment";
+import { writable, Writable } from "svelte/store";
+
+class ProxyMap<K, V> extends Map<K, V> {
+  get_or(key: K, defaultValue: () => V) {
+    if (this.has(key)) {
+      return this.get(key);
+    }
+
+    return defaultValue();
+  }
+}
+
+export interface ITodoistMetadata {
+  projects: ProxyMap<ProjectID, string>;
+  sections: ProxyMap<SectionID, string>;
+}
 
 export class TodoistApi {
+  public metadata: Writable<ITodoistMetadata>;
+
   private token: string;
 
   constructor(token: string) {
     this.token = token;
+    this.metadata = writable({
+      projects: new ProxyMap<ProjectID, string>(),
+      sections: new ProxyMap<SectionID, string>(),
+    });
   }
 
   async getTasks(filter?: string): Promise<Task[]> {
@@ -36,21 +58,78 @@ export class TodoistApi {
 
     return result.ok;
   }
+
+  async fetchMetadata(): Promise<void> {
+    const projects = await this.getProjects();
+    const sections = await this.getSections();
+
+    this.metadata.update((metadata) => {
+      metadata.projects.clear();
+      metadata.sections.clear();
+      projects.forEach((prj) => metadata.projects.set(prj.id, prj.name));
+      sections.forEach((sect) => metadata.sections.set(sect.id, sect.name));
+      return metadata;
+    });
+  }
+
+  private async getProjects(): Promise<IApiProject[]> {
+    const url = `https://api.todoist.com/rest/v1/projects`;
+
+    const result = await fetch(url, {
+      headers: new Headers({
+        Authorization: `Bearer ${this.token}`,
+      }),
+      method: "GET",
+    });
+
+    return (await result.json()) as IApiProject[];
+  }
+
+  private async getSections(): Promise<IApiSection[]> {
+    const url = `https://api.todoist.com/rest/v1/sections`;
+
+    const result = await fetch(url, {
+      headers: new Headers({
+        Authorization: `Bearer ${this.token}`,
+      }),
+      method: "GET",
+    });
+
+    return (await result.json()) as IApiSection[];
+  }
 }
 
 export type ID = number;
+export type ProjectID = number;
+export type SectionID = number;
 
 export interface IApiTask {
   id: ID;
+  project_id: ProjectID;
+  section_id: SectionID;
   priority: number;
   content: string;
   order: number;
   parent?: ID;
   due?: {
-    recurring: boolean,
-    date: string,
-    datetime?: string
-  }
+    recurring: boolean;
+    date: string;
+    datetime?: string;
+  };
+}
+
+export interface IApiProject {
+  id: ProjectID;
+  parent_id?: ProjectID;
+  order: number;
+  name: string;
+}
+
+export interface IApiSection {
+  id: SectionID;
+  project_id: ProjectID;
+  order: number;
+  name: string;
 }
 
 export class Task {
@@ -58,19 +137,23 @@ export class Task {
   public priority: number;
   public content: string;
   public order: number;
+  public projectID: ProjectID;
+  public sectionID?: SectionID;
+
   public parent?: Task;
   public children: Task[];
+
   public date?: string;
   public hasTime?: boolean;
   public rawDatetime?: Moment;
 
   private static dateOnlyCalendarSpec: CalendarSpec = {
-    sameDay: '[Today]',
-    nextDay: '[Tomorrow]',
-    nextWeek: 'dddd',
-    lastDay: '[Yesterday]',
-    lastWeek: '[Last] dddd',
-    sameElse: 'MMM Do'
+    sameDay: "[Today]",
+    nextDay: "[Tomorrow]",
+    nextWeek: "dddd",
+    lastDay: "[Yesterday]",
+    lastWeek: "[Last] dddd",
+    sameElse: "MMM Do",
   };
 
   constructor(raw: IApiTask) {
@@ -78,6 +161,9 @@ export class Task {
     this.priority = raw.priority;
     this.content = raw.content;
     this.order = raw.order;
+    this.projectID = raw.project_id;
+    this.sectionID = raw.section_id != 0 ? raw.section_id : null;
+
     this.children = [];
 
     if (raw.due) {
@@ -102,7 +188,7 @@ export class Task {
       return this.rawDatetime.isBefore();
     }
 
-    return this.rawDatetime.clone().add(1, 'day').isBefore();
+    return this.rawDatetime.clone().add(1, "day").isBefore();
   }
 
   compareTo(other: Task, sorting_options: string[]): number {
@@ -129,9 +215,9 @@ export class Task {
           }
 
           // Now compare dates.
-          if (this.rawDatetime.isAfter(other.rawDatetime, 'day')) {
+          if (this.rawDatetime.isAfter(other.rawDatetime, "day")) {
             return 1;
-          } else if (this.rawDatetime.isBefore(other.rawDatetime, 'day')) {
+          } else if (this.rawDatetime.isBefore(other.rawDatetime, "day")) {
             return -1;
           }
 
