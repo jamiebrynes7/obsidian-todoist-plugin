@@ -10,18 +10,27 @@ import type TodoistPlugin from "./plugin";
 
 export const SettingsInstance = writable<ISettings>({
   fadeToggle: true,
+
   autoRefreshToggle: false,
   autoRefreshInterval: 60,
+
   renderDate: true,
-  renderDateIcon: true
+  renderDateIcon: true,
+
+  renderProject: true,
+  renderProjectIcon: true,
 });
 
 export interface ISettings {
   fadeToggle: boolean;
   autoRefreshToggle: boolean;
   autoRefreshInterval: number;
+
   renderDate: boolean;
   renderDateIcon: boolean;
+
+  renderProject: boolean;
+  renderProjectIcon: boolean;
 }
 
 export function SettingsTab<TBase extends Settings>(Base: TBase) {
@@ -43,6 +52,7 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
       this.fadeAnimationSettings();
       this.autoRefreshSettings();
       this.dateSettings();
+      this.projectSettings();
     }
 
     fadeAnimationSettings() {
@@ -107,6 +117,20 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
       renderDateIconToggle.setValue(this.plugin.options.renderDateIcon);
       renderDateIconToggle.onChange(() => {
         this.plugin.writeOptions((old) => (old.renderDateIcon = renderDateIconToggle.getValue()));
+      });
+    }
+
+    projectSettings() {
+      const renderProjectToggle = this.addToggleSetting("Render project & section", "Whether projects & sections should be rendered with tasks.");
+      renderProjectToggle.setValue(this.plugin.options.renderProject);
+      renderProjectToggle.onChange(() => {
+        this.plugin.writeOptions((old) => (old.renderProject = renderProjectToggle.getValue()));
+      });
+
+      const renderProjectIconToggle = this.addToggleSetting("Render project & section icon", "Whether rendered projects & sections should include an icon.");
+      renderProjectIconToggle.setValue(this.plugin.options.renderProjectIcon);
+      renderProjectIconToggle.onChange(() => {
+        this.plugin.writeOptions((old) => (old.renderProjectIcon = renderProjectIconToggle.getValue()));
       });
     }
   };

@@ -10,9 +10,11 @@
   export let sorting: string[];
 
   let metadata: ITodoistMetadata = null;
-  const metadataUnsub = api.metadata.subscribe(value => metadata = value);
+  const metadataUnsub = api.metadata.subscribe((value) => (metadata = value));
 
-  onDestroy(() => {metadataUnsub()});
+  onDestroy(() => {
+    metadataUnsub();
+  });
 
   let tasksPendingClose: ID[] = [];
   $: todos = tasks
@@ -63,37 +65,45 @@
           }} />
         {todo.content}
       </div>
-      <div class="task-project">
-        <svg
-          class="task-project-icon"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor">
-          <path
-            fill-rule="evenodd"
-            d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
-            clip-rule="evenodd" />
-        </svg>
-        {metadata.projects.get_or(todo.projectID, () => "Unknown project")}
-        {#if todo.sectionID}| {metadata.sections.get_or(todo.sectionID, () => "Unknown section")}{/if}
+      <div class="task-metadata">
+        {#if settings.renderProject}
+          <div class="task-project">
+            {#if settings.renderProjectIcon}
+              <svg
+                class="task-project-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
+                  clip-rule="evenodd" />
+              </svg>
+            {/if}
+            {metadata.projects.get_or(todo.projectID, () => 'Unknown project')}
+            {#if todo.sectionID}
+              | {metadata.sections.get_or(todo.sectionID, () => 'Unknown section')}
+            {/if}
+          </div>
+        {/if}
+        {#if settings.renderDate && todo.date}
+          <div class="task-date {todo.isOverdue() ? 'task-overdue' : ''}">
+            {#if settings.renderDateIcon}
+              <svg
+                class="task-calendar-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor">
+                <path
+                  fill-rule="evenodd"
+                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                  clip-rule="evenodd" />
+              </svg>
+            {/if}
+            {todo.date}
+          </div>
+        {/if}
       </div>
-      {#if settings.renderDate && todo.date}
-        <div class="task-date {todo.isOverdue() ? 'task-overdue' : ''}">
-          {#if settings.renderDateIcon}
-            <svg
-              class="task-calendar-icon"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor">
-              <path
-                fill-rule="evenodd"
-                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                clip-rule="evenodd" />
-            </svg>
-          {/if}
-          {todo.date}
-        </div>
-      {/if}
       {#if todo.children.length != 0}
         <svelte:self tasks={todo.children} {settings} {api} {sorting} />
       {/if}
