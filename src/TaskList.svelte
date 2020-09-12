@@ -54,7 +54,8 @@
   {#each todos as todo (todo.id)}
     <li
       transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
-      class="task-list-item">
+      class="task-list-item {todo.isOverdue() ? 'task-overdue' : ''}
+        {todo.hasTime ? 'has-time' : 'has-no-time'}">
       <div class={getPriorityClass(todo.priority)}>
         <input
           data-line="1"

@@ -109,6 +109,11 @@ The icon rendered with the date has the `task-calendar-icon` class on it. I reco
 }
 ```
 
+There are also extra CSS classes associated with the `li` element relating to the date:
+
+- `task-overdue` will be present on the `li` item.
+- `has-time` or `has-no-time` will be present on the `li` item depending on if the task has a defined time.
+
 #### Project & Section
 
 Any project / section will be rendered in a `div` element with the `task-project` class on it.
