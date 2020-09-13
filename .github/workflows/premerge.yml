@@ -5,14 +5,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout source
-          uses: actions/checkout@v2
+      - name: Checkout source
+        uses: actions/checkout@v2
 
-        - name: Install NPM dependencies
-          run: npm install
-        
-        - name: Build
-          run: npm run build
+      - name: Install NPM dependencies
+        run: npm install
 
-        - name: Test
-          run: npm run test
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm run test
