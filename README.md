@@ -27,21 +27,19 @@ _Tested with Obsidian 0.8.9 and Volcano 1.2.1, your results may vary!_
 
 ## Inputs
 
-| Name          | Required | Description                                                                                           | Type     | Default |
-|---------------|:--------:|-------------------------------------------------------------------------------------------------------|----------|---------|
-| `name`        |    ✓     | The title for the materialized query.                                                                 | string   |         |
-| `filter`      |    ✓     | Any valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)\*            | string   |         |
-| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings. | number   | null    |
-| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.       | string[] | []      |
-
-_\* Except for section filters like "/My Section"_
+| Name          | Required | Description                                                                                                       | Type     | Default |
+| ------------- | :------: | ----------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| `name`        |    ✓     | The title for the materialized query.                                                                             | string   |         |
+| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup> | string   |         |
+| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.             | number   | null    |
+| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
 
 ## Settings
 
 This plugin adds a setting tab to the Obsidian settings menu. This controls global settings for this plugin.
 
 | Name                  | What does it control?                                                                       | Default |
-|-----------------------|---------------------------------------------------------------------------------------------|---------|
+| --------------------- | ------------------------------------------------------------------------------------------- | ------- |
 | Task fade animation   | Whether tasks should fade in and out when added or removed.                                 | true    |
 | Auto-refresh          | Whether queries should auto-refresh at a set interval.                                      | false   |
 | Auto-refresh interval | The interval (in seconds) that queries should auto-refresh by default. Integer numbers only | 60      |
@@ -93,11 +91,15 @@ For example:
 }
 ```
 
-### Dates
+### Task Metadata
 
-Any date will be rendered in a `span` element with the `task-date` class on it. You can use this class to align and adjust the position of this date. Any tasks that are overdue will also have the `task-overdue` class attached to the `span`.
+Task metadata (like date and project/section) are rendered under the task element in a `div` with class `task-metadata`. You can use this to configure the alignment / layout of these elements.
 
-The icon rendered with the date has the `task-calendar-icon` class on it. I recommend using at least the following CSS:
+#### Dates
+
+Any date will be rendered in a `div` element with the `task-date` class on it. Any tasks that are overdue will also have the `task-overdue` class attached to the `div`.
+
+The icon rendered with the date has the `task-calendar-icon` class on it. I recommend using CSS to fix the size of the icon (depending on your existing styling). For example:
 
 ```css
 .task-calendar-icon {
@@ -106,3 +108,40 @@ The icon rendered with the date has the `task-calendar-icon` class on it. I reco
   width: 17px;
 }
 ```
+
+There are also extra CSS classes associated with the `li` element relating to the date:
+
+- `task-overdue` will be present on the `li` item.
+- `has-time` or `has-no-time` will be present on the `li` item depending on if the task has a defined time.
+
+#### Project & Section
+
+Any project / section will be rendered in a `div` element with the `task-project` class on it.
+
+The icon rendered with the date has the `task-project-icon` class on it. I recommend using CSS to fix the size of the icon (depending on your existing styling). For example:
+
+```css
+.task-project-icon {
+  vertical-align: middle;
+  height: 17px;
+  width: 17px;
+}
+```
+
+#### Labels
+
+Any labels will be rendered in a `div` element with the `task-labels` class on it.
+
+The icon rendered with the date has the `task-labels-icon` class on it. I recommend using CSS to fix the size of the icon (depending on your existing styling). For example:
+
+```css
+.task-labels-icon {
+  vertical-align: middle;
+  height: 17px;
+  width: 17px;
+}
+```
+
+---
+
+<a name="footnote-1">1</a>: There are some exceptions in the Todoist API. Checkout [this issue](https://github.com/jamiebrynes7/obsidian-todoist-plugin/issues/34) for details.
