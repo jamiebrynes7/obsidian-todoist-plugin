@@ -56,7 +56,7 @@ export class PluginInstance<TData = {}> {
 }
 
 export interface IObsidianCommand {
-  id: string,
-  name: string,
-  callback: () => void
+  id: string;
+  name: string;
+  callback: () => void;
 }
