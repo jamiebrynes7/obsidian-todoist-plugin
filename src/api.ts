@@ -14,6 +14,7 @@ class ProxyMap<K, V> extends Map<K, V> {
 export interface ITodoistMetadata {
   projects: ProxyMap<ProjectID, string>;
   sections: ProxyMap<SectionID, string>;
+  labels: ProxyMap<LabelID, string>;
 }
 
 export class TodoistApi {
@@ -26,6 +27,7 @@ export class TodoistApi {
     this.metadata = writable({
       projects: new ProxyMap<ProjectID, string>(),
       sections: new ProxyMap<SectionID, string>(),
+      labels: new ProxyMap<LabelID, string>(),
     });
   }
 
@@ -60,14 +62,19 @@ export class TodoistApi {
   }
 
   async fetchMetadata(): Promise<void> {
-    const projects = await this.getProjects();
-    const sections = await this.getSections();
+    const [projects, sections, labels] = await Promise.all<
+      IApiProject[],
+      IApiSection[],
+      IApiLabel[]
+    >([this.getProjects(), this.getSections(), this.getLabels()]);
 
     this.metadata.update((metadata) => {
       metadata.projects.clear();
       metadata.sections.clear();
+      metadata.labels.clear();
       projects.forEach((prj) => metadata.projects.set(prj.id, prj.name));
       sections.forEach((sect) => metadata.sections.set(sect.id, sect.name));
+      labels.forEach((label) => metadata.labels.set(label.id, label.name));
       return metadata;
     });
   }
@@ -97,16 +104,31 @@ export class TodoistApi {
 
     return (await result.json()) as IApiSection[];
   }
+
+  private async getLabels(): Promise<IApiLabel[]> {
+    const url = `https://api.todoist.com/rest/v1/labels`;
+
+    const result = await fetch(url, {
+      headers: new Headers({
+        Authorization: `Bearer ${this.token}`,
+      }),
+      method: "GET",
+    });
+
+    return (await result.json()) as IApiLabel[];
+  }
 }
 
 export type ID = number;
 export type ProjectID = number;
 export type SectionID = number;
+export type LabelID = number;
 
 export interface IApiTask {
   id: ID;
   project_id: ProjectID;
   section_id: SectionID;
+  label_ids: LabelID[];
   priority: number;
   content: string;
   order: number;
@@ -118,17 +140,22 @@ export interface IApiTask {
   };
 }
 
-export interface IApiProject {
+interface IApiProject {
   id: ProjectID;
   parent_id?: ProjectID;
   order: number;
   name: string;
 }
 
-export interface IApiSection {
+interface IApiSection {
   id: SectionID;
   project_id: ProjectID;
   order: number;
+  name: string;
+}
+
+interface IApiLabel {
+  id: LabelID;
   name: string;
 }
 
@@ -139,6 +166,7 @@ export class Task {
   public order: number;
   public projectID: ProjectID;
   public sectionID?: SectionID;
+  public labelIDs: LabelID[];
 
   public parent?: Task;
   public children: Task[];
@@ -163,6 +191,7 @@ export class Task {
     this.order = raw.order;
     this.projectID = raw.project_id;
     this.sectionID = raw.section_id != 0 ? raw.section_id : null;
+    this.labelIDs = raw.label_ids;
 
     this.children = [];
 

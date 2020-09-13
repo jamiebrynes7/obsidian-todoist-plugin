@@ -128,6 +128,20 @@ The icon rendered with the date has the `task-project-icon` class on it. I recom
 }
 ```
 
+#### Labels
+
+Any labels will be rendered in a `div` element with the `task-labels` class on it.
+
+The icon rendered with the date has the `task-labels-icon` class on it. I recommend using CSS to fix the size of the icon (depending on your existing styling). For example:
+
+```css
+.task-labels-icon {
+  vertical-align: middle;
+  height: 17px;
+  width: 17px;
+}
+```
+
 ---
 
 <a name="footnote-1">1</a>: There are some exceptions in the Todoist API. Checkout [this issue](https://github.com/jamiebrynes7/obsidian-todoist-plugin/issues/34) for details.

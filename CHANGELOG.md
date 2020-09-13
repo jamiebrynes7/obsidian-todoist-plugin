@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ Features
 
-- Added `contains-task-list` to match latest Obsidian styling.
+- Tasks now render labels under them by default. This can be toggled in the settings (along with the accompanying icon).
 - Tasks now render projects & section under them by default. This can be toggled in the settings (along with the accompanying icon).
 
-  - There is a new command `Todoist: Refresh Metadata` which will re-fetch your projects & sections. If you add/remove/rename these projects, you should refresh the metadata. This is done automatically at startup.
-  - The layout of the project and date combo can be configured in CSS. For example:
+  - The layout of the project, date, and label combo can be configured in CSS. For example:
 
     ```css
     /* To make date & project sit inline */
@@ -27,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
     ```
 
+- There is a new command `Todoist: Refresh Metadata` which will re-fetch your projects, sections, and labels. If you add/remove/rename these, you should refresh the metadata. This is done automatically at startup.
+- Added `contains-task-list` to match latest Obsidian styling.
 - The entire task (`li` element) has the `task-overdue` class on it, in addition to the date element specifically.
 - The task (`li` element) has either `has-time` or `has-no-time` derived from the date field. (No date or time will also have `has-no-time`).
 
