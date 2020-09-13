@@ -124,7 +124,7 @@ export type ProjectID = number;
 export type SectionID = number;
 export type LabelID = number;
 
-interface IApiTask {
+export interface IApiTask {
   id: ID;
   project_id: ProjectID;
   section_id: SectionID;
