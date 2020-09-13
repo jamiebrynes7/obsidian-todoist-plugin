@@ -88,4 +88,4 @@
   </svg>
 </button>
 <br />
-<TaskList {tasks} {settings} {api} sorting={query.sorting ?? []}/>
+<TaskList {tasks} {settings} {api} sorting={query.sorting ?? []} />
