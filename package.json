@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "build": "svelte-check && rollup -c",
-    "test": "mocha -r ts-node/register tests/*.ts"
+    "test": "mocha -r ts-node/register tests/*.ts",
+    "format": "prettier --write src/**/*",
+    "lint": "prettier --check src/**/*"
   },
   "author": "Jamie Brynes",
   "license": "ISC",
