@@ -118,8 +118,8 @@
                   clip-rule="evenodd" />
               </svg>
             {/if}
-            {#each todo.labelIDs as labelID}
-              {metadata.labels.get_or(labelID, () => 'Unknown label')}
+            {#each todo.labelIDs as labelID, i}
+              {metadata.labels.get_or(labelID, () => 'Unknown label')}{#if i != todo.labelIDs.length - 1},{/if}
             {/each}
           </div>
         {/if}
