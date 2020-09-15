@@ -33,15 +33,7 @@ export class SettingsTab implements ISettingsTab {
 }
 
 interface ISettingsTab {
-  addToggleSetting(title: string, description: string): ISettingValue<boolean>;
-  addTextSetting(title: string, description: string): ISettingValue<string>;
   display();
-}
-
-export interface ISettingValue<T> {
-  getValue(): T;
-  setValue(value: T);
-  onChange(func: () => void);
 }
 
 export type Constructor<T = {}> = new (...args: any[]) => T;
