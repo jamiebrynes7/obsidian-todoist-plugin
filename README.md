@@ -4,7 +4,7 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin using [Volcano](https://github.com/kognise/volcano) to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.8.9 and Volcano 1.2.1, your results may vary!_
+_Tested with Obsidian 0.8.14 and Volcano 1.2.1, your results may vary!_
 
 ![Example gif](./.github/obsidian-todoist-sync.gif)
 
@@ -33,18 +33,6 @@ _Tested with Obsidian 0.8.9 and Volcano 1.2.1, your results may vary!_
 | `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup> | string   |         |
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.             | number   | null    |
 | `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
-
-## Settings
-
-This plugin adds a setting tab to the Obsidian settings menu. This controls global settings for this plugin.
-
-| Name                  | What does it control?                                                                       | Default |
-| --------------------- | ------------------------------------------------------------------------------------------- | ------- |
-| Task fade animation   | Whether tasks should fade in and out when added or removed.                                 | true    |
-| Auto-refresh          | Whether queries should auto-refresh at a set interval.                                      | false   |
-| Auto-refresh interval | The interval (in seconds) that queries should auto-refresh by default. Integer numbers only | 60      |
-| Render dates          | Whether dates should be rendered with tasks.                                                | true    |
-| Render date icon      | Whether rendered dates should include an icon.                                              | true    |
 
 ## CSS
 

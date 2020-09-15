@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `contains-task-list` to match latest Obsidian styling.
 - The entire task (`li` element) has the `task-overdue` class on it, in addition to the date element specifically.
 - The task (`li` element) has either `has-time` or `has-no-time` derived from the date field. (No date or time will also have `has-no-time`).
+- Add support for Obsidian v0.8.14
 
 ### 🐛 Bug Fixes
 
