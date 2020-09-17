@@ -2,6 +2,20 @@ import moment, { Moment, CalendarSpec } from "moment";
 import { writable, Writable } from "svelte/store";
 import debug from "./log";
 
+export const UnknownProject: IApiProject = {
+  id: -1,
+  parent_id: null,
+  order: -1,
+  name: "Unknown project",
+};
+
+export const UnknownSection: IApiSection = {
+  id: -1,
+  project_id: -1,
+  order: -1,
+  name: "Unknown section",
+};
+
 class ProxyMap<K, V> extends Map<K, V> {
   get_or(key: K, defaultValue: () => V) {
     if (this.has(key)) {
@@ -13,23 +27,25 @@ class ProxyMap<K, V> extends Map<K, V> {
 }
 
 export interface ITodoistMetadata {
-  projects: ProxyMap<ProjectID, string>;
-  sections: ProxyMap<SectionID, string>;
+  projects: ProxyMap<ProjectID, IApiProject>;
+  sections: ProxyMap<SectionID, IApiSection>;
   labels: ProxyMap<LabelID, string>;
 }
 
 export class TodoistApi {
   public metadata: Writable<ITodoistMetadata>;
-
+  public metadataInstance: ITodoistMetadata;
   private token: string;
 
   constructor(token: string) {
     this.token = token;
     this.metadata = writable({
-      projects: new ProxyMap<ProjectID, string>(),
-      sections: new ProxyMap<SectionID, string>(),
+      projects: new ProxyMap<ProjectID, IApiProject>(),
+      sections: new ProxyMap<SectionID, IApiSection>(),
       labels: new ProxyMap<LabelID, string>(),
     });
+
+    this.metadata.subscribe((value) => (this.metadataInstance = value));
   }
 
   async getTasks(filter?: string): Promise<Task[]> {
@@ -58,6 +74,23 @@ export class TodoistApi {
     return tree;
   }
 
+  async getTasksGroupedByProject(filter?: string): Promise<IProject[]> {
+    let url = "https://api.todoist.com/rest/v1/tasks";
+
+    if (filter) {
+      url += `?filter=${encodeURIComponent(filter)}`;
+    }
+
+    const result = await fetch(url, {
+      headers: new Headers({
+        Authorization: `Bearer ${this.token}`,
+      }),
+    });
+
+    const tasks = (await result.json()) as IApiTask[];
+    return Task.buildProjectTree(tasks, this);
+  }
+
   async closeTask(id: ID): Promise<boolean> {
     const url = `https://api.todoist.com/rest/v1/tasks/${id}/close`;
 
@@ -84,8 +117,8 @@ export class TodoistApi {
       metadata.projects.clear();
       metadata.sections.clear();
       metadata.labels.clear();
-      projects.forEach((prj) => metadata.projects.set(prj.id, prj.name));
-      sections.forEach((sect) => metadata.sections.set(sect.id, sect.name));
+      projects.forEach((prj) => metadata.projects.set(prj.id, prj));
+      sections.forEach((sect) => metadata.sections.set(sect.id, sect));
       labels.forEach((label) => metadata.labels.set(label.id, label.name));
       return metadata;
     });
@@ -296,4 +329,106 @@ export class Task {
 
     return Array.from(mapping.values()).filter((task) => task.parent == null);
   }
+
+  static async buildProjectTree(
+    tasks: IApiTask[],
+    api: TodoistApi
+  ): Promise<IProject[]> {
+    const projectMapping = new Map<ProjectID, Intermediate<IProject>>();
+    const sectionMapping = new Map<SectionID, Intermediate<ISection>>();
+
+    tasks.forEach(async (task) => {
+      if (task.section_id != 0) {
+        if (!api.metadataInstance.sections.has(task.section_id)) {
+          await api.fetchMetadata();
+        }
+
+        if (!sectionMapping.has(task.section_id)) {
+          const section = api.metadataInstance.sections.get(task.section_id);
+          sectionMapping.set(task.section_id, {
+            container: {
+              sectionID: section.id,
+              projectID: section.project_id,
+              tasks: [],
+            },
+            tasks: [],
+          });
+        }
+
+        const section = sectionMapping.get(task.section_id);
+        section.tasks.push(task);
+      }
+
+      if (!api.metadataInstance.projects.has(task.project_id)) {
+        await api.fetchMetadata();
+      }
+
+      if (!projectMapping.has(task.project_id)) {
+        const project = api.metadataInstance.projects.get(task.project_id);
+        projectMapping.set(task.project_id, {
+          container: {
+            projectID: project.id,
+            parentID: project.parent_id,
+            tasks: [],
+
+            projects: [],
+            sections: [],
+          },
+          tasks: [],
+        });
+      }
+
+      if (task.section_id != 0) {
+        return;
+      }
+
+      const project = projectMapping.get(task.project_id);
+      project.tasks.push(task);
+    });
+
+    for (let project of projectMapping.values()) {
+      project.container.tasks = Task.buildTree(project.tasks);
+
+      if (!project.container.parentID) {
+        continue;
+      }
+
+      const parent = projectMapping.get(project.container.parentID);
+
+      if (parent) {
+        parent.container.projects.push(project.container);
+      }
+    }
+
+    for (let section of sectionMapping.values()) {
+      section.container.tasks = Task.buildTree(section.tasks);
+
+      const project = projectMapping.get(section.container.projectID);
+      project.container.sections.push(section.container);
+    }
+
+    return Array.from(projectMapping.values())
+      .map((prj) => prj.container)
+      .filter((prj) => prj.projects.length == 0);
+  }
+}
+
+interface Intermediate<T> {
+  container: T;
+  tasks: IApiTask[];
+}
+
+export interface IProject {
+  projectID: ProjectID;
+  parentID?: ProjectID;
+  tasks: Task[];
+
+  projects: IProject[];
+  sections: ISection[];
+}
+
+export interface ISection {
+  sectionID: SectionID;
+  projectID: ProjectID;
+  tasks: Task[];
 }

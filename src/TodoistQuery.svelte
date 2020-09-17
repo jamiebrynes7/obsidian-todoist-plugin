@@ -2,8 +2,9 @@
   import { onMount, onDestroy } from "svelte";
   import { SettingsInstance, ISettings } from "./settings";
   import type IQuery from "./query";
-  import type { TodoistApi, Task } from "./api";
+  import type { TodoistApi, Task, IProject } from "./api";
   import TaskList from "./TaskList.svelte";
+  import ProjectView from "./ProjectView.svelte";
 
   export let query: IQuery;
   export let api: TodoistApi;
@@ -39,6 +40,7 @@
   }
 
   let tasks: Task[] = [];
+  let groupedTasks: IProject[] = [];
   let fetching: boolean = false;
 
   onMount(async () => {
@@ -60,7 +62,11 @@
 
     try {
       fetching = true;
-      tasks = await api.getTasks(query.filter);
+      if (query.group) {
+        groupedTasks = await api.getTasksGroupedByProject(query.filter);
+      } else {
+        tasks = await api.getTasks(query.filter);
+      }
     } finally {
       fetching = false;
     }
@@ -88,4 +94,10 @@
   </svg>
 </button>
 <br />
-<TaskList {tasks} {settings} {api} sorting={query.sorting ?? []} />
+{#if tasks.length != 0}
+  <TaskList {tasks} {settings} {api} sorting={query.sorting ?? []} />
+{:else if groupedTasks.length != 0}
+  {#each groupedTasks as project (project.projectID)}
+    <ProjectView {project} {settings} {api} sorting={query.sorting ?? []} />
+  {/each}
+{/if}

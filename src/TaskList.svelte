@@ -2,6 +2,7 @@
   import { onDestroy } from "svelte";
   import { fade } from "svelte/transition";
   import type { Task, ID, TodoistApi, ITodoistMetadata } from "./api";
+  import { UnknownProject, UnknownSection } from "./api";
   import type { ISettings } from "./settings";
 
   export let tasks: Task[];
@@ -81,9 +82,9 @@
                   clip-rule="evenodd" />
               </svg>
             {/if}
-            {metadata.projects.get_or(todo.projectID, () => 'Unknown project')}
+            {metadata.projects.get_or(todo.projectID, () => UnknownProject).name}
             {#if todo.sectionID}
-              | {metadata.sections.get_or(todo.sectionID, () => 'Unknown section')}
+              | {metadata.sections.get_or(todo.sectionID, () => UnknownSection).name}
             {/if}
           </div>
         {/if}

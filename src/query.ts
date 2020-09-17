@@ -3,4 +3,5 @@ export default interface IQuery {
   filter: string;
   autorefresh?: number;
   sorting?: string[];
+  group: boolean;
 }
