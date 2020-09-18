@@ -175,7 +175,7 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
         configure: (setting) => {
           setting.setValue(this.plugin.options.renderLabels);
           setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderLabelsIcon = value));
+            this.plugin.writeOptions((old) => (old.renderLabels = value));
           });
         },
       });
