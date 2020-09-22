@@ -59,12 +59,36 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
       this.settingMgr = new SettingManager(this.containerEl);
       this.settingMgr.empty();
 
+      this.pluginMetadata();
+
       this.fadeAnimationSettings();
       this.autoRefreshSettings();
 
       this.dateSettings();
       this.projectSettings();
       this.labelsSettings();
+    }
+
+    pluginMetadata() {
+      const desc = document.createElement("div") as HTMLDivElement;
+
+      const span = document.createElement("span") as HTMLSpanElement;
+      span.innerText = "Read the ";
+
+      const changelogLink = document.createElement("a") as HTMLAnchorElement;
+      changelogLink.href =
+        "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
+      changelogLink.innerText = "changelog!";
+
+      span.appendChild(changelogLink);
+
+      desc.appendChild(span);
+
+      this.settingMgr.addStaticText({
+        name: `Current Version: ${this.plugin.version}`,
+        description: desc,
+        configure: () => {},
+      });
     }
 
     fadeAnimationSettings() {
@@ -218,6 +242,10 @@ class SettingManager {
     config.configure(text);
   }
 
+  public addStaticText(config: ISettingConfiguration<void>) {
+    const control = this.addSetting(config);
+  }
+
   private addSetting<T>(config: ISettingConfiguration<T>): HTMLElement {
     const item = document.createElement("div") as HTMLDivElement;
     item.classList.add("setting-item");
@@ -234,7 +262,13 @@ class SettingManager {
 
     const desc = document.createElement("div") as HTMLDivElement;
     desc.classList.add("setting-item-description");
-    desc.innerText = config.description;
+    if (typeof config.description == "string") {
+      const description = config.description as string;
+      desc.innerText = description;
+    } else {
+      const descriptionBlock = config.description as HTMLDivElement;
+      desc.appendChild(descriptionBlock);
+    }
     info.appendChild(desc);
 
     const control = document.createElement("div") as HTMLDivElement;
@@ -247,7 +281,7 @@ class SettingManager {
 
 interface ISettingConfiguration<TSettings> {
   name: string;
-  description: string;
+  description: string | HTMLDivElement;
   configure: (settings: TSettings) => void;
 }
 
