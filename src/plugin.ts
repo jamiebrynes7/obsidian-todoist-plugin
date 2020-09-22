@@ -10,6 +10,8 @@ interface IInjection {
 }
 
 export default class TodoistPlugin<TBase extends Settings> {
+  public readonly version: string = "__buildVersion__";
+
   public id: string;
   public name: string;
   public description: string;
