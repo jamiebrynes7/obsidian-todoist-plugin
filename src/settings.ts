@@ -59,6 +59,12 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
       this.settingMgr = new SettingManager(this.containerEl);
       this.settingMgr.empty();
 
+      this.settingMgr.addStaticText({
+        name: `Current Version: ${this.plugin.version}`,
+        description: "",
+        configure: () => {},
+      });
+
       this.fadeAnimationSettings();
       this.autoRefreshSettings();
 
@@ -216,6 +222,10 @@ class SettingManager {
     const control = this.addSetting(config);
     const text = new TextSetting(control);
     config.configure(text);
+  }
+
+  public addStaticText(config: ISettingConfiguration<void>) {
+    const control = this.addSetting(config);
   }
 
   private addSetting<T>(config: ISettingConfiguration<T>): HTMLElement {
