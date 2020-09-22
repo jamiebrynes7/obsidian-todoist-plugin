@@ -22,6 +22,8 @@ export const SettingsInstance = writable<ISettings>({
 
   renderLabels: true,
   renderLabelsIcon: true,
+
+  debugLogging: false,
 });
 
 export interface ISettings {
@@ -37,6 +39,8 @@ export interface ISettings {
 
   renderLabels: boolean;
   renderLabelsIcon: boolean;
+
+  debugLogging: boolean;
 }
 
 export function SettingsTab<TBase extends Settings>(Base: TBase) {
@@ -60,6 +64,7 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
       this.settingMgr.empty();
 
       this.pluginMetadata();
+      this.debugLogging();
 
       this.fadeAnimationSettings();
       this.autoRefreshSettings();
@@ -88,6 +93,19 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
         name: `Current Version: ${this.plugin.version}`,
         description: desc,
         configure: () => {},
+      });
+    }
+
+    debugLogging() {
+      this.settingMgr.addToggle({
+        name: "Debug logging",
+        description: "Whether debug logging should be on or off.",
+        configure: (setting) => {
+          setting.setValue(this.plugin.options.debugLogging);
+          setting.onChange((value) => {
+            this.plugin.writeOptions((old) => (old.fadeToggle = value));
+          });
+        },
       });
     }
 
