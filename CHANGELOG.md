@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The version of the plugin is now displayed in the settings tab along with a link to the changelog.
 
+### ⚙ Internal
+
+- Added the ability to turn on debug logging in the plugin.
+
 ## [1.3.1] - 2020-09-18
 
 ### 🐛 Bug Fixes
