@@ -2,15 +2,15 @@
   import { onDestroy } from "svelte";
   import {
     ITodoistMetadata,
-    IProject,
     TodoistApi,
     UnknownProject,
     UnknownSection,
-  } from "./api";
+  } from "../api/api";
+  import type { Project } from "../api/models";
   import TaskList from "./TaskList.svelte";
-  import type { ISettings } from "./settings";
+  import type { ISettings } from "../settings";
 
-  export let project: IProject;
+  export let project: Project;
   export let api: TodoistApi;
   export let settings: ISettings;
   export let sorting: string[];
@@ -35,6 +35,6 @@
   <TaskList tasks={section.tasks} {settings} {api} {sorting} />
 {/each}
 
-{#each project.projects as childProj (childProj.projectID)}
+{#each project.subProjects as childProj (childProj.projectID)}
   <svelte:self project={childProj} {settings} {api} {sorting} />
 {/each}

@@ -1,10 +1,11 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { SettingsInstance, ISettings } from "./settings";
-  import type IQuery from "./query";
-  import type { TodoistApi, Task, IProject } from "./api";
+  import { SettingsInstance, ISettings } from "../settings";
+  import type IQuery from "../query";
+  import type { TodoistApi } from "../api/api";
+  import type { Task, Project } from "../api/models";
   import TaskList from "./TaskList.svelte";
-  import ProjectView from "./ProjectView.svelte";
+  import GroupedTaskList from "./GroupedTaskList.svelte";
 
   export let query: IQuery;
   export let api: TodoistApi;
@@ -40,7 +41,7 @@
   }
 
   let tasks: Task[] = [];
-  let groupedTasks: IProject[] = [];
+  let groupedTasks: Project[] = [];
   let fetching: boolean = false;
 
   onMount(async () => {
@@ -98,6 +99,6 @@
   <TaskList {tasks} {settings} {api} sorting={query.sorting ?? []} />
 {:else if groupedTasks.length != 0}
   {#each groupedTasks as project (project.projectID)}
-    <ProjectView {project} {settings} {api} sorting={query.sorting ?? []} />
+    <GroupedTaskList {project} {settings} {api} sorting={query.sorting ?? []} />
   {/each}
 {/if}

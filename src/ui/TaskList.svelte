@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import { fade } from "svelte/transition";
-  import type { Task, ID, TodoistApi, ITodoistMetadata } from "./api";
-  import { UnknownProject, UnknownSection } from "./api";
-  import type { ISettings } from "./settings";
+  import type { TodoistApi, ITodoistMetadata } from "../api/api";
+  import type { Task, ID } from "../api/models";
+  import { UnknownProject, UnknownSection } from "../api/api";
+  import type { ISettings } from "../settings";
 
   export let tasks: Task[];
   export let settings: ISettings;
