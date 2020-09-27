@@ -103,7 +103,7 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
         configure: (setting) => {
           setting.setValue(this.plugin.options.debugLogging);
           setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.fadeToggle = value));
+            this.plugin.writeOptions((old) => (old.debugLogging = value));
           });
         },
       });

@@ -1,5 +1,6 @@
 import moment, { Moment, CalendarSpec } from "moment";
 import { writable, Writable } from "svelte/store";
+import debug from "./log";
 
 class ProxyMap<K, V> extends Map<K, V> {
   get_or(key: K, defaultValue: () => V) {
@@ -38,6 +39,8 @@ export class TodoistApi {
       url += `?filter=${encodeURIComponent(filter)}`;
     }
 
+    debug(url);
+
     const result = await fetch(url, {
       headers: new Headers({
         Authorization: `Bearer ${this.token}`,
@@ -45,11 +48,20 @@ export class TodoistApi {
     });
 
     const tasks = (await result.json()) as IApiTask[];
-    return Task.buildTree(tasks);
+    const tree = Task.buildTree(tasks);
+
+    debug({
+      msg: "Built task tree",
+      context: tree,
+    });
+
+    return tree;
   }
 
   async closeTask(id: ID): Promise<boolean> {
     const url = `https://api.todoist.com/rest/v1/tasks/${id}/close`;
+
+    debug(url);
 
     const result = await fetch(url, {
       headers: new Headers({

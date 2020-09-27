@@ -3,6 +3,7 @@ import type IQuery from "./query";
 import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api";
 import type { App, Settings, PluginInstance } from "./obsidian";
+import debug from "./log";
 
 interface IInjection {
   component: TodoistQuery;
@@ -39,6 +40,11 @@ export default class TodoistPlugin<TBase extends Settings> {
 
     // TODO: This leaks a subscription. Does JS have destructors?
     SettingsInstance.subscribe((value) => {
+      debug({
+        msg: "Settings changed",
+        context: value,
+      });
+
       this.options = value;
     });
 
@@ -58,6 +64,7 @@ export default class TodoistPlugin<TBase extends Settings> {
       name: "Todoist: Refresh Metadata",
       callback: async () => {
         if (this.api != null) {
+          debug("Refreshing metadata");
           await this.api.fetchMetadata();
         }
       },
@@ -101,6 +108,15 @@ export default class TodoistPlugin<TBase extends Settings> {
           }
 
           const { workspaceLeaf, component } = this.injections[removedIndex];
+
+          debug({
+            msg: "Removing mounted Svelte component",
+            context: {
+              root: workspaceLeaf,
+              component: component,
+            },
+          });
+
           this.injections.splice(removedIndex, 1);
           component.$destroy();
         });
@@ -132,8 +148,19 @@ export default class TodoistPlugin<TBase extends Settings> {
 
     for (var i = 0; i < nodes.length; i++) {
       const node = nodes[i];
+
+      debug({
+        msg: "Found Todoist query.",
+        context: node,
+      });
+
       // TODO: Error handling.
       const query = JSON.parse(node.innerText) as IQuery;
+
+      debug({
+        msg: "Parsed query",
+        context: query,
+      });
 
       const root = node.parentElement;
       root.removeChild(node);
@@ -146,10 +173,17 @@ export default class TodoistPlugin<TBase extends Settings> {
         },
       });
 
-      this.injections.push({
+      const injection = {
         component: queryNode,
         workspaceLeaf: root.closest(".workspace-leaf"),
+      };
+
+      debug({
+        msg: "Injected Todoist query.",
+        context: injection,
       });
+
+      this.injections.push(injection);
     }
   }
 
