@@ -5,7 +5,7 @@ import type {
   PluginInstance,
   SettingsContainer,
 } from "./obsidian";
-import { toInt, isPositiveInteger } from "./utils.js";
+import { toInt, isPositiveInteger } from "./utils";
 import type TodoistPlugin from "./plugin";
 
 export const SettingsInstance = writable<ISettings>({
