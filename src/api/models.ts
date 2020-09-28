@@ -1,6 +1,12 @@
 import moment, { Moment, CalendarSpec } from "moment";
-import type { ITaskRaw, IProjectRaw, ISectionRaw } from "./raw_models";
-import { ITodoistMetadata, UnknownSection, UnknownProject } from "./api";
+import {
+  ITaskRaw,
+  IProjectRaw,
+  ISectionRaw,
+  UnknownProject,
+  UnknownSection,
+} from "./raw_models";
+import type { ITodoistMetadata } from "./api";
 import { ExtendedMap } from "../utils";
 
 export type ID = number;
@@ -138,6 +144,7 @@ export class Task {
 export class Project {
   public readonly projectID: ProjectID;
   public readonly parentID?: ProjectID;
+  public readonly order: number;
 
   public tasks: Task[];
   public subProjects: Project[];
@@ -146,10 +153,20 @@ export class Project {
   constructor(raw: IProjectRaw) {
     this.projectID = raw.id;
     this.parentID = raw.parent_id;
+    this.order = raw.order;
 
     this.tasks = [];
     this.subProjects = [];
     this.sections = [];
+  }
+
+  private sort() {
+    this.subProjects = this.subProjects.sort(
+      (first, second) => first.order - second.order
+    );
+    this.sections = this.sections.sort(
+      (first, second) => first.order - second.order
+    );
   }
 
   static buildProjectTree(
@@ -213,6 +230,8 @@ export class Project {
       project.result.sections.push(section.result);
     }
 
+    projects.forEach((prj) => prj.result.sort());
+
     return Array.from(projects.values())
       .map((prj) => prj.result)
       .filter((prj) => prj.subProjects.length == 0);
@@ -222,12 +241,14 @@ export class Project {
 export class Section {
   public readonly sectionID: SectionID;
   public readonly projectID: ProjectID;
+  public readonly order: number;
 
   public tasks: Task[];
 
   constructor(raw: ISectionRaw) {
     this.sectionID = raw.id;
     this.projectID = raw.project_id;
+    this.order = raw.order;
   }
 }
 

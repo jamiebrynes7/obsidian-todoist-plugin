@@ -9,20 +9,6 @@ import type {
 import { Task, Project, ID, ProjectID, SectionID, LabelID } from "./models";
 import { ExtendedMap } from "../utils";
 
-export const UnknownProject: IProjectRaw = {
-  id: -1,
-  parent_id: null,
-  order: -1,
-  name: "Unknown project",
-};
-
-export const UnknownSection: ISectionRaw = {
-  id: -1,
-  project_id: -1,
-  order: -1,
-  name: "Unknown section",
-};
-
 export interface ITodoistMetadata {
   projects: ExtendedMap<ProjectID, IProjectRaw>;
   sections: ExtendedMap<SectionID, ISectionRaw>;

@@ -1,12 +1,8 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import {
-    ITodoistMetadata,
-    TodoistApi,
-    UnknownProject,
-    UnknownSection,
-  } from "../api/api";
+  import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Project } from "../api/models";
+  import { UnknownProject, UnknownSection } from "../api/raw_models";
   import TaskList from "./TaskList.svelte";
   import type { ISettings } from "../settings";
 
@@ -23,18 +19,22 @@
   });
 </script>
 
-<h2>
-  {metadata.projects.get_or(project.projectID, () => UnknownProject).name}
-</h2>
-<TaskList tasks={project.tasks} {settings} {api} {sorting} />
+<div class="todoist-project">
+  <p class="todoist-project-title">
+    {metadata.projects.get_or(project.projectID, () => UnknownProject).name}
+  </p>
+  <TaskList tasks={project.tasks} {settings} {api} {sorting} />
 
-{#each project.sections as section (section.sectionID)}
-  <h4>
-    {metadata.sections.get_or(section.sectionID, () => UnknownSection).name}
-  </h4>
-  <TaskList tasks={section.tasks} {settings} {api} {sorting} />
-{/each}
+  {#each project.sections as section (section.sectionID)}
+    <div class="todoist-section">
+      <p class="todoist-section-title">
+        {metadata.sections.get_or(section.sectionID, () => UnknownSection).name}
+      </p>
+      <TaskList tasks={section.tasks} {settings} {api} {sorting} />
+    </div>
+  {/each}
 
-{#each project.subProjects as childProj (childProj.projectID)}
-  <svelte:self project={childProj} {settings} {api} {sorting} />
-{/each}
+  {#each project.subProjects as childProj (childProj.projectID)}
+    <svelte:self project={childProj} {settings} {api} {sorting} />
+  {/each}
+</div>

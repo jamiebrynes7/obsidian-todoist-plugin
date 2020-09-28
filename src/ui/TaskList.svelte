@@ -3,7 +3,7 @@
   import { fade } from "svelte/transition";
   import type { TodoistApi, ITodoistMetadata } from "../api/api";
   import type { Task, ID } from "../api/models";
-  import { UnknownProject, UnknownSection } from "../api/api";
+  import { UnknownProject, UnknownSection } from "../api/raw_models";
   import type { ISettings } from "../settings";
 
   export let tasks: Task[];
