@@ -23,14 +23,24 @@
   <p class="todoist-project-title">
     {metadata.projects.get_or(project.projectID, () => UnknownProject).name}
   </p>
-  <TaskList tasks={project.tasks} {settings} {api} {sorting} />
+  <TaskList
+    tasks={project.tasks}
+    {settings}
+    {api}
+    {sorting}
+    renderProject={false} />
 
   {#each project.sections as section (section.sectionID)}
     <div class="todoist-section">
       <p class="todoist-section-title">
         {metadata.sections.get_or(section.sectionID, () => UnknownSection).name}
       </p>
-      <TaskList tasks={section.tasks} {settings} {api} {sorting} />
+      <TaskList
+        tasks={section.tasks}
+        {settings}
+        {api}
+        {sorting}
+        renderProject={false} />
     </div>
   {/each}
 

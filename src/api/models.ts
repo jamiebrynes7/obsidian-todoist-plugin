@@ -150,6 +150,8 @@ export class Project {
   public subProjects: Project[];
   public sections: Section[];
 
+  private parent?: Project;
+
   constructor(raw: IProjectRaw) {
     this.projectID = raw.id;
     this.parentID = raw.parent_id;
@@ -220,6 +222,7 @@ export class Project {
 
       if (parent) {
         parent.result.subProjects.push(project.result);
+        project.result.parent = parent.result;
       }
     }
 
@@ -234,7 +237,7 @@ export class Project {
 
     return Array.from(projects.values())
       .map((prj) => prj.result)
-      .filter((prj) => prj.subProjects.length == 0);
+      .filter((prj) => prj.parent == null);
   }
 }
 
