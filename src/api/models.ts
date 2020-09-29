@@ -178,30 +178,43 @@ export class Project {
     const projects = new ExtendedMap<ProjectID, Intermediate<Project>>();
     const sections = new ExtendedMap<SectionID, Intermediate<Section>>();
 
+    projects.set(UnknownProject.id, {
+      result: new Project(UnknownProject),
+      tasks: [],
+    });
+
+    sections.set(UnknownSection.id, {
+      result: new Section(UnknownSection),
+      tasks: [],
+    });
+
     tasks.forEach((task) => {
       const project = projects.get_or_insert(task.project_id, () => {
-        const raw = metadata.projects.get_or(
-          task.project_id,
-          () => UnknownProject
-        );
-        return {
-          result: new Project(raw),
-          tasks: [],
-        };
+        const project = metadata.projects.get(task.project_id);
+
+        if (project) {
+          return {
+            result: new Project(project),
+            tasks: [],
+          };
+        } else {
+          return projects.get(UnknownProject.id);
+        }
       });
 
       if (task.section_id != 0) {
         // The task has an associated section, so we file it under there.
-
         const section = sections.get_or_insert(task.section_id, () => {
-          const raw = metadata.sections.get_or(
-            task.section_id,
-            () => UnknownSection
-          );
-          return {
-            result: new Section(raw),
-            tasks: [],
-          };
+          const section = metadata.sections.get(task.section_id);
+
+          if (section) {
+            return {
+              result: new Section(section),
+              tasks: [],
+            };
+          } else {
+            return sections.get(UnknownSection.id);
+          }
         });
 
         section.tasks.push(task);
@@ -211,6 +224,35 @@ export class Project {
       project.tasks.push(task);
     });
 
+    // Now lets remove any project/sections that actually point at the UnknownProject/Section.
+    for (let key of projects.keys()) {
+      if (
+        key != UnknownProject.id &&
+        projects.get(key).result.projectID == UnknownProject.id
+      ) {
+        projects.delete(key);
+      }
+    }
+
+    for (let key of sections.keys()) {
+      if (
+        key != UnknownSection.id &&
+        sections.get(key).result.sectionID == UnknownSection.id
+      ) {
+        sections.delete(key);
+      }
+    }
+
+    // If there are no tasks in the unknown prj/section we remove them.
+    if (
+      projects.get(UnknownProject.id).tasks.length == 0 &&
+      sections.get(UnknownSection.id).tasks.length == 0
+    ) {
+      projects.delete(UnknownProject.id);
+      sections.delete(UnknownSection.id);
+    }
+
+    // Attach parents for projects.
     for (let project of projects.values()) {
       project.result.tasks = Task.buildTree(project.tasks);
 
@@ -226,6 +268,7 @@ export class Project {
       }
     }
 
+    // Attach parents for sections.
     for (let section of sections.values()) {
       section.result.tasks = Task.buildTree(section.tasks);
 
