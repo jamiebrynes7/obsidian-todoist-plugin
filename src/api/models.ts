@@ -178,44 +178,46 @@ export class Project {
     const projects = new ExtendedMap<ProjectID, Intermediate<Project>>();
     const sections = new ExtendedMap<SectionID, Intermediate<Section>>();
 
-    projects.set(UnknownProject.id, {
+    const unknownProject: Intermediate<Project> = {
       result: new Project(UnknownProject),
       tasks: [],
-    });
+    };
 
-    sections.set(UnknownSection.id, {
+    const unknownSection: Intermediate<Section> = {
       result: new Section(UnknownSection),
       tasks: [],
-    });
+    };
 
     tasks.forEach((task) => {
-      const project = projects.get_or_insert(task.project_id, () => {
-        const project = metadata.projects.get(task.project_id);
+      const project =
+        projects.get_or_maybe_insert(task.project_id, () => {
+          const project = metadata.projects.get(task.project_id);
 
-        if (project) {
-          return {
-            result: new Project(project),
-            tasks: [],
-          };
-        } else {
-          return projects.get(UnknownProject.id);
-        }
-      });
-
-      if (task.section_id != 0) {
-        // The task has an associated section, so we file it under there.
-        const section = sections.get_or_insert(task.section_id, () => {
-          const section = metadata.sections.get(task.section_id);
-
-          if (section) {
+          if (project) {
             return {
-              result: new Section(section),
+              result: new Project(project),
               tasks: [],
             };
           } else {
-            return sections.get(UnknownSection.id);
+            return null;
           }
-        });
+        }) ?? unknownProject;
+
+      if (task.section_id != 0) {
+        // The task has an associated section, so we file it under there.
+        const section =
+          sections.get_or_maybe_insert(task.section_id, () => {
+            const section = metadata.sections.get(task.section_id);
+
+            if (section) {
+              return {
+                result: new Section(section),
+                tasks: [],
+              };
+            } else {
+              return null;
+            }
+          }) ?? unknownSection;
 
         section.tasks.push(task);
         return;
@@ -224,32 +226,13 @@ export class Project {
       project.tasks.push(task);
     });
 
-    // Now lets remove any project/sections that actually point at the UnknownProject/Section.
-    for (let key of projects.keys()) {
-      if (
-        key != UnknownProject.id &&
-        projects.get(key).result.projectID == UnknownProject.id
-      ) {
-        projects.delete(key);
-      }
+    if (unknownProject.tasks.length > 0) {
+      projects.set(unknownProject.result.projectID, unknownProject);
     }
 
-    for (let key of sections.keys()) {
-      if (
-        key != UnknownSection.id &&
-        sections.get(key).result.sectionID == UnknownSection.id
-      ) {
-        sections.delete(key);
-      }
-    }
-
-    // If there are no tasks in the unknown prj/section we remove them.
-    if (
-      projects.get(UnknownProject.id).tasks.length == 0 &&
-      sections.get(UnknownSection.id).tasks.length == 0
-    ) {
-      projects.delete(UnknownProject.id);
-      sections.delete(UnknownSection.id);
+    if (unknownSection.tasks.length > 0) {
+      projects.set(unknownProject.result.projectID, unknownProject);
+      sections.set(unknownSection.result.sectionID, unknownSection);
     }
 
     // Attach parents for projects.

@@ -16,13 +16,16 @@ export class ExtendedMap<K, V> extends Map<K, V> {
     return defaultValue();
   }
 
-  get_or_insert(key: K, newValue: () => V): V {
+  get_or_maybe_insert(key: K, newValue: () => V | null): V {
     if (this.has(key)) {
       return this.get(key);
     }
 
     const value = newValue();
-    this.set(key, value);
+    if (value) {
+      this.set(key, value);
+    }
+
     return value;
   }
 }
