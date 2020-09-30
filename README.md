@@ -33,6 +33,7 @@ _Tested with Obsidian 0.8.14 and Volcano 1.2.1, your results may vary!_
 | `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup> | string   |         |
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.             | number   | null    |
 | `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
+| `group`       |          | Denotes whether this query should have its task grouped by project & section.                                     | bool     | false   |
 
 ## CSS
 

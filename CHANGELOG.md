@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - The version of the plugin is now displayed in the settings tab along with a link to the changelog.
+- You can specify that the result of a query should be grouped by project & section. To do this, add the `"group": true` field to the JSON query.
+  ```json
+  {
+    "name": "My Tasks",
+    "filter": "today | overdue",
+    "group": true
+  }
+  ```
 
 ### ⚙ Internal
 
