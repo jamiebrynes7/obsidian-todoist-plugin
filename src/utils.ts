@@ -8,12 +8,12 @@ export function toInt(str: string): number {
 }
 
 export class ExtendedMap<K, V> extends Map<K, V> {
-  get_or_default(key: K, defaultValue: () => V): V {
+  get_or_default(key: K, defaultValue: V): V {
     if (this.has(key)) {
       return this.get(key);
     }
 
-    return defaultValue();
+    return defaultValue;
   }
 
   get_or_maybe_insert(key: K, newValue: () => V | null): V {
