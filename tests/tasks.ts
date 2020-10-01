@@ -1,10 +1,11 @@
 import "mocha";
 import { assert } from "chai";
-import { Task, IApiTask } from "../src/api";
+import { Task } from "../src/api/models";
+import type { ITaskRaw } from "../src/api/raw_models";
 
 describe("Task tree parsing", () => {
   it("Tree matches parents and subtasks", () => {
-    const apiTasks: IApiTask[] = [
+    const apiTasks: ITaskRaw[] = [
       {
         id: 1,
         priority: 1,
@@ -38,7 +39,7 @@ describe("Task tree parsing", () => {
   });
 
   it("Subtask without parent in scope is a top-level node", () => {
-    const apiTasks: IApiTask[] = [
+    const apiTasks: ITaskRaw[] = [
       {
         id: 2,
         priority: 2,
@@ -58,7 +59,7 @@ describe("Task tree parsing", () => {
 
 describe("Task date parsing", () => {
   it("Tasks with dates only have no time", () => {
-    const apiTask: IApiTask = {
+    const apiTask: ITaskRaw = {
       id: 1,
       priority: 1,
       order: 1,
@@ -79,7 +80,7 @@ describe("Task date parsing", () => {
   });
 
   it("Tasks with time have time", () => {
-    const apiTask: IApiTask = {
+    const apiTask: ITaskRaw = {
       id: 1,
       priority: 1,
       order: 1,

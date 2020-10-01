@@ -1,7 +1,7 @@
-import TodoistQuery from "./TodoistQuery.svelte";
+import TodoistQuery from "./ui/TodoistQuery.svelte";
 import type IQuery from "./query";
 import { SettingsInstance, ISettings, SettingsTab } from "./settings";
-import { TodoistApi } from "./api";
+import { TodoistApi } from "./api/api";
 import type { App, Settings, PluginInstance } from "./obsidian";
 import debug from "./log";
 
