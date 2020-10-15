@@ -6,6 +6,8 @@
   import type { Task, Project } from "../api/models";
   import TaskList from "./TaskList.svelte";
   import GroupedTaskList from "./GroupedTaskList.svelte";
+  import { Result } from "../result";
+  import ErrorDisplay from "./ErrorDisplay.svelte";
 
   export let query: IQuery;
   export let api: TodoistApi;
@@ -40,8 +42,8 @@
     }
   }
 
-  let tasks: Task[] = [];
-  let groupedTasks: Project[] = [];
+  let tasks: Result<Task[], Error> = Result.Ok([]);
+  let groupedTasks: Result<Project[], Error> = Result.Ok([]);
   let fetching: boolean = false;
 
   onMount(async () => {
@@ -95,10 +97,24 @@
   </svg>
 </button>
 <br />
-{#if tasks.length != 0}
-  <TaskList {tasks} {settings} {api} sorting={query.sorting ?? []} />
-{:else if groupedTasks.length != 0}
-  {#each groupedTasks as project (project.projectID)}
-    <GroupedTaskList {project} {settings} {api} sorting={query.sorting ?? []} />
-  {/each}
+{#if query.group}
+  {#if groupedTasks.isOk()}
+    {#each groupedTasks.unwrap() as project (project.projectID)}
+      <GroupedTaskList
+        {project}
+        {settings}
+        {api}
+        sorting={query.sorting ?? []} />
+    {/each}
+  {:else}
+    <ErrorDisplay error={groupedTasks.unwrapErr()} />
+  {/if}
+{:else if tasks.isOk()}
+  <TaskList
+    tasks={tasks.unwrap()}
+    {settings}
+    {api}
+    sorting={query.sorting ?? []} />
+{:else}
+  <ErrorDisplay error={tasks.unwrapErr()} />
 {/if}

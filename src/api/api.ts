@@ -8,6 +8,7 @@ import type {
 } from "./raw_models";
 import { Task, Project, ID, ProjectID, SectionID, LabelID } from "./models";
 import { ExtendedMap } from "../utils";
+import { Result } from "../result";
 
 export interface ITodoistMetadata {
   projects: ExtendedMap<ProjectID, IProjectRaw>;
@@ -31,7 +32,7 @@ export class TodoistApi {
     this.metadata.subscribe((value) => (this.metadataInstance = value));
   }
 
-  async getTasks(filter?: string): Promise<Task[]> {
+  async getTasks(filter?: string): Promise<Result<Task[], Error>> {
     let url = "https://api.todoist.com/rest/v1/tasks";
 
     if (filter) {
@@ -40,48 +41,66 @@ export class TodoistApi {
 
     debug(url);
 
-    const result = await fetch(url, {
-      headers: new Headers({
-        Authorization: `Bearer ${this.token}`,
-      }),
-    });
+    try {
+      const result = await fetch(url, {
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+        }),
+      });
 
-    const tasks = (await result.json()) as ITaskRaw[];
-    const tree = Task.buildTree(tasks);
+      if (result.ok) {
+        const tasks = (await result.json()) as ITaskRaw[];
+        const tree = Task.buildTree(tasks);
 
-    debug({
-      msg: "Built task tree",
-      context: tree,
-    });
+        debug({
+          msg: "Built task tree",
+          context: tree,
+        });
 
-    return tree;
+        return Result.Ok(tree);
+      } else {
+        return Result.Err(new Error(await result.text()));
+      }
+    } catch (e) {
+      return Result.Err(e);
+    }
   }
 
-  async getTasksGroupedByProject(filter?: string): Promise<Project[]> {
+  async getTasksGroupedByProject(
+    filter?: string
+  ): Promise<Result<Project[], Error>> {
     let url = "https://api.todoist.com/rest/v1/tasks";
 
     if (filter) {
       url += `?filter=${encodeURIComponent(filter)}`;
     }
 
-    const result = await fetch(url, {
-      headers: new Headers({
-        Authorization: `Bearer ${this.token}`,
-      }),
-    });
+    try {
+      const result = await fetch(url, {
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+        }),
+      });
 
-    // Force the metadata to update.
-    await this.fetchMetadata();
+      if (result.ok) {
+        // Force the metadata to update.
+        await this.fetchMetadata();
 
-    const tasks = (await result.json()) as ITaskRaw[];
-    const tree = Project.buildProjectTree(tasks, this.metadataInstance);
+        const tasks = (await result.json()) as ITaskRaw[];
+        const tree = Project.buildProjectTree(tasks, this.metadataInstance);
 
-    debug({
-      msg: "Built project tree",
-      context: tree,
-    });
+        debug({
+          msg: "Built project tree",
+          context: tree,
+        });
 
-    return tree;
+        return Result.Ok(tree);
+      } else {
+        return Result.Err(new Error(await result.text()));
+      }
+    } catch (e) {
+      return Result.Err(e);
+    }
   }
 
   async closeTask(id: ID): Promise<boolean> {
