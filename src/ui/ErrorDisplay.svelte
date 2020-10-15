@@ -3,6 +3,6 @@
 </script>
 
 <div class="todoist-error">
-  <p>Something went wrong!</p>
-  <p>{error}</p>
+  <p>Oh no, something went wrong!</p>
+  <code>{error}</code>
 </div>
