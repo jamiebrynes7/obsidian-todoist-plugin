@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   }
   ```
 
+### 🔃 Changed
+
+- Errors are displayed more prominently in the injected Todoist query.
+
 ### ⚙ Internal
 
 - Added the ability to turn on debug logging in the plugin.
