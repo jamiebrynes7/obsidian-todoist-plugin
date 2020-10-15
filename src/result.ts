@@ -22,6 +22,26 @@ export class Result<T, E> {
     return result;
   }
 
+  static All<T1, T2, T3, E>(
+    first: Result<T1, E>,
+    second: Result<T2, E>,
+    third: Result<T3, E>
+  ): Result<[T1, T2, T3], E> {
+    if (first.isErr()) {
+      return first.intoErr();
+    }
+
+    if (second.isErr()) {
+      return second.intoErr();
+    }
+
+    if (third.isErr()) {
+      return third.intoErr();
+    }
+
+    return Result.Ok([first.unwrap(), second.unwrap(), third.unwrap()]);
+  }
+
   public isOk(): boolean {
     return this.ok != null;
   }
@@ -44,5 +64,9 @@ export class Result<T, E> {
     }
 
     return this.error;
+  }
+
+  public intoErr<T2>(): Result<T2, E> {
+    return Result.Err(this.error);
   }
 }

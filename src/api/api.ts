@@ -84,7 +84,11 @@ export class TodoistApi {
 
       if (result.ok) {
         // Force the metadata to update.
-        await this.fetchMetadata();
+        const metadataResult = await this.fetchMetadata();
+
+        if (metadataResult.isErr()) {
+          return Result.Err(metadataResult.unwrapErr());
+        }
 
         const tasks = (await result.json()) as ITaskRaw[];
         const tree = Project.buildProjectTree(tasks, this.metadataInstance);
@@ -118,12 +122,20 @@ export class TodoistApi {
     return result.ok;
   }
 
-  async fetchMetadata(): Promise<void> {
-    const [projects, sections, labels] = await Promise.all<
-      IProjectRaw[],
-      ISectionRaw[],
-      ILabelRaw[]
+  async fetchMetadata(): Promise<Result<void, Error>> {
+    const [projectResult, sectionResult, labelResult] = await Promise.all<
+      Result<IProjectRaw[], Error>,
+      Result<ISectionRaw[], Error>,
+      Result<ILabelRaw[], Error>
     >([this.getProjects(), this.getSections(), this.getLabels()]);
+
+    const merged = Result.All(projectResult, sectionResult, labelResult);
+
+    if (merged.isErr()) {
+      return merged.intoErr();
+    }
+
+    const [projects, sections, labels] = merged.unwrap();
 
     this.metadata.update((metadata) => {
       metadata.projects.clear();
@@ -136,42 +148,58 @@ export class TodoistApi {
     });
   }
 
-  private async getProjects(): Promise<IProjectRaw[]> {
+  private async getProjects(): Promise<Result<IProjectRaw[], Error>> {
     const url = `https://api.todoist.com/rest/v1/projects`;
 
-    const result = await fetch(url, {
-      headers: new Headers({
-        Authorization: `Bearer ${this.token}`,
-      }),
-      method: "GET",
-    });
+    try {
+      const result = await fetch(url, {
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+        }),
+        method: "GET",
+      });
 
-    return (await result.json()) as IProjectRaw[];
+      return result.ok
+        ? Result.Ok((await result.json()) as IProjectRaw[])
+        : Result.Err(new Error(await result.text()));
+    } catch (e) {
+      return Result.Err(e);
+    }
   }
 
-  private async getSections(): Promise<ISectionRaw[]> {
+  private async getSections(): Promise<Result<ISectionRaw[], Error>> {
     const url = `https://api.todoist.com/rest/v1/sections`;
+    try {
+      const result = await fetch(url, {
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+        }),
+        method: "GET",
+      });
 
-    const result = await fetch(url, {
-      headers: new Headers({
-        Authorization: `Bearer ${this.token}`,
-      }),
-      method: "GET",
-    });
-
-    return (await result.json()) as ISectionRaw[];
+      return result.ok
+        ? Result.Ok((await result.json()) as ISectionRaw[])
+        : Result.Err(new Error(await result.text()));
+    } catch (e) {
+      return Result.Err(e);
+    }
   }
 
-  private async getLabels(): Promise<ILabelRaw[]> {
+  private async getLabels(): Promise<Result<ILabelRaw[], Error>> {
     const url = `https://api.todoist.com/rest/v1/labels`;
+    try {
+      const result = await fetch(url, {
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+        }),
+        method: "GET",
+      });
 
-    const result = await fetch(url, {
-      headers: new Headers({
-        Authorization: `Bearer ${this.token}`,
-      }),
-      method: "GET",
-    });
-
-    return (await result.json()) as ILabelRaw[];
+      return result.ok
+        ? Result.Ok((await result.json()) as ILabelRaw[])
+        : Result.Err(new Error(await result.text()));
+    } catch (e) {
+      return Result.Err(e);
+    }
   }
 }
