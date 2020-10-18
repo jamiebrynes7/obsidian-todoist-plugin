@@ -65,7 +65,11 @@ export default class TodoistPlugin<TBase extends Settings> {
       callback: async () => {
         if (this.api != null) {
           debug("Refreshing metadata");
-          await this.api.fetchMetadata();
+          const result = await this.api.fetchMetadata();
+
+          if (result.isErr()) {
+            console.error(result.unwrapErr());
+          }
         }
       },
     });
@@ -79,7 +83,11 @@ export default class TodoistPlugin<TBase extends Settings> {
     if (fs.existsSync(tokenPath)) {
       const token = fs.readFileSync(tokenPath).toString("utf-8");
       this.api = new TodoistApi(token);
-      await this.api.fetchMetadata();
+      const result = await this.api.fetchMetadata();
+
+      if (result.isErr()) {
+        console.error(result.unwrapErr());
+      }
     } else {
       alert(`Could not load Todoist token at: ${tokenPath}`);
     }
