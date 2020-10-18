@@ -20,7 +20,8 @@
     "rollup": "^2.26.7",
     "rollup-plugin-svelte": "^6.0.0",
     "svelte": "^3.24.1",
-    "tslib": "^2.0.1"
+    "tslib": "^2.0.1",
+    "semver-compare": "1.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^5.0.2",

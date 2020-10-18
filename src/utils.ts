@@ -29,3 +29,17 @@ export class ExtendedMap<K, V> extends Map<K, V> {
     return value;
   }
 }
+
+export function notification(contents: string, timeoutMs: number) {
+  const element = document.createElement("div");
+  element.innerText = contents;
+  element.classList.add("notice");
+  document.body.appendChild(element);
+
+  setTimeout(() => {
+    element.classList.add("mod-disappearing");
+    setTimeout(() => {
+      element.remove();
+    }, 1e3);
+  }, timeoutMs);
+}

@@ -5,8 +5,9 @@ import type {
   PluginInstance,
   SettingsContainer,
 } from "./obsidian";
-import { toInt, isPositiveInteger } from "./utils";
+import { toInt, isPositiveInteger, notification } from "./utils";
 import type TodoistPlugin from "./plugin";
+import semverCompare from "semver-compare";
 
 export const SettingsInstance = writable<ISettings>({
   fadeToggle: true,
@@ -89,10 +90,34 @@ export function SettingsTab<TBase extends Settings>(Base: TBase) {
 
       desc.appendChild(span);
 
-      this.settingMgr.addStaticText({
+      this.settingMgr.addButton({
         name: `Current Version: ${this.plugin.version}`,
         description: desc,
-        configure: () => {},
+        configure: (button) => {
+          button.setText("Check for updates");
+          button.setClickCallback(async () => {
+            notification("Checking for updates...", 2e3);
+
+            try {
+              let resp = await fetch(
+                "https://api.github.com/repos/jamiebrynes7/obsidian-todoist-plugin/releases/latest"
+              );
+
+              let data = await resp.json();
+              let tag: string = data.tag_name;
+
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+
+              if (semverCompare(tag.slice(1), this.plugin.version) == 1) {
+                notification("Update available!", 2e3);
+              } else {
+                notification("Todoist plugin up-to-date!", 2e3);
+              }
+            } catch (e) {
+              notification("Failed to check for updates.", 2e3);
+            }
+          });
+        },
       });
     }
 
@@ -264,6 +289,12 @@ class SettingManager {
     const control = this.addSetting(config);
   }
 
+  public addButton(config: ISettingConfiguration<ButtonSetting>) {
+    const control = this.addSetting(config);
+    const button = new ButtonSetting(control);
+    config.configure(button);
+  }
+
   private addSetting<T>(config: ISettingConfiguration<T>): HTMLElement {
     const item = document.createElement("div") as HTMLDivElement;
     item.classList.add("setting-item");
@@ -367,6 +398,32 @@ class TextSetting {
   private onChanged() {
     if (this.changeCallback) {
       this.changeCallback(this.inputEl.value);
+    }
+  }
+}
+
+class ButtonSetting {
+  private buttonEl: HTMLButtonElement;
+  private clickCallback?: () => void;
+
+  constructor(controlEl: HTMLElement) {
+    this.buttonEl = document.createElement("button") as HTMLButtonElement;
+    this.buttonEl.addEventListener("click", this.onClicked.bind(this));
+    this.buttonEl.classList.add("mod-cta");
+    controlEl.appendChild(this.buttonEl);
+  }
+
+  public setText(value: string) {
+    this.buttonEl.textContent = value;
+  }
+
+  public setClickCallback(cb: () => void) {
+    this.clickCallback = cb;
+  }
+
+  private onClicked() {
+    if (this.clickCallback) {
+      this.clickCallback();
     }
   }
 }
