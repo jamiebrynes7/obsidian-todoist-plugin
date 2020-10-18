@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     "group": true
   }
   ```
+- You can now check for plugin updates in the Todoist plugin settings.
 
 ### 🔃 Changed
 
