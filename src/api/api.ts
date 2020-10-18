@@ -122,7 +122,7 @@ export class TodoistApi {
     return result.ok;
   }
 
-  async fetchMetadata(): Promise<Result<void, Error>> {
+  async fetchMetadata(): Promise<Result<object, Error>> {
     const [projectResult, sectionResult, labelResult] = await Promise.all<
       Result<IProjectRaw[], Error>,
       Result<ISectionRaw[], Error>,
@@ -146,6 +146,8 @@ export class TodoistApi {
       labels.forEach((label) => metadata.labels.set(label.id, label.name));
       return metadata;
     });
+
+    return Result.Ok({});
   }
 
   private async getProjects(): Promise<Result<IProjectRaw[], Error>> {
