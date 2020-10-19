@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.4.0] - 2020-10-19
+
+Along with this release, I've released an Obsidian theme which has built-in support for this plugin! 🎉
+
+Check it out at [jamiebrynes7/moonlight-obsidian-theme](https://github.com/jamiebrynes7/moonlight-obsidian-theme)!
+
 ### ✨ Features
 
 - The version of the plugin is now displayed in the settings tab along with a link to the changelog.

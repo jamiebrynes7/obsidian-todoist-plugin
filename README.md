@@ -4,7 +4,7 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin using [Volcano](https://github.com/kognise/volcano) to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.8.14 and Volcano 1.2.1, your results may vary!_
+_Tested with Obsidian 0.9.4 and Volcano 1.2.1, your results may vary!_
 
 ![Example gif](./assets/obsidian-todoist-sync.gif)
 
@@ -36,6 +36,8 @@ _Tested with Obsidian 0.8.14 and Volcano 1.2.1, your results may vary!_
 | `group`       |          | Denotes whether this query should have its task grouped by project & section.                                     | bool     | false   |
 
 ## CSS
+
+I also maintain an Obsidian theme which has support out of the box for this plugin, for a complete example of CSS for this plugin, check out [the source](https://github.com/jamiebrynes7/moonlight-obsidian-theme/blob/master/src/modules/extensions/todoist.scss).
 
 ### General
 
