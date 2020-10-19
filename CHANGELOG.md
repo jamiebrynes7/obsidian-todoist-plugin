@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   }
   ```
 - You can now check for plugin updates in the Todoist plugin settings.
+- The JSON query is now validated and errors are presented in a more user-friendly fashion:
+  ![Query parsing error example](./assets/query-parsing-error-example.png)
 
 ### 🔃 Changed
 

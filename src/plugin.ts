@@ -1,12 +1,14 @@
 import TodoistQuery from "./ui/TodoistQuery.svelte";
-import type IQuery from "./query";
+import ErrorDisplay from "./ui/ErrorDisplay.svelte";
+import { parseQuery } from "./query";
 import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api/api";
 import type { App, Settings, PluginInstance } from "./obsidian";
 import debug from "./log";
+import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
 
 interface IInjection {
-  component: TodoistQuery;
+  component: SvelteComponentDev;
   workspaceLeaf: Node;
 }
 
@@ -163,7 +165,7 @@ export default class TodoistPlugin<TBase extends Settings> {
       });
 
       // TODO: Error handling.
-      const query = JSON.parse(node.innerText) as IQuery;
+      const query = parseQuery(JSON.parse(node.innerText));
 
       debug({
         msg: "Parsed query",
@@ -173,13 +175,24 @@ export default class TodoistPlugin<TBase extends Settings> {
       const root = node.parentElement;
       root.removeChild(node);
 
-      const queryNode = new TodoistQuery({
-        target: root,
-        props: {
-          query: query,
-          api: this.api,
-        },
-      });
+      let queryNode: SvelteComponentDev = null;
+
+      if (query.isOk()) {
+        queryNode = new TodoistQuery({
+          target: root,
+          props: {
+            query: query.unwrap(),
+            api: this.api,
+          },
+        });
+      } else {
+        queryNode = new ErrorDisplay({
+          target: root,
+          props: {
+            error: query.unwrapErr(),
+          },
+        });
+      }
 
       const injection = {
         component: queryNode,

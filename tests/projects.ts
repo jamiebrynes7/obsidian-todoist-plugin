@@ -5,8 +5,6 @@ import type { ITaskRaw, IProjectRaw, ISectionRaw } from "../src/api/raw_models";
 import type { ITodoistMetadata } from "../src/api/api";
 import { ExtendedMap } from "../src/utils";
 
-// Unknown projects
-
 describe("Project tree parsing", () => {
   it("Projects are parented correctly", () => {
     const rawTasks: ITaskRaw[] = [

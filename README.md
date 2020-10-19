@@ -6,7 +6,7 @@ An experimental [Obsidian](https://obsidian.md/) plugin using [Volcano](https://
 
 _Tested with Obsidian 0.8.14 and Volcano 1.2.1, your results may vary!_
 
-![Example gif](./.github/obsidian-todoist-sync.gif)
+![Example gif](./assets/obsidian-todoist-sync.gif)
 
 ## Usage
 
