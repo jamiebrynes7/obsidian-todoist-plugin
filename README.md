@@ -39,7 +39,9 @@ _Tested with Obsidian 0.8.14 and Volcano 1.2.1, your results may vary!_
 
 ### General
 
-There are a few CSS classes in the generated DOM, which you can use to customize the rendering of the list:
+Any `workspace-leaf` which has an injected Todoist query will have the `contains-todoist-query` class attached to it.
+
+There are also few CSS classes in the generated DOM, which you can use to customize the rendering of the list:
 
 - `.todoist-query-title`: Attached to the header that contains the query title.
 - `.todoist-refresh-button`: Attached to the refresh button.
