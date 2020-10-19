@@ -103,4 +103,24 @@ describe("Query parsing", () => {
     const otherResult = parseQuery(validObj);
     assert.isTrue(otherResult.isOk());
   });
+
+  it("Group must be a boolean", () => {
+    const obj = {
+      name: "Tasks",
+      filter: "Filter",
+      group: "not-a-boolean",
+    };
+
+    const result = parseQuery(obj);
+    assert.isTrue(result.isErr());
+
+    const validObj = {
+      name: "Tasks",
+      filter: "Filter",
+      group: true,
+    };
+
+    const otherResult = parseQuery(validObj);
+    assert.isTrue(otherResult.isOk());
+  });
 });

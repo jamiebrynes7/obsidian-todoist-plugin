@@ -53,5 +53,9 @@ export function parseQuery(query: any): Result<IQuery, Error> {
     }
   }
 
+  if (query.hasOwnProperty("group") && typeof query.group != "boolean") {
+    return Result.Err(new Error("'group' field must be a boolean."));
+  }
+
   return Result.Ok(query as IQuery);
 }
