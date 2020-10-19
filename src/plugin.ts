@@ -194,9 +194,12 @@ export default class TodoistPlugin<TBase extends Settings> {
         });
       }
 
+      const workspaceLeaf = root.closest(".workspace-leaf");
+      workspaceLeaf.classList.add("contains-todoist-query");
+
       const injection = {
         component: queryNode,
-        workspaceLeaf: root.closest(".workspace-leaf"),
+        workspaceLeaf: workspaceLeaf,
       };
 
       debug({
