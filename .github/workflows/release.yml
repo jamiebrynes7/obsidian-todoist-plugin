@@ -43,5 +43,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist/manifest.json
-          asset_name: manifest.js
+          asset_name: manifest.json
           asset_content_type: application/json
