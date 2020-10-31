@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.5.0] - 2020-10-31
+
+### ✨ Features
+
+- This plugin is now compatible with the [official Obsidian API](https://github.com/obsidianmd/obsidian-api). It was developed against Obsidian 0.9.10.
+
 ## [1.4.0] - 2020-10-19
 
 Along with this release, I've released an Obsidian theme which has built-in support for this plugin! 🎉

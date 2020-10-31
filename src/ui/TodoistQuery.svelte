@@ -23,7 +23,7 @@
     if (query?.autorefresh) {
       // First, if query.autorefresh is set.. we always use that value.
       if (autoRefreshIntervalId == null) {
-        autoRefreshIntervalId = setInterval(async () => {
+        autoRefreshIntervalId = window.setInterval(async () => {
           await fetchTodos();
         }, query.autorefresh * 1000);
       }
@@ -35,7 +35,7 @@
       }
 
       if (settings.autoRefreshToggle) {
-        autoRefreshIntervalId = setInterval(async () => {
+        autoRefreshIntervalId = window.setInterval(async () => {
           await fetchTodos();
         }, settings.autoRefreshInterval * 1000);
       }

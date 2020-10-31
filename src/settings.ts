@@ -1,13 +1,8 @@
 import { writable } from "svelte/store";
-import type {
-  Settings,
-  App,
-  PluginInstance,
-  SettingsContainer,
-} from "./obsidian";
 import { toInt, isPositiveInteger, notification } from "./utils";
-import type TodoistPlugin from "./plugin";
+import type TodoistPlugin from ".";
 import semverCompare from "semver-compare";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 
 export const SettingsInstance = writable<ISettings>({
   fadeToggle: true,
@@ -44,386 +39,205 @@ export interface ISettings {
   debugLogging: boolean;
 }
 
-export function SettingsTab<TBase extends Settings>(Base: TBase) {
-  return class extends Base {
-    // This is actually on TBase, but the mixin doesn't allow access without going through the prototype.
-    public containerEl: HTMLDivElement;
+export class SettingsTab extends PluginSettingTab {
+  // This is actually on TBase, but the mixin doesn't allow access without going through the prototype.
+  public containerEl: HTMLDivElement;
 
-    private app: App;
-    private instance: PluginInstance<ISettings>;
-    private plugin: TodoistPlugin<TBase>;
-    private settingMgr: SettingManager;
+  private plugin: TodoistPlugin;
 
-    constructor(...args: any[]) {
-      super(...args);
+  constructor(app: App, plugin: TodoistPlugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
 
-      [this.app, this.instance, this.plugin] = args;
-    }
+  display() {
+    let { containerEl } = this;
 
-    display() {
-      this.settingMgr = new SettingManager(this.containerEl);
-      this.settingMgr.empty();
+    containerEl.empty();
 
-      this.pluginMetadata();
-      this.debugLogging();
+    this.pluginMetadata();
+    this.debugLogging();
 
-      this.fadeAnimationSettings();
-      this.autoRefreshSettings();
+    this.fadeAnimationSettings();
+    this.autoRefreshSettings();
 
-      this.dateSettings();
-      this.projectSettings();
-      this.labelsSettings();
-    }
+    this.dateSettings();
+    this.projectSettings();
+    this.labelsSettings();
+  }
 
-    pluginMetadata() {
-      const desc = document.createElement("div") as HTMLDivElement;
+  pluginMetadata() {
+    const desc = document.createDocumentFragment();
 
-      const span = document.createElement("span") as HTMLSpanElement;
-      span.innerText = "Read the ";
+    const span = document.createElement("span") as HTMLSpanElement;
+    span.innerText = "Read the ";
 
-      const changelogLink = document.createElement("a") as HTMLAnchorElement;
-      changelogLink.href =
-        "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
-      changelogLink.innerText = "changelog!";
+    const changelogLink = document.createElement("a") as HTMLAnchorElement;
+    changelogLink.href =
+      "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
+    changelogLink.innerText = "changelog!";
 
-      span.appendChild(changelogLink);
+    span.appendChild(changelogLink);
 
-      desc.appendChild(span);
+    desc.appendChild(span);
 
-      this.settingMgr.addButton({
-        name: `Current Version: ${this.plugin.version}`,
-        description: desc,
-        configure: (button) => {
-          button.setText("Check for updates");
-          button.setClickCallback(async () => {
-            notification("Checking for updates...", 2e3);
+    new Setting(this.containerEl)
+      .setName(`Current Version: ${this.plugin.manifest.version}`)
+      .setDesc(desc)
+      .addButton((button) => {
+        button.setButtonText("Check for updates");
+        button.onClick(async () => {
+          new Notice("Checking for updates...");
 
-            try {
-              let resp = await fetch(
-                "https://api.github.com/repos/jamiebrynes7/obsidian-todoist-plugin/releases/latest"
-              );
+          try {
+            let resp = await fetch(
+              "https://api.github.com/repos/jamiebrynes7/obsidian-todoist-plugin/releases/latest"
+            );
 
-              let data = await resp.json();
-              let tag: string = data.tag_name;
+            let data = await resp.json();
+            let tag: string = data.tag_name;
 
-              await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
-              if (semverCompare(tag.slice(1), this.plugin.version) == 1) {
-                notification("Update available!", 2e3);
-              } else {
-                notification("Todoist plugin up-to-date!", 2e3);
-              }
-            } catch (e) {
-              notification("Failed to check for updates.", 2e3);
-            }
-          });
-        },
-      });
-    }
-
-    debugLogging() {
-      this.settingMgr.addToggle({
-        name: "Debug logging",
-        description: "Whether debug logging should be on or off.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.debugLogging);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.debugLogging = value));
-          });
-        },
-      });
-    }
-
-    fadeAnimationSettings() {
-      this.settingMgr.addToggle({
-        name: "Task fade animation",
-        description:
-          "Whether tasks should fade in and out when added or removed.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.fadeToggle);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.fadeToggle = value));
-          });
-        },
-      });
-    }
-
-    autoRefreshSettings() {
-      this.settingMgr.addToggle({
-        name: "Auto-refresh",
-        description: "Whether queries should auto-refresh at a set interval",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.autoRefreshToggle);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.autoRefreshToggle = value));
-          });
-        },
-      });
-
-      this.settingMgr.addText({
-        name: "Auto-refesh interval",
-        description:
-          "The interval (in seconds) that queries should auto-refresh by default. Integer numbers only",
-        configure: (setting) => {
-          setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
-          setting.onChange((value) => {
-            const newSetting = value.trim();
-
-            if (newSetting.length == 0) {
-              return;
-            }
-
-            if (isPositiveInteger(newSetting)) {
-              this.plugin.writeOptions(
-                (old) => (old.autoRefreshInterval = toInt(newSetting))
-              );
+            if (semverCompare(tag, this.plugin.manifest.version) == 1) {
+              new Notice("Update available!");
             } else {
-              setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
+              new Notice("Todoist plugin up-to-date");
             }
-          });
-        },
+          } catch (e) {
+            new Notice("Failed to check for updates.");
+          }
+        });
       });
-    }
+  }
 
-    dateSettings() {
-      this.settingMgr.addToggle({
-        name: "Render dates",
-        description: "Whether dates should be rendered with tasks.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.renderDate);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderDate = value));
-          });
-        },
+  debugLogging() {
+    new Setting(this.containerEl)
+      .setName("Debug logging")
+      .setDesc("Whether debug logging should be on or off.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.debugLogging);
+        toggle.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.debugLogging = value));
+        });
+      });
+  }
+
+  fadeAnimationSettings() {
+    new Setting(this.containerEl)
+      .setName("Task fade animation")
+      .setDesc("Whether tasks should fade in and out when added or removed.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.fadeToggle);
+        toggle.onChange(async (value) => {
+          this.plugin.writeOptions((old) => (old.fadeToggle = value));
+        });
+      });
+  }
+
+  autoRefreshSettings() {
+    new Setting(this.containerEl)
+      .setName("Auto-refresh")
+      .setDesc("Whether queries should auto-refresh at a set interval")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.autoRefreshToggle);
+        toggle.onChange((value) => {
+          this.plugin.writeOptions((old) => (old.autoRefreshToggle = value));
+        });
       });
 
-      this.settingMgr.addToggle({
-        name: "Render date icon",
-        description: "Whether rendered dates should include an icon.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.renderDateIcon);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderDateIcon = value));
-          });
-        },
+    new Setting(this.containerEl)
+      .setName("Auto-refresh interval")
+      .setDesc(
+        "The interval (in seconds) that queries should auto-refresh by default. Integer numbers only."
+      )
+      .addText((setting) => {
+        setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
+        setting.onChange(async (value) => {
+          const newSetting = value.trim();
+
+          if (newSetting.length == 0) {
+            return;
+          }
+
+          if (isPositiveInteger(newSetting)) {
+            await this.plugin.writeOptions(
+              (old) => (old.autoRefreshInterval = toInt(newSetting))
+            );
+          } else {
+            setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
+          }
+        });
       });
-    }
+  }
 
-    projectSettings() {
-      this.settingMgr.addToggle({
-        name: "Render project & section",
-        description:
-          "Whether projects & sections should be rendered with tasks.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.renderProject);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderProject = value));
-          });
-        },
+  dateSettings() {
+    new Setting(this.containerEl)
+      .setName("Render dates")
+      .setDesc("Whether dates should be rendered with tasks.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.renderDate);
+        toggle.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderDate = value));
+        });
       });
 
-      this.settingMgr.addToggle({
-        name: "Render project & section icon",
-        description:
-          "Whether rendered projects & sections should include an icon.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.renderProjectIcon);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderProjectIcon = value));
-          });
-        },
+    new Setting(this.containerEl)
+      .setName("Render date icon")
+      .setDesc("Whether rendered dates should include an icon.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderDateIcon);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderDateIcon = value));
+        });
       });
-    }
+  }
 
-    labelsSettings() {
-      this.settingMgr.addToggle({
-        name: "Render labels",
-        description: "Whether labels should be rendered with tasks.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.renderLabels);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderLabels = value));
-          });
-        },
+  projectSettings() {
+    new Setting(this.containerEl)
+      .setName("Render project & section")
+      .setDesc("Whether projects & sections should be rendered with tasks.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderProject);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderProject = value));
+        });
       });
-      this.settingMgr.addToggle({
-        name: "Render labels icon",
-        description: "Whether rendered labels should include an icon.",
-        configure: (setting) => {
-          setting.setValue(this.plugin.options.renderLabelsIcon);
-          setting.onChange((value) => {
-            this.plugin.writeOptions((old) => (old.renderLabelsIcon = value));
-          });
-        },
+
+    new Setting(this.containerEl)
+      .setName("Render project & section icon")
+      .setDesc("Whether rendered projects & sections should include an icon.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderProjectIcon);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions(
+            (old) => (old.renderProjectIcon = value)
+          );
+        });
       });
-    }
-  };
-}
-
-class SettingManager {
-  private container: HTMLDivElement;
-
-  constructor(containerEl: HTMLDivElement) {
-    this.container = containerEl;
   }
 
-  public empty() {
-    while (this.container.firstChild) {
-      this.container.removeChild(this.container.lastChild);
-    }
-  }
+  labelsSettings() {
+    new Setting(this.containerEl)
+      .setName("Render labels")
+      .setDesc("Whether labels should be rendered with tasks.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderLabels);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderLabels = value));
+        });
+      });
 
-  public addToggle(config: ISettingConfiguration<ToggleSetting>) {
-    const control = this.addSetting(config);
-    const toggle = new ToggleSetting(control);
-    config.configure(toggle);
-  }
-
-  public addText(config: ISettingConfiguration<TextSetting>) {
-    const control = this.addSetting(config);
-    const text = new TextSetting(control);
-    config.configure(text);
-  }
-
-  public addStaticText(config: ISettingConfiguration<void>) {
-    const control = this.addSetting(config);
-  }
-
-  public addButton(config: ISettingConfiguration<ButtonSetting>) {
-    const control = this.addSetting(config);
-    const button = new ButtonSetting(control);
-    config.configure(button);
-  }
-
-  private addSetting<T>(config: ISettingConfiguration<T>): HTMLElement {
-    const item = document.createElement("div") as HTMLDivElement;
-    item.classList.add("setting-item");
-    this.container.append(item);
-
-    const info = document.createElement("div") as HTMLDivElement;
-    info.classList.add("setting-item-info");
-    item.appendChild(info);
-
-    const name = document.createElement("div") as HTMLDivElement;
-    name.classList.add("setting-item-name");
-    name.innerText = config.name;
-    info.appendChild(name);
-
-    const desc = document.createElement("div") as HTMLDivElement;
-    desc.classList.add("setting-item-description");
-    if (typeof config.description == "string") {
-      const description = config.description as string;
-      desc.innerText = description;
-    } else {
-      const descriptionBlock = config.description as HTMLDivElement;
-      desc.appendChild(descriptionBlock);
-    }
-    info.appendChild(desc);
-
-    const control = document.createElement("div") as HTMLDivElement;
-    control.classList.add("setting-item-control");
-    item.appendChild(control);
-
-    return control;
-  }
-}
-
-interface ISettingConfiguration<TSettings> {
-  name: string;
-  description: string | HTMLDivElement;
-  configure: (settings: TSettings) => void;
-}
-
-class ToggleSetting {
-  private value: boolean;
-  private toggleEl: HTMLDivElement;
-  private changeCallback?: (boolean) => void;
-
-  constructor(controlEl: HTMLElement) {
-    this.toggleEl = document.createElement("div") as HTMLDivElement;
-    this.toggleEl.classList.add("checkbox-container");
-    this.toggleEl.addEventListener("click", this.onClick.bind(this));
-    controlEl.appendChild(this.toggleEl);
-  }
-
-  public getValue(): boolean {
-    return this.value;
-  }
-
-  public onChange(callback: (boolean) => void) {
-    this.changeCallback = callback;
-  }
-
-  public setValue(value: boolean) {
-    this.value = value;
-    if (value) {
-      this.toggleEl.classList.add("is-enabled");
-    } else {
-      this.toggleEl.classList.remove("is-enabled");
-    }
-
-    if (this.changeCallback) {
-      this.changeCallback(value);
-    }
-  }
-
-  private onClick() {
-    this.setValue(!this.getValue());
-  }
-}
-
-class TextSetting {
-  private inputEl: HTMLInputElement;
-  private changeCallback?: (string) => void;
-
-  constructor(controlEl: HTMLElement) {
-    this.inputEl = document.createElement("input") as HTMLInputElement;
-    this.inputEl.type = "text";
-    this.inputEl.addEventListener("input", this.onChanged.bind(this));
-    controlEl.appendChild(this.inputEl);
-  }
-
-  public getValue(): string {
-    return this.inputEl.value;
-  }
-
-  public onChange(callback: (string) => void) {
-    this.changeCallback = callback;
-  }
-
-  public setValue(value: string) {
-    this.inputEl.value = value;
-  }
-
-  private onChanged() {
-    if (this.changeCallback) {
-      this.changeCallback(this.inputEl.value);
-    }
-  }
-}
-
-class ButtonSetting {
-  private buttonEl: HTMLButtonElement;
-  private clickCallback?: () => void;
-
-  constructor(controlEl: HTMLElement) {
-    this.buttonEl = document.createElement("button") as HTMLButtonElement;
-    this.buttonEl.addEventListener("click", this.onClicked.bind(this));
-    this.buttonEl.classList.add("mod-cta");
-    controlEl.appendChild(this.buttonEl);
-  }
-
-  public setText(value: string) {
-    this.buttonEl.textContent = value;
-  }
-
-  public setClickCallback(cb: () => void) {
-    this.clickCallback = cb;
-  }
-
-  private onClicked() {
-    if (this.clickCallback) {
-      this.clickCallback();
-    }
+    new Setting(this.containerEl)
+      .setName("Render labels icon")
+      .setDesc("Whether rendered labels should include an icon.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderLabelsIcon);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions(
+            (old) => (old.renderLabelsIcon = value)
+          );
+        });
+      });
   }
 }

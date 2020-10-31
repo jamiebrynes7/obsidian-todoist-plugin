@@ -3,40 +3,28 @@ import ErrorDisplay from "./ui/ErrorDisplay.svelte";
 import { parseQuery } from "./query";
 import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api/api";
-import type { App, Settings, PluginInstance } from "./obsidian";
 import debug from "./log";
 import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
+import { App, Plugin, PluginManifest } from "obsidian";
+
+const proc = require("process");
 
 interface IInjection {
   component: SvelteComponentDev;
   workspaceLeaf: Node;
 }
 
-export default class TodoistPlugin<TBase extends Settings> {
-  public readonly version: string = "__buildVersion__";
-
-  public id: string;
-  public name: string;
-  public description: string;
-  public defaultOn: boolean;
+export default class TodoistPlugin extends Plugin {
   public options: ISettings;
 
-  private instance: PluginInstance<ISettings>;
   private api: TodoistApi;
 
-  private intervalId: number;
   private observer: MutationObserver;
   private injections: IInjection[];
 
-  private settingsBase: TBase;
+  constructor(app: App, pluginManifest: PluginManifest) {
+    super(app, pluginManifest);
 
-  constructor(SettingsBase: TBase) {
-    this.id = "todoist-query-renderer";
-    this.name = "Todoist";
-    this.description = "Materialize Todoist queries in an Obsidian note.";
-    this.defaultOn = true;
-
-    this.instance = null;
     this.options = null;
     this.api = null;
 
@@ -52,16 +40,11 @@ export default class TodoistPlugin<TBase extends Settings> {
 
     this.observer = null;
     this.injections = [];
-
-    this.settingsBase = SettingsBase;
   }
 
-  async init(app: App, instance: PluginInstance<ISettings>) {
-    this.instance = instance;
-    this.instance.registerSettingTab(
-      new (SettingsTab(this.settingsBase))(app, instance, this)
-    );
-    this.instance.registerGlobalCommand({
+  async onload() {
+    this.addSettingTab(new SettingsTab(this.app, this));
+    this.addCommand({
       id: "todoist-refresh-metadata",
       name: "Todoist: Refresh Metadata",
       callback: async () => {
@@ -76,14 +59,15 @@ export default class TodoistPlugin<TBase extends Settings> {
       },
     });
 
-    // Read in Todoist API token.
-    const fs = app.vault.adapter.fs;
-    const path = app.vault.adapter.path;
-    const basePath = app.vault.adapter.basePath;
+    let pathSep = "/";
 
-    const tokenPath = path.join(basePath, ".obsidian", "todoist-token");
-    if (fs.existsSync(tokenPath)) {
-      const token = fs.readFileSync(tokenPath).toString("utf-8");
+    if (proc.platform == "win32") {
+      pathSep = "\\";
+    }
+
+    const tokenPath = `.obsidian${pathSep}todoist-token`;
+    if (this.app.vault.adapter.exists(tokenPath, false)) {
+      const token = await this.app.vault.adapter.read(tokenPath);
       this.api = new TodoistApi(token);
       const result = await this.api.fetchMetadata();
 
@@ -93,13 +77,13 @@ export default class TodoistPlugin<TBase extends Settings> {
     } else {
       alert(`Could not load Todoist token at: ${tokenPath}`);
     }
-  }
 
-  async onEnable() {
     await this.loadOptions();
 
     // TODO: Find more elegant way of finding DOM entries. A hook of some kind?
-    this.intervalId = setInterval(this.injectQueries.bind(this), 1000);
+    this.registerInterval(
+      window.setInterval(this.injectQueries.bind(this), 1000)
+    );
 
     // We need to manually call destroy on the injected Svelte components when they are removed.
     this.observer = new MutationObserver((mutations, observer) => {
@@ -137,9 +121,7 @@ export default class TodoistPlugin<TBase extends Settings> {
     this.observer.observe(workspaceRoot, { childList: true, subtree: true });
   }
 
-  onDisable() {
-    clearInterval(this.intervalId);
-
+  onunload() {
     this.observer.disconnect();
     this.observer = null;
 
@@ -164,7 +146,6 @@ export default class TodoistPlugin<TBase extends Settings> {
         context: node,
       });
 
-      // TODO: Error handling.
       const query = parseQuery(JSON.parse(node.innerText));
 
       debug({
@@ -211,8 +192,8 @@ export default class TodoistPlugin<TBase extends Settings> {
     }
   }
 
-  async loadOptions() {
-    const options = await this.instance.loadData<ISettings>();
+  async loadOptions(): Promise<void> {
+    const options = await this.loadData();
 
     SettingsInstance.update((old) => {
       return {
@@ -221,14 +202,14 @@ export default class TodoistPlugin<TBase extends Settings> {
       };
     });
 
-    this.instance.saveData(this.options);
+    await this.saveData(this.options);
   }
 
-  writeOptions(changeOpts: (settings: ISettings) => void) {
+  async writeOptions(changeOpts: (settings: ISettings) => void): Promise<void> {
     SettingsInstance.update((old) => {
       changeOpts(old);
       return old;
     });
-    this.instance.saveData(this.options);
+    await this.saveData(this.options);
   }
 }
