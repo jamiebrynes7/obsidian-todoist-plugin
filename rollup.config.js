@@ -6,13 +6,17 @@ import autoPreprocess from "svelte-preprocess";
 import replace from "@rollup/plugin-replace";
 
 import gitVersion from "git-tag-version";
+import copy from "rollup-plugin-copy";
 
 export default {
-  input: "src/index.js",
+  input: "src/index.ts",
   output: {
-    format: "iife",
-    file: "dist/todoist.js",
+    format: "cjs",
+    file: "dist/main.js",
+    sourcemap: "inline",
+    exports: "default",
   },
+  external: ["obsidian", "path", "fs"],
   plugins: [
     replace({
       __buildVersion__: gitVersion({ uniqueSnapshot: true }),
@@ -20,13 +24,19 @@ export default {
     svelte({
       preprocess: autoPreprocess(),
     }),
-    typescript(),
+    typescript({ sourceMap: true }),
     resolve({
       browser: true,
       dedupe: ["svelte"],
     }),
     commonjs(),
+    copy({
+      targets: [
+        {
+          src: "manifest.json",
+          dest: "dist/",
+        },
+      ],
+    }),
   ],
 };
-
-function getBuildVersion() {}
