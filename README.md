@@ -10,8 +10,8 @@ _Tested with Obsidian 0.9.10 your results may vary!_
 
 ## Usage
 
-1. Download `todoist.js` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
-2. Place this into your `~/volcano/plugins` directory.
+1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
+2. Place this into your `${OBSIDIAN_VAULT}/.obsidian/plugin/todoist-sync` directory.
 3. Copy your [Todoist API token](https://todoist.com/prefs/integrations) into `.obsidian/todoist-token`. (If you are synchronizing your vault, I recommend ignoring this file for safety reasons).
 4. Open Obsidian and ensure that the Todoist plugin is enabled.
 5. Place a code block like the following in any note:
