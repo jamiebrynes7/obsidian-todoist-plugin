@@ -3,9 +3,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import autoPreprocess from "svelte-preprocess";
-import replace from "@rollup/plugin-replace";
 
-import gitVersion from "git-tag-version";
 import copy from "rollup-plugin-copy";
 
 export default {
@@ -16,11 +14,8 @@ export default {
     sourcemap: "inline",
     exports: "default",
   },
-  external: ["obsidian", "path", "fs"],
+  external: ["obsidian"],
   plugins: [
-    replace({
-      __buildVersion__: gitVersion({ uniqueSnapshot: true }),
-    }),
     svelte({
       preprocess: autoPreprocess(),
     }),

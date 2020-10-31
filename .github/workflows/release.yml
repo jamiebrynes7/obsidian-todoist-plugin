@@ -2,36 +2,46 @@ name: "Create Release"
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout source
-          uses: actions/checkout@v2
+      - name: Checkout source
+        uses: actions/checkout@v2
 
-        - name: Install NPM dependencies
-          run: npm install
-        
-        - name: Build
-          run: npm run build
+      - name: Install NPM dependencies
+        run: npm install
 
-        - name: Create release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
+      - name: Build
+        run: npm run build
 
-        - name: Upload release assets
-          uses: actions/upload-release-asset@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with: 
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: ./dist/todoist.js
-            asset_name: todoist.js
-            asset_content_type: application/javascript
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+
+      - name: Upload release assets (1/2)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/main.js
+          asset_name: main.js
+          asset_content_type: application/javascript
+
+      - name: Upload release assets (2/2)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/manifest.json
+          asset_name: manifest.js
+          asset_content_type: application/json
