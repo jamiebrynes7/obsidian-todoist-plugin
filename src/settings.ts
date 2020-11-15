@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { toInt, isPositiveInteger, notification } from "./utils";
+import { toInt, isPositiveInteger, notification, getTokenPath } from "./utils";
 import type TodoistPlugin from ".";
 import semverCompare from "semver-compare";
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
@@ -56,14 +56,16 @@ export class SettingsTab extends PluginSettingTab {
     containerEl.empty();
 
     this.pluginMetadata();
-    this.debugLogging();
+    this.apiToken();
 
     this.fadeAnimationSettings();
     this.autoRefreshSettings();
 
     this.dateSettings();
     this.projectSettings();
+
     this.labelsSettings();
+    this.debugLogging();
   }
 
   pluginMetadata() {
@@ -111,14 +113,30 @@ export class SettingsTab extends PluginSettingTab {
       });
   }
 
-  debugLogging() {
+  apiToken() {
+    const desc = document.createDocumentFragment();
+    desc.createEl("span", null, (span) => {
+      span.innerText =
+        "The Todoist API token to use when fetching tasks. You will need to restart Obsidian after setting this. You can find this token ";
+
+      span.createEl("a", null, (link) => {
+        link.href = "https://todoist.com/prefs/integrations";
+        link.innerText = "here!";
+      });
+    });
+
     new Setting(this.containerEl)
-      .setName("Debug logging")
-      .setDesc("Whether debug logging should be on or off.")
-      .addToggle((toggle) => {
-        toggle.setValue(this.plugin.options.debugLogging);
-        toggle.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.debugLogging = value));
+      .setName("Todoist API token")
+      .setDesc(desc)
+      .addTextArea(async (text) => {
+        try {
+          text.setValue(await this.app.vault.adapter.read(getTokenPath()));
+        } catch (e) {
+          /* Throw away read error if file does not exist. */
+        }
+
+        text.onChange(async (value) => {
+          await this.app.vault.adapter.write(getTokenPath(), value);
         });
       });
   }
@@ -237,6 +255,18 @@ export class SettingsTab extends PluginSettingTab {
           await this.plugin.writeOptions(
             (old) => (old.renderLabelsIcon = value)
           );
+        });
+      });
+  }
+
+  debugLogging() {
+    new Setting(this.containerEl)
+      .setName("Debug logging")
+      .setDesc("Whether debug logging should be on or off.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.debugLogging);
+        toggle.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.debugLogging = value));
         });
       });
   }
