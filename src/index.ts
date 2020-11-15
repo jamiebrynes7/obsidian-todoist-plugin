@@ -6,8 +6,8 @@ import { TodoistApi } from "./api/api";
 import debug from "./log";
 import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
 import { App, Plugin, PluginManifest } from "obsidian";
-
-const proc = require("process");
+import TodoistApiTokenModal from "./token_modal";
+import { getTokenPath } from "./utils";
 
 interface IInjection {
   component: SvelteComponentDev;
@@ -59,23 +59,28 @@ export default class TodoistPlugin extends Plugin {
       },
     });
 
-    let pathSep = "/";
-
-    if (proc.platform == "win32") {
-      pathSep = "\\";
-    }
-
-    const tokenPath = `.obsidian${pathSep}todoist-token`;
-    if (this.app.vault.adapter.exists(tokenPath, false)) {
+    const tokenPath = getTokenPath();
+    try {
       const token = await this.app.vault.adapter.read(tokenPath);
       this.api = new TodoistApi(token);
-      const result = await this.api.fetchMetadata();
+    } catch (e) {
+      var token = await new TodoistApiTokenModal(this.app).Result;
 
-      if (result.isErr()) {
-        console.error(result.unwrapErr());
+      if (token.length == 0) {
+        alert(
+          "Provided token was empty, please enter it in the settings and restart Obsidian."
+        );
+        return;
       }
-    } else {
-      alert(`Could not load Todoist token at: ${tokenPath}`);
+
+      await this.app.vault.adapter.write(tokenPath, token, () => true);
+      this.api = new TodoistApi(token);
+    }
+
+    const result = await this.api.fetchMetadata();
+
+    if (result.isErr()) {
+      console.error(result.unwrapErr());
     }
 
     await this.loadOptions();

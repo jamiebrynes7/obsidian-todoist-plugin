@@ -12,8 +12,8 @@ _Tested with Obsidian 0.9.10 your results may vary!_
 
 1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
 2. Place this into your `${OBSIDIAN_VAULT}/.obsidian/plugin/todoist-sync` directory.
-3. Copy your [Todoist API token](https://todoist.com/prefs/integrations) into `.obsidian/todoist-token`. (If you are synchronizing your vault, I recommend ignoring this file for safety reasons).
-4. Open Obsidian and ensure that the Todoist plugin is enabled.
+3. Open Obsidian and ensure that the Todoist plugin is enabled.
+4. You should get a prompt asking for your [Todoist API token](https://todoist.com/prefs/integrations). (If not, you can enter this in the settings).
 5. Place a code block like the following in any note:
    ````markdown
    ```todoist
@@ -24,6 +24,8 @@ _Tested with Obsidian 0.9.10 your results may vary!_
    ```
    ````
 6. Swap to preview mode and the plugin should replace this code block with the materialized result of that filter.
+
+> If you are synchronizing your vault, I recommend explicitly ignoring the `.obsidian/todoist-token` file for security reasons, if possible.
 
 ## Inputs
 
