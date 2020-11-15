@@ -7,8 +7,7 @@ import debug from "./log";
 import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
 import { App, Plugin, PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./token_modal";
-
-const proc = require("process");
+import { getTokenPath } from "./utils";
 
 interface IInjection {
   component: SvelteComponentDev;
@@ -60,13 +59,7 @@ export default class TodoistPlugin extends Plugin {
       },
     });
 
-    let pathSep = "/";
-
-    if (proc.platform == "win32") {
-      pathSep = "\\";
-    }
-
-    const tokenPath = `.obsidian${pathSep}todoist-token`;
+    const tokenPath = getTokenPath();
     try {
       const token = await this.app.vault.adapter.read(tokenPath);
       this.api = new TodoistApi(token);

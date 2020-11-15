@@ -1,3 +1,5 @@
+const proc = require("process");
+
 export function isPositiveInteger(str: string): boolean {
   const num = toInt(str);
   return num != Infinity && String(num) === str && num > 0;
@@ -42,4 +44,14 @@ export function notification(contents: string, timeoutMs: number) {
       element.remove();
     }, 1e3);
   }, timeoutMs);
+}
+
+export function getTokenPath(): string {
+  let pathSep = "/";
+
+  if (proc.platform == "win32") {
+    pathSep = "\\";
+  }
+
+  return `.obsidian${pathSep}todoist-token`;
 }
