@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved the setup of the plugin. Now the plugin will prompt you for an API token on launch and you can set the token through the settings.
 
+### 🔁 Changes
+
+- The 'Refresh Metadata' command no longer has a duplicate 'Todoist' identifier in front of it.
+
 ## [1.5.0] - 2020-10-31
 
 ### ✨ Features
