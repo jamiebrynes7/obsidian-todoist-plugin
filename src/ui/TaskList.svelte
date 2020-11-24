@@ -12,6 +12,7 @@
   export let api: TodoistApi;
   export let sorting: string[];
   export let renderProject: boolean = true;
+  export let renderNoTaskInfo: boolean = true;
 
   let metadata: ITodoistMetadata = null;
   const metadataUnsub = api.metadata.subscribe((value) => (metadata = value));
@@ -143,6 +144,6 @@
       </li>
     {/each}
   </ul>
-{:else}
+{:else if renderNoTaskInfo}
   <NoTaskDisplay />
 {/if}
