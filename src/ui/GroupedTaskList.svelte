@@ -28,7 +28,8 @@
     {settings}
     {api}
     {sorting}
-    renderProject={false} />
+    renderProject={false}
+    renderNoTaskInfo={false} />
 
   {#each project.sections as section (section.sectionID)}
     <div class="todoist-section">
@@ -40,7 +41,8 @@
         {settings}
         {api}
         {sorting}
-        renderProject={false} />
+        renderProject={false}
+        renderNoTaskInfo={false} />
     </div>
   {/each}
 
