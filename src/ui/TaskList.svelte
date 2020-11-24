@@ -5,6 +5,7 @@
   import type { Task, ID } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
   import type { ISettings } from "../settings";
+  import NoTaskDisplay from "./NoTaskDisplay.svelte";
 
   export let tasks: Task[];
   export let settings: ISettings;
@@ -142,4 +143,6 @@
       </li>
     {/each}
   </ul>
+{:else}
+  <NoTaskDisplay />
 {/if}

@@ -8,6 +8,7 @@
   import GroupedTaskList from "./GroupedTaskList.svelte";
   import { Result } from "../result";
   import ErrorDisplay from "./ErrorDisplay.svelte";
+  import NoTaskDisplay from "./NoTaskDisplay.svelte";
 
   export let query: IQuery;
   export let api: TodoistApi;
@@ -99,13 +100,17 @@
 <br />
 {#if query.group}
   {#if groupedTasks.isOk()}
-    {#each groupedTasks.unwrap() as project (project.projectID)}
-      <GroupedTaskList
-        {project}
-        {settings}
-        {api}
-        sorting={query.sorting ?? []} />
-    {/each}
+    {#if groupedTasks.unwrap().length == 0}
+      <NoTaskDisplay />
+    {:else}
+      {#each groupedTasks.unwrap() as project (project.projectID)}
+        <GroupedTaskList
+          {project}
+          {settings}
+          {api}
+          sorting={query.sorting ?? []} />
+      {/each}
+    {/if}
   {:else}
     <ErrorDisplay error={groupedTasks.unwrapErr()} />
   {/if}
