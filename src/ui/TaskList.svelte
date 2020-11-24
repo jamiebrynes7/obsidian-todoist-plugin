@@ -87,7 +87,8 @@
               {/if}
               {metadata.projects.get_or_default(todo.projectID, UnknownProject).name}
               {#if todo.sectionID}
-                | {metadata.sections.get_or_default(todo.sectionID, UnknownSection).name}
+                |
+                {metadata.sections.get_or_default(todo.sectionID, UnknownSection).name}
               {/if}
             </div>
           {/if}
@@ -123,7 +124,9 @@
                 </svg>
               {/if}
               {#each todo.labelIDs as labelID, i}
-                {metadata.labels.get_or_default(labelID, 'Unknown label')}{#if i != todo.labelIDs.length - 1},{/if}
+                {metadata.labels.get_or_default(labelID, 'Unknown label')}{#if i != todo.labelIDs.length - 1}
+                  ,
+                {/if}
               {/each}
             </div>
           {/if}
