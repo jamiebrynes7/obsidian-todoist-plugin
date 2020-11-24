@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - Improved the setup of the plugin. Now the plugin will prompt you for an API token on launch and you can set the token through the settings.
+- There is now a message if your query returns no tasks.
 
 ### 🔁 Changes
 
