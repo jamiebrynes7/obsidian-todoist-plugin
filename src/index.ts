@@ -46,7 +46,7 @@ export default class TodoistPlugin extends Plugin {
     this.addSettingTab(new SettingsTab(this.app, this));
     this.addCommand({
       id: "todoist-refresh-metadata",
-      name: "Todoist: Refresh Metadata",
+      name: "Refresh Metadata",
       callback: async () => {
         if (this.api != null) {
           debug("Refreshing metadata");
