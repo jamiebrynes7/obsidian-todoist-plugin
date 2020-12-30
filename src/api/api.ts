@@ -16,6 +16,13 @@ export interface ITodoistMetadata {
   labels: ExtendedMap<LabelID, string>;
 }
 
+export interface ICreateTaskOptions {
+  project_id?: number;
+  section_id?: number;
+  due_date?: string;
+  label_ids?: number[];
+}
+
 export class TodoistApi {
   public metadata: Writable<ITodoistMetadata>;
   public metadataInstance: ITodoistMetadata;
@@ -30,6 +37,33 @@ export class TodoistApi {
     });
 
     this.metadata.subscribe((value) => (this.metadataInstance = value));
+  }
+
+  async createTask(
+    content: string,
+    options?: ICreateTaskOptions
+  ): Promise<Result<object, Error>> {
+    const url = "https://api.todoist.com/rest/v1/tasks";
+    const data = { content: content, ...(options ?? {}) };
+
+    try {
+      const result = await fetch(url, {
+        method: "POST",
+        headers: new Headers({
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+        }),
+        body: JSON.stringify(data),
+      });
+
+      if (result.ok) {
+        return Result.Ok({});
+      } else {
+        return Result.Err(new Error("Failed to create task"));
+      }
+    } catch (e) {
+      return Result.Err(e);
+    }
   }
 
   async getTasks(filter?: string): Promise<Result<Task[], Error>> {
