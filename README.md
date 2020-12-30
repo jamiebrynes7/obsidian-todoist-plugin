@@ -4,7 +4,7 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.9.10 your results may vary!_
+_Tested with Obsidian 0.10.3 your results may vary!_
 
 ![Example gif](./assets/obsidian-todoist-sync.gif)
 
