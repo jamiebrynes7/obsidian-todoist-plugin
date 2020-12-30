@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This is accessible through a command which will open a modal for the task details.
   - Any selected text under the cursor will be pre-filled as the task text.
   - This does _not_ support Todoist's syntax such as '#' for projects, '@' for labels, and smart date recognition.
+- Add default CSS for the default Obsidian theme.
 
 ### 🔁 Changes
 

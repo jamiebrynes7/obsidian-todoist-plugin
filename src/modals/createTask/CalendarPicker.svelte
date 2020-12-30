@@ -90,12 +90,12 @@
   }
 
   .selected-day {
-    background-color: var(--background-modifier-form-field-highlighted);
+    background-color: var(--background-secondary);
     color: var(--text-accent);
   }
 
   .day:not(:empty):hover {
-    background-color: var(--background-modifier-form-field-highlighted);
+    background-color: var(--background-secondary);
   }
 
   .month-controls {
