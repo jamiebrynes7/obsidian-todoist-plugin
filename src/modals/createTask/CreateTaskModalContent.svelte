@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Moment } from "moment";
   import { Notice } from "obsidian";
-
   import { onMount, tick } from "svelte";
   import type {
     ICreateTaskOptions,
@@ -124,4 +123,6 @@
     </div>
   </div>
 </div>
-<button on:click={triggerClose}>Add</button>
+<button
+  on:click={triggerClose}
+  disabled={(value?.length ?? 0) == 0}>Add</button>
