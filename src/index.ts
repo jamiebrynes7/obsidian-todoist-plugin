@@ -1,6 +1,6 @@
 import TodoistQuery from "./ui/TodoistQuery.svelte";
 import ErrorDisplay from "./ui/ErrorDisplay.svelte";
-import { parseQuery } from "./query";
+import IQuery, { parseQuery } from "./query";
 import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api/api";
 import debug from "./log";
@@ -9,6 +9,7 @@ import { App, Plugin, PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterTokenModal";
 import { getTokenPath } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
+import { Result } from "./result";
 
 interface IInjection {
   component: SvelteComponentDev;
@@ -165,7 +166,15 @@ export default class TodoistPlugin extends Plugin {
         context: node,
       });
 
-      const query = parseQuery(JSON.parse(node.innerText));
+      let query: Result<IQuery, Error> = null;
+
+      try {
+        query = parseQuery(JSON.parse(node.innerText));
+      } catch (e) {
+        query = Result.Err(
+          new Error(`Query was not valid JSON: ${e.message}.`)
+        );
+      }
 
       debug({
         msg: "Parsed query",
