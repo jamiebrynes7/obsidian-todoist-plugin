@@ -4,7 +4,7 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.9.10 your results may vary!_
+_Tested with Obsidian 0.10.3 your results may vary!_
 
 ![Example gif](./assets/obsidian-todoist-sync.gif)
 
@@ -36,6 +36,18 @@ _Tested with Obsidian 0.9.10 your results may vary!_
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.             | number   | null    |
 | `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
 | `group`       |          | Denotes whether this query should have its task grouped by project & section.                                     | bool     | false   |
+
+## Commands
+
+There are also a few commands bundled in with the plugin:
+
+1. 'Refresh Metadata'
+
+   This command refreshes all the metadata (projects, sections, and labels) for Todoist tasks. This is done at startup.
+
+2. 'Add Todoist task'
+
+   This command opens up a modal for creating a task in Todoist. You can set the project/section, labels, and due date through this modal. Any text selected when this command is executed will be pulled for the task content.
 
 ## CSS
 

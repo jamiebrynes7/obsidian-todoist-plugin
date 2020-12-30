@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved the setup of the plugin. Now the plugin will prompt you for an API token on launch and you can set the token through the settings.
 - There is now a message if your query returns no tasks.
+- A long awaited and requested feature is finally here! You can create Todoist tasks from within Obsidian.
+  - This is accessible through a command which will open a modal for the task details.
+  - Any selected text under the cursor will be pre-filled as the task text.
+  - This does _not_ support Todoist's syntax such as '#' for projects, '@' for labels, and smart date recognition.
 
 ### 🔁 Changes
 

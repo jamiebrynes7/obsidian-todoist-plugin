@@ -6,8 +6,9 @@ import { TodoistApi } from "./api/api";
 import debug from "./log";
 import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
 import { App, Plugin, PluginManifest } from "obsidian";
-import TodoistApiTokenModal from "./token_modal";
+import TodoistApiTokenModal from "./modals/enterTokenModal";
 import { getTokenPath } from "./utils";
+import CreateTaskModal from "./modals/createTask/createTaskModal";
 
 interface IInjection {
   component: SvelteComponentDev;
@@ -44,6 +45,7 @@ export default class TodoistPlugin extends Plugin {
 
   async onload() {
     this.addSettingTab(new SettingsTab(this.app, this));
+
     this.addCommand({
       id: "todoist-refresh-metadata",
       name: "Refresh Metadata",
@@ -56,6 +58,18 @@ export default class TodoistPlugin extends Plugin {
             console.error(result.unwrapErr());
           }
         }
+      },
+    });
+
+    this.addCommand({
+      id: "todoist-add-task",
+      name: "Add Todoist task",
+      callback: () => {
+        new CreateTaskModal(
+          this.app,
+          this.api,
+          window.getSelection().toString()
+        );
       },
     });
 
