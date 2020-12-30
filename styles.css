@@ -30,7 +30,7 @@
   width: 17px;
 }
 
-.task-overdue {
+.task-date.task-overdue {
   color: var(--text-error);
 }
 
