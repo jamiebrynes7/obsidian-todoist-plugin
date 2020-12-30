@@ -82,7 +82,7 @@
 
   .date-input:hover {
     border: 1px solid var(--interactive-accent);
-    background-color: var(--background-modifier-form-field-highlighted);
+    background-color: var(--background-modifier-form-highlighted);
   }
 
   .date-preview {
@@ -105,7 +105,7 @@
     position: absolute;
     z-index: 2;
     height: auto;
-    background-color: var(--background-modifier-form-field);
+    background-color: var(--background-primary);
   }
 
   .specific-date-option {
@@ -115,7 +115,7 @@
   }
 
   .specific-date-option:hover {
-    background-color: var(--background-modifier-form-field-highlighted);
+    background-color: var(--background-secondary);
   }
 
   .calendar-container {

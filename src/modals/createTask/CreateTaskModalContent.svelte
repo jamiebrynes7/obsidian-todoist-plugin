@@ -72,15 +72,16 @@
     --borderFocusColor: var(--interactive-accent);
 
     --background: var(--background-modifier-form-field);
-    --listBackground: var(--background-modifier-form-field);
+    --listBackground: var(--background-primary);
 
-    --itemIsActiveBG: var(--menu-selection);
-    --itemIsActiveColor: var(--menu-selection-text);
-    --itemHoverBG: var(--background-modifier-form-field-highlighted);
+    --itemIsActiveBG: var(--background-secondary);
+    --itemIsActiveColor: var(--text-normal);
+    --itemHoverBG: var(--background-secondary);
     --itemColor: var(--text-normal);
 
-    --multiItemBG: var(--menu-selection);
-    --multiItemActiveBG: var(--menu-selection);
+    --multiItemBG: var(--background-secondary);
+    --multiItemActiveColor: var(--text-normal);
+    --multiItemActiveBG: var(--background-secondary-alt);
 
     margin-top: 0.5em;
     display: flex;
