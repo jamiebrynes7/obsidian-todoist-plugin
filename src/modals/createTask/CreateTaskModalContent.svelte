@@ -14,8 +14,8 @@
 
   export let api: TodoistApi;
   export let close: () => void;
-
   export let value: string;
+
   let activeLabels: LabelOption[] = null;
   let activeProject: ProjectOption = null;
   let date: Moment = null;

@@ -65,7 +65,11 @@ export default class TodoistPlugin extends Plugin {
       id: "todoist-add-task",
       name: "Add Todoist task",
       callback: () => {
-        new CreateTaskModal(this.app, this.api);
+        new CreateTaskModal(
+          this.app,
+          this.api,
+          window.getSelection().toString()
+        );
       },
     });
 
