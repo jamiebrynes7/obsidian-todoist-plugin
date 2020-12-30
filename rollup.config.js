@@ -31,6 +31,10 @@ export default {
           src: "manifest.json",
           dest: "dist/",
         },
+        {
+          src: "styles.css",
+          dest: "dist/",
+        },
       ],
     }),
   ],
