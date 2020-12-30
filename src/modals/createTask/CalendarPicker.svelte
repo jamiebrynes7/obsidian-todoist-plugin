@@ -48,8 +48,6 @@
       monthData.push(week);
     }
 
-    console.log(monthData);
-
     return monthData;
   }
 
