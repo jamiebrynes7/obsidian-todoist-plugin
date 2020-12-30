@@ -37,6 +37,18 @@ _Tested with Obsidian 0.10.3 your results may vary!_
 | `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
 | `group`       |          | Denotes whether this query should have its task grouped by project & section.                                     | bool     | false   |
 
+## Commands
+
+There are also a few commands bundled in with the plugin:
+
+1. 'Refresh Metadata'
+
+   This command refreshes all the metadata (projects, sections, and labels) for Todoist tasks. This is done at startup.
+
+2. 'Add Todoist task'
+
+   This command opens up a modal for creating a task in Todoist. You can set the project/section, labels, and due date through this modal. Any text selected when this command is executed will be pulled for the task content.
+
 ## CSS
 
 I also maintain an Obsidian theme which has support out of the box for this plugin, for a complete example of CSS for this plugin, check out [the source](https://github.com/jamiebrynes7/moonlight-obsidian-theme/blob/master/src/modules/extensions/todoist.scss).
