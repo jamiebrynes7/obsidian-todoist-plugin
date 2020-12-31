@@ -9,6 +9,7 @@
   } from "../../api/api";
   import DateSelector from "./DateSelector.svelte";
   import LabelSelector from "./LabelSelector.svelte";
+  import PriorityPicker from "./PriorityPicker.svelte";
   import ProjectSelector from "./ProjectSelector.svelte";
   import type { LabelOption, ProjectOption } from "./types";
 
@@ -20,6 +21,7 @@
   let activeLabels: LabelOption[] = null;
   let activeProject: ProjectOption = null;
   let date: Moment = null;
+  let priority: number = 1;
 
   let inputEl: HTMLInputElement;
 
@@ -37,7 +39,9 @@
   });
 
   async function triggerClose() {
-    let opts: ICreateTaskOptions = {};
+    let opts: ICreateTaskOptions = {
+      priority: priority,
+    };
 
     if (activeLabels) {
       opts.label_ids = activeLabels.map((label) => label.value);
@@ -127,6 +131,12 @@
     <span>Date</span>
     <div>
       <DateSelector bind:selected={date} />
+    </div>
+  </div>
+  <div class="select">
+    <span>Priority</span>
+    <div>
+      <PriorityPicker bind:selected={priority} />
     </div>
   </div>
 </div>
