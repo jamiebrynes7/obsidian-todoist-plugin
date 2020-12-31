@@ -2,7 +2,7 @@ import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api/api";
 import debug from "./log";
 import { App, Plugin, PluginManifest } from "obsidian";
-import TodoistApiTokenModal from "./modals/enterTokenModal";
+import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import { getTokenPath } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
 import QueryInjector from "./queryInjector";
@@ -70,7 +70,9 @@ export default class TodoistPlugin extends Plugin {
       const token = await this.app.vault.adapter.read(tokenPath);
       this.api = new TodoistApi(token);
     } catch (e) {
-      var token = await new TodoistApiTokenModal(this.app).Result;
+      const tokenModal = new TodoistApiTokenModal(this.app);
+      await tokenModal.waitForClose;
+      const token = tokenModal.token;
 
       if (token.length == 0) {
         alert(
