@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - JSON parsing errors are now correctly handled and displayed to the user.
 
+### ⚙ Internal
+
+- Refactored component injection to use the `MarkdownPostProcessor` API.
+
 ## [1.5.0] - 2020-10-31
 
 ### ✨ Features
