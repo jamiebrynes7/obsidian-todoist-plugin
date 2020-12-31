@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.6.0] - 2020-12-31
+
 ### ✨ Features
 
 - A long awaited and requested feature is finally here! You can create Todoist tasks from within Obsidian.
