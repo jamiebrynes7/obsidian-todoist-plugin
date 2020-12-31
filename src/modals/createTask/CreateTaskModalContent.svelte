@@ -15,6 +15,7 @@
   export let api: TodoistApi;
   export let close: () => void;
   export let value: string;
+  export let initialCursorPosition: number | undefined;
 
   let activeLabels: LabelOption[] = null;
   let activeProject: ProjectOption = null;
@@ -28,6 +29,11 @@
   onMount(async () => {
     await tick();
     inputEl.focus();
+
+    if (typeof initialCursorPosition != "undefined") {
+      inputEl.setSelectionRange(initialCursorPosition, initialCursorPosition);
+      inputEl.scrollLeft = 0;
+    }
   });
 
   async function triggerClose() {

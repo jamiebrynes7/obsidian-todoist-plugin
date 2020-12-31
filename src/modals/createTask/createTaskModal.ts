@@ -5,7 +5,12 @@ import CreateTaskModalContent from "./CreateTaskModalContent.svelte";
 export default class CreateTaskModal extends Modal {
   private readonly modalContent: CreateTaskModalContent;
 
-  constructor(app: App, api: TodoistApi, initialValue?: string) {
+  constructor(
+    app: App,
+    api: TodoistApi,
+    initialValue: string,
+    initialCursorPosition?: number
+  ) {
     super(app);
 
     this.titleEl.innerText = "Create new Todoist task";
@@ -16,6 +21,7 @@ export default class CreateTaskModal extends Modal {
         api: api,
         close: () => this.close(),
         value: initialValue,
+        initialCursorPosition: initialCursorPosition,
       },
     });
 

@@ -1,3 +1,5 @@
+import type { App } from "obsidian";
+
 const proc = require("process");
 
 export function isPositiveInteger(str: string): boolean {
@@ -54,4 +56,20 @@ export function getTokenPath(): string {
   }
 
   return `.obsidian${pathSep}todoist-token`;
+}
+
+export function getCurrentPageMdLink(app: App): string {
+  const vaultName = app.vault.adapter.getName();
+
+  const currentView = app.workspace.activeLeaf.view;
+
+  if (currentView.getViewType() != "markdown") {
+    return "";
+  }
+
+  const filePath: string = app.workspace.activeLeaf.view.getState().file;
+
+  return `[${filePath}](obsidian://open?vault=${encodeURIComponent(
+    vaultName
+  )}&file=${encodeURIComponent(filePath)})`;
 }

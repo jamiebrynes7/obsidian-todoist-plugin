@@ -3,7 +3,7 @@ import { TodoistApi } from "./api/api";
 import debug from "./log";
 import { App, Plugin, PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
-import { getTokenPath } from "./utils";
+import { getCurrentPageMdLink, getTokenPath } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
 import QueryInjector from "./queryInjector";
 
@@ -61,6 +61,20 @@ export default class TodoistPlugin extends Plugin {
           this.app,
           this.api,
           window.getSelection().toString()
+        );
+      },
+    });
+
+    this.addCommand({
+      id: "todoist-add-task",
+      name: "Add Todoist task with the current page",
+      callback: () => {
+        const currentSelection = window.getSelection().toString();
+        new CreateTaskModal(
+          this.app,
+          this.api,
+          `${currentSelection} ${getCurrentPageMdLink(this.app)}`,
+          currentSelection.length
         );
       },
     });
