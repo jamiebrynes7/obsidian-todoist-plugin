@@ -66,7 +66,7 @@ export default class TodoistPlugin extends Plugin {
     });
 
     this.addCommand({
-      id: "todoist-add-task",
+      id: "todoist-add-task-current-page",
       name: "Add Todoist task with the current page",
       callback: () => {
         const currentSelection = window.getSelection().toString();

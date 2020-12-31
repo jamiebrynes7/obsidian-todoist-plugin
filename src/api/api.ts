@@ -17,6 +17,7 @@ export interface ITodoistMetadata {
 }
 
 export interface ICreateTaskOptions {
+  priority: number;
   project_id?: number;
   section_id?: number;
   due_date?: string;
