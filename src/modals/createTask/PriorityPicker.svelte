@@ -3,7 +3,7 @@
 
   interface PriorityOption {
     label: string;
-    value: number | undefined;
+    value: number;
   }
 
   // Note: Priority is defined in the Todoist API opposite to that in the UI.
