@@ -1,28 +1,18 @@
-import TodoistQuery from "./ui/TodoistQuery.svelte";
-import ErrorDisplay from "./ui/ErrorDisplay.svelte";
-import IQuery, { parseQuery } from "./query";
 import { SettingsInstance, ISettings, SettingsTab } from "./settings";
 import { TodoistApi } from "./api/api";
 import debug from "./log";
-import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
 import { App, Plugin, PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterTokenModal";
 import { getTokenPath } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
-import { Result } from "./result";
-
-interface IInjection {
-  component: SvelteComponentDev;
-  workspaceLeaf: Node;
-}
+import QueryInjector from "./queryInjector";
 
 export default class TodoistPlugin extends Plugin {
   public options: ISettings;
 
   private api: TodoistApi;
 
-  private observer: MutationObserver;
-  private injections: IInjection[];
+  private readonly queryInjector: QueryInjector;
 
   constructor(app: App, pluginManifest: PluginManifest) {
     super(app, pluginManifest);
@@ -30,7 +20,6 @@ export default class TodoistPlugin extends Plugin {
     this.options = null;
     this.api = null;
 
-    // TODO: This leaks a subscription. Does JS have destructors?
     SettingsInstance.subscribe((value) => {
       debug({
         msg: "Settings changed",
@@ -40,11 +29,13 @@ export default class TodoistPlugin extends Plugin {
       this.options = value;
     });
 
-    this.observer = null;
-    this.injections = [];
+    this.queryInjector = new QueryInjector();
   }
 
   async onload() {
+    this.registerMarkdownPostProcessor(
+      this.queryInjector.onNewBlock.bind(this.queryInjector)
+    );
     this.addSettingTab(new SettingsTab(this.app, this));
 
     this.addCommand({
@@ -92,6 +83,8 @@ export default class TodoistPlugin extends Plugin {
       this.api = new TodoistApi(token);
     }
 
+    this.queryInjector.setApi(this.api);
+
     const result = await this.api.fetchMetadata();
 
     if (result.isErr()) {
@@ -99,125 +92,6 @@ export default class TodoistPlugin extends Plugin {
     }
 
     await this.loadOptions();
-
-    // TODO: Find more elegant way of finding DOM entries. A hook of some kind?
-    this.registerInterval(
-      window.setInterval(this.injectQueries.bind(this), 1000)
-    );
-
-    // We need to manually call destroy on the injected Svelte components when they are removed.
-    this.observer = new MutationObserver((mutations, observer) => {
-      if (this.injections.length == 0) {
-        return;
-      }
-
-      mutations.forEach((mutation) => {
-        mutation.removedNodes.forEach((removed) => {
-          const removedIndex = this.injections.findIndex(
-            (ele) => ele.workspaceLeaf == removed
-          );
-
-          if (removedIndex == -1) {
-            return;
-          }
-
-          const { workspaceLeaf, component } = this.injections[removedIndex];
-
-          debug({
-            msg: "Removing mounted Svelte component",
-            context: {
-              root: workspaceLeaf,
-              component: component,
-            },
-          });
-
-          this.injections.splice(removedIndex, 1);
-          component.$destroy();
-        });
-      });
-    });
-
-    const workspaceRoot = document.getElementsByClassName("workspace")[0];
-    this.observer.observe(workspaceRoot, { childList: true, subtree: true });
-  }
-
-  onunload() {
-    this.observer.disconnect();
-    this.observer = null;
-
-    this.injections.forEach((injection) => injection.component.$destroy());
-    this.injections = [];
-  }
-
-  injectQueries() {
-    if (this.api == null) {
-      return;
-    }
-
-    const nodes = document.querySelectorAll<HTMLPreElement>(
-      'pre[class*="language-todoist"]'
-    );
-
-    for (var i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-
-      debug({
-        msg: "Found Todoist query.",
-        context: node,
-      });
-
-      let query: Result<IQuery, Error> = null;
-
-      try {
-        query = parseQuery(JSON.parse(node.innerText));
-      } catch (e) {
-        query = Result.Err(
-          new Error(`Query was not valid JSON: ${e.message}.`)
-        );
-      }
-
-      debug({
-        msg: "Parsed query",
-        context: query,
-      });
-
-      const root = node.parentElement;
-      root.removeChild(node);
-
-      let queryNode: SvelteComponentDev = null;
-
-      if (query.isOk()) {
-        queryNode = new TodoistQuery({
-          target: root,
-          props: {
-            query: query.unwrap(),
-            api: this.api,
-          },
-        });
-      } else {
-        queryNode = new ErrorDisplay({
-          target: root,
-          props: {
-            error: query.unwrapErr(),
-          },
-        });
-      }
-
-      const workspaceLeaf = root.closest(".workspace-leaf");
-      workspaceLeaf.classList.add("contains-todoist-query");
-
-      const injection = {
-        component: queryNode,
-        workspaceLeaf: workspaceLeaf,
-      };
-
-      debug({
-        msg: "Injected Todoist query.",
-        context: injection,
-      });
-
-      this.injections.push(injection);
-    }
   }
 
   async loadOptions(): Promise<void> {
