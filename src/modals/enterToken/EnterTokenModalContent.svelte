@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let onSubmit: (string) => void;
+  export let onSubmit: (value: string) => void;
 
   let tokenInput: HTMLInputElement;
 </script>
