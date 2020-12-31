@@ -49,6 +49,10 @@ There are also a few commands bundled in with the plugin:
 
    This command opens up a modal for creating a task in Todoist. You can set the project/section, labels, and due date through this modal. Any text selected when this command is executed will be pulled for the task content.
 
+3. 'Add Todoist task with the current page'
+
+   Similiar to the previous command, this one also appends a link to the current active page to the task input.
+
 ## CSS
 
 This plugin comes with default CSS intended for use with the default Obsidian themes.
