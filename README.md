@@ -47,7 +47,7 @@ There are also a few commands bundled in with the plugin:
 
 2. 'Add Todoist task'
 
-   This command opens up a modal for creating a task in Todoist. You can set the project/section, labels, and due date through this modal. Any text selected when this command is executed will be pulled for the task content.
+   This command opens up a modal for creating a task in Todoist. You can set the project/section, labels, priority, and due date through this modal. Any text selected when this command is executed will be pulled for the task content.
 
 3. 'Add Todoist task with the current page'
 
