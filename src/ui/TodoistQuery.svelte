@@ -98,28 +98,30 @@
   </svg>
 </button>
 <br />
-{#if query.group}
-  {#if groupedTasks.isOk()}
-    {#if groupedTasks.unwrap().length == 0}
-      <NoTaskDisplay />
+{#if !fetching}
+  {#if query.group}
+    {#if groupedTasks.isOk()}
+      {#if groupedTasks.unwrap().length == 0}
+        <NoTaskDisplay />
+      {:else}
+        {#each groupedTasks.unwrap() as project (project.projectID)}
+          <GroupedTaskList
+            {project}
+            {settings}
+            {api}
+            sorting={query.sorting ?? []} />
+        {/each}
+      {/if}
     {:else}
-      {#each groupedTasks.unwrap() as project (project.projectID)}
-        <GroupedTaskList
-          {project}
-          {settings}
-          {api}
-          sorting={query.sorting ?? []} />
-      {/each}
+      <ErrorDisplay error={groupedTasks.unwrapErr()} />
     {/if}
+  {:else if tasks.isOk()}
+    <TaskList
+      tasks={tasks.unwrap()}
+      {settings}
+      {api}
+      sorting={query.sorting ?? []} />
   {:else}
-    <ErrorDisplay error={groupedTasks.unwrapErr()} />
+    <ErrorDisplay error={tasks.unwrapErr()} />
   {/if}
-{:else if tasks.isOk()}
-  <TaskList
-    tasks={tasks.unwrap()}
-    {settings}
-    {api}
-    sorting={query.sorting ?? []} />
-{:else}
-  <ErrorDisplay error={tasks.unwrapErr()} />
 {/if}
