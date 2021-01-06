@@ -15,6 +15,7 @@
 
   let settings: ISettings = null;
   let autoRefreshIntervalId: number = null;
+  let fetchedOnce: boolean = false;
 
   const settingsUnsub = SettingsInstance.subscribe((value) => {
     settings = value;
@@ -71,6 +72,8 @@
       } else {
         tasks = await api.getTasks(query.filter);
       }
+
+      fetchedOnce = true;
     } finally {
       fetching = false;
     }
@@ -98,7 +101,7 @@
   </svg>
 </button>
 <br />
-{#if !fetching}
+{#if fetchedOnce}
   {#if query.group}
     {#if groupedTasks.isOk()}
       {#if groupedTasks.unwrap().length == 0}

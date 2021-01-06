@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Bug Fixes
 
+- Refreshing tasks no longer causes any existing task to disappear and then reappear.
 - Use `MarkdownRenderChild` correctly to prevent potential memory leaks.
 
 ## [1.6.0] - 2020-12-31
