@@ -4,13 +4,13 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.10.3 your results may vary!_
+_Tested with Obsidian 0.10.6 your results may vary!_
 
 ![Example gif](./assets/obsidian-todoist-sync.gif)
 
 ## Usage
 
-1. Download `main.js` and `manifest.json` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
+1. Download `main.js`, `styles.css`, and `manifest.json` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
 2. Place this into your `${OBSIDIAN_VAULT}/.obsidian/plugin/todoist-sync` directory.
 3. Open Obsidian and ensure that the Todoist plugin is enabled.
 4. You should get a prompt asking for your [Todoist API token](https://todoist.com/prefs/integrations). (If not, you can enter this in the settings).

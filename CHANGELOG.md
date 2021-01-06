@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.6.1] - 2021-01-06
+
 ### 🐛 Bug Fixes
 
 - Refreshing tasks no longer causes any existing task to disappear and then reappear.
