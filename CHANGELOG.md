@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### 🐛 Bug Fixes
+
+- Use `MarkdownRenderChild` correctly to prevent potential memory leaks.
+
 ## [1.6.0] - 2020-12-31
 
 ### ✨ Features

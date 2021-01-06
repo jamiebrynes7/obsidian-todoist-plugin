@@ -91,8 +91,7 @@ export default class QueryInjector {
       }
     });
 
-    // TODO: Inherit from MarkdownRenderChild when its exported.
-    pendingQuery.ctx.addChild((child as unknown) as MarkdownRenderChild);
+    pendingQuery.ctx.addChild(child);
   }
 }
 
@@ -101,8 +100,7 @@ interface PendingQuery {
   ctx: MarkdownPostProcessorContext;
 }
 
-class InjectedQuery extends Component {
-  private readonly containerEl: HTMLElement;
+class InjectedQuery extends MarkdownRenderChild {
   private readonly createComp: (root: HTMLElement) => SvelteComponentDev;
   private component: SvelteComponentDev;
 
