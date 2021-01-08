@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### 🔁 Changes
+
+- Removed built-in update checker as Obsidian has one for plugins now!
+
 ## [1.6.1] - 2021-01-06
 
 ### 🐛 Bug Fixes
