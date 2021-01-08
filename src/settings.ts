@@ -1,7 +1,6 @@
 import { writable } from "svelte/store";
 import { toInt, isPositiveInteger, notification, getTokenPath } from "./utils";
 import type TodoistPlugin from ".";
-import semverCompare from "semver-compare";
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 
 export const SettingsInstance = writable<ISettings>({
@@ -82,35 +81,6 @@ export class SettingsTab extends PluginSettingTab {
     span.appendChild(changelogLink);
 
     desc.appendChild(span);
-
-    new Setting(this.containerEl)
-      .setName(`Current Version: ${this.plugin.manifest.version}`)
-      .setDesc(desc)
-      .addButton((button) => {
-        button.setButtonText("Check for updates");
-        button.onClick(async () => {
-          new Notice("Checking for updates...");
-
-          try {
-            let resp = await fetch(
-              "https://api.github.com/repos/jamiebrynes7/obsidian-todoist-plugin/releases/latest"
-            );
-
-            let data = await resp.json();
-            let tag: string = data.tag_name;
-
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            if (semverCompare(tag, this.plugin.manifest.version) == 1) {
-              new Notice("Update available!");
-            } else {
-              new Notice("Todoist plugin up-to-date");
-            }
-          } catch (e) {
-            new Notice("Failed to check for updates.");
-          }
-        });
-      });
   }
 
   apiToken() {
