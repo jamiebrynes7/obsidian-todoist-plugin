@@ -21,7 +21,7 @@ export default class QueryInjector {
 
   onNewBlock(el: HTMLElement, ctx: MarkdownPostProcessorContext) {
     const node = el.querySelector<HTMLPreElement>(
-      'pre[class*="language-todoist"]'
+      'code[class*="language-todoist"]'
     );
 
     if (!node) {
@@ -69,8 +69,9 @@ export default class QueryInjector {
       context: query,
     });
 
-    const root = pendingQuery.node.parentElement;
-    root.removeChild(pendingQuery.node);
+    const parent = pendingQuery.node.parentElement;
+    const root = parent.parentElement;
+    root.removeChild(parent);
 
     const child = new InjectedQuery(root, (root: HTMLElement) => {
       if (query.isOk()) {

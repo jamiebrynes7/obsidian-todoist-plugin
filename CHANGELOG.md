@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed built-in update checker as Obsidian has one for plugins now!
 
+### 🐛 Bug Fixes
+
+- Fixed an issue where queries didn't resolve on first load.
+
 ## [1.6.1] - 2021-01-06
 
 ### 🐛 Bug Fixes
