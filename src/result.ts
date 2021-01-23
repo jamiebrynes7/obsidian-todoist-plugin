@@ -66,6 +66,18 @@ export class Result<T, E> {
     return this.error;
   }
 
+  public map<U>(func: (ok: T) => U): Result<U, E> {
+    if (this.isOk()) {
+      return Result.Ok<U, E>(func(this.ok));
+    } else {
+      return this.intoErr<U>();
+    }
+  }
+
+  public unwrapOr(val: T): T {
+    return this.isOk() ? this.ok : val;
+  }
+
   public intoErr<T2>(): Result<T2, E> {
     return Result.Err(this.error);
   }
