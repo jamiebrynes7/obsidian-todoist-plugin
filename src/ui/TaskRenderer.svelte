@@ -5,6 +5,7 @@
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
+  import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
   import TaskList from "./TaskList.svelte";
 
@@ -61,9 +62,28 @@
         return "todoist-p1";
     }
   }
+
+  function onClickTaskContainer(evt: MouseEvent) {
+    if (evt.button == 2) {
+      evt.stopPropagation();
+      evt.preventDefault();
+
+      showTaskContext(
+        {
+          task: todo,
+          onClickTask: onClickTask,
+        },
+        {
+          x: evt.pageX,
+          y: evt.pageY,
+        }
+      );
+    }
+  }
 </script>
 
 <li
+  on:mouseup={onClickTaskContainer}
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
   class="task-list-item {todo.isOverdue() ? 'task-overdue' : ''}
           {todo.hasTime ? 'has-time' : 'has-no-time'}">
