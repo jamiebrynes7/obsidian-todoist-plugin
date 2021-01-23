@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Uncompletable tasks have a `disabled` checkbox, this may look different depending on your theme, but it will stop you completing these tasks accidentally.
 - You can now template the number of tasks returned by the query in the query name by using `{task_count}`
   - For example, setting the name to `Tasks ({task_count})` will render as `Tasks (10)` if there are 10 tasks returned by the query.
+- Right clicking on a task will now open a context menu where you can either complete the task or open it in the browser or application.
 
 ## [1.6.2] - 2021-01-13
 
