@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Markdown within tasks is now rendered as part of the task. This means that bold, italics and inline code blocks are supported, as are links (both internal and external).
 - Uncompletable tasks have a `disabled` checkbox, this may look different depending on your theme, but it will stop you completing these tasks accidentally.
+- You can now template the number of tasks returned by the query in the query name by using `{task_count}`
+  - For example, setting the name to `Tasks ({task_count})` will render as `Tasks (10)` if there are 10 tasks returned by the query.
 
 ## [1.6.2] - 2021-01-13
 

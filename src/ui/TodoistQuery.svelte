@@ -44,6 +44,16 @@
     }
   }
 
+  $: taskCount = query.group
+    ? groupedTasks
+        .map((prjs) => prjs.reduce((sum, prj) => sum + prj.count(), 0))
+        .unwrapOr(0)
+    : tasks
+        .map((tasks) => tasks.reduce((sum, task) => sum + task.count(), 0))
+        .unwrapOr(0);
+
+  $: title = query.name.replace("{task_count}", `${taskCount}`);
+
   let tasks: Result<Task[], Error> = Result.Ok([]);
   let groupedTasks: Result<Project[], Error> = Result.Ok([]);
   let fetching: boolean = false;
@@ -80,7 +90,7 @@
   }
 </script>
 
-<h4 class="todoist-query-title">{query.name}</h4>
+<h4 class="todoist-query-title">{title}</h4>
 <button
   class="todoist-refresh-button"
   on:click={async () => {

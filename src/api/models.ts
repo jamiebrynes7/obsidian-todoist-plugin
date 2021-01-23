@@ -63,7 +63,11 @@ export class Task {
     }
   }
 
-  isOverdue(): boolean {
+  public count(): number {
+    return 1 + this.children.reduce((sum, task) => sum + task.count(), 0);
+  }
+
+  public isOverdue(): boolean {
     if (!this.rawDatetime) {
       return false;
     }
@@ -75,7 +79,7 @@ export class Task {
     return this.rawDatetime.clone().add(1, "day").isBefore();
   }
 
-  compareTo(other: Task, sorting_options: string[]): number {
+  public compareTo(other: Task, sorting_options: string[]): number {
     for (let sort of sorting_options) {
       switch (sort) {
         case "priority":
@@ -160,6 +164,14 @@ export class Project {
     this.tasks = [];
     this.subProjects = [];
     this.sections = [];
+  }
+
+  public count(): number {
+    return (
+      this.tasks.reduce((sum, task) => sum + task.count(), 0) +
+      this.subProjects.reduce((sum, prj) => sum + prj.count(), 0) +
+      this.sections.reduce((sum, section) => sum + section.count(), 0)
+    );
   }
 
   private sort() {
@@ -278,6 +290,10 @@ export class Section {
     this.sectionID = raw.id;
     this.projectID = raw.project_id;
     this.order = raw.order;
+  }
+
+  public count(): number {
+    return this.tasks.reduce((sum, task) => sum + task.count(), 0);
   }
 }
 
