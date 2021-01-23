@@ -67,9 +67,7 @@
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
   class="task-list-item {todo.isOverdue() ? 'task-overdue' : ''}
           {todo.hasTime ? 'has-time' : 'has-no-time'}">
-  <div
-    bind:this={taskContentEl}
-    class="todoist-task-content {getPriorityClass(todo.priority)}">
+  <div class={getPriorityClass(todo.priority)}>
     <input
       disabled={!isCompletable}
       data-line="1"
@@ -78,6 +76,7 @@
       on:click|preventDefault={async () => {
         await onClickTask(todo);
       }} />
+    <div bind:this={taskContentEl} class="todoist-task-content" />
   </div>
   <div class="task-metadata">
     {#if settings.renderProject && renderProject}
