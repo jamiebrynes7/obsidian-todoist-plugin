@@ -4,7 +4,7 @@
 
 An experimental [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
-_Tested with Obsidian 0.10.6 your results may vary!_
+_Tested with Obsidian 0.10.9 your results may vary!_
 
 ![Example gif](./assets/obsidian-todoist-sync.gif)
 
@@ -29,13 +29,13 @@ _Tested with Obsidian 0.10.6 your results may vary!_
 
 ## Inputs
 
-| Name          | Required | Description                                                                                                       | Type     | Default |
-| ------------- | :------: | ----------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| `name`        |    ✓     | The title for the materialized query.                                                                             | string   |         |
-| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup> | string   |         |
-| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.             | number   | null    |
-| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                   | string[] | []      |
-| `group`       |          | Denotes whether this query should have its task grouped by project & section.                                     | bool     | false   |
+| Name          | Required | Description                                                                                                                                        | Type     | Default |
+| ------------- | :------: | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| `name`        |    ✓     | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query. | string   |         |
+| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup>                                  | string   |         |
+| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.                                              | number   | null    |
+| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority' or 'date', or multiple.                                                    | string[] | []      |
+| `group`       |          | Denotes whether this query should have its task grouped by project & section.                                                                      | bool     | false   |
 
 ## Commands
 

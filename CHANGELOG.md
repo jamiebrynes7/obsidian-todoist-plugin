@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.7.0] - 2021-01-24
+
 ### ✨ Features
 
 - Markdown within tasks is now rendered as part of the task. This means that bold, italics and inline code blocks are supported, as are links (both internal and external).
