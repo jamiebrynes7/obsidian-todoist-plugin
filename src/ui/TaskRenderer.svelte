@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { MarkdownRenderer } from "obsidian";
-  import { onMount } from "svelte";
+  import { App, MarkdownRenderer } from "obsidian";
+  import { getContext, onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
   import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
+  import { APP_CONTEXT_KEY } from "../utils";
   import TaskList from "./TaskList.svelte";
 
   export let metadata: ITodoistMetadata;
@@ -17,6 +18,8 @@
   export let onClickTask: (task: Task) => Promise<void>;
 
   export let todo: Task;
+
+  const app = getContext<App>(APP_CONTEXT_KEY);
 
   $: isCompletable = !todo.content.startsWith("*");
 
@@ -69,6 +72,7 @@
       evt.preventDefault();
 
       showTaskContext(
+        app,
         {
           task: todo,
           onClickTask: onClickTask,

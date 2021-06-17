@@ -29,7 +29,7 @@ export default class TodoistPlugin extends Plugin {
       this.options = value;
     });
 
-    this.queryInjector = new QueryInjector();
+    this.queryInjector = new QueryInjector(app);
   }
 
   async onload() {
@@ -95,7 +95,7 @@ export default class TodoistPlugin extends Plugin {
         return;
       }
 
-      await this.app.vault.adapter.write(tokenPath, token, () => true);
+      await this.app.vault.adapter.write(tokenPath, token);
       this.api = new TodoistApi(token);
     }
 

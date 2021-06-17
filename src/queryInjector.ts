@@ -1,5 +1,5 @@
 import {
-  Component,
+  App,
   MarkdownPostProcessorContext,
   MarkdownRenderChild,
 } from "obsidian";
@@ -13,9 +13,11 @@ import type SvelteComponentDev from "./ui/TodoistQuery.svelte";
 
 export default class QueryInjector {
   private api: TodoistApi;
+  private app: App;
   private pendingQueries: PendingQuery[];
 
-  constructor() {
+  constructor(app: App) {
+    this.app = app;
     this.pendingQueries = [];
   }
 
@@ -80,6 +82,7 @@ export default class QueryInjector {
           props: {
             query: query.unwrap(),
             api: this.api,
+            app: this.app,
           },
         });
       } else {
@@ -109,7 +112,7 @@ class InjectedQuery extends MarkdownRenderChild {
     container: HTMLElement,
     createComp: (root: HTMLElement) => SvelteComponentDev
   ) {
-    super();
+    super(container);
     this.createComp = createComp;
     this.containerEl = container;
   }

@@ -1,4 +1,5 @@
 import type { App } from "obsidian";
+import { writable } from "svelte/store";
 
 const proc = require("process");
 
@@ -73,3 +74,5 @@ export function getCurrentPageMdLink(app: App): string {
     vaultName
   )}&file=${encodeURIComponent(filePath)})`;
 }
+
+export const APP_CONTEXT_KEY = "obsidian_app";

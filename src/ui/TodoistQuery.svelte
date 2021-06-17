@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, setContext } from "svelte";
+  import type { App } from "obsidian";
   import { SettingsInstance, ISettings } from "../settings";
   import type IQuery from "../query";
   import type { TodoistApi } from "../api/api";
@@ -9,9 +10,13 @@
   import { Result } from "../result";
   import ErrorDisplay from "./ErrorDisplay.svelte";
   import NoTaskDisplay from "./NoTaskDisplay.svelte";
+  import { APP_CONTEXT_KEY } from "../utils";
 
   export let query: IQuery;
   export let api: TodoistApi;
+  export let app: App;
+
+  setContext(APP_CONTEXT_KEY, app);
 
   let settings: ISettings = null;
   let autoRefreshIntervalId: number = null;
