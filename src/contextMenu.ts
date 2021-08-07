@@ -41,12 +41,26 @@ export function showTaskContext(
 
 const openExternal: (url: string) => Promise<void> = async (url: string) => {
   try {
-    await electronOpenExternal(url);
+    await getElectronOpenExternal()(url);
   } catch {
     new Notice("Failed to open in external application.");
   }
 };
 
-const electronOpenExternal: (url: string) => Promise<void> = (() => {
-  return require("electron").shell.openExternal;
-})();
+type OpenExternal = (url: string) => Promise<void>;
+
+let electronOpenExternal: OpenExternal | undefined;
+
+function getElectronOpenExternal(): OpenExternal {
+  if (electronOpenExternal) {
+    return electronOpenExternal;
+  }
+
+  try {
+    electronOpenExternal = require("electron").shell.openExternal;
+  } catch (e) {
+    electronOpenExternal = (url) => Promise.resolve();
+  }
+
+  return electronOpenExternal;
+}

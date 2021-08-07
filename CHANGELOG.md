@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- This plugin is now compatible with Obsidian on mobile devices!
+
 ## [1.7.1] - 2021-06-17
 
 ### 🐛 Bug Fixes
