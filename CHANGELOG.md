@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - This plugin is now compatible with Obsidian on mobile devices!
 
+### 🐛 Bug Fixes
+
+- The date picker in the 'Add task' modal works correctly with more themes.
+
 ## [1.7.1] - 2021-06-17
 
 ### 🐛 Bug Fixes

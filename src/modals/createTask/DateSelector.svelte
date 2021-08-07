@@ -102,7 +102,7 @@
   }
 
   .drawer-target {
-    position: absolute;
+    position: fixed;
     z-index: 2;
     height: auto;
     background-color: var(--background-primary);
