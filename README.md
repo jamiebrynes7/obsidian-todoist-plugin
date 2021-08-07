@@ -2,19 +2,16 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jamiebrynes7/obsidian-todoist-plugin/premerge?style=for-the-badge) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jamiebrynes7/obsidian-todoist-plugin?style=for-the-badge)
 
-An experimental [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
-
-_Tested with Obsidian 0.10.9 your results may vary!_
+An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
 ![Example gif](./assets/obsidian-todoist-sync.gif)
 
 ## Usage
 
-1. Download `main.js`, `styles.css`, and `manifest.json` from the [latest release](https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases).
-2. Place this into your `${OBSIDIAN_VAULT}/.obsidian/plugin/todoist-sync` directory.
-3. Open Obsidian and ensure that the Todoist plugin is enabled.
-4. You should get a prompt asking for your [Todoist API token](https://todoist.com/prefs/integrations). (If not, you can enter this in the settings).
-5. Place a code block like the following in any note:
+1. Install the plugin through the Obsidian's community plugins browser.
+2. Enable the plugin in Obsidian.
+3. You should get a prompt asking for your [Todoist API token](https://todoist.com/prefs/integrations). (If not, you can enter this in the settings).
+4. Place a code block like the following in any note:
    ````markdown
    ```todoist
    {
@@ -23,7 +20,7 @@ _Tested with Obsidian 0.10.9 your results may vary!_
    }
    ```
    ````
-6. Swap to preview mode and the plugin should replace this code block with the materialized result of that filter.
+5. Swap to preview mode and the plugin should replace this code block with the materialized result of that filter.
 
 > If you are synchronizing your vault, I recommend explicitly ignoring the `.obsidian/todoist-token` file for security reasons, if possible.
 
