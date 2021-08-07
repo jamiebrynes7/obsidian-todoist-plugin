@@ -1,7 +1,8 @@
 import { writable } from "svelte/store";
-import { toInt, isPositiveInteger, notification, getTokenPath } from "./utils";
+import { toInt, isPositiveInteger } from "./utils";
 import type TodoistPlugin from ".";
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import { getTokenPath } from "./token";
 
 export const SettingsInstance = writable<ISettings>({
   fadeToggle: true,

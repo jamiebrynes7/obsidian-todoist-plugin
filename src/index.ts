@@ -3,9 +3,10 @@ import { TodoistApi } from "./api/api";
 import debug from "./log";
 import { App, Plugin, PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
-import { getCurrentPageMdLink, getTokenPath } from "./utils";
+import { getCurrentPageMdLink } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
 import QueryInjector from "./queryInjector";
+import { getTokenPath } from "./token";
 
 export default class TodoistPlugin extends Plugin {
   public options: ISettings;

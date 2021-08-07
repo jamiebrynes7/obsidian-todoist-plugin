@@ -1,4 +1,4 @@
-import { App, Platform } from "obsidian";
+import type { App } from "obsidian";
 
 export function isPositiveInteger(str: string): boolean {
   const num = toInt(str);
@@ -44,17 +44,6 @@ export function notification(contents: string, timeoutMs: number) {
       element.remove();
     }, 1e3);
   }, timeoutMs);
-}
-
-export function getTokenPath(): string {
-  let pathSep = "/";
-
-  // If we are on windows, use backslashes.
-  if (Platform.isDesktop && !Platform.isMacOS) {
-    pathSep = "\\";
-  }
-
-  return `.obsidian${pathSep}todoist-token`;
 }
 
 export function getCurrentPageMdLink(app: App): string {
