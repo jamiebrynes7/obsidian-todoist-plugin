@@ -1,14 +1,16 @@
 import { Result } from "./result";
 
+const sortingOptions = ["date", "dateAscending", "dateDescending", "priority"];
+
+export type SortingOptions = typeof sortingOptions[number];
+
 export default interface IQuery {
   name: string;
   filter: string;
   autorefresh?: number;
-  sorting?: string[];
+  sorting?: SortingOptions[];
   group: boolean;
 }
-
-const possibleSortingOptions = ["date", "priority"];
 
 export function parseQuery(query: any): Result<IQuery, Error> {
   if (!query.hasOwnProperty("name")) {
@@ -42,7 +44,7 @@ export function parseQuery(query: any): Result<IQuery, Error> {
     for (const element of sorting) {
       if (
         !(typeof element == "string") ||
-        possibleSortingOptions.indexOf(element as string) == -1
+        sortingOptions.indexOf(element as string) == -1
       ) {
         return Result.Err(
           new Error(

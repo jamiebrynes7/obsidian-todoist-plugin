@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This plugin is now compatible with Obsidian on mobile devices!
 - All task lists created by this plugin now also have the `todoist-task-list` CSS class on them for easier styling.
 - Added the ability to fold the projects & section groupings when using the grouped task list view.
+- Added an additional sorting option `dateDescending`. This behaves the opposite of the sorting option `date`.
 
 ### 🐛 Bug Fixes
 

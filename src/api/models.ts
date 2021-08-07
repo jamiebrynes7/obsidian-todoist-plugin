@@ -80,6 +80,44 @@ export class Task {
   }
 
   public compareTo(other: Task, sorting_options: string[]): number {
+    /* Compares the dates of this to 'other'. Returns :
+     *   1 if this is after the other
+     *   0 if this is equal to the other.
+     *   -1 if this is before the 'other'
+     */
+    const compareDate = () => {
+      // We want to sort using the following criteria:
+      // 1. Any items without a datetime always are sorted after those with.
+      // 2. Any items on the same day without time always are sorted after those with.
+      if (this.rawDatetime && !other.rawDatetime) {
+        return -1;
+      } else if (!this.rawDatetime && other.rawDatetime) {
+        return 1;
+      } else if (!this.rawDatetime && !other.rawDatetime) {
+        return 0;
+      }
+
+      // Now compare dates.
+      if (this.rawDatetime.isAfter(other.rawDatetime, "day")) {
+        return 1;
+      } else if (this.rawDatetime.isBefore(other.rawDatetime, "day")) {
+        return -1;
+      }
+
+      // We are the same day, lets look at time.
+      if (this.hasTime && !other.hasTime) {
+        return -1;
+      } else if (!this.hasTime && other.hasTime) {
+        return 1;
+      } else if (!this.hasTime && !this.hasTime) {
+        return 0;
+      }
+
+      return this.rawDatetime.isBefore(other.rawDatetime) ? -1 : 1;
+    };
+
+    const dateComparison = compareDate();
+
     for (let sort of sorting_options) {
       switch (sort) {
         case "priority":
@@ -91,34 +129,18 @@ export class Task {
 
           return diff;
         case "date":
-          // We want to sort using the following criteria:
-          // 1. Any items without a datetime always are sorted after those with.
-          // 2. Any items on the same day without time always are sorted after those with.
-          if (this.rawDatetime && !other.rawDatetime) {
-            return -1;
-          } else if (!this.rawDatetime && other.rawDatetime) {
-            return 1;
-          } else if (!this.rawDatetime && !other.rawDatetime) {
+        case "dateAscending":
+          if (dateComparison == 0) {
             continue;
           }
 
-          // Now compare dates.
-          if (this.rawDatetime.isAfter(other.rawDatetime, "day")) {
-            return 1;
-          } else if (this.rawDatetime.isBefore(other.rawDatetime, "day")) {
-            return -1;
-          }
-
-          // We are the same day, lets look at time.
-          if (this.hasTime && !other.hasTime) {
-            return -1;
-          } else if (!this.hasTime && other.hasTime) {
-            return 1;
-          } else if (!this.hasTime && !this.hasTime) {
+          return dateComparison;
+        case "dateDescending":
+          if (dateComparison == 0) {
             continue;
           }
 
-          return this.rawDatetime.isBefore(other.rawDatetime) ? -1 : 1;
+          return -dateComparison;
       }
     }
 
