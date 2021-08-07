@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - This plugin is now compatible with Obsidian on mobile devices!
+- All task lists created by this plugin now also have the `todoist-task-list` CSS class on them for easier styling.
 
 ### 🐛 Bug Fixes
 
