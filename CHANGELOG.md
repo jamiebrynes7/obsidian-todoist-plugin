@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### [1.8.1] - 2021-08-24
+
+### 🐛 Bug Fixes
+
+- Token path location should no longer be incorrect on Linux machines.
+
 ## [1.8.0] - 2021-08-07
 
 ### ✨ Features
