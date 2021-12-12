@@ -54,7 +54,7 @@ There are also a few commands bundled in with the plugin:
 
 Show current and overdue tasks ordered by date and priority and also grouped by project and section. This helps you to stay on top of things:
 
-```
+````markdown
 ```todoist
 {
 "name": "Highest Prio/Date",
@@ -63,18 +63,18 @@ Show current and overdue tasks ordered by date and priority and also grouped by 
 "group": true
 }
 ```
-```
+````
 
 Show the inbox only. This gives you an indication how hard you are procrastinating right now or if you got an I/O problem in your productivity:
 
-```
+````markdown
 ```todoist
 {
 "name": "Inbox",
 "filter": "#inbox"
 }
 ```
-```
+````
 
 ## CSS
 
