@@ -158,11 +158,9 @@ export class TodoistApi {
   }
 
   async fetchMetadata(): Promise<Result<object, Error>> {
-    const [projectResult, sectionResult, labelResult] = await Promise.all<
-      Result<IProjectRaw[], Error>,
-      Result<ISectionRaw[], Error>,
-      Result<ILabelRaw[], Error>
-    >([this.getProjects(), this.getSections(), this.getLabels()]);
+    const projectResult = await this.getProjects();
+    const sectionResult = await this.getSections();
+    const labelResult = await this.getLabels();
 
     const merged = Result.All(projectResult, sectionResult, labelResult);
 
