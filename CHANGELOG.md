@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### [1.9.0] - 2022-01-19
+
+### ✨ Features
+
+- This plugin is now compatible with live preview! Please report any functionality regressions in this mode.
+
 ### [1.8.1] - 2021-08-24
 
 ### 🐛 Bug Fixes
