@@ -67,27 +67,25 @@
   }
 
   function onClickTaskContainer(evt: MouseEvent) {
-    if (evt.button == 2) {
-      evt.stopPropagation();
-      evt.preventDefault();
+    evt.stopPropagation();
+    evt.preventDefault();
 
-      showTaskContext(
-        app,
-        {
-          task: todo,
-          onClickTask: onClickTask,
-        },
-        {
-          x: evt.pageX,
-          y: evt.pageY,
-        }
-      );
-    }
+    showTaskContext(
+      app,
+      {
+        task: todo,
+        onClickTask: onClickTask,
+      },
+      {
+        x: evt.pageX,
+        y: evt.pageY,
+      }
+    );
   }
 </script>
 
 <li
-  on:mouseup={onClickTaskContainer}
+  on:contextmenu={onClickTaskContainer}
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
   class="task-list-item {todo.isOverdue() ? 'task-overdue' : ''}
           {todo.hasTime ? 'has-time' : 'has-no-time'}">

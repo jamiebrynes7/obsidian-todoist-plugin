@@ -1,10 +1,12 @@
 .todoist-query-title {
   display: inline;
+  font-size: 1.25em;
 }
 
 .todoist-refresh-button {
   display: inline;
   margin-left: 8px;
+  margin-right: 8px;
   float: right;
 }
 
@@ -34,8 +36,16 @@
   color: var(--text-error);
 }
 
+.todoist-project {
+  white-space: normal;
+}
+
 .todoist-project .todoist-project {
-  margin-left: 30px;
+  margin-left: 20px;
+}
+
+.todoist-project .todoist-section {
+  margin-left: 20px;
 }
 
 .todoist-error {
@@ -53,4 +63,16 @@
 
 .todoist-task-content {
   display: inline;
+}
+
+ul.todoist-task-list {
+  white-space: normal;
+}
+
+.markdown-reading-view .hide-in-reading-view {
+  display: none;
+}
+
+.is-live-preview .block-language-todoist {
+  padding-left: 15px;
 }
