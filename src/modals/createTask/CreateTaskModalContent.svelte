@@ -68,6 +68,12 @@
       new Notice(`Failed to create task: '${result.unwrapErr().message}'`);
     }
   }
+
+  function handleKeydown(event: KeyboardEvent){
+    if(event.key === "Enter"){
+      triggerClose();
+    }
+  }
 </script>
 
 <style>
@@ -112,6 +118,8 @@
     line-height: 42px;
   }
 </style>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
 <div>
