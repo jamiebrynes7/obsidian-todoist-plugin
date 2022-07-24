@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
-  import type { Project, Section } from "../api/models";
+  import type { Project } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
   import TaskList from "./TaskList.svelte";
   import type { ISettings } from "../settings";

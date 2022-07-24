@@ -7,11 +7,10 @@ interface TaskContext {
 }
 
 export function showTaskContext(
-  app: App,
   taskCtx: TaskContext,
   position: Point
 ) {
-  new Menu(app)
+  new Menu()
     .addItem((menuItem) =>
       menuItem
         .setTitle("Complete task")
