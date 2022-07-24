@@ -4,6 +4,7 @@
   "description": "A Todoist plugin for Obsidian",
   "main": "src/index.js",
   "scripts": {
+    "dev": "npm run build && cp -R dist/ test-vault/.obsidian/plugins/todoist-sync-plugin",
     "build": "svelte-check && rollup -c",
     "test": "mocha -r ts-node/register tests/*.ts",
     "format": "prettier --write src/**/*",
