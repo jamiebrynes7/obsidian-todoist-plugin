@@ -21,22 +21,10 @@ export default class QueryInjector {
     this.pendingQueries = [];
   }
 
-  onNewBlock(el: HTMLElement, ctx: MarkdownPostProcessorContext) {
-    const node = el.querySelector<HTMLPreElement>(
-      'code[class*="language-todoist"]'
-    );
-
-    if (!node) {
-      return;
-    }
-
-    debug({
-      msg: "Found Todoist query.",
-      context: node,
-    });
-
+  onNewBlock(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
     const pendingQuery = {
-      node: node,
+      source: source,
+      target: el,
       ctx: ctx,
     };
 
@@ -61,7 +49,7 @@ export default class QueryInjector {
     let query: Result<IQuery, Error> = null;
 
     try {
-      query = parseQuery(JSON.parse(pendingQuery.node.innerText));
+      query = parseQuery(JSON.parse(pendingQuery.source));
     } catch (e) {
       query = Result.Err(new Error(`Query was not valid JSON: ${e.message}.`));
     }
@@ -71,11 +59,7 @@ export default class QueryInjector {
       context: query,
     });
 
-    const parent = pendingQuery.node.parentElement;
-    const root = parent.parentElement;
-    root.removeChild(parent);
-
-    const child = new InjectedQuery(root, (root: HTMLElement) => {
+    const child = new InjectedQuery(pendingQuery.target, (root: HTMLElement) => {
       if (query.isOk()) {
         return new TodoistQuery({
           target: root,
@@ -100,7 +84,8 @@ export default class QueryInjector {
 }
 
 interface PendingQuery {
-  node: HTMLPreElement;
+  source: string;
+  target: HTMLElement;
   ctx: MarkdownPostProcessorContext;
 }
 

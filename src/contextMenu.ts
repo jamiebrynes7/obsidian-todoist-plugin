@@ -1,4 +1,4 @@
-import { App, Menu, Notice, Point } from "obsidian";
+import { Menu, Notice, Point } from "obsidian";
 import type { Task } from "./api/models";
 
 interface TaskContext {
@@ -7,11 +7,10 @@ interface TaskContext {
 }
 
 export function showTaskContext(
-  app: App,
   taskCtx: TaskContext,
   position: Point
 ) {
-  new Menu(app)
+  new Menu()
     .addItem((menuItem) =>
       menuItem
         .setTitle("Complete task")
