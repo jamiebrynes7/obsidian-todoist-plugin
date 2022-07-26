@@ -3,6 +3,7 @@
   import type { ITodoistMetadata } from "../../api/api";
   import type { ProjectID, SectionID } from "../../api/models";
   import type { ProjectOption } from "./types";
+  import debug from "../../log";
 
   export let selected: ProjectOption;
   export let metadata: ITodoistMetadata;
@@ -35,6 +36,10 @@
 
     for (const section of metadata.sections.values()) {
       const data = projects.get(section.project_id);
+      if (data === undefined) {
+        debug(`Could not find data for project ${section.project_id}`);
+        continue;
+      }
       data.sections.push(section.id);
     }
 
