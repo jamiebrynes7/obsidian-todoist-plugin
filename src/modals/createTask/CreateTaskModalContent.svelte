@@ -28,6 +28,8 @@
   let metadata: ITodoistMetadata;
   api.metadata.subscribe((value) => (metadata = value));
 
+  let isBeingCreated: boolean = false;
+
   onMount(async () => {
     await tick();
     inputEl.focus();
@@ -39,6 +41,12 @@
   });
 
   async function triggerClose() {
+    if (isBeingCreated) {
+      return;
+    }
+
+    isBeingCreated = true;
+
     let opts: ICreateTaskOptions = {
       priority: priority,
     };
@@ -66,6 +74,14 @@
       new Notice("Task created successfully.");
     } else {
       new Notice(`Failed to create task: '${result.unwrapErr().message}'`);
+    }
+
+    isBeingCreated = false;
+  }
+
+  function onKeyDown(event: KeyboardEvent) {
+    if (event.key == "Enter") {
+        triggerClose();
     }
   }
 </script>
@@ -113,6 +129,7 @@
   }
 </style>
 
+<svelte:window on:keydown={onKeyDown} />
 <input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
 <div>
   <div class="select">
