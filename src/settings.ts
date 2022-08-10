@@ -101,13 +101,13 @@ export class SettingsTab extends PluginSettingTab {
       .setDesc(desc)
       .addTextArea(async (text) => {
         try {
-          text.setValue(await this.app.vault.adapter.read(getTokenPath()));
+          text.setValue(await this.app.vault.adapter.read(getTokenPath(this.app.vault)));
         } catch (e) {
           /* Throw away read error if file does not exist. */
         }
 
         text.onChange(async (value) => {
-          await this.app.vault.adapter.write(getTokenPath(), value);
+          await this.app.vault.adapter.write(getTokenPath(this.app.vault), value);
         });
       });
   }
