@@ -21,6 +21,7 @@ export interface ITaskRaw {
   label_ids: LabelID[];
   priority: number;
   content: string;
+  description: string;
   order: number;
   parent?: ID;
   due?: {

@@ -22,6 +22,7 @@ export interface ICreateTaskOptions {
   section_id?: number;
   due_date?: string;
   label_ids?: number[];
+  description?: string;
 }
 
 export class TodoistApi {
@@ -47,6 +48,7 @@ export class TodoistApi {
     const url = "https://api.todoist.com/rest/v1/tasks";
     const data = { content: content, ...(options ?? {}) };
 
+    debug({msg:`creating task`,context:data})
     try {
       const result = await fetch(url, {
         method: "POST",
@@ -125,7 +127,7 @@ export class TodoistApi {
           return Result.Err(metadataResult.unwrapErr());
         }
 
-        const tasks = (await result.json()) as ITaskRaw[];
+        const tasks = (await result.json()) as ITaskRaw[]
         const tree = Project.buildProjectTree(tasks, this.metadataInstance);
 
         debug({

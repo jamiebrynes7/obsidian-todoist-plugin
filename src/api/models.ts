@@ -18,6 +18,7 @@ export class Task {
   public id: ID;
   public priority: number;
   public content: string;
+  public description: string;
   public order: number;
   public projectID: ProjectID;
   public sectionID?: SectionID;
@@ -43,6 +44,7 @@ export class Task {
     this.id = raw.id;
     this.priority = raw.priority;
     this.content = raw.content;
+    this.description = raw.description;
     this.order = raw.order;
     this.projectID = raw.project_id;
     this.sectionID = raw.section_id != 0 ? raw.section_id : null;

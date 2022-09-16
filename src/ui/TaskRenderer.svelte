@@ -2,6 +2,7 @@
   import { App, MarkdownRenderer } from "obsidian";
   import { getContext, onMount } from "svelte";
   import { fade } from "svelte/transition";
+  import SvelteMarkdown from 'svelte-markdown'
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
@@ -101,6 +102,11 @@
     <div bind:this={taskContentEl} class="todoist-task-content" />
   </div>
   <div class="task-metadata">
+    {#if settings.renderDescription && todo.description}
+      <div class="task-description">
+        <SvelteMarkdown source={todo.description} />
+      </div>
+    {/if}
     {#if settings.renderProject && renderProject}
       <div class="task-project">
         {#if settings.renderProjectIcon}

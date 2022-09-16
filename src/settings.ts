@@ -10,6 +10,8 @@ export const SettingsInstance = writable<ISettings>({
   autoRefreshToggle: false,
   autoRefreshInterval: 60,
 
+  renderDescription: true,
+
   renderDate: true,
   renderDateIcon: true,
 
@@ -26,6 +28,8 @@ export interface ISettings {
   fadeToggle: boolean;
   autoRefreshToggle: boolean;
   autoRefreshInterval: number;
+
+  renderDescription: boolean;
 
   renderDate: boolean;
   renderDateIcon: boolean;
@@ -65,6 +69,7 @@ export class SettingsTab extends PluginSettingTab {
     this.projectSettings();
 
     this.labelsSettings();
+    this.descriptionSettings();
     this.debugLogging();
   }
 
@@ -226,6 +231,18 @@ export class SettingsTab extends PluginSettingTab {
           await this.plugin.writeOptions(
             (old) => (old.renderLabelsIcon = value)
           );
+        });
+      });
+  }
+
+  descriptionSettings() {
+    new Setting(this.containerEl)
+      .setName("Render description")
+      .setDesc("Whether description should be rendered with tasks.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderDescription);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderDescription = value));
         });
       });
   }

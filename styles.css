@@ -24,6 +24,19 @@
   margin-left: 30px;
 }
 
+.task-description {
+  font-style: italic;
+}
+
+.task-description p{
+  margin: 2px 0px;
+}
+
+.task-description ul{
+  padding-left: 0px;
+}
+
+
 .task-calendar-icon,
 .task-project-icon,
 .task-labels-icon {

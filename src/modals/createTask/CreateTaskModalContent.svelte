@@ -24,7 +24,7 @@
   let priority: number = 1;
 
   let inputEl: HTMLInputElement;
-
+  let description: HTMLInputElement;
   let metadata: ITodoistMetadata;
   api.metadata.subscribe((value) => (metadata = value));
 
@@ -41,6 +41,7 @@
   async function triggerClose() {
     let opts: ICreateTaskOptions = {
       priority: priority,
+      description: description.value
     };
 
     if (activeLabels) {
@@ -137,6 +138,12 @@
     <span>Priority</span>
     <div>
       <PriorityPicker bind:selected={priority} />
+    </div>
+  </div>
+  <div class="select">
+    <span>Desc.</span>
+    <div>
+      <input bind:this={description} type="text" placeholder="Description" />
     </div>
   </div>
 </div>
