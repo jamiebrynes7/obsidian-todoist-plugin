@@ -1,6 +1,6 @@
 import "mocha";
 import { assert } from "chai";
-import { Project } from "../src/api/models";
+import { LabelID, Project, ProjectID, SectionID } from "../src/api/models";
 import type { ITaskRaw, IProjectRaw, ISectionRaw } from "../src/api/raw_models";
 import type { ITodoistMetadata } from "../src/api/api";
 import { ExtendedMap } from "../src/utils";
@@ -9,18 +9,18 @@ describe("Project tree parsing", () => {
   it("Projects are parented correctly", () => {
     const rawTasks: ITaskRaw[] = [
       {
-        id: 1,
-        project_id: 1,
-        section_id: 0,
+        id: "1",
+        project_id: "1",
+        section_id: null,
         label_ids: [],
         content: "",
         priority: 1,
         order: 1,
       },
       {
-        id: 2,
-        project_id: 2,
-        section_id: 0,
+        id: "2",
+        project_id: "2",
+        section_id: null,
         label_ids: [],
         content: "",
         priority: 1,
@@ -31,14 +31,14 @@ describe("Project tree parsing", () => {
     const metadata = createMetadata({
       projects: [
         {
-          id: 1,
+          id: "1",
           order: 1,
           name: "Parent",
         },
         {
-          id: 2,
+          id: "2",
           order: 2,
-          parent_id: 1,
+          parent_id: "1",
           name: "Child",
         },
       ],
@@ -54,22 +54,22 @@ describe("Project tree parsing", () => {
       "Parent project has one sub-project"
     );
 
-    assert.equal(parent.projectID, 1);
+    assert.equal(parent.projectID, "1");
     assert.lengthOf(parent.tasks, 1, "Parent has one task");
-    assert.equal(parent.tasks[0].id, 1, "Parent has correct task");
+    assert.equal(parent.tasks[0].id, "1", "Parent has correct task");
 
     const child = parent.subProjects[0];
-    assert.equal(child.projectID, 2);
+    assert.equal(child.projectID, "2");
     assert.lengthOf(child.tasks, 1, "Child has one task");
-    assert.equal(child.tasks[0].id, 2, "Child has correct task");
+    assert.equal(child.tasks[0].id, "2", "Child has correct task");
   });
 
   it("Sections are parented correctly", () => {
     const rawTask: ITaskRaw[] = [
       {
-        id: 1,
-        project_id: 1,
-        section_id: 1,
+        id: "1",
+        project_id: "1",
+        section_id: "1",
         label_ids: [],
         content: "",
         priority: 1,
@@ -80,15 +80,15 @@ describe("Project tree parsing", () => {
     const metadata = createMetadata({
       projects: [
         {
-          id: 1,
+          id: "1",
           order: 1,
           name: "Parent",
         },
       ],
       sections: [
         {
-          id: 1,
-          project_id: 1,
+          id: "1",
+          project_id: "1",
           order: 0,
           name: "Section",
         },
@@ -103,25 +103,25 @@ describe("Project tree parsing", () => {
     assert.lengthOf(parent.tasks, 0, "Parent has no tasks");
 
     const section = parent.sections[0];
-    assert.equal(section.sectionID, 1);
+    assert.equal(section.sectionID, "1");
     assert.lengthOf(section.tasks, 1, "Section has one task");
   });
 
   it("Unknown project or sections are marked as such", () => {
     const tasks: ITaskRaw[] = [
       {
-        id: 1,
-        project_id: 1,
-        section_id: 0,
+        id: "1",
+        project_id: "1",
+        section_id: null,
         label_ids: [],
         content: "",
         priority: 1,
         order: 1,
       },
       {
-        id: 2,
-        project_id: 2,
-        section_id: 1,
+        id: "2",
+        project_id: "2",
+        section_id: "1",
         label_ids: [],
         content: "",
         priority: 1,
@@ -133,15 +133,15 @@ describe("Project tree parsing", () => {
     assert.lengthOf(projects, 1, "Only one project is returned");
 
     const parent = projects[0];
-    assert.equal(parent.projectID, -1, "Unknown project ID");
+    assert.equal(parent.projectID, "-1", "Unknown project ID");
     assert.lengthOf(parent.tasks, 1, "Parent has one task");
-    assert.equal(parent.tasks[0].id, 1, "Parent has 'correct' task");
+    assert.equal(parent.tasks[0].id, "1", "Parent has 'correct' task");
 
     assert.lengthOf(parent.sections, 1, "Parent has one section");
     const section = parent.sections[0];
-    assert.equal(section.sectionID, -1, "Unknown section ID");
+    assert.equal(section.sectionID, "-1", "Unknown section ID");
     assert.lengthOf(section.tasks, 1, "Parent has one task");
-    assert.equal(section.tasks[0].id, 2, "Parent has 'correct' task");
+    assert.equal(section.tasks[0].id, "2", "Parent has 'correct' task");
   });
 });
 
@@ -150,9 +150,9 @@ function createMetadata(options: {
   sections?: ISectionRaw[];
 }): ITodoistMetadata {
   const metadata: ITodoistMetadata = {
-    projects: new ExtendedMap<number, IProjectRaw>(),
-    sections: new ExtendedMap<number, ISectionRaw>(),
-    labels: new ExtendedMap<number, string>(),
+    projects: new ExtendedMap<ProjectID, IProjectRaw>(),
+    sections: new ExtendedMap<SectionID, ISectionRaw>(),
+    labels: new ExtendedMap<LabelID, string>(),
   };
 
   if (options.projects) {

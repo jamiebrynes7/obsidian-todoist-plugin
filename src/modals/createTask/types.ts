@@ -1,10 +1,10 @@
 export interface LabelOption {
-  value: number;
+  value: string;
   label: string;
 }
 
 export interface ProjectOrSectionRef {
-  id: number;
+  id: string;
   type: "Project" | "Section";
 }
 
