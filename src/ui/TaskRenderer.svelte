@@ -82,6 +82,7 @@
       }
     );
   }
+
 </script>
 
 <li
@@ -139,7 +140,7 @@
         {todo.date}
       </div>
     {/if}
-    {#if settings.renderLabels && todo.labelIDs.length > 0}
+    {#if settings.renderLabels && todo.labels.length > 0}
       <div class="task-labels">
         {#if settings.renderLabelsIcon}
           <svg
@@ -153,10 +154,8 @@
               clip-rule="evenodd" />
           </svg>
         {/if}
-        {#each todo.labelIDs as labelID, i}
-          {metadata.labels.get_or_default(labelID, 'Unknown label')}{#if i != todo.labelIDs.length - 1}
-            ,
-          {/if}
+        {#each todo.labels as label, i}
+          {label}{#if i != todo.labels.length - 1},{/if}
         {/each}
       </div>
     {/if}

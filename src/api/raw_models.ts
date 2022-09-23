@@ -18,7 +18,13 @@ export interface ITaskRaw {
   id: ID;
   project_id: ProjectID;
   section_id: SectionID | null;
-  label_ids: LabelID[];
+  /**
+   * The task has direct reference to the label names, and does not reference the label objects.
+   *
+   * That is, if you have a label {id:"123abc", name:"errand"} in the labels dataset, a task with
+   * that label will have the attribute { label: ["errand"] }.
+   */
+  labels: string[];
   priority: number;
   content: string;
   order: number;

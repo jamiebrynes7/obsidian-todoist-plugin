@@ -21,7 +21,7 @@ export class Task {
   public order: number;
   public projectID: ProjectID;
   public sectionID?: SectionID;
-  public labelIDs: LabelID[];
+  public labels: string[];
 
   public parent?: Task;
   public children: Task[];
@@ -46,7 +46,7 @@ export class Task {
     this.order = raw.order;
     this.projectID = raw.project_id;
     this.sectionID = raw.section_id != null ? raw.section_id : null;
-    this.labelIDs = raw.label_ids;
+    this.labels = raw.labels;
 
     this.children = [];
 

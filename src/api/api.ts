@@ -21,7 +21,7 @@ export interface ICreateTaskOptions {
   project_id?: ProjectID;
   section_id?: SectionID;
   due_date?: string;
-  label_ids?: LabelID[];
+  labels?: string[];
 }
 
 export class TodoistApi {

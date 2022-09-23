@@ -44,7 +44,7 @@
     };
 
     if (activeLabels) {
-      opts.label_ids = activeLabels.map((label) => label.value);
+      opts.labels = activeLabels.map(({ label }) => label);
     }
 
     if (activeProject) {
@@ -68,6 +68,7 @@
       new Notice(`Failed to create task: '${result.unwrapErr().message}'`);
     }
   }
+
 </script>
 
 <style>
@@ -111,6 +112,7 @@
     margin-bottom: 0.5em;
     line-height: 42px;
   }
+
 </style>
 
 <input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
