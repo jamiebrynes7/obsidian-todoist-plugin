@@ -203,6 +203,22 @@ export class TodoistApi {
   }
 
   private async getSections(): Promise<Result<ISectionRaw[], Error>> {
+    // For some reason the sections do now follow the string-based IDs rule
+    // We deal with this in an isolated centralized way here, so that we can keep the rest of the
+    // code homogeneous, using string-based section IDs all around.
+    type SectionRawFromAPI = Omit<ISectionRaw, "id" | "project_id"> & {
+      id: number;
+      project_id: number;
+    };
+
+    function processRawSection({
+      id,
+      project_id,
+      ...section
+    }: SectionRawFromAPI): ISectionRaw {
+      return { ...section, id: String(id), project_id: String(project_id) };
+    }
+
     const url = `https://api.todoist.com/rest/v2/sections`;
     try {
       const result = await fetch(url, {
@@ -212,9 +228,12 @@ export class TodoistApi {
         method: "GET",
       });
 
-      return result.ok
-        ? Result.Ok((await result.json()) as ISectionRaw[])
-        : Result.Err(new Error(await result.text()));
+      if (!result.ok) {
+        return Result.Err(new Error(await result.text()));
+      }
+
+      const sections = (await result.json()) as SectionRawFromAPI[];
+      return Result.Ok(sections.map(processRawSection));
     } catch (e) {
       return Result.Err(e);
     }
