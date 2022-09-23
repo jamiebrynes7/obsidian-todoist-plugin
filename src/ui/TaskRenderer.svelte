@@ -37,7 +37,7 @@
 
     // A task starting with '*' signifies that it cannot be completed, so we should strip it from the front of the task.
     if (content.startsWith("*")) {
-      content = content.substr(1);
+      content = content.substring(1);
     }
 
     await MarkdownRenderer.renderMarkdown(content, taskContentEl, "", null);

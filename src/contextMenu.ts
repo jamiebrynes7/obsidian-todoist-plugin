@@ -11,7 +11,7 @@ export function showTaskContext(
   taskCtx: TaskContext,
   position: Point
 ) {
-  new Menu(app)
+  new Menu()
     .addItem((menuItem) =>
       menuItem
         .setTitle("Complete task")
