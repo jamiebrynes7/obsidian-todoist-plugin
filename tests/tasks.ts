@@ -13,7 +13,7 @@ describe("Task tree parsing", () => {
         content: "Parent task",
         project_id: "123",
         section_id: null,
-        label_ids: [],
+        labels: [],
       },
       {
         id: "2",
@@ -23,7 +23,7 @@ describe("Task tree parsing", () => {
         parent_id: "1",
         project_id: "123",
         section_id: null,
-        label_ids: [],
+        labels: [],
       },
     ];
 
@@ -48,7 +48,7 @@ describe("Task tree parsing", () => {
         parent_id: "1",
         project_id: "123",
         section_id: null,
-        label_ids: [],
+        labels: [],
       },
     ];
 
@@ -71,7 +71,7 @@ describe("Task date parsing", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     };
 
     const task = new Task(apiTask);
@@ -92,7 +92,7 @@ describe("Task date parsing", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     };
 
     const task = new Task(apiTask);
@@ -110,7 +110,7 @@ describe("Task comparisons", () => {
       content: "Parent task",
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const second = new Task({
@@ -120,7 +120,7 @@ describe("Task comparisons", () => {
       content: "Subtask",
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(first.compareTo(second, []), 0);
@@ -135,7 +135,7 @@ describe("Task comparisons", () => {
       content: "Parent task",
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const highPriority = new Task({
@@ -145,7 +145,7 @@ describe("Task comparisons", () => {
       content: "Subtask",
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(highPriority.compareTo(lowPriority, ["priority"]), 0);
@@ -160,7 +160,7 @@ describe("Task comparisons", () => {
       content: "Parent task",
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const second = new Task({
@@ -170,7 +170,7 @@ describe("Task comparisons", () => {
       content: "Subtask",
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(first.compareTo(second, []), 0);
@@ -190,7 +190,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const second = new Task({
@@ -205,7 +205,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(first.compareTo(second, ["date"]), 0);
@@ -225,7 +225,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const second = new Task({
@@ -240,7 +240,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const third = new Task({
@@ -255,7 +255,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(first.compareTo(second, ["date"]), 0);
@@ -280,7 +280,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const second = new Task({
@@ -295,7 +295,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(first.compareTo(second, ["priority", "date"]), 0);
@@ -315,7 +315,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     const second = new Task({
@@ -330,7 +330,7 @@ describe("Task comparisons", () => {
       },
       project_id: "123",
       section_id: null,
-      label_ids: [],
+      labels: [],
     });
 
     assert.isBelow(first.compareTo(second, ["date", "priority"]), 0);

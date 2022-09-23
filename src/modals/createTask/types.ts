@@ -1,5 +1,7 @@
 export interface LabelOption {
+  /** The label ID */
   value: string;
+  /** The label name, what the user sees on screen */
   label: string;
 }
 
