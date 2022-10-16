@@ -4,6 +4,7 @@
   "include": ["src/**/*"],
   "exclude": ["node_modules/*"],
   "compilerOptions": {
+    "esModuleInterop": true,
     "types": ["node", "svelte"]
   }
 }

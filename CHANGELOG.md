@@ -15,7 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The plugin should now respect your Vault configuration directory when saving your Todoist token.
 
-### [1.9.0] - 2022-01-19
+### ⚙ Internal
+
+- This plugin now uses the Todoist REST API v2. [Thanks to @gnapse](https://github.com/gnapse)!
+
+## [1.9.0] - 2022-01-19
 
 ### ✨ Features
 

@@ -18,10 +18,10 @@ export interface ITodoistMetadata {
 
 export interface ICreateTaskOptions {
   priority: number;
-  project_id?: number;
-  section_id?: number;
+  project_id?: ProjectID;
+  section_id?: SectionID;
   due_date?: string;
-  label_ids?: number[];
+  labels?: string[];
 }
 
 export class TodoistApi {
@@ -44,7 +44,7 @@ export class TodoistApi {
     content: string,
     options?: ICreateTaskOptions
   ): Promise<Result<object, Error>> {
-    const url = "https://api.todoist.com/rest/v1/tasks";
+    const url = "https://api.todoist.com/rest/v2/tasks";
     const data = { content: content, ...(options ?? {}) };
 
     try {
@@ -68,7 +68,7 @@ export class TodoistApi {
   }
 
   async getTasks(filter?: string): Promise<Result<Task[], Error>> {
-    let url = "https://api.todoist.com/rest/v1/tasks";
+    let url = "https://api.todoist.com/rest/v2/tasks";
 
     if (filter) {
       url += `?filter=${encodeURIComponent(filter)}`;
@@ -104,7 +104,7 @@ export class TodoistApi {
   async getTasksGroupedByProject(
     filter?: string
   ): Promise<Result<Project[], Error>> {
-    let url = "https://api.todoist.com/rest/v1/tasks";
+    let url = "https://api.todoist.com/rest/v2/tasks";
 
     if (filter) {
       url += `?filter=${encodeURIComponent(filter)}`;
@@ -143,7 +143,7 @@ export class TodoistApi {
   }
 
   async closeTask(id: ID): Promise<boolean> {
-    const url = `https://api.todoist.com/rest/v1/tasks/${id}/close`;
+    const url = `https://api.todoist.com/rest/v2/tasks/${id}/close`;
 
     debug(url);
 
@@ -184,7 +184,7 @@ export class TodoistApi {
   }
 
   private async getProjects(): Promise<Result<IProjectRaw[], Error>> {
-    const url = `https://api.todoist.com/rest/v1/projects`;
+    const url = `https://api.todoist.com/rest/v2/projects`;
 
     try {
       const result = await fetch(url, {
@@ -203,7 +203,7 @@ export class TodoistApi {
   }
 
   private async getSections(): Promise<Result<ISectionRaw[], Error>> {
-    const url = `https://api.todoist.com/rest/v1/sections`;
+    const url = `https://api.todoist.com/rest/v2/sections`;
     try {
       const result = await fetch(url, {
         headers: new Headers({
@@ -221,7 +221,7 @@ export class TodoistApi {
   }
 
   private async getLabels(): Promise<Result<ILabelRaw[], Error>> {
-    const url = `https://api.todoist.com/rest/v1/labels`;
+    const url = `https://api.todoist.com/rest/v2/labels`;
     try {
       const result = await fetch(url, {
         headers: new Headers({

@@ -52,7 +52,7 @@
     };
 
     if (activeLabels) {
-      opts.label_ids = activeLabels.map((label) => label.value);
+      opts.labels = activeLabels.map(({ label }) => label);
     }
 
     if (activeProject) {
@@ -84,6 +84,7 @@
         triggerClose();
     }
   }
+
 </script>
 
 <style>
@@ -127,6 +128,7 @@
     margin-bottom: 0.5em;
     line-height: 42px;
   }
+
 </style>
 
 <svelte:window on:keydown={onKeyDown} />

@@ -15,12 +15,12 @@
   let metadata: ITodoistMetadata = null;
   const metadataUnsub = api.metadata.subscribe((value) => (metadata = value));
 
-  let foldedState: Map<number, boolean> = new Map();
+  let foldedState: Map<string, boolean> = new Map();
 
   foldedState.set(project.projectID, false);
   project.sections.forEach((s) => foldedState.set(s.sectionID, false));
 
-  function toggleFold(id: number) {
+  function toggleFold(id: string) {
     foldedState.set(id, !foldedState.get(id));
     foldedState = foldedState;
   }

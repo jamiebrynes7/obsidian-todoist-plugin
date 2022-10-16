@@ -9,10 +9,10 @@ import {
 import type { ITodoistMetadata } from "./api";
 import { ExtendedMap } from "../utils";
 
-export type ID = number;
-export type ProjectID = number;
-export type SectionID = number;
-export type LabelID = number;
+export type ID = string;
+export type ProjectID = string;
+export type SectionID = string;
+export type LabelID = string;
 
 export class Task {
   public id: ID;
@@ -21,7 +21,7 @@ export class Task {
   public order: number;
   public projectID: ProjectID;
   public sectionID?: SectionID;
-  public labelIDs: LabelID[];
+  public labels: string[];
 
   public parent?: Task;
   public children: Task[];
@@ -45,8 +45,8 @@ export class Task {
     this.content = raw.content;
     this.order = raw.order;
     this.projectID = raw.project_id;
-    this.sectionID = raw.section_id != 0 ? raw.section_id : null;
-    this.labelIDs = raw.label_ids;
+    this.sectionID = raw.section_id != null ? raw.section_id : null;
+    this.labels = raw.labels;
 
     this.children = [];
 
@@ -152,12 +152,12 @@ export class Task {
 
     tasks.forEach((task) => mapping.set(task.id, new Task(task)));
     tasks.forEach((task) => {
-      if (task.parent == null || !mapping.has(task.parent)) {
+      if (task.parent_id == null || !mapping.has(task.parent_id)) {
         return;
       }
 
       const self = mapping.get(task.id);
-      const parent = mapping.get(task.parent);
+      const parent = mapping.get(task.parent_id);
 
       self.parent = parent;
       parent.children.push(self);
@@ -237,7 +237,7 @@ export class Project {
           }
         }) ?? unknownProject;
 
-      if (task.section_id != 0) {
+      if (task.section_id != null) {
         // The task has an associated section, so we file it under there.
         const section =
           sections.get_or_maybe_insert(task.section_id, () => {
