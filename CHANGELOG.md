@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - You can now press 'Enter' in the create task dialog to create the task. [Thanks to @oleeskild](https://github.com/oleeskild)
+- This plugin's default styles updated to the new theme in Obsidian v1.0.
 
 ### 🐛 Bug Fixes
 

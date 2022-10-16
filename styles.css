@@ -21,7 +21,7 @@
 }
 
 .task-metadata {
-  margin-left: 30px;
+  margin-left: 4px;
 }
 
 .task-calendar-icon,
@@ -76,3 +76,51 @@ ul.todoist-task-list {
 .is-live-preview .block-language-todoist {
   padding-left: 15px;
 }
+
+.theme-dark {
+    --todoist-p1-border: #ff7066;
+    --todoist-p1-border-hover: #ff706680;
+    --todoist-p1-background: rgba(255,112,102, .1);
+
+    --todoist-p2-border: #ff9a14;
+    --todoist-p2-border-hover: #ff9a1480;
+    --todoist-p2-background: rgba(255,154,20, .1);
+
+    --todoist-p3-border: #5297ff;
+    --todoist-p3-border-hover: #5297ff80;
+    --todoist-p3-background: rgba(82,151,255, .1);
+}
+
+.theme-light {
+    --todoist-p1-border: #d1453b;
+    --todoist-p1-border-hover: #d1453b80;
+    --todoist-p1-background: rgba(209,69,59, .1);
+
+    --todoist-p2-border: #eb8909;
+    --todoist-p2-border-hover: #eb890980;
+    --todoist-p2-background: rgba(235,137,9, .1);
+
+    --todoist-p3-border: #246fe0;
+    --todoist-p3-border-hover: #246fe080;
+    --todoist-p3-background: rgba(36,111,224, .1);
+}
+
+.todoist-p1 input {
+    --checkbox-border-color: var(--todoist-p1-border);
+    --checkbox-border-color-hover: var(--todoist-p1-border-hover);
+    background-color: var(--todoist-p1-background);
+
+}
+
+.todoist-p2 input {
+    --checkbox-border-color: var(--todoist-p2-border);
+    --checkbox-border-color-hover: var(--todoist-p2-border-hover);
+    background-color: var(--todoist-p2-background);
+}
+
+.todoist-p3 input {
+    --checkbox-border-color: var(--todoist-p3-border);
+    --checkbox-border-color-hover: var(--todoist-p3-border-hover);
+    background-color: var(--todoist-p3-background);
+}
+
