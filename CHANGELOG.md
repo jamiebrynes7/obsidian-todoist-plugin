@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - You can now press 'Enter' in the create task dialog to create the task. [Thanks to @oleeskild](https://github.com/oleeskild)
 - This plugin's default styles updated to the new theme in Obsidian v1.0.
 
+### 🔁 Changes
+
+- The priority CSS classes now appear on the outer `div` for a given task. This should allow you to style the entire task, not just the checkbox/description.
+
 ### 🐛 Bug Fixes
 
 - The plugin should now respect your Vault configuration directory when saving your Todoist token.

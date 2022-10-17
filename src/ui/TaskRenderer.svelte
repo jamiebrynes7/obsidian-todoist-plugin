@@ -84,9 +84,9 @@
 <li
   on:contextmenu={onClickTaskContainer}
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
-  class="task-list-item {todo.isOverdue() ? 'task-overdue' : ''}
+  class="task-list-item {getPriorityClass(todo.priority)} {todo.isOverdue() ? 'task-overdue' : ''}
           {todo.hasTime ? 'has-time' : 'has-no-time'}">
-  <div class={getPriorityClass(todo.priority)}>
+  <div>
     <input
       disabled={!isCompletable}
       data-line="1"
