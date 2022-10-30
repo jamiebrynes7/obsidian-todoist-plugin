@@ -1,5 +1,6 @@
 import { isSortingOption, sortingOptions } from "./query";
 import type { Query } from "./query";
+import YAML from "yaml";
 
 export class ParsingError extends Error {
   inner: Error | undefined;
@@ -19,7 +20,19 @@ export class ParsingError extends Error {
 }
 
 export function parseQuery(raw: string): Query {
-  return parseObject(tryParseAsJson(raw));
+  let obj: any;
+
+  try {
+    obj = tryParseAsJson(raw);
+  } catch (e) {
+    try {
+      obj = tryParseAsYaml(raw);
+    } catch (e) {
+      throw new ParsingError("Unable to parse as YAML or JSON");
+    }
+  }
+
+  return parseObject(obj);
 }
 
 function tryParseAsJson(raw: string): any {
@@ -30,12 +43,20 @@ function tryParseAsJson(raw: string): any {
   }
 }
 
+function tryParseAsYaml(raw: string): any {
+  try {
+    return YAML.parse(raw);
+  } catch (e) {
+    throw new ParsingError("Invalid YAML", e);
+  }
+}
+
 function parseObject(query: any): Query {
-  if (!query.hasOwnProperty("name")) {
+  if (!query.hasOwnProperty("name") || query.name === null) {
     throw new ParsingError("Missing field 'name' in query");
   }
 
-  if (!query.hasOwnProperty("filter")) {
+  if (!query.hasOwnProperty("filter") || query.filter === null) {
     throw new ParsingError("Missing field 'filter' in query");
   }
 
