@@ -1,6 +1,6 @@
 import "mocha";
 import { assert } from "chai";
-import { parseQuery } from "../src/query";
+import { parseQuery, ParsingError } from "../src/query/parser";
 
 describe("Query parsing", () => {
   it("Name must exist", () => {
@@ -8,8 +8,7 @@ describe("Query parsing", () => {
       filter: "foo",
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
   });
 
   it("Filter must exist", () => {
@@ -17,8 +16,7 @@ describe("Query parsing", () => {
       name: "Tasks",
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
   });
 
   it("Only name & filter are required", () => {
@@ -27,8 +25,7 @@ describe("Query parsing", () => {
       filter: "foo",
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isOk());
+    assert.doesNotThrow(() => parseQuery(JSON.stringify(obj)), ParsingError);
   });
 
   it("Autorefresh must be a number", () => {
@@ -38,8 +35,7 @@ describe("Query parsing", () => {
       autorefresh: "NaN",
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
   });
 
   it("Autorefresh cannot be negative", () => {
@@ -49,8 +45,7 @@ describe("Query parsing", () => {
       autorefresh: -1,
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
   });
 
   it("Valid autorefresh values pass", () => {
@@ -60,8 +55,7 @@ describe("Query parsing", () => {
       autorefresh: 1,
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isOk());
+    assert.doesNotThrow(() => parseQuery(JSON.stringify(obj)), ParsingError);
   });
 
   it("Sorting must be an array", () => {
@@ -71,8 +65,7 @@ describe("Query parsing", () => {
       sorting: "Not an array",
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
 
     const other = {
       name: "Tasks",
@@ -80,8 +73,7 @@ describe("Query parsing", () => {
       sorting: [],
     };
 
-    const otherResult = parseQuery(other);
-    assert.isTrue(otherResult.isOk());
+    assert.doesNotThrow(() => { parseQuery(JSON.stringify(other)); }, ParsingError);
   });
 
   it("Sorting can only be a specified set of options", () => {
@@ -91,8 +83,7 @@ describe("Query parsing", () => {
       sorting: ["not-valid"],
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
 
     const validObj = {
       name: "Tasks",
@@ -100,8 +91,7 @@ describe("Query parsing", () => {
       sorting: ["date", "priority"],
     };
 
-    const otherResult = parseQuery(validObj);
-    assert.isTrue(otherResult.isOk());
+    assert.doesNotThrow(() => parseQuery(JSON.stringify(validObj)), ParsingError);
   });
 
   it("Group must be a boolean", () => {
@@ -111,8 +101,7 @@ describe("Query parsing", () => {
       group: "not-a-boolean",
     };
 
-    const result = parseQuery(obj);
-    assert.isTrue(result.isErr());
+    assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
 
     const validObj = {
       name: "Tasks",
@@ -120,7 +109,6 @@ describe("Query parsing", () => {
       group: true,
     };
 
-    const otherResult = parseQuery(validObj);
-    assert.isTrue(otherResult.isOk());
+    assert.doesNotThrow(() => parseQuery(JSON.stringify(validObj)), ParsingError);
   });
 });

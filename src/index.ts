@@ -7,7 +7,7 @@ import type { PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import { getCurrentPageMdLink } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
-import QueryInjector from "./queryInjector";
+import { QueryInjector } from "./query/injector";
 import { getTokenPath } from "./token";
 
 export default class TodoistPlugin extends Plugin {

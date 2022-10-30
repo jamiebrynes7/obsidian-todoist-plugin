@@ -1,0 +1,76 @@
+import { isSortingOption, sortingOptions } from "./query";
+import type { Query } from "./query";
+
+export class ParsingError extends Error {
+  inner: Error | undefined;
+
+  constructor(msg: string, inner: Error | undefined = undefined) {
+    super(msg);
+    this.inner = inner;
+  }
+
+  public toString(): string {
+    if (this.inner) {
+      return `${this.message}: '${this.inner}'`;
+    }
+
+    return super.toString();
+  }
+}
+
+export function parseQuery(raw: string): Query {
+  return parseObject(tryParseAsJson(raw));
+}
+
+function tryParseAsJson(raw: string): any {
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    throw new ParsingError("Invalid JSON", e);
+  }
+}
+
+function parseObject(query: any): Query {
+  if (!query.hasOwnProperty("name")) {
+    throw new ParsingError("Missing field 'name' in query");
+  }
+
+  if (!query.hasOwnProperty("filter")) {
+    throw new ParsingError("Missing field 'filter' in query");
+  }
+
+  if (
+    query.hasOwnProperty("autorefresh") &&
+    (isNaN(query.autorefresh) || (query.autorefresh as number) < 0)
+  ) {
+    throw new ParsingError("'autorefresh' field must be a positive number.");
+  }
+
+  if (query.hasOwnProperty("sorting")) {
+    if (!Array.isArray(query.sorting)) {
+      throw new ParsingError(
+        `'sorting' field must be an array of strings within the set [${formatSortingOpts()}].`
+      );
+    }
+
+    const sorting = query.sorting as any[];
+
+    for (const element of sorting) {
+      if (!(typeof element == "string") || !isSortingOption(element)) {
+        throw new ParsingError(
+          `'sorting' field must be an array of strings within the set [${formatSortingOpts()}].`
+        );
+      }
+    }
+  }
+
+  if (query.hasOwnProperty("group") && typeof query.group != "boolean") {
+    throw new ParsingError("'group' field must be a boolean.");
+  }
+
+  return query as Query;
+}
+
+function formatSortingOpts(): string {
+  return sortingOptions.map((e) => `'${e}'`).join(", ");
+}
