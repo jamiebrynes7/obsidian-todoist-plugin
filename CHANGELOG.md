@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- You can now use YAML for writing your Todoist queries.
+
 ## [1.10.1] - 2022-12-22
 
 ### 🐛 Bug Fixes

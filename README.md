@@ -14,10 +14,8 @@ An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todo
 4. Place a code block like the following in any note:
    ````markdown
    ```todoist
-   {
-   "name": "My Tasks",
-   "filter": "today | overdue"
-   }
+   name: My Tasks
+   filter: "today | overdue"
    ```
    ````
 5. Swap to preview mode and the plugin should replace this code block with the materialized result of that filter.
@@ -26,6 +24,8 @@ An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todo
 
 ## Inputs
 
+The query is defined in YAML and accepts the following keys:
+
 | Name          | Required | Description                                                                                                                                            | Type     | Default |
 | ------------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
 | `name`        |    ✓     | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query.     | string   |         |
@@ -33,6 +33,30 @@ An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todo
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.                                                  | number   | null    |
 | `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority', 'dateAscending' (aliased as 'date'), 'dateDescending',  or multiple of these. | string[] | []      |
 | `group`       |          | Denotes whether this query should have its task grouped by project & section.                                                                          | bool     | false   |
+
+## Examples
+
+Show current and overdue tasks, ordered by date and then priority, and finally grouped by project & section.
+
+````markdown
+```todoist
+name: Highest Priority & Date
+filter: "today | overdue"
+sorting: 
+   - date
+   - priority
+group: true
+```
+````
+
+Show the inbox only.
+
+````
+```todoist
+name: Inbox
+filter: "#Inbox"
+```
+````
 
 ## Commands
 
