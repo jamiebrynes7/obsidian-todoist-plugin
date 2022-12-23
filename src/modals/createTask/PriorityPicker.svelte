@@ -28,6 +28,21 @@
   ];
 </script>
 
+<div class="priority-container">
+  {#each options as option}
+    <div
+      class="priority-option {option.value == selected
+        ? 'priority-selected'
+        : ''} priority-{option.label}"
+      on:click={() => {
+        selected = option.value;
+      }}
+    >
+      <span>{option.label}</span>
+    </div>
+  {/each}
+</div>
+
 <style>
   .priority-container {
     display: flex;
@@ -59,15 +74,3 @@
     border-radius: 0 10px 10px 0;
   }
 </style>
-
-<div class="priority-container">
-  {#each options as option}
-    <div
-      class="priority-option {option.value == selected ? 'priority-selected' : ''} priority-{option.label}"
-      on:click={() => {
-        selected = option.value;
-      }}>
-      <span>{option.label}</span>
-    </div>
-  {/each}
-</div>

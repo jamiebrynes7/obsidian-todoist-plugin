@@ -27,4 +27,5 @@
   bind:selectedValue={selected}
   isMulti={true}
   placeholder="Select labels..."
-  noOptionsMessage="No labels." />
+  noOptionsMessage="No labels."
+/>

@@ -81,11 +81,41 @@
 
   function onKeyDown(event: KeyboardEvent) {
     if (event.key == "Enter") {
-        triggerClose();
+      triggerClose();
     }
   }
-
 </script>
+
+<svelte:window on:keydown={onKeyDown} />
+<input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
+<div>
+  <div class="select">
+    <span>Project</span>
+    <div>
+      <ProjectSelector bind:selected={activeProject} bind:metadata />
+    </div>
+  </div>
+  <div class="select">
+    <span>Labels</span>
+    <div>
+      <LabelSelector bind:selected={activeLabels} bind:metadata />
+    </div>
+  </div>
+  <div class="select">
+    <span>Date</span>
+    <div>
+      <DateSelector bind:selected={date} />
+    </div>
+  </div>
+  <div class="select">
+    <span>Priority</span>
+    <div>
+      <PriorityPicker bind:selected={priority} />
+    </div>
+  </div>
+</div>
+<button on:click={triggerClose} disabled={(value?.length ?? 0) == 0}>Add</button
+>
 
 <style>
   button {
@@ -128,37 +158,4 @@
     margin-bottom: 0.5em;
     line-height: 42px;
   }
-
 </style>
-
-<svelte:window on:keydown={onKeyDown} />
-<input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
-<div>
-  <div class="select">
-    <span>Project</span>
-    <div>
-      <ProjectSelector bind:selected={activeProject} bind:metadata />
-    </div>
-  </div>
-  <div class="select">
-    <span>Labels</span>
-    <div>
-      <LabelSelector bind:selected={activeLabels} bind:metadata />
-    </div>
-  </div>
-  <div class="select">
-    <span>Date</span>
-    <div>
-      <DateSelector bind:selected={date} />
-    </div>
-  </div>
-  <div class="select">
-    <span>Priority</span>
-    <div>
-      <PriorityPicker bind:selected={priority} />
-    </div>
-  </div>
-</div>
-<button
-  on:click={triggerClose}
-  disabled={(value?.length ?? 0) == 0}>Add</button>
