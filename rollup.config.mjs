@@ -3,7 +3,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import autoPreprocess from "svelte-preprocess";
-import css from "rollup-plugin-css-only";
+import postcss from "rollup-plugin-postcss";
 import copy from "rollup-plugin-copy";
 
 export default {
@@ -25,7 +25,7 @@ export default {
             dedupe: ["svelte"],
         }),
         commonjs(),
-        css(),
+        postcss(),
         copy({
             targets: [
                 {

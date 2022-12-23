@@ -33,7 +33,7 @@
     "prettier-plugin-svelte": "^2.9.0",
     "rollup": "^3.8.1",
     "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-css-only": "^4.3.0",
+    "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-svelte": "^7.1.0",
     "svelte-check": "^3.0.1",
     "svelte-preprocess": "^4.6.1",
