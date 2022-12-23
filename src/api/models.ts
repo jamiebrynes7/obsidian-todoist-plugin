@@ -1,11 +1,7 @@
-import moment, { Moment, CalendarSpec } from "moment";
-import {
-  ITaskRaw,
-  IProjectRaw,
-  ISectionRaw,
-  UnknownProject,
-  UnknownSection,
-} from "./raw_models";
+import moment from "moment";
+import type { Moment, CalendarSpec } from "moment";
+import { UnknownProject, UnknownSection } from "./raw_models";
+import type { ITaskRaw, IProjectRaw, ISectionRaw } from "./raw_models";
 import type { ITodoistMetadata } from "./api";
 import { ExtendedMap } from "../utils";
 

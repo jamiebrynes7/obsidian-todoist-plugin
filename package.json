@@ -13,18 +13,18 @@
   "author": "Jamie Brynes",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^14.14.9",
+    "@types/node": "^18.11.17",
     "moment": "^2.29.1",
     "obsidian": "0.15",
     "svelte": "^3.29.7",
     "svelte-select": "^3.14.1",
-    "tslib": "^2.0.3"
+    "tslib": "^2.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-typescript": "^10.0.1",
-    "@tsconfig/svelte": "^1.0.10",
+    "@tsconfig/svelte": "^3.0.0",
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
     "chai": "^4.3.7",
@@ -38,6 +38,6 @@
     "svelte-check": "^1.1.23",
     "svelte-preprocess": "^4.6.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.1.2"
+    "typescript": "^4.9.4"
   }
 }

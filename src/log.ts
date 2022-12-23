@@ -1,4 +1,5 @@
-import { SettingsInstance, ISettings } from "./settings";
+import type { ISettings } from "./settings";
+import { SettingsInstance } from "./settings";
 
 let settings: ISettings = null;
 SettingsInstance.subscribe((value) => (settings = value));

@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount, onDestroy, setContext } from "svelte";
   import type { App } from "obsidian";
-  import { SettingsInstance, ISettings } from "../settings";
+  import { SettingsInstance } from "../settings";
+  import type { ISettings } from "../settings";
   import type IQuery from "../query";
   import type { TodoistApi } from "../api/api";
   import type { Task, Project } from "../api/models";
@@ -93,6 +94,7 @@
       fetching = false;
     }
   }
+
 </script>
 
 <h4 class="todoist-query-title">{title}</h4>

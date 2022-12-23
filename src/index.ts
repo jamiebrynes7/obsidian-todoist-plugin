@@ -1,7 +1,9 @@
-import { SettingsInstance, ISettings, SettingsTab } from "./settings";
+import { SettingsInstance, SettingsTab } from "./settings";
+import type { ISettings } from "./settings";
 import { TodoistApi } from "./api/api";
 import debug from "./log";
-import { App, Plugin, PluginManifest } from "obsidian";
+import { App, Plugin } from "obsidian";
+import type { PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import { getCurrentPageMdLink } from "./utils";
 import CreateTaskModal from "./modals/createTask/createTaskModal";

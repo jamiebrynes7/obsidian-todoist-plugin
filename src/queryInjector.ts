@@ -1,11 +1,12 @@
 import {
   App,
-  MarkdownPostProcessorContext,
   MarkdownRenderChild,
 } from "obsidian";
+import type { MarkdownPostProcessorContext } from "obsidian";
 import type { TodoistApi } from "./api/api";
 import debug from "./log";
-import IQuery, { parseQuery } from "./query";
+import type IQuery from "./query";
+import { parseQuery } from "./query";
 import { Result } from "./result";
 import TodoistQuery from "./ui/TodoistQuery.svelte";
 import ErrorDisplay from "./ui/ErrorDisplay.svelte";
