@@ -125,20 +125,20 @@
 
   .select {
     --border: 1px solid var(--background-primary-alt);
-    --borderHoverColor: var(--interactive-accent);
-    --borderFocusColor: var(--interactive-accent);
+    --border-hover: var(--interactive-accent);
+    --border-focus: var(--interactive-accent);
 
     --background: var(--background-modifier-form-field);
-    --listBackground: var(--background-primary);
+    --list-background: var(--background-primary);
 
-    --itemIsActiveBG: var(--background-secondary);
-    --itemIsActiveColor: var(--text-normal);
-    --itemHoverBG: var(--background-secondary);
-    --itemColor: var(--text-normal);
+    --item-is-active-bg: var(--background-secondary);
+    --item-is-active-color: var(--text-normal);
+    --item-hover-bg: var(--background-secondary);
+    --item-color: var(--text-normal);
 
-    --multiItemBG: var(--background-secondary);
-    --multiItemActiveColor: var(--text-normal);
-    --multiItemActiveBG: var(--background-secondary-alt);
+    --multi-item-bg: var(--background-secondary);
+    --multi-item-active-color: var(--text-normal);
+    --multi-item-active-bg: var(--background-secondary-alt);
 
     margin-top: 0.5em;
     display: flex;
