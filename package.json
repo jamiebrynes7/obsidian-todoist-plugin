@@ -16,7 +16,7 @@
     "@types/node": "^18.11.17",
     "moment": "^2.29.4",
     "obsidian": "0.15",
-    "svelte": "^3.29.7",
+    "svelte": "^3.55.0",
     "svelte-select": "^3.14.1",
     "tslib": "^2.4.1"
   },
