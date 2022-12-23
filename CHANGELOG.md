@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### 🐛 Bug Fixes
+
+- Requests to Todoist's API should no longer fail CORS checks.
+
 ## [1.10.0] - 2022-10-17
 
 ### ✨ Features

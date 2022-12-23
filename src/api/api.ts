@@ -9,6 +9,7 @@ import type {
 import { Task, Project, ID, ProjectID, SectionID, LabelID } from "./models";
 import { ExtendedMap } from "../utils";
 import { Result } from "../result";
+import { requestUrl } from "obsidian";
 
 export interface ITodoistMetadata {
   projects: ExtendedMap<ProjectID, IProjectRaw>;
@@ -31,12 +32,13 @@ export class TodoistApi {
 
   constructor(token: string) {
     this.token = token;
-    this.metadata = writable({
+    this.metadataInstance = {
       projects: new ExtendedMap<ProjectID, IProjectRaw>(),
       sections: new ExtendedMap<SectionID, ISectionRaw>(),
       labels: new ExtendedMap<LabelID, string>(),
-    });
+    };
 
+    this.metadata = writable(this.metadataInstance);
     this.metadata.subscribe((value) => (this.metadataInstance = value));
   }
 
@@ -48,16 +50,17 @@ export class TodoistApi {
     const data = { content: content, ...(options ?? {}) };
 
     try {
-      const result = await fetch(url, {
+      const result = await requestUrl({
+        url: url,
         method: "POST",
-        headers: new Headers({
+        headers: {
           Authorization: `Bearer ${this.token}`,
           "Content-Type": "application/json",
-        }),
+        },
         body: JSON.stringify(data),
       });
 
-      if (result.ok) {
+      if (result.status == 200) {
         return Result.Ok({});
       } else {
         return Result.Err(new Error("Failed to create task"));
@@ -77,14 +80,15 @@ export class TodoistApi {
     debug(url);
 
     try {
-      const result = await fetch(url, {
-        headers: new Headers({
+      const result = await requestUrl({
+        url: url,
+        headers: {
           Authorization: `Bearer ${this.token}`,
-        }),
+        },
       });
 
-      if (result.ok) {
-        const tasks = (await result.json()) as ITaskRaw[];
+      if (result.status == 200) {
+        const tasks = result.json as ITaskRaw[];
         const tree = Task.buildTree(tasks);
 
         debug({
@@ -94,7 +98,7 @@ export class TodoistApi {
 
         return Result.Ok(tree);
       } else {
-        return Result.Err(new Error(await result.text()));
+        return Result.Err(new Error(result.text));
       }
     } catch (e) {
       return Result.Err(e);
@@ -111,13 +115,14 @@ export class TodoistApi {
     }
 
     try {
-      const result = await fetch(url, {
-        headers: new Headers({
+      const result = await requestUrl({
+        url: url,
+        headers: {
           Authorization: `Bearer ${this.token}`,
-        }),
+        },
       });
 
-      if (result.ok) {
+      if (result.status == 200) {
         // Force the metadata to update.
         const metadataResult = await this.fetchMetadata();
 
@@ -125,7 +130,7 @@ export class TodoistApi {
           return Result.Err(metadataResult.unwrapErr());
         }
 
-        const tasks = (await result.json()) as ITaskRaw[];
+        const tasks = result.json as ITaskRaw[];
         const tree = Project.buildProjectTree(tasks, this.metadataInstance);
 
         debug({
@@ -135,7 +140,7 @@ export class TodoistApi {
 
         return Result.Ok(tree);
       } else {
-        return Result.Err(new Error(await result.text()));
+        return Result.Err(new Error(result.text));
       }
     } catch (e) {
       return Result.Err(e);
@@ -147,14 +152,15 @@ export class TodoistApi {
 
     debug(url);
 
-    const result = await fetch(url, {
-      headers: new Headers({
+    const result = await requestUrl({
+      url: url,
+      headers: {
         Authorization: `Bearer ${this.token}`,
-      }),
+      },
       method: "POST",
     });
 
-    return result.ok;
+    return result.status == 200;
   }
 
   async fetchMetadata(): Promise<Result<object, Error>> {
@@ -187,16 +193,17 @@ export class TodoistApi {
     const url = `https://api.todoist.com/rest/v2/projects`;
 
     try {
-      const result = await fetch(url, {
-        headers: new Headers({
+      const result = await requestUrl({
+        url: url,
+        headers: {
           Authorization: `Bearer ${this.token}`,
-        }),
+        },
         method: "GET",
       });
 
-      return result.ok
-        ? Result.Ok((await result.json()) as IProjectRaw[])
-        : Result.Err(new Error(await result.text()));
+      return result.status == 200
+        ? Result.Ok(result.json as IProjectRaw[])
+        : Result.Err(new Error(result.text));
     } catch (e) {
       return Result.Err(e);
     }
@@ -205,16 +212,17 @@ export class TodoistApi {
   private async getSections(): Promise<Result<ISectionRaw[], Error>> {
     const url = `https://api.todoist.com/rest/v2/sections`;
     try {
-      const result = await fetch(url, {
-        headers: new Headers({
+      const result = await requestUrl({
+        url: url,
+        headers: {
           Authorization: `Bearer ${this.token}`,
-        }),
+        },
         method: "GET",
       });
 
-      return result.ok
-        ? Result.Ok((await result.json()) as ISectionRaw[])
-        : Result.Err(new Error(await result.text()));
+      return result.status == 200
+        ? Result.Ok(result.json as ISectionRaw[])
+        : Result.Err(new Error(result.text));
     } catch (e) {
       return Result.Err(e);
     }
@@ -223,16 +231,17 @@ export class TodoistApi {
   private async getLabels(): Promise<Result<ILabelRaw[], Error>> {
     const url = `https://api.todoist.com/rest/v2/labels`;
     try {
-      const result = await fetch(url, {
-        headers: new Headers({
+      const result = await requestUrl({
+        url: url,
+        headers: {
           Authorization: `Bearer ${this.token}`,
-        }),
+        },
         method: "GET",
       });
 
-      return result.ok
-        ? Result.Ok((await result.json()) as ILabelRaw[])
-        : Result.Err(new Error(await result.text()));
+      return result.status == 200
+        ? Result.Ok(result.json as ILabelRaw[])
+        : Result.Err(new Error(result.text));
     } catch (e) {
       return Result.Err(e);
     }
