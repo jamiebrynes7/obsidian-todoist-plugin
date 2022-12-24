@@ -81,55 +81,10 @@
 
   function onKeyDown(event: KeyboardEvent) {
     if (event.key == "Enter") {
-        triggerClose();
+      triggerClose();
     }
   }
-
 </script>
-
-<style>
-  button {
-    float: right;
-    margin-top: 20px;
-  }
-
-  .select {
-    --border: 1px solid var(--background-primary-alt);
-    --borderHoverColor: var(--interactive-accent);
-    --borderFocusColor: var(--interactive-accent);
-
-    --background: var(--background-modifier-form-field);
-    --listBackground: var(--background-primary);
-
-    --itemIsActiveBG: var(--background-secondary);
-    --itemIsActiveColor: var(--text-normal);
-    --itemHoverBG: var(--background-secondary);
-    --itemColor: var(--text-normal);
-
-    --multiItemBG: var(--background-secondary);
-    --multiItemActiveColor: var(--text-normal);
-    --multiItemActiveBG: var(--background-secondary-alt);
-
-    margin-top: 0.5em;
-    display: flex;
-    align-items: center;
-  }
-
-  .select > span {
-    width: 4em;
-  }
-
-  .select > div {
-    flex-grow: 1;
-  }
-
-  input {
-    width: 100%;
-    margin-bottom: 0.5em;
-    line-height: 42px;
-  }
-
-</style>
 
 <svelte:window on:keydown={onKeyDown} />
 <input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
@@ -159,6 +114,48 @@
     </div>
   </div>
 </div>
-<button
-  on:click={triggerClose}
-  disabled={(value?.length ?? 0) == 0}>Add</button>
+<button on:click={triggerClose} disabled={(value?.length ?? 0) == 0}>Add</button
+>
+
+<style>
+  button {
+    float: right;
+    margin-top: 20px;
+  }
+
+  .select {
+    --border: 1px solid var(--background-primary-alt);
+    --border-hover: var(--interactive-accent);
+    --border-focus: var(--interactive-accent);
+
+    --background: var(--background-modifier-form-field);
+    --list-background: var(--background-primary);
+
+    --item-is-active-bg: var(--background-secondary);
+    --item-is-active-color: var(--text-normal);
+    --item-hover-bg: var(--background-secondary);
+    --item-color: var(--text-normal);
+
+    --multi-item-bg: var(--background-secondary);
+    --multi-item-active-color: var(--text-normal);
+    --multi-item-active-bg: var(--background-secondary-alt);
+
+    margin-top: 0.5em;
+    display: flex;
+    align-items: center;
+  }
+
+  .select > span {
+    width: 4em;
+  }
+
+  .select > div {
+    flex-grow: 1;
+  }
+
+  input {
+    width: 100%;
+    margin-bottom: 0.5em;
+    line-height: 42px;
+  }
+</style>

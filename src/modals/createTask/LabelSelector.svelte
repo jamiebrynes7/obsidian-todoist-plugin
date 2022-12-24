@@ -24,7 +24,7 @@
 
 <Select
   items={labels}
-  bind:selectedValue={selected}
-  isMulti={true}
+  bind:value={selected}
+  multiple={true}
   placeholder="Select labels..."
-  noOptionsMessage="No labels." />
+/>

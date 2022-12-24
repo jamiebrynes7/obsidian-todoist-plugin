@@ -99,6 +99,7 @@
 
 <Select
   items={projectTree}
-  isClearable={false}
-  bind:selectedValue={selected}
-  placeholder="Select project or section" />
+  clearable={false}
+  bind:value={selected}
+  placeholder="Select project or section"
+/>

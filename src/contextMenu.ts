@@ -1,4 +1,5 @@
-import { Menu, Notice, Point } from "obsidian";
+import { Menu, Notice } from "obsidian";
+import type { Point } from "obsidian";
 import type { Task } from "./api/models";
 
 interface TaskContext {

@@ -1,6 +1,7 @@
 import "mocha";
 import { assert } from "chai";
-import { LabelID, Project, ProjectID, SectionID } from "../src/api/models";
+import type { LabelID, ProjectID, SectionID } from "../src/api/models";
+import { Project } from "../src/api/models";
 import type { ITaskRaw, IProjectRaw, ISectionRaw } from "../src/api/raw_models";
 import type { ITodoistMetadata } from "../src/api/api";
 import { ExtendedMap } from "../src/utils";

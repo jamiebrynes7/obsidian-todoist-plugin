@@ -1,4 +1,5 @@
-import { writable, Writable } from "svelte/store";
+import { writable } from "svelte/store";
+import type { Writable } from "svelte/store";
 import debug from "../log";
 import type {
   ITaskRaw,
@@ -6,7 +7,8 @@ import type {
   ISectionRaw,
   ILabelRaw,
 } from "./raw_models";
-import { Task, Project, ID, ProjectID, SectionID, LabelID } from "./models";
+import { Task, Project } from "./models";
+import type { ID, ProjectID, SectionID, LabelID } from "./models";
 import { ExtendedMap } from "../utils";
 import { Result } from "../result";
 import { requestUrl } from "obsidian";

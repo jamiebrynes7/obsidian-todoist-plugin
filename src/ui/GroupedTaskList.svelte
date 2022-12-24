@@ -32,8 +32,11 @@
 
 <div class="todoist-project">
   <div
-    class="{foldedState.get(project.projectID) ? 'is-collapsed' : ''} todoist-project-title"
-    on:click={() => toggleFold(project.projectID)}>
+    class="{foldedState.get(project.projectID)
+      ? 'is-collapsed'
+      : ''} todoist-project-title"
+    on:click={() => toggleFold(project.projectID)}
+  >
     <CollapseIndicator />
     <span>
       {metadata.projects.get_or_default(project.projectID, UnknownProject).name}
@@ -46,16 +49,21 @@
       {api}
       {sorting}
       renderProject={false}
-      renderNoTaskInfo={false} />
+      renderNoTaskInfo={false}
+    />
 
     {#each project.sections as section (section.sectionID)}
       <div class="todoist-section">
         <div
-          class="{foldedState.get(section.sectionID) ? 'is-collapsed' : ''} todoist-section-title"
-          on:click={() => toggleFold(section.sectionID)}>
+          class="{foldedState.get(section.sectionID)
+            ? 'is-collapsed'
+            : ''} todoist-section-title"
+          on:click={() => toggleFold(section.sectionID)}
+        >
           <CollapseIndicator />
           <span>
-            {metadata.sections.get_or_default(section.sectionID, UnknownSection).name}
+            {metadata.sections.get_or_default(section.sectionID, UnknownSection)
+              .name}
           </span>
         </div>
         {#if !foldedState.get(section.sectionID)}
@@ -65,7 +73,8 @@
             {api}
             {sorting}
             renderProject={false}
-            renderNoTaskInfo={false} />
+            renderNoTaskInfo={false}
+          />
         {/if}
       </div>
     {/each}

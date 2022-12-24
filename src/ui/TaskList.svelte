@@ -49,7 +49,8 @@
         {api}
         {sorting}
         {renderProject}
-        {todo} />
+        {todo}
+      />
     {/each}
   </ul>
 {:else if renderNoTaskInfo}
