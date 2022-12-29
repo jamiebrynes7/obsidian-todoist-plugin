@@ -3,7 +3,7 @@
   import type { App } from "obsidian";
   import { SettingsInstance } from "../settings";
   import type { ISettings } from "../settings";
-  import type IQuery from "../query";
+  import type { Query } from "../query/query";
   import type { TodoistApi } from "../api/api";
   import type { Task, Project } from "../api/models";
   import TaskList from "./TaskList.svelte";
@@ -13,7 +13,7 @@
   import NoTaskDisplay from "./NoTaskDisplay.svelte";
   import { APP_CONTEXT_KEY } from "../utils";
 
-  export let query: IQuery;
+  export let query: Query;
   export let api: TodoistApi;
   export let app: App;
 
