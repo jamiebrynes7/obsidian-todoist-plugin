@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now use YAML for writing your Todoist queries.
 
+### 🐛 Bug Fixes
+
+- Using the 'Add Todoist Task' command should correctly use the selection an editor pane.
+
 ## [1.10.1] - 2022-12-22
 
 ### 🐛 Bug Fixes
