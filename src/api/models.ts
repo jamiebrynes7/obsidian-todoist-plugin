@@ -75,6 +75,14 @@ export class Task {
     return this.rawDatetime.clone().add(1, "day").isBefore();
   }
 
+  public isToday(): boolean {
+    if (!this.rawDatetime) {
+      return false;
+    }
+
+    return this.rawDatetime.isSame(new Date(), "day");
+  }
+
   public compareTo(other: Task, sorting_options: string[]): number {
     /* Compares the dates of this to 'other'. Returns :
      *   1 if this is after the other
