@@ -19,6 +19,8 @@
   export let todo: Task;
 
   $: isCompletable = !todo.content.startsWith("*");
+  $: priorityClass = getPriorityClass(todo.priority);
+  $: dateTimeClass = getDateTimeClass(todo);
 
   let taskContentEl: HTMLDivElement;
 
@@ -63,6 +65,24 @@
     }
   }
 
+  function getDateTimeClass(todo: Task): string {
+    const parts = [];
+
+    if (todo.hasTime) {
+      parts.push("has-time");
+    } else {
+      parts.push("no-time");
+    }
+
+    if (todo.isOverdue()) {
+      parts.push("task-overdue");
+    } else if (todo.isToday()) {
+      parts.push("task-today");
+    }
+
+    return parts.join(" ");
+  }
+
   function onClickTaskContainer(evt: MouseEvent) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -83,10 +103,7 @@
 <li
   on:contextmenu={onClickTaskContainer}
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
-  class="task-list-item {getPriorityClass(todo.priority)} {todo.isOverdue()
-    ? 'task-overdue'
-    : ''}
-          {todo.hasTime ? 'has-time' : 'has-no-time'}"
+  class="task-list-item {priorityClass} {dateTimeClass}"
 >
   <div>
     <input
@@ -126,7 +143,7 @@
       </div>
     {/if}
     {#if settings.renderDate && todo.date}
-      <div class="task-date {todo.isOverdue() ? 'task-overdue' : ''}">
+      <div class="task-date {dateTimeClass}">
         {#if settings.renderDateIcon}
           <svg
             class="task-calendar-icon"

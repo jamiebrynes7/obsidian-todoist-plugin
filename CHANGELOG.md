@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - You can now use YAML for writing your Todoist queries.
+- Tasks that are due today now have the `task-today` CSS class.
 
 ### 🐛 Bug Fixes
 
