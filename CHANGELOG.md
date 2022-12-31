@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🐛 Bug Fixes
 
 - Using the 'Add Todoist Task' command should correctly use the selection an editor pane.
+- Subtask lists should no longer display erroneous messages when all the subtasks are closed.
+- Fixed logical bugs in handling failures when marking a task as done.
 
 ## [1.10.1] - 2022-12-22
 

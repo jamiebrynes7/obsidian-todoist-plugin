@@ -173,6 +173,7 @@
       {api}
       {sorting}
       {renderProject}
+      renderNoTaskInfo={false}
     />
   {/if}
 </li>

@@ -162,7 +162,7 @@ export class TodoistApi {
       method: "POST",
     });
 
-    return result.status == 200;
+    return result.status == 204;
   }
 
   async fetchMetadata(): Promise<Result<object, Error>> {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Notice } from "obsidian";
   import { onDestroy } from "svelte";
   import type { TodoistApi, ITodoistMetadata } from "../api/api";
   import type { Task, ID } from "../api/models";
@@ -30,12 +31,12 @@
     tasksPendingClose = tasksPendingClose;
 
     if (await api.closeTask(task.id)) {
-      tasks.filter((otherTask) => otherTask.id == task.id);
-      tasks = tasks;
+      tasks = tasks.filter((otherTask) => otherTask.id === task.id);
+    } else {
+      new Notice("Failed to close task", 2000);
     }
 
-    tasksPendingClose.filter((id) => id == task.id);
-    tasksPendingClose = tasksPendingClose;
+    tasksPendingClose = tasksPendingClose.filter((id) => id !== task.id);
   }
 </script>
 
