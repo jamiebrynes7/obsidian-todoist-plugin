@@ -27,6 +27,7 @@ export interface ITaskRaw {
   labels: string[];
   priority: number;
   content: string;
+  description: string;
   order: number;
   parent_id?: ID | null;
   due?: {

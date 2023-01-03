@@ -7,6 +7,7 @@
   import { UnknownProject, UnknownSection } from "../api/raw_models";
   import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
+  import DescriptionRenderer from "./DescriptionRenderer.svelte";
   import TaskList from "./TaskList.svelte";
 
   export let metadata: ITodoistMetadata;
@@ -25,10 +26,13 @@
   let taskContentEl: HTMLDivElement;
 
   onMount(async () => {
-    await renderMarkdown(todo.content);
+    await renderMarkdown(todo.content, taskContentEl);
   });
 
-  async function renderMarkdown(content: string): Promise<void> {
+  async function renderMarkdown(
+    content: string,
+    containerEl: HTMLDivElement
+  ): Promise<void> {
     // Escape leading '#' or '-' so they aren't rendered as headers/bullets.
     if (content.startsWith("#") || content.startsWith("-")) {
       content = `\\${content}`;
@@ -39,14 +43,18 @@
       content = content.substring(1);
     }
 
-    await MarkdownRenderer.renderMarkdown(content, taskContentEl, "", null);
+    await MarkdownRenderer.renderMarkdown(content, containerEl, "", null);
 
-    // Remove the wrapping '<p>' tag to force it to inline.
-    const markdownContent = taskContentEl.querySelector("p");
+    // If there is one child and its just a <p>, lets unwrap this and inline it. Otherwise, do nothing.
+    if (containerEl.childElementCount > 1) {
+      return;
+    }
+
+    const markdownContent = containerEl.querySelector("p");
 
     if (markdownContent) {
       markdownContent.parentElement.removeChild(markdownContent);
-      taskContentEl.innerHTML += markdownContent.innerHTML;
+      containerEl.innerHTML += markdownContent.innerHTML;
     }
   }
 
@@ -117,6 +125,9 @@
     />
     <div bind:this={taskContentEl} class="todoist-task-content" />
   </div>
+  {#if todo.description != ""}
+    <DescriptionRenderer description={todo.description} />
+  {/if}
   <div class="task-metadata">
     {#if settings.renderProject && renderProject}
       <div class="task-project">
