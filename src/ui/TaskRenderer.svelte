@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { MarkdownRenderer } from "obsidian";
-  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
@@ -8,6 +6,7 @@
   import CalendarIcon from "../components/icons/CalendarIcon.svelte";
   import LabelIcon from "../components/icons/LabelIcon.svelte";
   import ProjectIcon from "../components/icons/ProjectIcon.svelte";
+  import MarkdownRenderer from "../components/MarkdownRenderer.svelte";
   import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
   import DescriptionRenderer from "./DescriptionRenderer.svelte";
@@ -19,46 +18,27 @@
   export let sorting: string[];
   export let renderProject: boolean;
   export let onClickTask: (task: Task) => Promise<void>;
-
   export let todo: Task;
 
   $: isCompletable = !todo.content.startsWith("*");
   $: priorityClass = getPriorityClass(todo.priority);
   $: dateTimeClass = getDateTimeClass(todo);
+  $: projectLabel = getProjectLabel(todo, metadata);
+  $: labels = todo.labels.join(", ");
+  $: sanitizedContent = sanitizeContent(todo.content);
 
-  let taskContentEl: HTMLDivElement;
-
-  onMount(async () => {
-    await renderMarkdown(todo.content, taskContentEl);
-  });
-
-  async function renderMarkdown(
-    content: string,
-    containerEl: HTMLDivElement
-  ): Promise<void> {
+  function sanitizeContent(content: string): string {
     // Escape leading '#' or '-' so they aren't rendered as headers/bullets.
     if (content.startsWith("#") || content.startsWith("-")) {
-      content = `\\${content}`;
+      return `\\${content}`;
     }
 
     // A task starting with '*' signifies that it cannot be completed, so we should strip it from the front of the task.
     if (content.startsWith("*")) {
-      content = content.substring(1);
+      return content.substring(1);
     }
 
-    await MarkdownRenderer.renderMarkdown(content, containerEl, "", null);
-
-    // If there is one child and its just a <p>, lets unwrap this and inline it. Otherwise, do nothing.
-    if (containerEl.childElementCount > 1) {
-      return;
-    }
-
-    const markdownContent = containerEl.querySelector("p");
-
-    if (markdownContent) {
-      markdownContent.parentElement.removeChild(markdownContent);
-      containerEl.innerHTML += markdownContent.innerHTML;
-    }
+    return content;
   }
 
   // For some reason, the Todoist API returns priority in reverse order from
@@ -94,6 +74,24 @@
     return parts.join(" ");
   }
 
+  function getProjectLabel(todo: Task, metadata: ITodoistMetadata): string {
+    const project = metadata.projects.get_or_default(
+      todo.projectID,
+      UnknownProject
+    ).name;
+
+    if (todo.sectionID === null) {
+      return project;
+    }
+
+    const section = metadata.sections.get_or_default(
+      todo.sectionID,
+      UnknownSection
+    ).name;
+
+    return `${project} | ${section}`;
+  }
+
   function onClickTaskContainer(evt: MouseEvent) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -126,7 +124,7 @@
         await onClickTask(todo);
       }}
     />
-    <div bind:this={taskContentEl} class="todoist-task-content" />
+    <MarkdownRenderer class="todoist-task-content" content={sanitizedContent} />
   </div>
   {#if todo.description != ""}
     <DescriptionRenderer description={todo.description} />
@@ -137,12 +135,7 @@
         {#if settings.renderProjectIcon}
           <ProjectIcon class="task-project-icon" />
         {/if}
-        {metadata.projects.get_or_default(todo.projectID, UnknownProject).name}
-        {#if todo.sectionID}
-          |
-          {metadata.sections.get_or_default(todo.sectionID, UnknownSection)
-            .name}
-        {/if}
+        {projectLabel}
       </div>
     {/if}
     {#if settings.renderDate && todo.date}
@@ -158,9 +151,7 @@
         {#if settings.renderLabelsIcon}
           <LabelIcon class="task-labels-icon" />
         {/if}
-        {#each todo.labels as label, i}
-          {label}{#if i != todo.labels.length - 1},{/if}
-        {/each}
+        {labels}
       </div>
     {/if}
   </div>
