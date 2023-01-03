@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now use YAML for writing your Todoist queries.
 - Tasks that are due today now have the `task-today` CSS class.
+- Task descriptions are now rendered with the task.
+  - If the description is multiple lines or has complex Markdown, it is rendered as a preview.
+  - The preview can be expanded and closed by double-clicking on the preview.
+- The task description can now be set from the 'Add Todoist task' modal.
+
+### 🔁 Changes
+
+- Improved the alignment of the task metadata for the default Obsidian theme.
 
 ### 🐛 Bug Fixes
 
