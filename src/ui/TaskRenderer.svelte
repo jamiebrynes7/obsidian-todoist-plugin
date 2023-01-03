@@ -5,6 +5,9 @@
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
+  import CalendarIcon from "../components/icons/CalendarIcon.svelte";
+  import LabelIcon from "../components/icons/LabelIcon.svelte";
+  import ProjectIcon from "../components/icons/ProjectIcon.svelte";
   import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
   import DescriptionRenderer from "./DescriptionRenderer.svelte";
@@ -132,18 +135,7 @@
     {#if settings.renderProject && renderProject}
       <div class="task-project">
         {#if settings.renderProjectIcon}
-          <svg
-            class="task-project-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <ProjectIcon class="task-project-icon" />
         {/if}
         {metadata.projects.get_or_default(todo.projectID, UnknownProject).name}
         {#if todo.sectionID}
@@ -156,18 +148,7 @@
     {#if settings.renderDate && todo.date}
       <div class="task-date {dateTimeClass}">
         {#if settings.renderDateIcon}
-          <svg
-            class="task-calendar-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <CalendarIcon class="task-calendar-icon" />
         {/if}
         {todo.date}
       </div>
@@ -175,18 +156,7 @@
     {#if settings.renderLabels && todo.labels.length > 0}
       <div class="task-labels">
         {#if settings.renderLabelsIcon}
-          <svg
-            class="task-labels-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <LabelIcon class="task-labels-icon" />
         {/if}
         {#each todo.labels as label, i}
           {label}{#if i != todo.labels.length - 1},{/if}
