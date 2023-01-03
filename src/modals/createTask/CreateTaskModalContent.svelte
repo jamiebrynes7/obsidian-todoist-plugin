@@ -18,6 +18,7 @@
   export let value: string;
   export let initialCursorPosition: number | undefined;
 
+  let description: string = "";
   let activeLabels: LabelOption[] = null;
   let activeProject: ProjectOption = null;
   let date: Moment = null;
@@ -48,6 +49,7 @@
     isBeingCreated = true;
 
     let opts: ICreateTaskOptions = {
+      description: description,
       priority: priority,
     };
 
@@ -88,6 +90,7 @@
 
 <svelte:window on:keydown={onKeyDown} />
 <input bind:this={inputEl} type="text" bind:value placeholder="What to do?" />
+<input type="text" bind:value={description} placeholder="Description..." />
 <div>
   <div class="select">
     <span>Project</span>

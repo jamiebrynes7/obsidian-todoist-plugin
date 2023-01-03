@@ -21,7 +21,7 @@
 }
 
 .task-metadata {
-  margin-left: 4px;
+  margin-left: 28px;
 }
 
 .task-calendar-icon,
@@ -122,5 +122,11 @@ ul.todoist-task-list {
     --checkbox-border-color: var(--todoist-p3-border);
     --checkbox-border-color-hover: var(--todoist-p3-border-hover);
     background-color: var(--todoist-p3-background);
+}
+
+.todoist-task-description {
+  font-size: 80%;
+  color: var(--text-muted);
+  margin-left: 28px;
 }
 

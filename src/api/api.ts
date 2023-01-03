@@ -20,6 +20,7 @@ export interface ITodoistMetadata {
 }
 
 export interface ICreateTaskOptions {
+  description: string;
   priority: number;
   project_id?: ProjectID;
   section_id?: SectionID;
