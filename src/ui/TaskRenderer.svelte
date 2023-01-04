@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { MarkdownRenderer } from "obsidian";
-  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import type { ITodoistMetadata, TodoistApi } from "../api/api";
   import type { Task } from "../api/models";
   import { UnknownProject, UnknownSection } from "../api/raw_models";
+  import CalendarIcon from "../components/icons/CalendarIcon.svelte";
+  import LabelIcon from "../components/icons/LabelIcon.svelte";
+  import ProjectIcon from "../components/icons/ProjectIcon.svelte";
+  import MarkdownRenderer from "../components/MarkdownRenderer.svelte";
   import { showTaskContext } from "../contextMenu";
   import type { ISettings } from "../settings";
   import DescriptionRenderer from "./DescriptionRenderer.svelte";
@@ -16,46 +18,27 @@
   export let sorting: string[];
   export let renderProject: boolean;
   export let onClickTask: (task: Task) => Promise<void>;
-
   export let todo: Task;
 
   $: isCompletable = !todo.content.startsWith("*");
   $: priorityClass = getPriorityClass(todo.priority);
   $: dateTimeClass = getDateTimeClass(todo);
+  $: projectLabel = getProjectLabel(todo, metadata);
+  $: labels = todo.labels.join(", ");
+  $: sanitizedContent = sanitizeContent(todo.content);
 
-  let taskContentEl: HTMLDivElement;
-
-  onMount(async () => {
-    await renderMarkdown(todo.content, taskContentEl);
-  });
-
-  async function renderMarkdown(
-    content: string,
-    containerEl: HTMLDivElement
-  ): Promise<void> {
+  function sanitizeContent(content: string): string {
     // Escape leading '#' or '-' so they aren't rendered as headers/bullets.
     if (content.startsWith("#") || content.startsWith("-")) {
-      content = `\\${content}`;
+      return `\\${content}`;
     }
 
     // A task starting with '*' signifies that it cannot be completed, so we should strip it from the front of the task.
     if (content.startsWith("*")) {
-      content = content.substring(1);
+      return content.substring(1);
     }
 
-    await MarkdownRenderer.renderMarkdown(content, containerEl, "", null);
-
-    // If there is one child and its just a <p>, lets unwrap this and inline it. Otherwise, do nothing.
-    if (containerEl.childElementCount > 1) {
-      return;
-    }
-
-    const markdownContent = containerEl.querySelector("p");
-
-    if (markdownContent) {
-      markdownContent.parentElement.removeChild(markdownContent);
-      containerEl.innerHTML += markdownContent.innerHTML;
-    }
+    return content;
   }
 
   // For some reason, the Todoist API returns priority in reverse order from
@@ -91,6 +74,24 @@
     return parts.join(" ");
   }
 
+  function getProjectLabel(todo: Task, metadata: ITodoistMetadata): string {
+    const project = metadata.projects.get_or_default(
+      todo.projectID,
+      UnknownProject
+    ).name;
+
+    if (todo.sectionID === null) {
+      return project;
+    }
+
+    const section = metadata.sections.get_or_default(
+      todo.sectionID,
+      UnknownSection
+    ).name;
+
+    return `${project} | ${section}`;
+  }
+
   function onClickTaskContainer(evt: MouseEvent) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -123,7 +124,7 @@
         await onClickTask(todo);
       }}
     />
-    <div bind:this={taskContentEl} class="todoist-task-content" />
+    <MarkdownRenderer class="todoist-task-content" content={sanitizedContent} />
   </div>
   {#if todo.description != ""}
     <DescriptionRenderer description={todo.description} />
@@ -132,42 +133,15 @@
     {#if settings.renderProject && renderProject}
       <div class="task-project">
         {#if settings.renderProjectIcon}
-          <svg
-            class="task-project-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 2h10v7h-2l-1 2H8l-1-2H5V5z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <ProjectIcon class="task-project-icon" />
         {/if}
-        {metadata.projects.get_or_default(todo.projectID, UnknownProject).name}
-        {#if todo.sectionID}
-          |
-          {metadata.sections.get_or_default(todo.sectionID, UnknownSection)
-            .name}
-        {/if}
+        {projectLabel}
       </div>
     {/if}
     {#if settings.renderDate && todo.date}
       <div class="task-date {dateTimeClass}">
         {#if settings.renderDateIcon}
-          <svg
-            class="task-calendar-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <CalendarIcon class="task-calendar-icon" />
         {/if}
         {todo.date}
       </div>
@@ -175,22 +149,9 @@
     {#if settings.renderLabels && todo.labels.length > 0}
       <div class="task-labels">
         {#if settings.renderLabelsIcon}
-          <svg
-            class="task-labels-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <LabelIcon class="task-labels-icon" />
         {/if}
-        {#each todo.labels as label, i}
-          {label}{#if i != todo.labels.length - 1},{/if}
-        {/each}
+        {labels}
       </div>
     {/if}
   </div>
