@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Subtask lists should no longer display erroneous messages when all the subtasks are closed.
 - Fixed logical bugs in handling failures when marking a task as done.
 
+### ⚙ Internal
+
+- Ensured that all API requests to Todoist have debug & error logging.
+
 ## [1.10.1] - 2022-12-22
 
 ### 🐛 Bug Fixes
