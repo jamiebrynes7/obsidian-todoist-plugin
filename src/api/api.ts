@@ -11,7 +11,11 @@ import { Task, Project } from "./models";
 import type { ID, ProjectID, SectionID, LabelID } from "./models";
 import { ExtendedMap } from "../utils";
 import { Result } from "../result";
-import { requestUrl } from "obsidian";
+import {
+  requestUrl,
+  type RequestUrlParam,
+  type RequestUrlResponse,
+} from "obsidian";
 
 export interface ITodoistMetadata {
   projects: ExtendedMap<ProjectID, IProjectRaw>;
@@ -49,18 +53,13 @@ export class TodoistApi {
     content: string,
     options?: ICreateTaskOptions
   ): Promise<Result<object, Error>> {
-    const url = "https://api.todoist.com/rest/v2/tasks";
     const data = { content: content, ...(options ?? {}) };
 
     try {
-      const result = await requestUrl({
-        url: url,
+      const result = await this.makeRequest({
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        path: "/tasks",
+        jsonBody: data,
       });
 
       if (result.status == 200) {
@@ -74,22 +73,16 @@ export class TodoistApi {
   }
 
   async getTasks(filter?: string): Promise<Result<Task[], Error>> {
-    let url = "https://api.todoist.com/rest/v2/tasks";
+    let url = "/tasks";
 
     if (filter) {
       url += `?filter=${encodeURIComponent(filter)}`;
     }
-
-    debug(url);
-
     try {
-      const result = await requestUrl({
-        url: url,
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
+      const result = await this.makeRequest({
+        method: "GET",
+        path: url,
       });
-
       if (result.status == 200) {
         const tasks = result.json as ITaskRaw[];
         const tree = Task.buildTree(tasks);
@@ -111,20 +104,16 @@ export class TodoistApi {
   async getTasksGroupedByProject(
     filter?: string
   ): Promise<Result<Project[], Error>> {
-    let url = "https://api.todoist.com/rest/v2/tasks";
+    let url = "/tasks";
 
     if (filter) {
       url += `?filter=${encodeURIComponent(filter)}`;
     }
-
     try {
-      const result = await requestUrl({
-        url: url,
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
+      const result = await this.makeRequest({
+        method: "GET",
+        path: url,
       });
-
       if (result.status == 200) {
         // Force the metadata to update.
         const metadataResult = await this.fetchMetadata();
@@ -151,18 +140,10 @@ export class TodoistApi {
   }
 
   async closeTask(id: ID): Promise<boolean> {
-    const url = `https://api.todoist.com/rest/v2/tasks/${id}/close`;
-
-    debug(url);
-
-    const result = await requestUrl({
-      url: url,
-      headers: {
-        Authorization: `Bearer ${this.token}`,
-      },
+    const result = await this.makeRequest({
       method: "POST",
+      path: `/tasks/${id}/close`,
     });
-
     return result.status == 204;
   }
 
@@ -193,17 +174,11 @@ export class TodoistApi {
   }
 
   private async getProjects(): Promise<Result<IProjectRaw[], Error>> {
-    const url = `https://api.todoist.com/rest/v2/projects`;
-
     try {
-      const result = await requestUrl({
-        url: url,
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
+      const result = await this.makeRequest({
         method: "GET",
+        path: "/projects",
       });
-
       return result.status == 200
         ? Result.Ok(result.json as IProjectRaw[])
         : Result.Err(new Error(result.text));
@@ -213,16 +188,11 @@ export class TodoistApi {
   }
 
   private async getSections(): Promise<Result<ISectionRaw[], Error>> {
-    const url = `https://api.todoist.com/rest/v2/sections`;
     try {
-      const result = await requestUrl({
-        url: url,
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
+      const result = await this.makeRequest({
         method: "GET",
+        path: "/sections",
       });
-
       return result.status == 200
         ? Result.Ok(result.json as ISectionRaw[])
         : Result.Err(new Error(result.text));
@@ -232,16 +202,11 @@ export class TodoistApi {
   }
 
   private async getLabels(): Promise<Result<ILabelRaw[], Error>> {
-    const url = `https://api.todoist.com/rest/v2/labels`;
     try {
-      const result = await requestUrl({
-        url: url,
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-        },
+      const result = await this.makeRequest({
         method: "GET",
+        path: "/labels",
       });
-
       return result.status == 200
         ? Result.Ok(result.json as ILabelRaw[])
         : Result.Err(new Error(result.text));
@@ -249,4 +214,44 @@ export class TodoistApi {
       return Result.Err(e);
     }
   }
+
+  private async makeRequest(
+    params: RequestParams
+  ): Promise<RequestUrlResponse> {
+    const requestParams: RequestUrlParam = {
+      url: `https://api.todoist.com/rest/v2${params.path}`,
+      method: params.method,
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    };
+
+    debug(`[Todoist API]: ${requestParams.method} ${requestParams.url}`);
+
+    if (params.jsonBody) {
+      requestParams.body = JSON.stringify(params.jsonBody);
+      requestParams.headers = {
+        ...requestParams.headers,
+        ...{
+          "Content-Type": "application/json",
+        },
+      };
+    }
+
+    const response = await requestUrl(requestParams);
+
+    if (response.status >= 400) {
+      console.error(
+        `[Todoist API]: ${requestParams.method} ${requestParams.url} returned error '[${response.status}]: ${response.text}`
+      );
+    }
+
+    return response;
+  }
+}
+
+interface RequestParams {
+  method: "GET" | "POST";
+  path: string;
+  jsonBody?: any;
 }
