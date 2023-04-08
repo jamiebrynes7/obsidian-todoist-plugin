@@ -1,6 +1,6 @@
 {
   "name": "todoist-plugin",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "A Todoist plugin for Obsidian",
   "main": "src/index.js",
   "scripts": {
