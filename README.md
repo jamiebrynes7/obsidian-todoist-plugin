@@ -1,6 +1,6 @@
 # Obsidian x Todoist Plugin
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jamiebrynes7/obsidian-todoist-plugin/premerge?style=for-the-badge) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jamiebrynes7/obsidian-todoist-plugin?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jamiebrynes7/obsidian-todoist-plugin/premerge.yml?branch=develop&style=for-the-badge) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jamiebrynes7/obsidian-todoist-plugin?style=for-the-badge)
 
 An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
 
