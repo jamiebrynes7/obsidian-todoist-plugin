@@ -17,41 +17,16 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Create release
+      - name: Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-
-      - name: Upload release assets (1/3)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/main.js
-          asset_name: main.js
-          asset_content_type: application/javascript
-
-      - name: Upload release assets (2/3)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/manifest.json
-          asset_name: manifest.json
-          asset_content_type: application/json
-
-      - name: Upload release assets (3/3)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/styles.css
-          asset_name: styles.css
-          asset_content_type: text/css
+          name: Obsidian x Todoist - v${{ github.ref }}
+          draft: true
+          files: |
+            dist/main.js
+            dist/manifest.json
+            dist/styles.css
