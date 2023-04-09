@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.11.1] - 2023-04-09
+
+### 🐛 Bug Fixes
+
+- Task completions should now behave properly.
+
 ## [1.11.0] - 2023-04-08
 
 ### ✨ Features

@@ -31,7 +31,7 @@
     tasksPendingClose = tasksPendingClose;
 
     if (await api.closeTask(task.id)) {
-      tasks = tasks.filter((otherTask) => otherTask.id === task.id);
+      tasks = tasks.filter((otherTask) => otherTask.id !== task.id);
     } else {
       new Notice("Failed to close task", 2000);
     }
