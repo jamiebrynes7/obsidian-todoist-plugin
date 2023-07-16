@@ -53,9 +53,9 @@ export default class CreateTaskModal extends Modal {
     const vaultName = file.vault.getName();
     const filePath = file.path;
 
-    const link = `[${filePath}](obsidian://open?vault=${encodeURIComponent(
+    const link = `([${filePath}](obsidian://open?vault=${encodeURIComponent(
       vaultName
-    )}&file=${encodeURIComponent(filePath)})`;
+    )}&file=${encodeURIComponent(filePath)}))`;
 
     return [`${selection} ${link}`, selection.length];
   }
