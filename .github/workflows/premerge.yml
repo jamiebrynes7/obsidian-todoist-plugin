@@ -5,14 +5,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install NPM dependencies
-        run: npm install
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Setup Magic Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Install dependencies
+        run: nix develop --impure --command npm install 
 
       - name: Build
-        run: npm run build
+        run: nix develop --impure --command npm run build
 
       - name: Test
-        run: npm run test
+        run: nix develop --impure --command npm run test
