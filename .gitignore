@@ -1,3 +1,7 @@
 node_modules/
 dist/
 package-lock.json
+
+# Nix-related things
+.direnv/
+.devenv/
