@@ -126,7 +126,7 @@
     />
     <MarkdownRenderer class="todoist-task-content" content={sanitizedContent} />
   </div>
-  {#if todo.description != ""}
+  {#if settings.renderDescription && todo.description != ""}
     <DescriptionRenderer description={todo.description} />
   {/if}
   <div class="task-metadata">
