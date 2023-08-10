@@ -19,7 +19,7 @@ export class ParsingError extends Error {
   }
 }
 
-export function parseQuery(raw: string): Query {
+export function parseQuery(raw: string, fileName: string): Query {
   let obj: any;
 
   try {
@@ -32,7 +32,7 @@ export function parseQuery(raw: string): Query {
     }
   }
 
-  return parseObject(obj);
+  return parseObject(obj, fileName);
 }
 
 function tryParseAsJson(raw: string): any {
@@ -51,7 +51,7 @@ function tryParseAsYaml(raw: string): any {
   }
 }
 
-function parseObject(query: any): Query {
+function parseObject(query: any, fileName: string): Query {
   if (!query.hasOwnProperty("name") || query.name === null) {
     throw new ParsingError("Missing field 'name' in query");
   }
@@ -59,7 +59,8 @@ function parseObject(query: any): Query {
   if (!query.hasOwnProperty("filter") || query.filter === null) {
     throw new ParsingError("Missing field 'filter' in query");
   }
-
+  query.filter = query.filter.replace(/{{filename}}/g, fileName.replace(/\s+/g, '').replace(/\.md$/i, ''));
+  
   if (
     query.hasOwnProperty("autorefresh") &&
     (isNaN(query.autorefresh) || (query.autorefresh as number) < 0)
