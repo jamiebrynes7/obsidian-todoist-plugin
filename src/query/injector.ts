@@ -49,7 +49,7 @@ export class QueryInjector {
     let child: InjectedQuery;
 
     try {
-      const query = parseQuery(pendingQuery.source, this.app.workspace.getActiveFile().name);
+      const query = parseQuery(pendingQuery.source, this.app.workspace.getActiveFile().basename);
 
       debug({
         msg: "Parsed query",
