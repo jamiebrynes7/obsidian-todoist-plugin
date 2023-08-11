@@ -59,7 +59,7 @@ function parseObject(query: any, fileName: string): Query {
   if (!query.hasOwnProperty("filter") || query.filter === null) {
     throw new ParsingError("Missing field 'filter' in query");
   }
-  query.filter = query.filter.replace(/{{filename}}/g, fileName.replace(/\s+/g, '').replace(/\.md$/i, ''));
+  query.filter = query.filter.replace(/{{filename}}/g, fileName.replace(/\s+/g, '*'));
   
   if (
     query.hasOwnProperty("autorefresh") &&
