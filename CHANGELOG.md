@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### 🔁 Changes
+- You can now toggle whether or not task descriptions are rendered for each task.
+
 ## [1.11.1] - 2023-04-09
 
 ### 🐛 Bug Fixes
