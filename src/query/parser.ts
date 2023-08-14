@@ -19,20 +19,21 @@ export class ParsingError extends Error {
   }
 }
 
-export function parseQuery(raw: string, fileName: string): Query {
+export function parseQuery(pendingQuery: any): Query {
   let obj: any;
 
   try {
-    obj = tryParseAsJson(raw);
+    obj = tryParseAsJson(pendingQuery.source);
   } catch (e) {
     try {
-      obj = tryParseAsYaml(raw);
+      obj = tryParseAsYaml(pendingQuery.source);
     } catch (e) {
       throw new ParsingError("Unable to parse as YAML or JSON");
     }
   }
-
-  return parseObject(obj, fileName);
+  
+  pendingQuery.parsedObj = obj;
+  return parseObject(pendingQuery);
 }
 
 function tryParseAsJson(raw: string): any {
@@ -51,7 +52,9 @@ function tryParseAsYaml(raw: string): any {
   }
 }
 
-function parseObject(query: any, fileName: string): Query {
+function parseObject(pendingQuery: any): Query {
+  let query = pendingQuery.parsedObj;
+  
   if (!query.hasOwnProperty("name") || query.name === null) {
     throw new ParsingError("Missing field 'name' in query");
   }
@@ -59,7 +62,7 @@ function parseObject(query: any, fileName: string): Query {
   if (!query.hasOwnProperty("filter") || query.filter === null) {
     throw new ParsingError("Missing field 'filter' in query");
   }
-  query.filter = query.filter.replace(/{{filename}}/g, fileName.replace(/\s+/g, '*'));
+  query.filter = query.filter.replace(/{{filename}}/g, pendingQuery.ctx.sourcePath.replace(/.*\//, '').replace(/\.md$/i, '').replace(/\s+/g, '*'));
   
   if (
     query.hasOwnProperty("autorefresh") &&
