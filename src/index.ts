@@ -1,28 +1,26 @@
-import { SettingsInstance, SettingsTab } from "./settings";
+import { settings, SettingsTab } from "./settings";
 import type { ISettings } from "./settings";
-import { TodoistApi } from "./api/api";
 import debug from "./log";
-import { App, Plugin } from "obsidian";
+import { App, Plugin, requestUrl } from "obsidian";
 import type { PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
 import { QueryInjector } from "./query/injector";
 import { getTokenPath } from "./token";
+import { TodoistAdapter } from "./data";
+import { TodoistApiClient } from "./api";
+import type { RequestParams, WebFetcher, WebResponse } from "./api/fetcher";
 
 export default class TodoistPlugin extends Plugin {
-    public options: ISettings;
+    public options: ISettings | null;
 
-    private api: TodoistApi;
-
-    private readonly queryInjector: QueryInjector;
+    private todoistAdapter: TodoistAdapter = new TodoistAdapter();
 
     constructor(app: App, pluginManifest: PluginManifest) {
         super(app, pluginManifest);
-
         this.options = null;
-        this.api = null;
 
-        SettingsInstance.subscribe((value) => {
+        settings.subscribe((value) => {
             debug({
                 msg: "Settings changed",
                 context: value,
@@ -30,28 +28,19 @@ export default class TodoistPlugin extends Plugin {
 
             this.options = value;
         });
-
-        this.queryInjector = new QueryInjector(app);
     }
 
     async onload() {
-        this.registerMarkdownCodeBlockProcessor("todoist",
-            this.queryInjector.onNewBlock.bind(this.queryInjector)
-        );
+        const queryInjector = new QueryInjector(this.todoistAdapter)
+        this.registerMarkdownCodeBlockProcessor("todoist", queryInjector.onNewBlock.bind(queryInjector));
         this.addSettingTab(new SettingsTab(this.app, this));
 
         this.addCommand({
-            id: "todoist-refresh-metadata",
-            name: "Refresh Metadata",
+            id: "todoist-sync",
+            name: "Sync with Todoist",
             callback: async () => {
-                if (this.api != null) {
-                    debug("Refreshing metadata");
-                    const result = await this.api.fetchMetadata();
-
-                    if (result.isErr()) {
-                        console.error(result.unwrapErr());
-                    }
-                }
+                debug("Syncing with Todoist API");
+                this.todoistAdapter.sync();
             },
         });
 
@@ -61,7 +50,7 @@ export default class TodoistPlugin extends Plugin {
             callback: () => {
                 new CreateTaskModal(
                     this.app,
-                    this.api,
+                    this.todoistAdapter,
                     this.options,
                     false
                 );
@@ -74,48 +63,46 @@ export default class TodoistPlugin extends Plugin {
             callback: () => {
                 new CreateTaskModal(
                     this.app,
-                    this.api,
+                    this.todoistAdapter,
                     this.options,
                     true
                 );
             },
         });
 
+        await this.loadOptions();
+
+        const token = await this.getToken();
+        if (token.length === 0) {
+            alert(
+                "Provided token was empty, please enter it in the settings and restart Obsidian or reload plugin."
+            );
+            return;
+        }
+        const api = new TodoistApiClient(token, new ObsidianFetcher());
+        await this.todoistAdapter.initialize(api)
+    }
+
+    private async getToken(): Promise<string> {
         const tokenPath = getTokenPath(app.vault);
+
         try {
             const token = await this.app.vault.adapter.read(tokenPath);
-            this.api = new TodoistApi(token);
+            return token;
         } catch (e) {
             const tokenModal = new TodoistApiTokenModal(this.app);
             await tokenModal.waitForClose;
             const token = tokenModal.token;
 
-            if (token.length == 0) {
-                alert(
-                    "Provided token was empty, please enter it in the settings and restart Obsidian."
-                );
-                return;
-            }
-
             await this.app.vault.adapter.write(tokenPath, token);
-            this.api = new TodoistApi(token);
+            return token;
         }
-
-        this.queryInjector.setApi(this.api);
-
-        const result = await this.api.fetchMetadata();
-
-        if (result.isErr()) {
-            console.error(result.unwrapErr());
-        }
-
-        await this.loadOptions();
     }
 
     async loadOptions(): Promise<void> {
         const options = await this.loadData();
 
-        SettingsInstance.update((old) => {
+        settings.update((old) => {
             return {
                 ...old,
                 ...(options || {}),
@@ -126,10 +113,27 @@ export default class TodoistPlugin extends Plugin {
     }
 
     async writeOptions(changeOpts: (settings: ISettings) => void): Promise<void> {
-        SettingsInstance.update((old) => {
+        settings.update((old) => {
             changeOpts(old);
             return old;
         });
         await this.saveData(this.options);
     }
+}
+
+class ObsidianFetcher implements WebFetcher {
+    public async fetch(params: RequestParams): Promise<WebResponse> {
+        const response = await requestUrl({
+            url: params.url,
+            method: params.method,
+            body: params.body,
+            headers: params.headers,
+        });
+
+        return {
+            statusCode: response.status,
+            body: response.text,
+        }
+    }
+
 }

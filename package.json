@@ -1,10 +1,10 @@
 {
-  "name": "todoist-plugin",
+  "name": "obsidian-todoist-plugin",
   "version": "1.11.1",
   "description": "A Todoist plugin for Obsidian",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npm run build && cp -R dist/* test-vault/.obsidian/plugins/todoist-sync-plugin/",
+    "dev": "npm run build && cp -R dist/* ../../test-vault/.obsidian/plugins/todoist-sync-plugin/",
     "build": "svelte-check && rollup -c",
     "test": "mocha -r ts-node/register src/**/*.test.ts",
     "format": "prettier --write src/**/*",
@@ -13,11 +13,13 @@
   "author": "Jamie Brynes",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^18.11.17",
+    "camelize": "^1.0.1",
     "moment": "^2.29.4",
     "obsidian": "0.15",
+    "snakeize": "^0.1.0",
     "svelte": "^3.55.0",
     "svelte-select": "^5.0.1",
+    "todoist-api": "^1.0.0",
     "tslib": "^2.4.1",
     "yaml": "^2.1.3"
   },
@@ -28,6 +30,7 @@
     "@tsconfig/svelte": "^3.0.0",
     "@types/chai": "^4.3.4",
     "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.17",
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
     "prettier": "^2.8.1",

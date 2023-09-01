@@ -1,59 +1,13 @@
 <script lang="ts">
-  import { Notice } from "obsidian";
-  import { onDestroy } from "svelte";
-  import type { TodoistApi, ITodoistMetadata } from "../api/api";
-  import type { Task, ID } from "../api/models";
-  import type { ISettings } from "../settings";
-  import NoTaskDisplay from "./NoTaskDisplay.svelte";
+  import type { TaskTree } from "../data/transformations";
   import TaskRenderer from "./TaskRenderer.svelte";
 
-  export let tasks: Task[];
-  export let settings: ISettings;
-  export let api: TodoistApi;
-  export let sorting: string[];
-  export let renderProject: boolean = true;
-  export let renderNoTaskInfo: boolean = true;
-
-  let metadata: ITodoistMetadata = null;
-  const metadataUnsub = api.metadata.subscribe((value) => (metadata = value));
-
-  onDestroy(() => {
-    metadataUnsub();
-  });
-
-  let tasksPendingClose: ID[] = [];
-  $: todos = tasks
-    .filter((task) => !tasksPendingClose.includes(task.id))
-    .sort((first: Task, second: Task) => first.compareTo(second, sorting));
-
-  async function onClickTask(task: Task) {
-    tasksPendingClose.push(task.id);
-    tasksPendingClose = tasksPendingClose;
-
-    if (await api.closeTask(task.id)) {
-      tasks = tasks.filter((otherTask) => otherTask.id !== task.id);
-    } else {
-      new Notice("Failed to close task", 2000);
-    }
-
-    tasksPendingClose = tasksPendingClose.filter((id) => id !== task.id);
-  }
+  export let taskTrees: TaskTree[];
+  export let renderProject: boolean;
 </script>
 
-{#if todos.length != 0}
-  <ul class="todoist-task-list">
-    {#each todos as todo (todo.id)}
-      <TaskRenderer
-        {onClickTask}
-        {metadata}
-        {settings}
-        {api}
-        {sorting}
-        {renderProject}
-        {todo}
-      />
-    {/each}
-  </ul>
-{:else if renderNoTaskInfo}
-  <NoTaskDisplay />
-{/if}
+<ul class="todoist-task-list">
+  {#each taskTrees as taskTree (taskTree.id)}
+    <TaskRenderer {taskTree} {renderProject} />
+  {/each}
+</ul>

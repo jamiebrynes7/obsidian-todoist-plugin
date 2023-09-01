@@ -1,10 +1,11 @@
 import { Menu, Notice } from "obsidian";
 import type { Point } from "obsidian";
-import type { Task } from "./api/models";
+import type { Task } from "./data/task";
+import type { TaskId } from "./api/domain/task";
 
 interface TaskContext {
   task: Task;
-  onClickTask: (task: Task) => Promise<void>;
+  closeTask: (id: TaskId) => Promise<void>;
 }
 
 export function showTaskContext(
@@ -16,7 +17,7 @@ export function showTaskContext(
       menuItem
         .setTitle("Complete task")
         .setIcon("check-small")
-        .onClick(async () => taskCtx.onClickTask(taskCtx.task))
+        .onClick(async () => taskCtx.closeTask(taskCtx.task.id))
     )
     .addItem((menuItem) =>
       menuItem
@@ -32,7 +33,7 @@ export function showTaskContext(
         .setIcon("popup-open")
         .onClick(() =>
           openExternal(
-            `https://todoist.com/app/project/${taskCtx.task.projectID}/task/${taskCtx.task.id}`
+            `https://todoist.com/app/project/${taskCtx.task.project.id}/task/${taskCtx.task.id}`
           )
         )
     )

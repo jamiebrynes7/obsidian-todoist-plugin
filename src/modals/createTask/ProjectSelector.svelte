@@ -1,32 +1,33 @@
 <script lang="ts">
   import Select from "svelte-select";
-  import type { ITodoistMetadata } from "../../api/api";
-  import type { ProjectID, SectionID } from "../../api/models";
   import type { ProjectOption } from "./types";
   import debug from "../../log";
+  import type { ProjectId } from "../../api/domain/project";
+  import type { SectionId } from "../../api/domain/section";
+  import type { TodoistAdapter } from "../../data";
 
   export let selected: ProjectOption;
-  export let metadata: ITodoistMetadata;
+  export let todoistAdapter: TodoistAdapter;
 
-  $: projectTree = createProjectTree(metadata);
+  $: projectTree = createProjectTree();
 
-  function createProjectTree(metadata: ITodoistMetadata): ProjectOption[] {
-    const projects = new Map<
-      ProjectID,
-      { subProjects: ProjectID[]; sections: SectionID[] }
+  function createProjectTree(): ProjectOption[] {
+    const projectRelationships = new Map<
+      ProjectId,
+      { subProjects: ProjectId[]; sections: SectionId[] }
     >();
 
-    for (const project of metadata.projects.values()) {
-      if (!projects.has(project.id)) {
-        projects.set(project.id, { subProjects: [], sections: [] });
+    for (const project of todoistAdapter.data().projects.iter()) {
+      if (!projectRelationships.has(project.id)) {
+        projectRelationships.set(project.id, { subProjects: [], sections: [] });
       }
 
-      if (project.parent_id) {
-        if (projects.has(project.parent_id)) {
-          const data = projects.get(project.parent_id);
+      if (project.parentId) {
+        if (projectRelationships.has(project.parentId)) {
+          const data = projectRelationships.get(project.parentId);
           data.subProjects.push(project.id);
         } else {
-          projects.set(project.parent_id, {
+          projectRelationships.set(project.parentId, {
             subProjects: [project.id],
             sections: [],
           });
@@ -34,24 +35,25 @@
       }
     }
 
-    for (const section of metadata.sections.values()) {
-      const data = projects.get(section.project_id);
+    for (const section of todoistAdapter.data().sections.iter()) {
+      const data = projectRelationships.get(section.projectId);
       if (data === undefined) {
-        debug(`Could not find data for project ${section.project_id}`);
+        debug(`Could not find data for project ${section.projectId}`);
         continue;
       }
       data.sections.push(section.id);
     }
 
     // Now generate the value/label combos
-    const topLevelProjects = Array.from(metadata.projects.values())
-      .filter((prj) => prj.parent_id == null)
-      .sort((prj1, prj2) => prj1.order - prj2.order);
+    const topLevelProjects = Array.from(todoistAdapter.data().projects.iter())
+      .filter((p) => p.parentId === null)
+      .sort((first, second) => first.order - second.order);
 
     const options = [];
 
-    function descendPrjTree(id: ProjectID, depth: number, chain: string) {
-      let prjName = metadata.projects.get(id).name;
+    function descendPrjTree(id: ProjectId, depth: number, chain: string) {
+      const project = todoistAdapter.data().projects.byId(id);
+      let prjName = project.name;
       let nextChain = chain + prjName + " > ";
       options.push({
         value: {
@@ -61,11 +63,11 @@
         label: chain + " " + prjName,
       });
 
-      let children = projects.get(id);
+      let children = projectRelationships.get(id);
 
       if (children?.sections) {
         for (const sectionId of children.sections) {
-          let section = metadata.sections.get(sectionId);
+          let section = todoistAdapter.data().sections.byId(sectionId);
           options.push({
             value: {
               type: "Section",

@@ -1,31 +1,54 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import type { ITodoistMetadata, TodoistApi } from "../api/api";
-  import type { Task } from "../api/models";
-  import { UnknownProject, UnknownSection } from "../api/raw_models";
   import CalendarIcon from "../components/icons/CalendarIcon.svelte";
   import LabelIcon from "../components/icons/LabelIcon.svelte";
   import ProjectIcon from "../components/icons/ProjectIcon.svelte";
   import MarkdownRenderer from "../components/MarkdownRenderer.svelte";
   import { showTaskContext } from "../contextMenu";
-  import type { ISettings } from "../settings";
+  import { settings } from "../settings";
   import DescriptionRenderer from "./DescriptionRenderer.svelte";
   import TaskList from "./TaskList.svelte";
+  import type { TaskTree } from "../data/transformations";
+  import { getDueDateInfo, type DueDateInfo } from "../api/domain/dueDate";
+  import type { CalendarSpec } from "moment";
+  import { getTaskActions } from "./contexts";
 
-  export let metadata: ITodoistMetadata;
-  export let settings: ISettings;
-  export let api: TodoistApi;
-  export let sorting: string[];
+  const dateOnlyCalendarSpec: CalendarSpec = {
+    sameDay: "[Today]",
+    nextDay: "[Tomorrow]",
+    nextWeek: "dddd",
+    lastDay: "[Yesterday]",
+    lastWeek: "[Last] dddd",
+    sameElse: "MMM Do",
+  };
+
   export let renderProject: boolean;
-  export let onClickTask: (task: Task) => Promise<void>;
-  export let todo: Task;
+  export let taskTree: TaskTree;
 
-  $: isCompletable = !todo.content.startsWith("*");
-  $: priorityClass = getPriorityClass(todo.priority);
-  $: dateTimeClass = getDateTimeClass(todo);
-  $: projectLabel = getProjectLabel(todo, metadata);
-  $: labels = todo.labels.join(", ");
-  $: sanitizedContent = sanitizeContent(todo.content);
+  const taskActions = getTaskActions();
+
+  $: isCompletable = !taskTree.content.startsWith("*");
+  $: dateInfo = getDueDateInfo(taskTree.due);
+
+  $: dateLabel = getDueDateLabel(dateInfo);
+  $: projectLabel = getProjectLabel(taskTree);
+  $: labels = taskTree.labels.join(", ");
+  $: sanitizedContent = sanitizeContent(taskTree.content);
+
+  $: shouldRenderProject = $settings.renderProject && renderProject;
+  $: shouldRenderDueDate = $settings.renderDate && taskTree.due !== undefined;
+  $: shouldRenderLabels = $settings.renderLabels && taskTree.labels.length != 0;
+
+  $: priorityClass = getPriorityClass(taskTree.priority);
+  $: dateTimeClass = getDateTimeClass(dateInfo);
+
+  function getDueDateLabel(info: DueDateInfo): string {
+    if (info.hasTime) {
+      return info.m.calendar();
+    }
+
+    return info.m.calendar(dateOnlyCalendarSpec);
+  }
 
   function sanitizeContent(content: string): string {
     // Escape leading '#' or '-' so they aren't rendered as headers/bullets.
@@ -56,40 +79,34 @@
     }
   }
 
-  function getDateTimeClass(todo: Task): string {
+  function getDateTimeClass(info: DueDateInfo): string {
     const parts = [];
 
-    if (todo.hasTime) {
+    if (info.hasTime) {
       parts.push("has-time");
     } else {
       parts.push("no-time");
     }
 
-    if (todo.isOverdue()) {
+    if (info.isOverdue) {
       parts.push("task-overdue");
-    } else if (todo.isToday()) {
+    } else if (info.isToday) {
       parts.push("task-today");
     }
 
     return parts.join(" ");
   }
 
-  function getProjectLabel(todo: Task, metadata: ITodoistMetadata): string {
-    const project = metadata.projects.get_or_default(
-      todo.projectID,
-      UnknownProject
-    ).name;
+  function getProjectLabel(task: TaskTree): string {
+    const projectName = task.project?.name ?? "Unknown Project";
 
-    if (todo.sectionID === null) {
-      return project;
+    if (task.section === undefined) {
+      return projectName;
     }
 
-    const section = metadata.sections.get_or_default(
-      todo.sectionID,
-      UnknownSection
-    ).name;
+    const sectionName = task.section.name;
 
-    return `${project} | ${section}`;
+    return `${projectName} | ${sectionName}`;
   }
 
   function onClickTaskContainer(evt: MouseEvent) {
@@ -98,8 +115,8 @@
 
     showTaskContext(
       {
-        task: todo,
-        onClickTask: onClickTask,
+        task: taskTree,
+        closeTask: taskActions.close,
       },
       {
         x: evt.pageX,
@@ -111,7 +128,7 @@
 
 <li
   on:contextmenu={onClickTaskContainer}
-  transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
+  transition:fade={{ duration: $settings.fadeToggle ? 400 : 0 }}
   class="task-list-item {priorityClass} {dateTimeClass}"
 >
   <div class="todoist-task-container">
@@ -121,48 +138,41 @@
       class="task-list-item-checkbox"
       type="checkbox"
       on:click|preventDefault={async () => {
-        await onClickTask(todo);
+        await taskActions.close(taskTree.id);
       }}
     />
     <MarkdownRenderer class="todoist-task-content" content={sanitizedContent} />
   </div>
-  {#if settings.renderDescription && todo.description != ""}
-    <DescriptionRenderer description={todo.description} />
+  {#if $settings.renderDescription && taskTree.description != ""}
+    <DescriptionRenderer description={taskTree.description} />
   {/if}
   <div class="task-metadata">
-    {#if settings.renderProject && renderProject}
+    {#if shouldRenderProject}
       <div class="task-project">
-        {#if settings.renderProjectIcon}
+        {#if $settings.renderProjectIcon}
           <ProjectIcon class="task-project-icon" />
         {/if}
         {projectLabel}
       </div>
     {/if}
-    {#if settings.renderDate && todo.date}
+    {#if shouldRenderDueDate}
       <div class="task-date {dateTimeClass}">
-        {#if settings.renderDateIcon}
+        {#if $settings.renderDateIcon}
           <CalendarIcon class="task-calendar-icon" />
         {/if}
-        {todo.date}
+        {dateLabel}
       </div>
     {/if}
-    {#if settings.renderLabels && todo.labels.length > 0}
+    {#if shouldRenderLabels}
       <div class="task-labels">
-        {#if settings.renderLabelsIcon}
+        {#if $settings.renderLabelsIcon}
           <LabelIcon class="task-labels-icon" />
         {/if}
         {labels}
       </div>
     {/if}
   </div>
-  {#if todo.children.length != 0}
-    <TaskList
-      tasks={todo.children}
-      {settings}
-      {api}
-      {sorting}
-      {renderProject}
-      renderNoTaskInfo={false}
-    />
+  {#if taskTree.children.length != 0}
+    <TaskList taskTrees={taskTree.children} {renderProject} />
   {/if}
 </li>

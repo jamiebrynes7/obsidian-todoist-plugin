@@ -1,22 +1,20 @@
 <script lang="ts">
   import Select from "svelte-select";
-  import type { ITodoistMetadata } from "../../api/api";
   import type { LabelOption } from "./types";
+  import type { TodoistAdapter } from "../../data";
 
   export let selected: LabelOption[];
-  export let metadata: ITodoistMetadata;
+  export let todoistAdapter: TodoistAdapter;
 
-  $: labels = createLabelOptions(metadata);
+  $: labels = createLabelOptions();
 
-  function createLabelOptions(metadata: ITodoistMetadata): LabelOption[] {
-    return Array.from(metadata.labels)
-      .sort(([, first_name], [, second_name]) =>
-        first_name.localeCompare(second_name)
-      )
-      .map(([id, label]) => {
+  function createLabelOptions(): LabelOption[] {
+    return Array.from(todoistAdapter.data().labels.iter())
+      .sort((first, second) => first.name.localeCompare(second.name))
+      .map((label) => {
         return {
-          value: id,
-          label: label,
+          value: label.id,
+          label: label.name,
         };
       });
   }

@@ -1,76 +1,89 @@
 <script lang="ts">
-  import { onMount, onDestroy, setContext } from "svelte";
-  import type { App } from "obsidian";
-  import { SettingsInstance } from "../settings";
-  import type { ISettings } from "../settings";
+  import { onMount, onDestroy } from "svelte";
+  import { settings } from "../settings";
   import type { Query } from "../query/query";
-  import type { TodoistApi } from "../api/api";
-  import type { Task, Project } from "../api/models";
   import CreateTaskModal from "../modals/createTask/createTaskModal";
-  import TaskList from "./TaskList.svelte";
-  import GroupedTaskList from "./GroupedTaskList.svelte";
-  import { Result } from "../result";
-  import ErrorDisplay from "./ErrorDisplay.svelte";
   import NoTaskDisplay from "./NoTaskDisplay.svelte";
-  import { APP_CONTEXT_KEY } from "../utils";
+  import type { TodoistAdapter } from "../data";
+  import type { Task } from "../data/task";
+  import GroupedTasks from "./GroupedTasks.svelte";
+  import type { TaskId } from "../api/domain/task";
+  import TaskListRoot from "./TaskListRoot.svelte";
+  import { Notice } from "obsidian";
+  import { setTaskActions } from "./contexts";
 
   export let query: Query;
-  export let api: TodoistApi;
-  export let app: App;
+  export let todoistAdapter: TodoistAdapter;
 
-  setContext(APP_CONTEXT_KEY, app);
+  setTaskActions({
+    close: async (id: TaskId) => {
+      tasksPendingClose.add(id);
+      tasksPendingClose = tasksPendingClose;
 
-  let settings: ISettings = null;
-  let autoRefreshIntervalId: number = null;
-  let fetchedOnce: boolean = false;
+      let success = true;
+      try {
+        await todoistAdapter.actions.closeTask(id);
+      } catch (error) {
+        console.error(`Failed to mark task as closed: ${error}`);
+        success = false;
+      }
 
-  const settingsUnsub = SettingsInstance.subscribe((value) => {
-    settings = value;
+      if (success) {
+        tasks = tasks.filter((t) => t.id !== id);
+      } else {
+        new Notice("Failed to close task", 2000);
+      }
+
+      tasksPendingClose.delete(id);
+      tasksPendingClose = tasksPendingClose;
+    },
   });
 
-  $: {
-    if (query?.autorefresh) {
-      // First, if query.autorefresh is set.. we always use that value.
-      if (autoRefreshIntervalId == null) {
-        autoRefreshIntervalId = window.setInterval(async () => {
-          await fetchTodos();
-        }, query.autorefresh * 1000);
-      }
-    } else {
-      // Otherwise we use the settings value.
-      if (autoRefreshIntervalId != null) {
-        clearInterval(autoRefreshIntervalId);
-        autoRefreshIntervalId = null;
-      }
+  let autoRefreshIntervalId: number = null;
+  let fetchedOnce: boolean = false;
+  let fetching: boolean = false;
+  let tasks: Task[] = [];
+  let tasksPendingClose: Set<TaskId> = new Set();
 
-      if (settings.autoRefreshToggle) {
-        autoRefreshIntervalId = window.setInterval(async () => {
-          await fetchTodos();
-        }, settings.autoRefreshInterval * 1000);
+  const [unsubscribeQuery, refreshQuery] = todoistAdapter.subscribe(
+    query.filter,
+    (result) => {
+      switch (result.type) {
+        case "success":
+          tasks = result.tasks;
+          break;
       }
+    }
+  );
+
+  // Setup auto-refresh interval.
+  $: {
+    if (autoRefreshIntervalId != null) {
+      clearInterval(autoRefreshIntervalId);
+      autoRefreshIntervalId = null;
+    }
+
+    const interval =
+      query?.autorefresh ??
+      ($settings.autoRefreshToggle ? $settings.autoRefreshInterval : 0);
+
+    if (interval != 0) {
+      autoRefreshIntervalId = window.setInterval(async () => {
+        await refreshQuery();
+      }, interval * 1000);
     }
   }
 
-  $: taskCount = query.group
-    ? groupedTasks
-        .map((prjs) => prjs.reduce((sum, prj) => sum + prj.count(), 0))
-        .unwrapOr(0)
-    : tasks
-        .map((tasks) => tasks.reduce((sum, task) => sum + task.count(), 0))
-        .unwrapOr(0);
-
+  $: filteredTasks = tasks.filter((t) => !tasksPendingClose.has(t.id));
+  $: taskCount = filteredTasks.length;
   $: title = query.name.replace("{task_count}", `${taskCount}`);
 
-  let tasks: Result<Task[], Error> = Result.Ok([]);
-  let groupedTasks: Result<Project[], Error> = Result.Ok([]);
-  let fetching: boolean = false;
-
   onMount(async () => {
-    await fetchTodos();
+    await forceRefresh();
   });
 
   onDestroy(() => {
-    settingsUnsub();
+    unsubscribeQuery();
 
     if (autoRefreshIntervalId != null) {
       clearInterval(autoRefreshIntervalId);
@@ -78,31 +91,16 @@
   });
 
   function callTaskModal() {
-    new CreateTaskModal(
-      app,
-      api,
-      settings,
-      true
-    );
+    new CreateTaskModal(app, todoistAdapter, $settings, true);
   }
 
-  async function fetchTodos() {
-    if (fetching) {
-      return;
-    }
+  async function forceRefresh() {
+    fetching = true;
 
-    try {
-      fetching = true;
-      if (query.group) {
-        groupedTasks = await api.getTasksGroupedByProject(query.filter);
-      } else {
-        tasks = await api.getTasks(query.filter);
-      }
+    await refreshQuery();
 
-      fetchedOnce = true;
-    } finally {
-      fetching = false;
-    }
+    fetchedOnce = true;
+    fetching = false;
   }
 </script>
 
@@ -130,14 +128,18 @@
   </svg>
 </div>
 <div
-  class={fetching ? "edit-block-button todoist-refresh-button todoist-refresh-disabled" : "edit-block-button todoist-refresh-button"}
+  class={fetching
+    ? "edit-block-button todoist-refresh-button todoist-refresh-disabled"
+    : "edit-block-button todoist-refresh-button"}
   on:click={async () => {
-    await fetchTodos();
+    await forceRefresh();
   }}
   aria-label="Refresh list"
 >
   <svg
-    class={fetching ? "svg-icon lucide-code-2 todoist-refresh-spin" : "svg-icon lucide-code-2"}
+    class={fetching
+      ? "svg-icon lucide-code-2 todoist-refresh-spin"
+      : "svg-icon lucide-code-2"}
     width="20"
     height="20"
     viewBox="0 0 20 20"
@@ -153,31 +155,11 @@
 </div>
 <br />
 {#if fetchedOnce}
-  {#if query.group}
-    {#if groupedTasks.isOk()}
-      {#if groupedTasks.unwrap().length == 0}
-        <NoTaskDisplay />
-      {:else}
-        {#each groupedTasks.unwrap() as project (project.projectID)}
-          <GroupedTaskList
-            {project}
-            {settings}
-            {api}
-            sorting={query.sorting ?? []}
-          />
-        {/each}
-      {/if}
-    {:else}
-      <ErrorDisplay error={groupedTasks.unwrapErr()} />
-    {/if}
-  {:else if tasks.isOk()}
-    <TaskList
-      tasks={tasks.unwrap()}
-      {settings}
-      {api}
-      sorting={query.sorting ?? []}
-    />
+  {#if filteredTasks.length === 0}
+    <NoTaskDisplay />
+  {:else if query.group}
+    <GroupedTasks tasks={filteredTasks} sorting={query.sorting ?? []} />
   {:else}
-    <ErrorDisplay error={tasks.unwrapErr()} />
+    <TaskListRoot tasks={filteredTasks} sorting={query.sorting ?? []} />
   {/if}
 {/if}

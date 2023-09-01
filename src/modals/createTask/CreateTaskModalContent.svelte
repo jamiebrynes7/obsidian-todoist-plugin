@@ -2,18 +2,15 @@
   import type { Moment } from "moment";
   import { Notice } from "obsidian";
   import { onMount, tick } from "svelte";
-  import type {
-    ICreateTaskOptions,
-    ITodoistMetadata,
-    TodoistApi,
-  } from "../../api/api";
   import DateSelector from "./DateSelector.svelte";
   import LabelSelector from "./LabelSelector.svelte";
   import PriorityPicker from "./PriorityPicker.svelte";
   import ProjectSelector from "./ProjectSelector.svelte";
   import type { LabelOption, ProjectOption } from "./types";
+  import type { TodoistAdapter } from "../../data";
+  import type { CreateTaskParams } from "../../api/domain/task";
 
-  export let api: TodoistApi;
+  export let todoistAdapter: TodoistAdapter;
   export let close: () => void;
   export let value: string;
   export let initialCursorPosition: number | undefined;
@@ -25,9 +22,6 @@
   let priority: number = 1;
 
   let inputEl: HTMLInputElement;
-
-  let metadata: ITodoistMetadata;
-  api.metadata.subscribe((value) => (metadata = value));
 
   let isBeingCreated: boolean = false;
 
@@ -48,7 +42,7 @@
 
     isBeingCreated = true;
 
-    let opts: ICreateTaskOptions = {
+    let opts: CreateTaskParams = {
       description: description,
       priority: priority,
     };
@@ -59,23 +53,22 @@
 
     if (activeProject) {
       if (activeProject.value.type == "Project") {
-        opts.project_id = activeProject.value.id;
+        opts.projectId = activeProject.value.id;
       } else {
-        opts.section_id = activeProject.value.id;
+        opts.sectionId = activeProject.value.id;
       }
     }
 
     if (date) {
-      opts.due_date = date.format("YYYY-MM-DD");
+      opts.dueDate = date.format("YYYY-MM-DD");
     }
 
-    const result = await api.createTask(value, opts);
-
-    if (result.isOk()) {
+    try {
+      await todoistAdapter.actions.createTask(value, opts);
       close();
       new Notice("Task created successfully.");
-    } else {
-      new Notice(`Failed to create task: '${result.unwrapErr().message}'`);
+    } catch (error: any) {
+      new Notice(`Failed to create task: '${error}'`);
     }
 
     isBeingCreated = false;
@@ -95,13 +88,13 @@
   <div class="select">
     <span>Project</span>
     <div>
-      <ProjectSelector bind:selected={activeProject} bind:metadata />
+      <ProjectSelector bind:selected={activeProject} bind:todoistAdapter />
     </div>
   </div>
   <div class="select">
     <span>Labels</span>
     <div>
-      <LabelSelector bind:selected={activeLabels} bind:metadata />
+      <LabelSelector bind:selected={activeLabels} bind:todoistAdapter />
     </div>
   </div>
   <div class="select">

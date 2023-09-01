@@ -29,5 +29,3 @@ export class ExtendedMap<K, V> extends Map<K, V> {
     return value;
   }
 }
-
-export const APP_CONTEXT_KEY = "obsidian_app";

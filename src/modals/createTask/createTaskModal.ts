@@ -1,30 +1,29 @@
 import { App, MarkdownView, Modal } from "obsidian";
-import type { TodoistApi } from "../../api/api";
 import type { ISettings } from "../../settings";
 import CreateTaskModalContent from "./CreateTaskModalContent.svelte";
+import type { TodoistAdapter } from "../../data";
 
 export default class CreateTaskModal extends Modal {
     private readonly modalContent: CreateTaskModalContent;
     private readonly settings: ISettings;
 
-    constructor(app: App, api: TodoistApi, settings: ISettings, withPageLink: boolean) {
-        super(app);
-
+  constructor(app: App, adapter: TodoistAdapter, settings: ISettings, withPageLink: boolean) {
+    super(app);
         this.settings = settings;
         this.titleEl.innerText = "Create new Todoist task";
 
         const [initialValue, initialCursorPosition] =
             this.getInitialContent(withPageLink);
 
-        this.modalContent = new CreateTaskModalContent({
-            target: this.contentEl,
-            props: {
-                api: api,
-                close: () => this.close(),
-                value: initialValue,
-                initialCursorPosition: initialCursorPosition,
-            },
-        });
+    this.modalContent = new CreateTaskModalContent({
+      target: this.contentEl,
+      props: {
+        todoistAdapter: adapter,
+        close: () => this.close(),
+        value: initialValue,
+        initialCursorPosition: initialCursorPosition,
+      },
+    });
 
         this.open();
     }
