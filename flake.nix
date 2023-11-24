@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     systems.url = "github:nix-systems/default";
     devenv.url = "github:cachix/devenv";
   };
@@ -25,7 +25,7 @@
               inherit inputs pkgs;
               modules = [
                 {
-                  packages = [ pkgs.nodejs ];
+                  packages = [ pkgs.nodejs pkgs.nodePackages.typescript-language-server];
                 }
               ];
             };
