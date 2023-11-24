@@ -1,62 +1,72 @@
 import { App, MarkdownView, Modal } from "obsidian";
 import type { TodoistApi } from "../../api/api";
+import type { ISettings } from "../../settings";
 import CreateTaskModalContent from "./CreateTaskModalContent.svelte";
 
 export default class CreateTaskModal extends Modal {
-  private readonly modalContent: CreateTaskModalContent;
+    private readonly modalContent: CreateTaskModalContent;
+    private readonly settings: ISettings;
 
-  constructor(app: App, api: TodoistApi, withPageLink: boolean) {
-    super(app);
+    constructor(app: App, api: TodoistApi, settings: ISettings, withPageLink: boolean) {
+        super(app);
 
-    this.titleEl.innerText = "Create new Todoist task";
+        this.settings = settings;
+        this.titleEl.innerText = "Create new Todoist task";
 
-    const [initialValue, initialCursorPosition] =
-      this.getInitialContent(withPageLink);
+        const [initialValue, initialCursorPosition] =
+            this.getInitialContent(withPageLink);
 
-    this.modalContent = new CreateTaskModalContent({
-      target: this.contentEl,
-      props: {
-        api: api,
-        close: () => this.close(),
-        value: initialValue,
-        initialCursorPosition: initialCursorPosition,
-      },
-    });
+        this.modalContent = new CreateTaskModalContent({
+            target: this.contentEl,
+            props: {
+                api: api,
+                close: () => this.close(),
+                value: initialValue,
+                initialCursorPosition: initialCursorPosition,
+            },
+        });
 
-    this.open();
-  }
-
-  onClose() {
-    super.onClose();
-    this.modalContent.$destroy();
-  }
-
-  private getInitialContent(withPageLink: boolean): [string, number] {
-    let selection = this.app.workspace
-      .getActiveViewOfType(MarkdownView)
-      ?.editor?.getSelection();
-
-    if (selection == null || selection === "") {
-      selection = window.getSelection().toString();
+        this.open();
     }
 
-    if (!withPageLink) {
-      return [selection, 0];
+    onClose() {
+        super.onClose();
+        this.modalContent.$destroy();
     }
 
-    const file = this.app.workspace.getActiveFile();
+    private getInitialContent(withPageLink: boolean): [string, number] {
+        let selection = this.app.workspace
+            .getActiveViewOfType(MarkdownView)
+            ?.editor?.getSelection();
 
-    if (file == null) {
-      return [selection, 0];
+        if (selection == null || selection === "") {
+            selection = window.getSelection().toString();
+        }
+
+        const link = this.getPageLink();
+
+        if (!withPageLink || link === null) {
+            return [selection, 0];
+        }
+
+        return [`${selection} ${link}`, selection.length];
     }
 
-    const vaultName = file.vault.getName();
-    const filePath = file.path;
+    private getPageLink(): string | null {
+        const file = this.app.workspace.getActiveFile();
 
-    const link = `([${filePath}](obsidian://open?vault=${encodeURIComponent(
-      vaultName
-    )}&file=${encodeURIComponent(filePath)}))`;
+        if (file == null) {
+            return null;
+        }
+        const encodedVault = encodeURIComponent(file.vault.getName());
+        const encodedFilepath = encodeURIComponent(file.path);
 
-    return [`${selection} ${link}`, selection.length];
-  }
+        const link = `[${file.path}](obsidian://open?vault=${encodedVault}&file=${encodedFilepath})`;
+
+        if (this.settings.shouldWrapLinksInParens) {
+            return `(${link})`;
+        }
+
+        return link;
+    }
 }
