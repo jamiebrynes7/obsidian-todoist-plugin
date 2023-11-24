@@ -25,7 +25,7 @@
               inherit inputs pkgs;
               modules = [
                 {
-                  packages = [ pkgs.nodejs ];
+                  packages = [ pkgs.nodejs pkgs.nodePackages.typescript-language-server];
                 }
               ];
             };
