@@ -62,6 +62,7 @@ export default class TodoistPlugin extends Plugin {
                 new CreateTaskModal(
                     this.app,
                     this.api,
+                    this.options,
                     false
                 );
             },
@@ -74,6 +75,7 @@ export default class TodoistPlugin extends Plugin {
                 new CreateTaskModal(
                     this.app,
                     this.api,
+                    this.options,
                     true
                 );
             },

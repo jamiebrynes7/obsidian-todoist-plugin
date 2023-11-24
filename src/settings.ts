@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 import { toInt, isPositiveInteger } from "./utils";
 import type TodoistPlugin from ".";
-import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, Setting } from "obsidian";
 import { getTokenPath } from "./token";
 
 export const SettingsInstance = writable<ISettings>({
@@ -21,6 +21,8 @@ export const SettingsInstance = writable<ISettings>({
     renderLabels: true,
     renderLabelsIcon: true,
 
+    shouldWrapLinksInParens: false,
+
     debugLogging: false,
 });
 
@@ -39,6 +41,8 @@ export interface ISettings {
 
     renderLabels: boolean;
     renderLabelsIcon: boolean;
+
+    shouldWrapLinksInParens: boolean;
 
     debugLogging: boolean;
 }
@@ -64,8 +68,10 @@ export class SettingsTab extends PluginSettingTab {
 
         this.dateSettings();
         this.projectSettings();
-
         this.labelsSettings();
+
+        this.taskCreationSettings();
+
         this.debugLogging();
     }
 
@@ -163,14 +169,14 @@ export class SettingsTab extends PluginSettingTab {
 
     descriptionSettings() {
         new Setting(this.containerEl)
-        .setName("Render descriptions")
-        .setDesc("Whether descriptions should be rendered with tasks.")
-        .addToggle((toggle) => {
-            toggle.setValue(this.plugin.options.renderDescription);
-            toggle.onChange(async (value) => {
-                await this.plugin.writeOptions((old) => (old.renderDescription = value));
+            .setName("Render descriptions")
+            .setDesc("Whether descriptions should be rendered with tasks.")
+            .addToggle((toggle) => {
+                toggle.setValue(this.plugin.options.renderDescription);
+                toggle.onChange(async (value) => {
+                    await this.plugin.writeOptions((old) => (old.renderDescription = value));
+                });
             });
-        });
     }
 
     dateSettings() {
@@ -238,6 +244,20 @@ export class SettingsTab extends PluginSettingTab {
                 setting.onChange(async (value) => {
                     await this.plugin.writeOptions(
                         (old) => (old.renderLabelsIcon = value)
+                    );
+                });
+            });
+    }
+
+    taskCreationSettings() {
+        new Setting(this.containerEl)
+            .setName("Add parenthesis to page links")
+            .setDesc("When enabled, wraps Obsidian page links in Todoist tasks created from the command")
+            .addToggle((setting) => {
+                setting.setValue(this.plugin.options.shouldWrapLinksInParens);
+                setting.onChange(async (value) => {
+                    await this.plugin.writeOptions(
+                        (old) => (old.shouldWrapLinksInParens = value)
                     );
                 });
             });
