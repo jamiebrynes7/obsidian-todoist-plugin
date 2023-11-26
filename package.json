@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm run build && cp -R dist/* test-vault/.obsidian/plugins/todoist-sync-plugin/",
     "build": "svelte-check && rollup -c",
-    "test": "mocha -r ts-node/register tests/*.ts src/**/*.test.ts",
+    "test": "mocha -r ts-node/register src/**/*.test.ts",
     "format": "prettier --write src/**/*",
     "lint": "prettier --check src/**/*"
   },
