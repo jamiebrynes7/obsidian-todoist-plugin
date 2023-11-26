@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - Added the option to wrap page links in parenthesis when creating tasks with the command. You may find this useful if you primarily use Todoist on mobile where links are less obvious. Thanks to [@ThDag](https://github.com/ThDag) for the contribution!
+- You can now use the `{{filename}}` placeholder in the filter property. This will be replaced with the name of the file where the query is defined.
+  - For example, if the full file path is `My Vault/Notes/How to Take Smart Notes.md` then the replaced file name will be `How to Take Smart Notes`.
 
 ### 🔁 Changes
 
