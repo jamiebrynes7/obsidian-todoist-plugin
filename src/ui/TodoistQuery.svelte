@@ -6,6 +6,7 @@
   import type { Query } from "../query/query";
   import type { TodoistApi } from "../api/api";
   import type { Task, Project } from "../api/models";
+  import CreateTaskModal from "../modals/createTask/createTaskModal";
   import TaskList from "./TaskList.svelte";
   import GroupedTaskList from "./GroupedTaskList.svelte";
   import { Result } from "../result";
@@ -76,6 +77,14 @@
     }
   });
 
+  async function callTaskModal() {
+    new CreateTaskModal(
+      app,
+      api,
+      true
+    );
+  }
+
   async function fetchTodos() {
     if (fetching) {
       return;
@@ -97,17 +106,39 @@
 </script>
 
 <h4 class="todoist-query-title">{title}</h4>
-<button
-  class="todoist-refresh-button"
+<div
+  class="edit-block-button todoist-add-button"
+  on:click={async () => {
+    await callTaskModal();
+  }}
+  aria-label="Add item"
+>
+  <svg
+    class="svg-icon lucide-code-2"
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M9 1v8H1v2h8v8h2v-8h8v-2h-8V1h-2z"
+      clip-rule="evenodd"
+    />
+  </svg>
+</div>
+<div
+  class={fetching ? "edit-block-button todoist-refresh-button todoist-refresh-disabled" : "edit-block-button todoist-refresh-button"}
   on:click={async () => {
     await fetchTodos();
   }}
-  disabled={fetching}
+  aria-label="Refresh list"
 >
   <svg
-    class={fetching ? "todoist-refresh-spin" : ""}
-    width="20px"
-    height="20px"
+    class={fetching ? "svg-icon lucide-code-2 todoist-refresh-spin" : "svg-icon lucide-code-2"}
+    width="20"
+    height="20"
     viewBox="0 0 20 20"
     fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +149,7 @@
       clip-rule="evenodd"
     />
   </svg>
-</button>
+</div>
 <br />
 {#if fetchedOnce}
   {#if query.group}
