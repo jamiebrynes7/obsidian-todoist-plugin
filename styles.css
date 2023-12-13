@@ -70,8 +70,14 @@
   margin-top: 20px;
 }
 
+.task-container {
+    text-indent:-30px;
+    padding-inline-start:32px;
+}
+
 .todoist-task-content {
   display: inline;
+  text-indent: 0px;
 }
 
 ul.todoist-task-list {
@@ -85,6 +91,7 @@ ul.todoist-task-list {
 
 .is-live-preview .block-language-todoist {
   padding-left: 15px;
+  padding-right: 10px;
 }
 
 .theme-dark {
@@ -137,6 +144,6 @@ ul.todoist-task-list {
 .todoist-task-description {
   font-size: 80%;
   color: var(--text-muted);
-  margin-left: 28px;
+  margin-left: 31px;
 }
 
