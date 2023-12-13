@@ -71,8 +71,8 @@
 }
 
 .todoist-task-container {
-    text-indent:-30px;
-    padding-inline-start:32px;
+    text-indent: -28px;
+    padding-inline-start: 30px;
 }
 
 .todoist-task-content {
@@ -144,6 +144,6 @@ ul.todoist-task-list {
 .todoist-task-description {
   font-size: 80%;
   color: var(--text-muted);
-  margin-left: 31px;
+  margin-left: 28px;
 }
 
