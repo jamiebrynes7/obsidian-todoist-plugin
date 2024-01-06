@@ -77,10 +77,11 @@
     }
   });
 
-  async function callTaskModal() {
+  function callTaskModal() {
     new CreateTaskModal(
       app,
       api,
+      settings,
       true
     );
   }
@@ -108,8 +109,8 @@
 <h4 class="todoist-query-title">{title}</h4>
 <div
   class="edit-block-button todoist-add-button"
-  on:click={async () => {
-    await callTaskModal();
+  on:click={() => {
+    callTaskModal();
   }}
   aria-label="Add item"
 >
