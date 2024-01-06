@@ -12,10 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the option to wrap page links in parenthesis when creating tasks with the command. You may find this useful if you primarily use Todoist on mobile where links are less obvious. Thanks to [@ThDag](https://github.com/ThDag) for the contribution!
 - You can now use the `{{filename}}` placeholder in the filter property. This will be replaced with the name of the file where the query is defined.
   - For example, if the full file path is `My Vault/Notes/How to Take Smart Notes.md` then the replaced file name will be `How to Take Smart Notes`.
+- Create "Add item" button - open same modal window of task creation. 
 
 ### 🔁 Changes
 
 - You can now toggle whether or not task descriptions are rendered for each task.
+- Change the style of the sync button to match the new Obsidian style of the "edit" button.
+- Fix intent level to match std markdown levels - to have consistent style.
 
 ## [1.11.1] - 2023-04-09
 
