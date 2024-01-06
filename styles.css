@@ -71,7 +71,7 @@
 }
 
 .todoist-task-container {
-    text-indent: -28px;
+    text-indent: -38px;
     padding-inline-start: 30px;
 }
 
@@ -82,7 +82,7 @@
 
 ul.todoist-task-list {
   white-space: normal;
-  padding-inline-start: calc(var(--list-indent) - 15px);
+  padding-inline-start: calc(var(--list-indent) - 11px);
 }
 
 .markdown-reading-view .hide-in-reading-view {
