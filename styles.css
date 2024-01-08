@@ -3,15 +3,20 @@
   font-size: 1.25em;
 }
 
-.todoist-add-button {
-  margin-left: 8px;
-  margin-right: 66px;
+.is-live-preview .todoist-refresh-button {
+  /* The refresh button sits next to the built-in 'Edit' button. So we need to place this excatly to the right of that one. But with --size-2-2 as buffer to it. */
+  margin-right: calc(var(--icon-size) + 3 * var(--size-2-2));
 }
 
-.todoist-refresh-button {
-  height: unset;
+.is-live-preview .todoist-add-button {
+  /* The add button is two buttons in, so we need to double the padding size */
+  margin-right: calc(2 * var(--icon-size) + 6 * var(--size-2-2));
+}
+
+.markdown-reading-view .todoist-add-button,
+.markdown-reading-view .todoist-refresh-button {
+  float: right;
   margin-left: 8px;
-  margin-right: 34px;
 }
 
 .todoist-refresh-disabled {
@@ -29,7 +34,13 @@
   }
 }
 
-.task-metadata {
+.markdown-reading-view .task-metadata,
+.markdown-reading-view .todoist-task-description {
+  margin-left: 6px;
+}
+
+.is-live-preview .task-metadata,
+.is-live-preview .todoist-task-description {
   margin-left: 28px;
 }
 
@@ -70,11 +81,6 @@
   margin-top: 20px;
 }
 
-.todoist-task-container {
-    text-indent: -38px;
-    padding-inline-start: 30px;
-}
-
 .todoist-task-content {
   display: inline;
   text-indent: 0px;
@@ -87,11 +93,6 @@ ul.todoist-task-list {
 
 .markdown-reading-view .hide-in-reading-view {
   display: none;
-}
-
-.is-live-preview .block-language-todoist {
-  padding-left: 15px;
-  padding-right: 10px;
 }
 
 .theme-dark {
@@ -144,6 +145,5 @@ ul.todoist-task-list {
 .todoist-task-description {
   font-size: 80%;
   color: var(--text-muted);
-  margin-left: 28px;
 }
 

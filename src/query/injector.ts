@@ -1,21 +1,18 @@
-import { App, MarkdownRenderChild } from "obsidian";
+import { MarkdownRenderChild } from "obsidian";
 import type { MarkdownPostProcessorContext } from "obsidian";
-import type { TodoistApi } from "../api/api";
 import debug from "../log";
 import { parseQuery } from "./parser";
 import TodoistQuery from "../ui/TodoistQuery.svelte";
 import ErrorDisplay from "../ui/ErrorDisplay.svelte";
 import type { SvelteComponentDev } from "svelte/internal";
+import type { TodoistAdapter } from "../data";
 import { applyReplacements } from "./replacements";
 
 export class QueryInjector {
-    private api: TodoistApi;
-    private app: App;
-    private pendingQueries: PendingQuery[];
+    private adapater: TodoistAdapter;
 
-    constructor(app: App) {
-        this.app = app;
-        this.pendingQueries = [];
+    constructor(adapter: TodoistAdapter) {
+        this.adapater = adapter;
     }
 
     onNewBlock(
@@ -23,62 +20,32 @@ export class QueryInjector {
         el: HTMLElement,
         ctx: MarkdownPostProcessorContext
     ) {
-        const pendingQuery = {
-            source: source,
-            target: el,
-            ctx: ctx,
-        };
-
-        if (typeof this.api == "undefined") {
-            this.pendingQueries.push(pendingQuery);
-            return;
-        }
-
-        this.injectQuery(pendingQuery);
-    }
-
-    setApi(api: TodoistApi) {
-        this.api = api;
-
-        while (this.pendingQueries.length > 0) {
-            this.injectQuery(this.pendingQueries[0]);
-            this.pendingQueries.splice(0, 1);
-        }
-    }
-
-    injectQuery(pendingQuery: PendingQuery) {
         let child: InjectedQuery;
 
         try {
-            const query = parseQuery(pendingQuery.source);
-            applyReplacements(query, pendingQuery.ctx);
+            const query = parseQuery(source);
+            applyReplacements(query, ctx);
 
             debug({
                 msg: "Parsed query",
                 context: query,
             });
 
-            child = new InjectedQuery(pendingQuery.target, (root: HTMLElement) => {
+            child = new InjectedQuery(el, (root: HTMLElement) => {
                 return new TodoistQuery({
                     target: root,
-                    props: { query: query, api: this.api, app: this.app },
+                    props: { query: query, todoistAdapter: this.adapater, },
                 });
             });
         } catch (e) {
             console.error(e);
-            child = new InjectedQuery(pendingQuery.target, (root: HTMLElement) => {
+            child = new InjectedQuery(el, (root: HTMLElement) => {
                 return new ErrorDisplay({ target: root, props: { error: e } });
             });
         }
 
-        pendingQuery.ctx.addChild(child);
+        ctx.addChild(child);
     }
-}
-
-interface PendingQuery {
-    source: string;
-    target: HTMLElement;
-    ctx: MarkdownPostProcessorContext;
 }
 
 class InjectedQuery extends MarkdownRenderChild {

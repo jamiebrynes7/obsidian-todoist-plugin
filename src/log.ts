@@ -1,11 +1,11 @@
 import type { ISettings } from "./settings";
-import { SettingsInstance } from "./settings";
+import { settings } from "./settings";
 
-let settings: ISettings = null;
-SettingsInstance.subscribe((value) => (settings = value));
+let _settings: ISettings | undefined = undefined;
+settings.subscribe((update) => _settings = update);
 
 export default function debug(log: string | LogMessage) {
-  if (!settings.debugLogging) {
+  if (!_settings.debugLogging) {
     return;
   }
 

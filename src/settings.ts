@@ -4,274 +4,274 @@ import type TodoistPlugin from ".";
 import { App, PluginSettingTab, Setting } from "obsidian";
 import { getTokenPath } from "./token";
 
-export const SettingsInstance = writable<ISettings>({
-    fadeToggle: true,
+export const settings = writable<ISettings>({
+  fadeToggle: true,
 
-    autoRefreshToggle: false,
-    autoRefreshInterval: 60,
+  autoRefreshToggle: false,
+  autoRefreshInterval: 60,
 
-    renderDescription: true,
+  renderDescription: true,
 
-    renderDate: true,
-    renderDateIcon: true,
+  renderDate: true,
+  renderDateIcon: true,
 
-    renderProject: true,
-    renderProjectIcon: true,
+  renderProject: true,
+  renderProjectIcon: true,
 
-    renderLabels: true,
-    renderLabelsIcon: true,
+  renderLabels: true,
+  renderLabelsIcon: true,
 
-    shouldWrapLinksInParens: false,
+  shouldWrapLinksInParens: false,
 
-    debugLogging: false,
+  debugLogging: false,
 });
 
 export interface ISettings {
-    fadeToggle: boolean;
-    autoRefreshToggle: boolean;
-    autoRefreshInterval: number;
+  fadeToggle: boolean;
+  autoRefreshToggle: boolean;
+  autoRefreshInterval: number;
 
-    renderDescription: boolean;
+  renderDescription: boolean;
 
-    renderDate: boolean;
-    renderDateIcon: boolean;
+  renderDate: boolean;
+  renderDateIcon: boolean;
 
-    renderProject: boolean;
-    renderProjectIcon: boolean;
+  renderProject: boolean;
+  renderProjectIcon: boolean;
 
-    renderLabels: boolean;
-    renderLabelsIcon: boolean;
+  renderLabels: boolean;
+  renderLabelsIcon: boolean;
 
-    shouldWrapLinksInParens: boolean;
+  shouldWrapLinksInParens: boolean;
 
-    debugLogging: boolean;
+  debugLogging: boolean;
 }
 
 export class SettingsTab extends PluginSettingTab {
-    private plugin: TodoistPlugin;
+  private plugin: TodoistPlugin;
 
-    constructor(app: App, plugin: TodoistPlugin) {
-        super(app, plugin);
-        this.plugin = plugin;
-    }
+  constructor(app: App, plugin: TodoistPlugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
 
-    display() {
-        this.containerEl.empty();
+  display() {
+    this.containerEl.empty();
 
-        this.pluginMetadata();
-        this.apiToken();
+    this.pluginMetadata();
+    this.apiToken();
 
-        this.fadeAnimationSettings();
-        this.autoRefreshSettings();
+    this.fadeAnimationSettings();
+    this.autoRefreshSettings();
 
-        this.descriptionSettings();
+    this.descriptionSettings();
 
-        this.dateSettings();
-        this.projectSettings();
-        this.labelsSettings();
+    this.dateSettings();
+    this.projectSettings();
+    this.labelsSettings();
 
-        this.taskCreationSettings();
+    this.taskCreationSettings();
 
-        this.debugLogging();
-    }
+    this.debugLogging();
+  }
 
-    pluginMetadata() {
-        const desc = document.createDocumentFragment();
+  pluginMetadata() {
+    const desc = document.createDocumentFragment();
 
-        const span = document.createElement("span") as HTMLSpanElement;
-        span.innerText = "Read the ";
+    const span = document.createElement("span") as HTMLSpanElement;
+    span.innerText = "Read the ";
 
-        const changelogLink = document.createElement("a") as HTMLAnchorElement;
-        changelogLink.href =
-            "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
-        changelogLink.innerText = "changelog!";
+    const changelogLink = document.createElement("a") as HTMLAnchorElement;
+    changelogLink.href =
+      "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
+    changelogLink.innerText = "changelog!";
 
-        span.appendChild(changelogLink);
+    span.appendChild(changelogLink);
 
-        desc.appendChild(span);
-    }
+    desc.appendChild(span);
+  }
 
-    apiToken() {
-        const desc = document.createDocumentFragment();
-        desc.createEl("span", null, (span) => {
-            span.innerText =
-                "The Todoist API token to use when fetching tasks. You will need to restart Obsidian after setting this. You can find this token ";
+  apiToken() {
+    const desc = document.createDocumentFragment();
+    desc.createEl("span", null, (span) => {
+      span.innerText =
+        "The Todoist API token to use when fetching tasks. You will need to restart Obsidian after setting this. You can find this token ";
 
-            span.createEl("a", null, (link) => {
-                link.href = "https://todoist.com/prefs/integrations";
-                link.innerText = "here!";
-            });
+      span.createEl("a", null, (link) => {
+        link.href = "https://todoist.com/prefs/integrations";
+        link.innerText = "here!";
+      });
+    });
+
+    new Setting(this.containerEl)
+      .setName("Todoist API token")
+      .setDesc(desc)
+      .addTextArea(async (text) => {
+        try {
+          text.setValue(await this.app.vault.adapter.read(getTokenPath(this.app.vault)));
+        } catch (e) {
+          /* Throw away read error if file does not exist. */
+        }
+
+        text.onChange(async (value) => {
+          await this.app.vault.adapter.write(getTokenPath(this.app.vault), value);
         });
+      });
+  }
 
-        new Setting(this.containerEl)
-            .setName("Todoist API token")
-            .setDesc(desc)
-            .addTextArea(async (text) => {
-                try {
-                    text.setValue(await this.app.vault.adapter.read(getTokenPath(this.app.vault)));
-                } catch (e) {
-                    /* Throw away read error if file does not exist. */
-                }
+  fadeAnimationSettings() {
+    new Setting(this.containerEl)
+      .setName("Task fade animation")
+      .setDesc("Whether tasks should fade in and out when added or removed.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.fadeToggle);
+        toggle.onChange(async (value) => {
+          this.plugin.writeOptions((old) => (old.fadeToggle = value));
+        });
+      });
+  }
 
-                text.onChange(async (value) => {
-                    await this.app.vault.adapter.write(getTokenPath(this.app.vault), value);
-                });
-            });
-    }
+  autoRefreshSettings() {
+    new Setting(this.containerEl)
+      .setName("Auto-refresh")
+      .setDesc("Whether queries should auto-refresh at a set interval")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.autoRefreshToggle);
+        toggle.onChange((value) => {
+          this.plugin.writeOptions((old) => (old.autoRefreshToggle = value));
+        });
+      });
 
-    fadeAnimationSettings() {
-        new Setting(this.containerEl)
-            .setName("Task fade animation")
-            .setDesc("Whether tasks should fade in and out when added or removed.")
-            .addToggle((toggle) => {
-                toggle.setValue(this.plugin.options.fadeToggle);
-                toggle.onChange(async (value) => {
-                    this.plugin.writeOptions((old) => (old.fadeToggle = value));
-                });
-            });
-    }
+    new Setting(this.containerEl)
+      .setName("Auto-refresh interval")
+      .setDesc(
+        "The interval (in seconds) that queries should auto-refresh by default. Integer numbers only."
+      )
+      .addText((setting) => {
+        setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
+        setting.onChange(async (value) => {
+          const newSetting = value.trim();
 
-    autoRefreshSettings() {
-        new Setting(this.containerEl)
-            .setName("Auto-refresh")
-            .setDesc("Whether queries should auto-refresh at a set interval")
-            .addToggle((toggle) => {
-                toggle.setValue(this.plugin.options.autoRefreshToggle);
-                toggle.onChange((value) => {
-                    this.plugin.writeOptions((old) => (old.autoRefreshToggle = value));
-                });
-            });
+          if (newSetting.length == 0) {
+            return;
+          }
 
-        new Setting(this.containerEl)
-            .setName("Auto-refresh interval")
-            .setDesc(
-                "The interval (in seconds) that queries should auto-refresh by default. Integer numbers only."
-            )
-            .addText((setting) => {
-                setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
-                setting.onChange(async (value) => {
-                    const newSetting = value.trim();
+          if (isPositiveInteger(newSetting)) {
+            await this.plugin.writeOptions(
+              (old) => (old.autoRefreshInterval = toInt(newSetting))
+            );
+          } else {
+            setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
+          }
+        });
+      });
+  }
 
-                    if (newSetting.length == 0) {
-                        return;
-                    }
+  descriptionSettings() {
+    new Setting(this.containerEl)
+      .setName("Render descriptions")
+      .setDesc("Whether descriptions should be rendered with tasks.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.renderDescription);
+        toggle.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderDescription = value));
+        });
+      });
+  }
 
-                    if (isPositiveInteger(newSetting)) {
-                        await this.plugin.writeOptions(
-                            (old) => (old.autoRefreshInterval = toInt(newSetting))
-                        );
-                    } else {
-                        setting.setValue(`${this.plugin.options.autoRefreshInterval}`);
-                    }
-                });
-            });
-    }
+  dateSettings() {
+    new Setting(this.containerEl)
+      .setName("Render dates")
+      .setDesc("Whether dates should be rendered with tasks.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.renderDate);
+        toggle.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderDate = value));
+        });
+      });
 
-    descriptionSettings() {
-        new Setting(this.containerEl)
-            .setName("Render descriptions")
-            .setDesc("Whether descriptions should be rendered with tasks.")
-            .addToggle((toggle) => {
-                toggle.setValue(this.plugin.options.renderDescription);
-                toggle.onChange(async (value) => {
-                    await this.plugin.writeOptions((old) => (old.renderDescription = value));
-                });
-            });
-    }
+    new Setting(this.containerEl)
+      .setName("Render date icon")
+      .setDesc("Whether rendered dates should include an icon.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderDateIcon);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderDateIcon = value));
+        });
+      });
+  }
 
-    dateSettings() {
-        new Setting(this.containerEl)
-            .setName("Render dates")
-            .setDesc("Whether dates should be rendered with tasks.")
-            .addToggle((toggle) => {
-                toggle.setValue(this.plugin.options.renderDate);
-                toggle.onChange(async (value) => {
-                    await this.plugin.writeOptions((old) => (old.renderDate = value));
-                });
-            });
+  projectSettings() {
+    new Setting(this.containerEl)
+      .setName("Render project & section")
+      .setDesc("Whether projects & sections should be rendered with tasks.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderProject);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderProject = value));
+        });
+      });
 
-        new Setting(this.containerEl)
-            .setName("Render date icon")
-            .setDesc("Whether rendered dates should include an icon.")
-            .addToggle((setting) => {
-                setting.setValue(this.plugin.options.renderDateIcon);
-                setting.onChange(async (value) => {
-                    await this.plugin.writeOptions((old) => (old.renderDateIcon = value));
-                });
-            });
-    }
+    new Setting(this.containerEl)
+      .setName("Render project & section icon")
+      .setDesc("Whether rendered projects & sections should include an icon.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderProjectIcon);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions(
+            (old) => (old.renderProjectIcon = value)
+          );
+        });
+      });
+  }
 
-    projectSettings() {
-        new Setting(this.containerEl)
-            .setName("Render project & section")
-            .setDesc("Whether projects & sections should be rendered with tasks.")
-            .addToggle((setting) => {
-                setting.setValue(this.plugin.options.renderProject);
-                setting.onChange(async (value) => {
-                    await this.plugin.writeOptions((old) => (old.renderProject = value));
-                });
-            });
+  labelsSettings() {
+    new Setting(this.containerEl)
+      .setName("Render labels")
+      .setDesc("Whether labels should be rendered with tasks.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderLabels);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.renderLabels = value));
+        });
+      });
 
-        new Setting(this.containerEl)
-            .setName("Render project & section icon")
-            .setDesc("Whether rendered projects & sections should include an icon.")
-            .addToggle((setting) => {
-                setting.setValue(this.plugin.options.renderProjectIcon);
-                setting.onChange(async (value) => {
-                    await this.plugin.writeOptions(
-                        (old) => (old.renderProjectIcon = value)
-                    );
-                });
-            });
-    }
+    new Setting(this.containerEl)
+      .setName("Render labels icon")
+      .setDesc("Whether rendered labels should include an icon.")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.renderLabelsIcon);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions(
+            (old) => (old.renderLabelsIcon = value)
+          );
+        });
+      });
+  }
 
-    labelsSettings() {
-        new Setting(this.containerEl)
-            .setName("Render labels")
-            .setDesc("Whether labels should be rendered with tasks.")
-            .addToggle((setting) => {
-                setting.setValue(this.plugin.options.renderLabels);
-                setting.onChange(async (value) => {
-                    await this.plugin.writeOptions((old) => (old.renderLabels = value));
-                });
-            });
+  taskCreationSettings() {
+    new Setting(this.containerEl)
+      .setName("Add parenthesis to page links")
+      .setDesc("When enabled, wraps Obsidian page links in Todoist tasks created from the command")
+      .addToggle((setting) => {
+        setting.setValue(this.plugin.options.shouldWrapLinksInParens);
+        setting.onChange(async (value) => {
+          await this.plugin.writeOptions(
+            (old) => (old.shouldWrapLinksInParens = value)
+          );
+        });
+      });
+  }
 
-        new Setting(this.containerEl)
-            .setName("Render labels icon")
-            .setDesc("Whether rendered labels should include an icon.")
-            .addToggle((setting) => {
-                setting.setValue(this.plugin.options.renderLabelsIcon);
-                setting.onChange(async (value) => {
-                    await this.plugin.writeOptions(
-                        (old) => (old.renderLabelsIcon = value)
-                    );
-                });
-            });
-    }
-
-    taskCreationSettings() {
-        new Setting(this.containerEl)
-            .setName("Add parenthesis to page links")
-            .setDesc("When enabled, wraps Obsidian page links in Todoist tasks created from the command")
-            .addToggle((setting) => {
-                setting.setValue(this.plugin.options.shouldWrapLinksInParens);
-                setting.onChange(async (value) => {
-                    await this.plugin.writeOptions(
-                        (old) => (old.shouldWrapLinksInParens = value)
-                    );
-                });
-            });
-    }
-
-    debugLogging() {
-        new Setting(this.containerEl)
-            .setName("Debug logging")
-            .setDesc("Whether debug logging should be on or off.")
-            .addToggle((toggle) => {
-                toggle.setValue(this.plugin.options.debugLogging);
-                toggle.onChange(async (value) => {
-                    await this.plugin.writeOptions((old) => (old.debugLogging = value));
-                });
-            });
-    }
+  debugLogging() {
+    new Setting(this.containerEl)
+      .setName("Debug logging")
+      .setDesc("Whether debug logging should be on or off.")
+      .addToggle((toggle) => {
+        toggle.setValue(this.plugin.options.debugLogging);
+        toggle.onChange(async (value) => {
+          await this.plugin.writeOptions((old) => (old.debugLogging = value));
+        });
+      });
+  }
 }
