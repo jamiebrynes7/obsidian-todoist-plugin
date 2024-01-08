@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+> Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
+
 ### ✨ Features
 
 - Added the option to wrap page links in parenthesis when creating tasks with the command. You may find this useful if you primarily use Todoist on mobile where links are less obvious. Thanks to [@ThDag](https://github.com/ThDag) for the contribution!
