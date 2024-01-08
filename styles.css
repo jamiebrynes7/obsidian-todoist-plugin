@@ -3,15 +3,24 @@
   font-size: 1.25em;
 }
 
-.todoist-refresh-button {
-  display: inline;
+.todoist-add-button {
   margin-left: 8px;
-  margin-right: 8px;
-  float: right;
+  margin-right: 66px;
+}
+
+.todoist-refresh-button {
+  height: unset;
+  margin-left: 8px;
+  margin-right: 34px;
+}
+
+.todoist-refresh-disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .todoist-refresh-spin {
-  animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite reverse;
 }
 
 @-webkit-keyframes spin {
@@ -61,12 +70,19 @@
   margin-top: 20px;
 }
 
+.todoist-task-container {
+    text-indent: -38px;
+    padding-inline-start: 30px;
+}
+
 .todoist-task-content {
   display: inline;
+  text-indent: 0px;
 }
 
 ul.todoist-task-list {
   white-space: normal;
+  padding-inline-start: calc(var(--list-indent) - 11px);
 }
 
 .markdown-reading-view .hide-in-reading-view {
@@ -75,6 +91,7 @@ ul.todoist-task-list {
 
 .is-live-preview .block-language-todoist {
   padding-left: 15px;
+  padding-right: 10px;
 }
 
 .theme-dark {

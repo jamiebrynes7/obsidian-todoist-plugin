@@ -114,7 +114,7 @@
   transition:fade={{ duration: settings.fadeToggle ? 400 : 0 }}
   class="task-list-item {priorityClass} {dateTimeClass}"
 >
-  <div>
+  <div class="todoist-task-container">
     <input
       disabled={!isCompletable}
       data-line="1"
