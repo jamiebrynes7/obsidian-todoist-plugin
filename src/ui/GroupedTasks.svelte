@@ -11,12 +11,11 @@
   );
 </script>
 
-<!-- TODO: Add folding? -->
 {#each grouped as group (group.project.id)}
   <div class="todoist-project">
     <div class="todoist-project-title">
       {group.project.name}
     </div>
-    <TaskListRoot tasks={group.tasks} {sorting} renderProject={false} />
+    <TaskListRoot tasks={group.tasks} {sorting} />
   </div>
 {/each}

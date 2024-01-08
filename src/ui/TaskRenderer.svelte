@@ -22,7 +22,6 @@
     sameElse: "MMM Do",
   };
 
-  export let renderProject: boolean;
   export let taskTree: TaskTree;
 
   const taskActions = getTaskActions();
@@ -35,7 +34,7 @@
   $: labels = taskTree.labels.join(", ");
   $: sanitizedContent = sanitizeContent(taskTree.content);
 
-  $: shouldRenderProject = $settings.renderProject && renderProject;
+  $: shouldRenderProject = $settings.renderProject;
   $: shouldRenderDueDate = $settings.renderDate && taskTree.due !== undefined;
   $: shouldRenderLabels = $settings.renderLabels && taskTree.labels.length != 0;
 
@@ -173,6 +172,6 @@
     {/if}
   </div>
   {#if taskTree.children.length != 0}
-    <TaskList taskTrees={taskTree.children} {renderProject} />
+    <TaskList taskTrees={taskTree.children} />
   {/if}
 </li>

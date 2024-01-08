@@ -10,7 +10,6 @@
 
   export let tasks: Task[];
   export let sorting: string[];
-  export let renderProject: boolean = true;
 
   $: taskTrees = getTaskTree(tasks);
 
@@ -20,4 +19,4 @@
   }
 </script>
 
-<TaskList {taskTrees} {renderProject} />
+<TaskList {taskTrees} />
