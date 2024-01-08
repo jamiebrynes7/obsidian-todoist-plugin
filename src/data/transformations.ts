@@ -8,7 +8,7 @@ export type GroupedTasks = {
     tasks: Task[],
 };
 
-const UnknownProject: Project = {
+export const UnknownProject: Project = {
     id: "unknown-project-fake",
     parentId: null,
     name: "Unknown Project",
@@ -32,7 +32,12 @@ export function groupByProject(tasks: Task[]): GroupedTasks[] {
     return Array.from(projects.entries()).map(([project, tasks]) => { return { project: project, tasks: tasks }; })
 }
 
-export type Sort = "priority" | "date" | "dateAscending" | "dateDescending" | "order";
+export type Sort =
+    "priority" | "priorityAscending"
+    | "priorityDescending"
+    | "date" | "dateAscending"
+    | "dateDescending"
+    | "order";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: Sort[]) {
     tasks.sort((first, second) => {
@@ -56,8 +61,11 @@ export function sortTasks<T extends Task>(tasks: T[], sort: Sort[]) {
 function compareTask<T extends Task>(self: T, other: T, sorting: Sort): number {
     switch (sorting) {
         case "priority":
+        case "priorityAscending":
             // Note that priority in the API is reversed to that of in the app.
-            return other.priority - this.priority;
+            return other.priority - self.priority;
+        case "priorityDescending":
+            return self.priority - other.priority;
         case "date":
         case "dateAscending":
             return compareTaskDate(self, other);
