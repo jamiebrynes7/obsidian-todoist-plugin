@@ -1,8 +1,5 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import CalendarIcon from "../components/icons/CalendarIcon.svelte";
-  import LabelIcon from "../components/icons/LabelIcon.svelte";
-  import ProjectIcon from "../components/icons/ProjectIcon.svelte";
   import MarkdownRenderer from "../components/MarkdownRenderer.svelte";
   import { showTaskContext } from "../contextMenu";
   import { settings } from "../settings";
@@ -12,6 +9,7 @@
   import { getDueDateInfo, type DueDateInfo } from "../api/domain/dueDate";
   import type { CalendarSpec } from "moment";
   import { getTaskActions } from "./contexts";
+  import ObsidianIcon from "../components/ObsidianIcon.svelte";
 
   const dateOnlyCalendarSpec: CalendarSpec = {
     sameDay: "[Today]",
@@ -147,27 +145,27 @@
   {/if}
   <div class="task-metadata">
     {#if shouldRenderProject}
-      <div class="task-project">
+      <div class="task-metadata-item">
         {#if $settings.renderProjectIcon}
-          <ProjectIcon class="task-project-icon" />
+          <ObsidianIcon iconId="inbox" />
         {/if}
-        {projectLabel}
+        <span>{projectLabel}</span>
       </div>
     {/if}
     {#if shouldRenderDueDate}
-      <div class="task-date {dateTimeClass}">
+      <div class="task-metadata-item {dateTimeClass}">
         {#if $settings.renderDateIcon}
-          <CalendarIcon class="task-calendar-icon" />
+          <ObsidianIcon iconId="calendar" />
         {/if}
-        {dateLabel}
+        <span>{dateLabel}</span>
       </div>
     {/if}
     {#if shouldRenderLabels}
-      <div class="task-labels">
+      <div class="task-metadata-item">
         {#if $settings.renderLabelsIcon}
-          <LabelIcon class="task-labels-icon" />
+          <ObsidianIcon iconId="tag" />
         {/if}
-        {labels}
+        <span>{labels}</span>
       </div>
     {/if}
   </div>
