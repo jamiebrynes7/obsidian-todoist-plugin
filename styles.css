@@ -17,6 +17,14 @@
 .markdown-reading-view .todoist-refresh-button {
   float: right;
   margin-left: 8px;
+  color: var(--text-muted);
+  border-radius: var(--radius-s);
+  padding: var(--size-2-2) var(--size-2-3);
+}
+
+.markdown-reading-view .todoist-add-button:hover,
+.markdown-reading-view .todoist-refresh-button:hover {
+  background-color: var(--background-modifier-hover);
 }
 
 .todoist-refresh-disabled {
@@ -41,18 +49,19 @@
 
 .is-live-preview .task-metadata,
 .is-live-preview .todoist-task-description {
-  margin-left: 28px;
+  margin-left: 26px;
 }
 
-.task-calendar-icon,
-.task-project-icon,
-.task-labels-icon {
-  vertical-align: middle;
-  height: 17px;
-  width: 17px;
+.task-metadata-item {
+  display: flex;
+  align-items: center;
 }
 
-.task-date.task-overdue {
+.task-metadata-item > * + * {
+  margin-left: 0.25rem;
+}
+
+.task-metadata-item.task-overdue {
   color: var(--text-error);
 }
 
