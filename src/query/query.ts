@@ -1,21 +1,31 @@
-export const sortingOptions = [
+export type Sort =
+  "priority" | "priorityAscending"
+  | "priorityDescending"
+  | "date" | "dateAscending"
+  | "dateDescending"
+  | "order";
+
+// This should be kept in sync with the above, not sure how to enforce
+// exhaustiveness.
+export const sortingVariants: Sort[] = [
+  "priority",
+  "priorityAscending",
+  "priorityDescending",
   "date",
   "dateAscending",
   "dateDescending",
-  "priority",
+  "order",
 ];
 
-export type SortingOption = typeof sortingOptions[number];
-
-export function isSortingOption(value: string): value is SortingOption;
+export function isSortingOption(value: string): value is Sort;
 export function isSortingOption(value: any) {
-  return sortingOptions.includes(value);
+  return sortingVariants.includes(value);
 }
 
 export type Query = {
   name: string;
   filter: string;
   autorefresh?: number;
-  sorting?: SortingOption[];
+  sorting?: Sort[];
   group: boolean;
 };
