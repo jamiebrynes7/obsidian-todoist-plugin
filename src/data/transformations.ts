@@ -1,18 +1,19 @@
 import { getDueDateInfo } from "../api/domain/dueDate";
 import type { Project } from "../api/domain/project";
 import type { TaskId } from "../api/domain/task";
+import type { Sort } from "../query/query";
 import type { Task } from "./task";
-
-export type GroupedTasks = {
-    project: Project,
-    tasks: Task[],
-};
 
 export const UnknownProject: Project = {
     id: "unknown-project-fake",
     parentId: null,
     name: "Unknown Project",
     order: Number.MAX_SAFE_INTEGER,
+};
+
+export type GroupedTasks = {
+    project: Project,
+    tasks: Task[],
 };
 
 export function groupByProject(tasks: Task[]): GroupedTasks[] {
@@ -32,13 +33,6 @@ export function groupByProject(tasks: Task[]): GroupedTasks[] {
     return Array.from(projects.entries()).map(([project, tasks]) => { return { project: project, tasks: tasks }; })
 }
 
-export type Sort =
-    "priority" | "priorityAscending"
-    | "priorityDescending"
-    | "date" | "dateAscending"
-    | "dateDescending"
-    | "order";
-
 export function sortTasks<T extends Task>(tasks: T[], sort: Sort[]) {
     tasks.sort((first, second) => {
         for (const sorting of sort) {
@@ -53,7 +47,6 @@ export function sortTasks<T extends Task>(tasks: T[], sort: Sort[]) {
         return 0;
     })
 }
-
 
 // Result of "LT zero" means that self is before other,
 // Result of '0' means that they are equal
@@ -114,7 +107,6 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
 
     return selfDate.isBefore(otherDate) ? -1 : 1;
 }
-
 
 export type TaskTree = Task & { children: TaskTree[] };
 

@@ -1,8 +1,9 @@
 import "mocha";
 import type { Task } from "./task";
 import type { Project } from "../api/domain/project";
-import { UnknownProject, groupByProject, type GroupedTasks, type Sort, sortTasks, type TaskTree, buildTaskTree } from "./transformations";
+import { UnknownProject, groupByProject, type GroupedTasks, sortTasks, type TaskTree, buildTaskTree } from "./transformations";
 import { assert } from "chai";
+import type { Sort } from "../query/query";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {

@@ -1,4 +1,4 @@
-import { isSortingOption, sortingOptions } from "./query";
+import { isSortingOption, sortingVariants } from "./query";
 import type { Query } from "./query";
 import YAML from "yaml";
 
@@ -93,5 +93,5 @@ function parseObject(query: any): Query {
 }
 
 function formatSortingOpts(): string {
-  return sortingOptions.map((e) => `'${e}'`).join(", ");
+  return sortingVariants.map((e) => `'${e}'`).join(", ");
 }
