@@ -26,13 +26,14 @@ An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todo
 
 The query is defined in YAML and accepts the following keys:
 
-| Name          | Required | Description                                                                                                                                            | Type     | Default |
-| ------------- | :------: | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------- |
-| `name`        |    ✓     | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query.     | string   |         |
-| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup>                                      | string   |         |
-| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.                                                  | number   | null    |
-| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority', 'dateAscending' (aliased as 'date'), 'dateDescending',  or multiple of these. | string[] | []      |
-| `group`       |          | Denotes whether this query should have its task grouped by project & section.                                                                          | bool     | false   |
+| Name          | Required | Description                                                                                                                                           | Type     | Default      |
+| ------------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------ |
+| `name`        |    ✓     | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query.    | string   |              |
+| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup>                                     | string   |              |
+| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.                                                 | number   | null         |
+| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority', 'dateAscending' (aliased as 'date'), 'dateDescending', or multiple of these. | string[] | []           |
+| `group`       |          | Denotes whether this query should have its task grouped by project & section.                                                                         | bool     | false        |
+| `show`        |          | Describes which elements of the task metadata to render. Possible values: 'due' (aliased as 'date'), 'description', 'project, and 'labels'.           | string[] | All metadata |
 
 ## Examples
 
@@ -42,7 +43,7 @@ Show current and overdue tasks, ordered by date and then priority, and finally g
 ```todoist
 name: Highest Priority & Date
 filter: "today | overdue"
-sorting: 
+sorting:
    - date
    - priority
 group: true
@@ -55,6 +56,18 @@ Show the inbox only.
 ```todoist
 name: Inbox
 filter: "#Inbox"
+```
+````
+
+Show items from the "Chores" project, showing only due date and description:
+
+````
+```todoist
+name: Chores
+filter: "#Chores"
+show:
+   - due
+   - description
 ```
 ````
 
