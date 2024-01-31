@@ -1,7 +1,7 @@
 import "mocha";
 import { assert } from "chai";
 import { parseQuery, ParsingError } from "./parser";
-import { type Query, SortingVariant } from "./query";
+import { type Query, SortingVariant, ShowMetadataVariant } from "./query";
 
 describe("parseQuery - rejections", () => {
     type Testcase = {
@@ -83,7 +83,23 @@ describe("parseQuery - rejections", () => {
                 filter: "bar",
                 group: "foobar",
             }
-        }
+        },
+        {
+            description: "show must be an array of strings",
+            input: {
+                name: "foo",
+                filter: "bar",
+                show: [1, 2, 3],
+            },
+        },
+        {
+            description: "show must be valid options",
+            input: {
+                name: "foo",
+                filter: "bar",
+                show: ["foo", "bar"]
+            },
+        },
     ];
 
     for (const tc of testcases) {
@@ -100,6 +116,7 @@ function makeQuery(opts?: Partial<Query>): Query {
         autorefresh: opts.autorefresh ?? 0,
         group: opts.group ?? false,
         sorting: opts.sorting ?? [SortingVariant.Order],
+        show: opts.show ?? new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Description, ShowMetadataVariant.Project, ShowMetadataVariant.Labels]),
     }
 }
 
@@ -160,6 +177,19 @@ describe("parseQuery", () => {
                 filter: "bar",
                 sorting: [SortingVariant.Date],
             }),
+        },
+        {
+            description: "with show",
+            input: {
+                name: "foo",
+                filter: "bar",
+                show: ["due", "project"]
+            },
+            expectedOutput: makeQuery({
+                name: "foo",
+                filter: "bar",
+                show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Project]),
+            })
         }
     ];
 

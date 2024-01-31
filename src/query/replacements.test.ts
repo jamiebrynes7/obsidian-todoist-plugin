@@ -53,6 +53,7 @@ describe("applyReplacements", () => {
                     autorefresh: 0,
                     group: false,
                     sorting: [],
+                    show: new Set(),
                 };
 
                 applyReplacements(query, new FakeContext(tc.filePath ?? ""));

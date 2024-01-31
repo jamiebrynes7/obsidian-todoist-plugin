@@ -1,4 +1,4 @@
-import { SortingVariant, type Query } from "./query";
+import { SortingVariant, type Query, ShowMetadataVariant } from "./query";
 import YAML from "yaml";
 
 export class ParsingError extends Error {
@@ -57,6 +57,7 @@ function parseObject(query: any): Query {
     group: booleanField(query, "group") ?? false,
     autorefresh: numberField(query, "autorefresh", { isPositive: true }) ?? 0,
     sorting: optionsArrayField(query, "sorting", sortingLookup) ?? [SortingVariant.Order],
+    show: new Set(optionsArrayField(query, "show", showMetadataVariantLookup) ?? Object.values(showMetadataVariantLookup)),
   };
 }
 
@@ -160,3 +161,11 @@ const sortingLookup: Record<string, SortingVariant> = {
   "dateDescending": SortingVariant.DateDescending,
   "order": SortingVariant.Order,
 }
+
+const showMetadataVariantLookup: Record<string, ShowMetadataVariant> = {
+  "due": ShowMetadataVariant.Due,
+  "date": ShowMetadataVariant.Due,
+  "description": ShowMetadataVariant.Description,
+  "labels": ShowMetadataVariant.Labels,
+  "project": ShowMetadataVariant.Project,
+};
