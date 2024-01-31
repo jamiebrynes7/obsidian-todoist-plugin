@@ -135,8 +135,8 @@
   {#if filteredTasks.length === 0}
     <NoTaskDisplay />
   {:else if query.group}
-    <GroupedTasks tasks={filteredTasks} sorting={query.sorting ?? []} />
+    <GroupedTasks tasks={filteredTasks} sorting={query.sorting ?? ["order"]} />
   {:else}
-    <TaskListRoot tasks={filteredTasks} sorting={query.sorting ?? []} />
+    <TaskListRoot tasks={filteredTasks} sorting={query.sorting ?? ["order"]} />
   {/if}
 {/if}
