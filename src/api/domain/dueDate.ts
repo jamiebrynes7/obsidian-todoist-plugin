@@ -33,7 +33,6 @@ export function getDueDateInfo(dueDate: DueDate | undefined): DueDateInfo {
     const isToday = date.isSame(new Date(), "day");
     const isOverdue = hasTime ? date.isBefore() : date.clone().add(1, "day").isBefore()
 
-
     return {
         hasDate: true,
         hasTime: hasTime,

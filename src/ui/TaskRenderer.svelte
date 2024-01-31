@@ -53,6 +53,10 @@
   $: dateTimeClass = getDateTimeClass(dateInfo);
 
   function getDueDateLabel(info: DueDateInfo): string {
+    if (info.m === undefined) {
+      return "";
+    }
+
     if (info.hasTime) {
       return info.m.calendar();
     }

@@ -111,7 +111,7 @@ export class TodoistAdapter {
       labels: apiTask.labels,
       priority: apiTask.priority,
 
-      due: apiTask.due,
+      due: apiTask.due ?? undefined,
       order: apiTask.order
     };
   }
