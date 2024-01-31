@@ -8,7 +8,7 @@
   import type { TaskTree } from "../data/transformations";
   import { getDueDateInfo, type DueDateInfo } from "../api/domain/dueDate";
   import type { CalendarSpec } from "moment";
-  import { getTaskActions } from "./contexts";
+  import { getQuery, getTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
 
   const dateOnlyCalendarSpec: CalendarSpec = {

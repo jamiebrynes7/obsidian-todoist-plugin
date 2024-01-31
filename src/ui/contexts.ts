@@ -1,5 +1,6 @@
 import { getContext, setContext } from "svelte";
 import type { TaskId } from "../api/domain/task";
+import type { Query } from "../query/query";
 
 const taskActionsKey = "todoist-task-actions";
 
@@ -13,4 +14,14 @@ export function setTaskActions(actions: TaskActions) {
 
 export function getTaskActions(): TaskActions {
   return getContext(taskActionsKey);
+}
+
+const queryKey = "todoist-query";
+
+export function setQuery(query: Query) {
+  setContext(queryKey, query);
+}
+
+export function getQuery(): Query {
+  return getContext(queryKey);
 }

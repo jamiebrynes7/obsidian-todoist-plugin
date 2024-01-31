@@ -5,16 +5,16 @@
     sortTasks,
     type TaskTree,
   } from "../data/transformations";
-  import type { SortingVariant } from "../query/query";
   import TaskList from "./TaskList.svelte";
+  import { getQuery } from "./contexts";
 
   export let tasks: Task[];
-  export let sorting: SortingVariant[];
+  let query = getQuery();
 
   $: taskTrees = getTaskTree(tasks);
 
   function getTaskTree(tasks: Task[]): TaskTree[] {
-    sortTasks(tasks, sorting);
+    sortTasks(tasks, query.sorting);
     return buildTaskTree(tasks);
   }
 </script>
