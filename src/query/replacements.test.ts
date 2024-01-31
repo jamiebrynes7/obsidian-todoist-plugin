@@ -50,7 +50,9 @@ describe("applyReplacements", () => {
                 const query: Query = {
                     name: "",
                     filter: tc.filter,
-                    group: false
+                    autorefresh: 0,
+                    group: false,
+                    sorting: [],
                 };
 
                 applyReplacements(query, new FakeContext(tc.filePath ?? ""));

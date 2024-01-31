@@ -1,114 +1,172 @@
 import "mocha";
 import { assert } from "chai";
 import { parseQuery, ParsingError } from "./parser";
+import { type Query, SortingVariant } from "./query";
+
+describe("parseQuery - rejections", () => {
+    type Testcase = {
+        description: string,
+        input: any,
+    };
+
+    const testcases: Testcase[] = [
+        {
+            description: "name is required",
+            input: {
+                filter: "foo",
+            }
+        },
+        {
+            description: "name must be a string",
+            input: {
+                name: 1,
+                filter: "foo",
+            },
+        },
+        {
+            description: "filter is required",
+            input: {
+                name: "foo",
+            },
+        },
+        {
+            description: "filter must be a string",
+            input: {
+                name: "foo",
+                filter: 1,
+            },
+        },
+        {
+            description: "autorefresh must be a number",
+            input: {
+                name: "foo",
+                filter: "bar",
+                autorefresh: "foobar"
+            },
+        },
+        {
+            description: "autorefresh must be a positive number",
+            input: {
+                name: "foo",
+                filter: "bar",
+                autorefresh: -1,
+            },
+        },
+        {
+            description: "sorting must be an array",
+            input: {
+                name: "foo",
+                filter: "bar",
+                sorting: "not an array"
+            },
+        },
+        {
+            description: "sorting must an array of strings",
+            input: {
+                name: "foo",
+                filter: "bar",
+                sorting: [1, 2, 3],
+            },
+        },
+        {
+            description: "sorting must be valid options",
+            input: {
+                name: "foo",
+                filter: "bar",
+                sorting: ["foo", "bar"]
+            },
+        },
+        {
+            description: "group must be a boolean",
+            input: {
+                name: "foo",
+                filter: "bar",
+                group: "foobar",
+            }
+        }
+    ];
+
+    for (const tc of testcases) {
+        it(tc.description, () => {
+            assert.throws(() => { parseQuery(JSON.stringify(tc.input)); }, ParsingError);
+        });
+    }
+});
+
+function makeQuery(opts?: Partial<Query>): Query {
+    return {
+        name: opts.name ?? "",
+        filter: opts.filter ?? "",
+        autorefresh: opts.autorefresh ?? 0,
+        group: opts.group ?? false,
+        sorting: opts.sorting ?? [SortingVariant.Order],
+    }
+}
 
 describe("parseQuery", () => {
-    it("Name must exist", () => {
-        const obj = {
-            filter: "foo",
-        };
+    type Testcase = {
+        description: string,
+        input: any,
+        expectedOutput: Query,
+    };
 
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-    });
+    const testcases: Testcase[] = [
+        {
+            description: "only name & filter",
+            input: {
+                name: "foo",
+                filter: "bar",
+            },
+            expectedOutput: makeQuery({
+                name: "foo",
+                filter: "bar",
+            }),
+        },
+        {
+            description: "with autorefresh",
+            input: {
+                name: "foo",
+                filter: "bar",
+                autorefresh: 120,
+            },
+            expectedOutput: makeQuery({
+                name: "foo",
+                filter: "bar",
+                autorefresh: 120,
+            }),
+        },
+        {
+            description: "with group",
+            input: {
+                name: "foo",
+                filter: "bar",
+                group: true,
+            },
+            expectedOutput: makeQuery({
+                name: "foo",
+                filter: "bar",
+                group: true,
+            }),
+        },
+        {
+            description: "with sorting",
+            input: {
+                name: "foo",
+                filter: "bar",
+                sorting: ["date"]
+            },
+            expectedOutput: makeQuery({
+                name: "foo",
+                filter: "bar",
+                sorting: [SortingVariant.Date],
+            }),
+        }
+    ];
 
-    it("Filter must exist", () => {
-        const obj = {
-            name: "Tasks",
-        };
-
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-    });
-
-    it("Only name & filter are required", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "foo",
-        };
-
-        assert.doesNotThrow(() => parseQuery(JSON.stringify(obj)), ParsingError);
-    });
-
-    it("Autorefresh must be a number", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "foo",
-            autorefresh: "NaN",
-        };
-
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-    });
-
-    it("Autorefresh cannot be negative", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "foo",
-            autorefresh: -1,
-        };
-
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-    });
-
-    it("Valid autorefresh values pass", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "foo",
-            autorefresh: 1,
-        };
-
-        assert.doesNotThrow(() => parseQuery(JSON.stringify(obj)), ParsingError);
-    });
-
-    it("Sorting must be an array", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "foo",
-            sorting: "Not an array",
-        };
-
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-
-        const other = {
-            name: "Tasks",
-            filter: "foo",
-            sorting: [],
-        };
-
-        assert.doesNotThrow(() => { parseQuery(JSON.stringify(other)); }, ParsingError);
-    });
-
-    it("Sorting can only be a specified set of options", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "filter",
-            sorting: ["not-valid"],
-        };
-
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-
-        const validObj = {
-            name: "Tasks",
-            filter: "filter",
-            sorting: ["date", "priority"],
-        };
-
-        assert.doesNotThrow(() => parseQuery(JSON.stringify(validObj)), ParsingError);
-    });
-
-    it("Group must be a boolean", () => {
-        const obj = {
-            name: "Tasks",
-            filter: "Filter",
-            group: "not-a-boolean",
-        };
-
-        assert.throws(() => { parseQuery(JSON.stringify(obj)); }, ParsingError);
-
-        const validObj = {
-            name: "Tasks",
-            filter: "Filter",
-            group: true,
-        };
-
-        assert.doesNotThrow(() => parseQuery(JSON.stringify(validObj)), ParsingError);
-    });
+    for (const tc of testcases) {
+        it(tc.description, () => {
+            const output = parseQuery(JSON.stringify(tc.input));
+            assert.deepEqual(output, tc.expectedOutput);
+        });
+    }
 });

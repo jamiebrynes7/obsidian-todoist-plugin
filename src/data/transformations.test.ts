@@ -3,7 +3,7 @@ import type { Task } from "./task";
 import type { Project } from "../api/domain/project";
 import { UnknownProject, groupByProject, type GroupedTasks, sortTasks, type TaskTree, buildTaskTree } from "./transformations";
 import { assert } from "chai";
-import type { Sort } from "../query/query";
+import { SortingVariant } from "../query/query";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
@@ -107,7 +107,7 @@ describe("sortTasks", () => {
   type Testcase = {
     description: string,
     input: Task[],
-    sortingOpts: Sort[],
+    sortingOpts: SortingVariant[],
     expectedOutput: Task[],
   };
 
@@ -115,7 +115,7 @@ describe("sortTasks", () => {
     {
       description: "should not error for empty input",
       input: [],
-      sortingOpts: ["priority"],
+      sortingOpts: [SortingVariant.Priority],
       expectedOutput: [],
     },
     {
@@ -125,7 +125,7 @@ describe("sortTasks", () => {
         makeTask("b", { priority: 1 }),
         makeTask("c", { priority: 4 }),
       ],
-      sortingOpts: ["priority"],
+      sortingOpts: [SortingVariant.Priority],
       expectedOutput: [
         makeTask("c", { priority: 4 }),
         makeTask("a", { priority: 2 }),
@@ -139,7 +139,7 @@ describe("sortTasks", () => {
         makeTask("b", { priority: 1 }),
         makeTask("c", { priority: 4 }),
       ],
-      sortingOpts: ["priorityDescending"],
+      sortingOpts: [SortingVariant.PriorityDescending],
       expectedOutput: [
         makeTask("b", { priority: 1 }),
         makeTask("a", { priority: 2 }),
@@ -153,7 +153,7 @@ describe("sortTasks", () => {
         makeTask("b", { order: 3 }),
         makeTask("c", { order: 1 }),
       ],
-      sortingOpts: ["order"],
+      sortingOpts: [SortingVariant.Order],
       expectedOutput: [
         makeTask("c", { order: 1 }),
         makeTask("a", { order: 2 }),
@@ -191,7 +191,7 @@ describe("sortTasks", () => {
           },
         }),
       ],
-      sortingOpts: ["date"],
+      sortingOpts: [SortingVariant.Date],
       expectedOutput: [
         makeTask("e", {
           due: {
@@ -253,7 +253,7 @@ describe("sortTasks", () => {
         }),
         makeTask("a"),
       ],
-      sortingOpts: ["dateDescending"],
+      sortingOpts: [SortingVariant.DateDescending],
       expectedOutput: [
         makeTask("a"),
         makeTask("b", {
@@ -291,7 +291,7 @@ describe("sortTasks", () => {
         makeTask("b", { priority: 2, due: { recurring: false, date: "2020-03-19" } }),
         makeTask("c", { priority: 3, due: { recurring: false, date: "2020-03-25" } }),
       ],
-      sortingOpts: ["priority", "date"],
+      sortingOpts: [SortingVariant.Priority, SortingVariant.Date],
       expectedOutput: [
         makeTask("c", { priority: 3, due: { recurring: false, date: "2020-03-25" } }),
         makeTask("b", { priority: 2, due: { recurring: false, date: "2020-03-19" } }),
