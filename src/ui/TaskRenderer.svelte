@@ -10,6 +10,7 @@
   import type { CalendarSpec } from "moment";
   import { getQuery, getTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
+  import { ShowMetadataVariant } from "../query/query";
 
   const dateOnlyCalendarSpec: CalendarSpec = {
     sameDay: "[Today]",
@@ -22,6 +23,7 @@
 
   export let taskTree: TaskTree;
 
+  const query = getQuery();
   const taskActions = getTaskActions();
 
   $: isCompletable = !taskTree.content.startsWith("*");
@@ -32,9 +34,20 @@
   $: labels = taskTree.labels.join(", ");
   $: sanitizedContent = sanitizeContent(taskTree.content);
 
-  $: shouldRenderProject = $settings.renderProject;
-  $: shouldRenderDueDate = $settings.renderDate && taskTree.due !== undefined;
-  $: shouldRenderLabels = $settings.renderLabels && taskTree.labels.length != 0;
+  $: shouldRenderDescription =
+    $settings.renderDescription &&
+    taskTree.description != "" &&
+    query.show.has(ShowMetadataVariant.Description);
+  $: shouldRenderProject =
+    $settings.renderProject && query.show.has(ShowMetadataVariant.Project);
+  $: shouldRenderDueDate =
+    $settings.renderDate &&
+    taskTree.due !== undefined &&
+    query.show.has(ShowMetadataVariant.Due);
+  $: shouldRenderLabels =
+    $settings.renderLabels &&
+    taskTree.labels.length != 0 &&
+    query.show.has(ShowMetadataVariant.Labels);
 
   $: priorityClass = getPriorityClass(taskTree.priority);
   $: dateTimeClass = getDateTimeClass(dateInfo);
@@ -140,7 +153,7 @@
     />
     <MarkdownRenderer class="todoist-task-content" content={sanitizedContent} />
   </div>
-  {#if $settings.renderDescription && taskTree.description != ""}
+  {#if shouldRenderDescription}
     <DescriptionRenderer description={taskTree.description} />
   {/if}
   <div class="task-metadata">
