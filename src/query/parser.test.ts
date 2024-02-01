@@ -11,12 +11,6 @@ describe("parseQuery - rejections", () => {
 
     const testcases: Testcase[] = [
         {
-            description: "name is required",
-            input: {
-                filter: "foo",
-            }
-        },
-        {
             description: "name must be a string",
             input: {
                 name: 1,
@@ -129,25 +123,32 @@ describe("parseQuery", () => {
 
     const testcases: Testcase[] = [
         {
-            description: "only name & filter",
+            description: "only filter",
             input: {
-                name: "foo",
                 filter: "bar",
             },
             expectedOutput: makeQuery({
-                name: "foo",
                 filter: "bar",
             }),
         },
         {
-            description: "with autorefresh",
+            description: "with name",
             input: {
                 name: "foo",
+                filter: "bar",
+            },
+            expectedOutput: makeQuery({
+                name: "foo",
+                filter: "bar",
+            })
+        },
+        {
+            description: "with autorefresh",
+            input: {
                 filter: "bar",
                 autorefresh: 120,
             },
             expectedOutput: makeQuery({
-                name: "foo",
                 filter: "bar",
                 autorefresh: 120,
             }),
@@ -155,12 +156,10 @@ describe("parseQuery", () => {
         {
             description: "with group",
             input: {
-                name: "foo",
                 filter: "bar",
                 group: true,
             },
             expectedOutput: makeQuery({
-                name: "foo",
                 filter: "bar",
                 group: true,
             }),
@@ -168,12 +167,10 @@ describe("parseQuery", () => {
         {
             description: "with sorting",
             input: {
-                name: "foo",
                 filter: "bar",
                 sorting: ["date"]
             },
             expectedOutput: makeQuery({
-                name: "foo",
                 filter: "bar",
                 sorting: [SortingVariant.Date],
             }),
@@ -181,12 +178,10 @@ describe("parseQuery", () => {
         {
             description: "with show",
             input: {
-                name: "foo",
                 filter: "bar",
                 show: ["due", "project"]
             },
             expectedOutput: makeQuery({
-                name: "foo",
                 filter: "bar",
                 show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Project]),
             })
