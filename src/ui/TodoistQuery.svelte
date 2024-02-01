@@ -107,7 +107,9 @@
   }
 </script>
 
-<h4 class="todoist-query-title">{title}</h4>
+{#if title.length != 0}
+  <h4 class="todoist-query-title">{title}</h4>
+{/if}
 <div
   class={fetching
     ? "edit-block-button todoist-refresh-button todoist-refresh-disabled"
