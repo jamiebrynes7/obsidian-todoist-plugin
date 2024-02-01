@@ -286,6 +286,34 @@ describe("sortTasks", () => {
       ],
     },
     {
+      description: "can sort by dateAdded",
+      input: [
+        makeTask("a", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("b", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+      ],
+      sortingOpts: [SortingVariant.DateAdded],
+      expectedOutput: [
+        makeTask("b", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+        makeTask("a", { createdAt: "2020-03-03T13:00:00" }),
+      ],
+    },
+    {
+      description: "can sort by dateAddedDescending",
+      input: [
+        makeTask("a", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("b", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+      ],
+      sortingOpts: [SortingVariant.DateAddedDescending],
+      expectedOutput: [
+        makeTask("b", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+        makeTask("a", { createdAt: "2020-03-02T11:00:00" }),
+      ],
+    },
+    {
       description: "will sort using specified parameters in order",
       input: [
         makeTask("a", { priority: 2, due: { recurring: false, date: "2020-03-20" } }),

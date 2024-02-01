@@ -1,3 +1,4 @@
+import moment from "moment";
 import { getDueDateInfo } from "../api/domain/dueDate";
 import type { Project } from "../api/domain/project";
 import type { TaskId } from "../api/domain/task";
@@ -64,6 +65,10 @@ function compareTask<T extends Task>(self: T, other: T, sorting: SortingVariant)
             return -compareTaskDate(self, other);
         case SortingVariant.Order:
             return self.order - other.order;
+        case SortingVariant.DateAdded:
+            return compareTaskDateAdded(self, other);
+        case SortingVariant.DateAddedDescending:
+            return -compareTaskDateAdded(self, other);
         default:
             throw new Error(`Unexpected sorting type: '${sorting}'`)
     }
@@ -100,6 +105,17 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
     } else if (!selfInfo.hasTime && otherInfo.hasTime) {
         return 1;
     } else if (!selfInfo.hasTime && !otherInfo.hasTime) {
+        return 0;
+    }
+
+    return selfDate.isBefore(otherDate) ? -1 : 1;
+}
+
+function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
+    const selfDate = moment(self.createdAt);
+    const otherDate = moment(other.createdAt);
+
+    if (selfDate === otherDate) {
         return 0;
     }
 
