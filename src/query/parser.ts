@@ -52,7 +52,7 @@ function tryParseAsYaml(raw: string): any {
 
 function parseObject(query: any): Query {
   return {
-    name: asRequired("name", stringField(query, "name")),
+    name: stringField(query, "name") ?? "",
     filter: asRequired("filter", stringField(query, "filter")),
     group: booleanField(query, "group") ?? false,
     autorefresh: numberField(query, "autorefresh", { isPositive: true }) ?? 0,
