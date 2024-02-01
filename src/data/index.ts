@@ -7,6 +7,7 @@ import type { Task } from "./task";
 import type { Task as ApiTask, CreateTaskParams, TaskId } from "../api/domain/task";
 import { SubscriptionManager, type UnsubscribeCallback } from "./subscriptions";
 import { Maybe } from "../utils/maybe";
+import moment from "moment";
 
 type SubscriptionResult = { type: "success", tasks: Task[] } | { type: "error" };
 type OnSubscriptionChange = (result: SubscriptionResult) => void;
@@ -100,6 +101,7 @@ export class TodoistAdapter {
 
     return {
       id: apiTask.id,
+      createdAt: apiTask.createdAt,
 
       content: apiTask.content,
       description: apiTask.description,
