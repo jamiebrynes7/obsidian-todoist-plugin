@@ -9,12 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
 
+### Deprecated
+
+- Please note that the "Render Descriptions", "Render Dates", "Render project & section", and "Render labels" settings are now deprecated. You can now control whether these render or not via the `show` property in the query itself. These will be removed in a future release.
+
 ### ✨ Features
 
 - Added the option to wrap page links in parenthesis when creating tasks with the command. You may find this useful if you primarily use Todoist on mobile where links are less obvious. Thanks to [@ThDag](https://github.com/ThDag) for the contribution!
 - You can now use the `{{filename}}` placeholder in the filter property. This will be replaced with the name of the file where the query is defined.
   - For example, if the full file path is `My Vault/Notes/How to Take Smart Notes.md` then the replaced file name will be `How to Take Smart Notes`.
 - Added "Add item" button to rendered queries. This will open the task creation modal.
+- Added the ability to control which elements of the task metadata render with tasks inside the query with the `show` keyword.
 
 ### 🔁 Changes
 

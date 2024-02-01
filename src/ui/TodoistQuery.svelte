@@ -10,12 +10,14 @@
   import type { TaskId } from "../api/domain/task";
   import TaskListRoot from "./TaskListRoot.svelte";
   import { Notice } from "obsidian";
-  import { setTaskActions } from "./contexts";
+  import { setQuery, setTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
 
   export let query: Query;
   export let todoistAdapter: TodoistAdapter;
 
+  // Set context items.
+  setQuery(query);
   setTaskActions({
     close: async (id: TaskId) => {
       tasksPendingClose.add(id);
@@ -135,8 +137,8 @@
   {#if filteredTasks.length === 0}
     <NoTaskDisplay />
   {:else if query.group}
-    <GroupedTasks tasks={filteredTasks} sorting={query.sorting ?? ["order"]} />
+    <GroupedTasks tasks={filteredTasks} />
   {:else}
-    <TaskListRoot tasks={filteredTasks} sorting={query.sorting ?? ["order"]} />
+    <TaskListRoot tasks={filteredTasks} />
   {/if}
 {/if}

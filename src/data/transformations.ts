@@ -1,7 +1,7 @@
 import { getDueDateInfo } from "../api/domain/dueDate";
 import type { Project } from "../api/domain/project";
 import type { TaskId } from "../api/domain/task";
-import type { Sort } from "../query/query";
+import { SortingVariant } from "../query/query";
 import type { Task } from "./task";
 
 export const UnknownProject: Project = {
@@ -33,7 +33,7 @@ export function groupByProject(tasks: Task[]): GroupedTasks[] {
     return Array.from(projects.entries()).map(([project, tasks]) => { return { project: project, tasks: tasks }; })
 }
 
-export function sortTasks<T extends Task>(tasks: T[], sort: Sort[]) {
+export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
     tasks.sort((first, second) => {
         for (const sorting of sort) {
             const cmp = compareTask(first, second, sorting);
@@ -51,20 +51,18 @@ export function sortTasks<T extends Task>(tasks: T[], sort: Sort[]) {
 // Result of "LT zero" means that self is before other,
 // Result of '0' means that they are equal
 // Result of "GT zero" means that self is after other
-function compareTask<T extends Task>(self: T, other: T, sorting: Sort): number {
+function compareTask<T extends Task>(self: T, other: T, sorting: SortingVariant): number {
     switch (sorting) {
-        case "priority":
-        case "priorityAscending":
+        case SortingVariant.Priority:
             // Note that priority in the API is reversed to that of in the app.
             return other.priority - self.priority;
-        case "priorityDescending":
+        case SortingVariant.PriorityDescending:
             return self.priority - other.priority;
-        case "date":
-        case "dateAscending":
+        case SortingVariant.Date:
             return compareTaskDate(self, other);
-        case "dateDescending":
+        case SortingVariant.DateDescending:
             return -compareTaskDate(self, other);
-        case "order":
+        case SortingVariant.Order:
             return self.order - other.order;
         default:
             throw new Error(`Unexpected sorting type: '${sorting}'`)
