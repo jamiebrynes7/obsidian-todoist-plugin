@@ -8,6 +8,7 @@ import { SortingVariant } from "../query/query";
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
     id,
+    createdAt: opts?.createdAt,
     parentId: opts?.parentId,
     content: "",
     description: "",
@@ -282,6 +283,34 @@ describe("sortTasks", () => {
             datetime: "2020-03-15T13:00:00"
           },
         }),
+      ],
+    },
+    {
+      description: "can sort by dateAdded",
+      input: [
+        makeTask("a", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("b", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+      ],
+      sortingOpts: [SortingVariant.DateAdded],
+      expectedOutput: [
+        makeTask("b", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+        makeTask("a", { createdAt: "2020-03-03T13:00:00" }),
+      ],
+    },
+    {
+      description: "can sort by dateAddedDescending",
+      input: [
+        makeTask("a", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("b", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+      ],
+      sortingOpts: [SortingVariant.DateAddedDescending],
+      expectedOutput: [
+        makeTask("b", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+        makeTask("a", { createdAt: "2020-03-02T11:00:00" }),
       ],
     },
     {

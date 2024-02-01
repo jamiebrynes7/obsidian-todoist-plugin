@@ -160,6 +160,9 @@ const sortingLookup: Record<string, SortingVariant> = {
   "dateAscending": SortingVariant.Date,
   "dateDescending": SortingVariant.DateDescending,
   "order": SortingVariant.Order,
+  "dateAdded": SortingVariant.DateAdded,
+  "dateAddedAscending": SortingVariant.DateAdded,
+  "dateAddedDescending": SortingVariant.DateAddedDescending,
 }
 
 const showMetadataVariantLookup: Record<string, ShowMetadataVariant> = {

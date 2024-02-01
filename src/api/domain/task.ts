@@ -1,4 +1,3 @@
-import moment from "moment";
 import type { DueDate } from "./dueDate";
 import type { ProjectId } from "./project";
 import type { SectionId } from "./section";
@@ -7,6 +6,7 @@ export type TaskId = string;
 
 export type Task = {
     id: TaskId,
+    createdAt: string,
 
     content: string,
     description: string,

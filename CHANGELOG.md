@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - For example, if the full file path is `My Vault/Notes/How to Take Smart Notes.md` then the replaced file name will be `How to Take Smart Notes`.
 - Added "Add item" button to rendered queries. This will open the task creation modal.
 - Added the ability to control which elements of the task metadata render with tasks inside the query with the `show` keyword.
+- You can now sort by when the task was added to Todoist using `dateAdded` and `dateAddedAscending` sort options.
 
 ### 🔁 Changes
 
