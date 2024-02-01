@@ -28,7 +28,7 @@ The query is defined in YAML and accepts the following keys:
 
 | Name          | Required | Description                                                                                                                                           | Type     | Default      |
 | ------------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------ |
-| `name`        |    ✓     | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query.    | string   |              |
+| `name`        |          | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query.    | string   | ""           |
 | `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup>                                     | string   |              |
 | `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.                                                 | number   | null         |
 | `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority', 'dateAscending' (aliased as 'date'), 'dateDescending', or multiple of these. | string[] | []           |
@@ -75,7 +75,7 @@ show:
 
 There are also a few commands bundled in with the plugin:
 
-1. 'Refresh Metadata'
+1. 'Sync with Todoist'
 
    This command refreshes all the metadata (projects, sections, and labels) for Todoist tasks. This is done at startup.
 
@@ -85,13 +85,11 @@ There are also a few commands bundled in with the plugin:
 
 3. 'Add Todoist task with the current page'
 
-   Similiar to the previous command, this one also appends a link to the current active page to the task input.
+   Similar to the previous command, this one also appends a link to the current active page to the task input.
 
 ## CSS
 
 This plugin comes with default CSS intended for use with the default Obsidian themes.
-
-I also maintain an Obsidian theme which has support out of the box for this plugin, for a complete example of CSS for this plugin, check out [the source](https://github.com/jamiebrynes7/moonlight-obsidian-theme/blob/master/src/modules/extensions/todoist.scss).
 
 ---
 

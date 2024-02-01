@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix intent level to match standard markdown levels in order to have consistent style.
 - Aligned the grouping behaviour with Todoist's when grouping by project. This will be expanded on in a future release.
 - Changed all icons to be part of the Lucide set to align with Obsidian.
+- The `title` part of the query is now optional.
 
 ## [1.11.1] - 2023-04-09
 
