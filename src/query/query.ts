@@ -3,7 +3,9 @@ export enum SortingVariant {
   PriorityDescending,
   Date,
   DateDescending,
-  Order
+  Order,
+  DateAdded,
+  DateAddedDescending,
 };
 
 export enum ShowMetadataVariant {
