@@ -40,28 +40,20 @@ export function showTaskContext(
     .showAtPosition(position);
 }
 
-const openExternal: (url: string) => Promise<void> = async (url: string) => {
-  try {
-    await getElectronOpenExternal()(url);
-  } catch {
-    new Notice("Failed to open in external application.");
-  }
-};
+// A bit hacky, but in order to simulate clicking a link
+// we create a unparented DOM element, dispatch an event,
+// then remove the link. Using electron's openExternal doesn't
+// work on mobile unfortunately.
+function openExternal(url: string): void {
+  const link = document.createElement("a");
+  link.href = url;
 
-type OpenExternal = (url: string) => Promise<void>;
+  const clickEvent = new MouseEvent("click", {
+    bubbles: true,
+    cancelable: true,
+    view: window
+  });
 
-let electronOpenExternal: OpenExternal | undefined;
-
-function getElectronOpenExternal(): OpenExternal {
-  if (electronOpenExternal) {
-    return electronOpenExternal;
-  }
-
-  try {
-    electronOpenExternal = require("electron").shell.openExternal;
-  } catch (e) {
-    electronOpenExternal = (url) => Promise.resolve();
-  }
-
-  return electronOpenExternal;
+  link.dispatchEvent(clickEvent);
+  link.remove();
 }
