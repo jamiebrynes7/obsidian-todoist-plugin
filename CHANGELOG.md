@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed all icons to be part of the Lucide set to align with Obsidian.
 - The `title` part of the query is now optional.
 
+### 🐛 Bug Fixes
+
+- Opening tasks via the context menu should now work properly on mobile devices.
+
 ## [1.11.1] - 2023-04-09
 
 ### 🐛 Bug Fixes
