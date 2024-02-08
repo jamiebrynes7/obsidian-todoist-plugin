@@ -66,9 +66,14 @@
       autoRefreshIntervalId = null;
     }
 
-    const interval =
-      query?.autorefresh ??
-      ($settings.autoRefreshToggle ? $settings.autoRefreshInterval : 0);
+    // Use the query autorefresh, or look to the settings if its zero
+    let interval = query.autorefresh;
+
+    if (interval === 0) {
+      interval = $settings.autoRefreshToggle
+        ? $settings.autoRefreshInterval
+        : 0;
+    }
 
     if (interval != 0) {
       autoRefreshIntervalId = window.setInterval(async () => {
