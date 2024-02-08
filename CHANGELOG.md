@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added "Add item" button to rendered queries. This will open the task creation modal.
 - Added the ability to control which elements of the task metadata render with tasks inside the query with the `show` keyword.
 - You can now sort by when the task was added to Todoist using `dateAdded` and `dateAddedAscending` sort options.
+- The div rendered when there are no tasks returned by a query now has a `todoist-no-tasks` class to allow you to customize the CSS.
 
 ### 🔁 Changes
 
