@@ -75,10 +75,13 @@ export class TodoistApiClient {
   }
 }
 
-class TodoistApiError extends Error {
+export class TodoistApiError extends Error {
+  public statusCode: number;
+
   constructor(request: RequestParams, response: WebResponse) {
     const message = `[${request.method}] ${request.url} returned '${response.statusCode}: ${response.body}`;
     super(message)
+    this.statusCode = response.statusCode;
   }
 }
 

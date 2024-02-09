@@ -1,4 +1,4 @@
-import type { TodoistApiClient } from "../api";
+import { TodoistApiError, type TodoistApiClient } from "../api";
 import type { Label, LabelId } from "../api/domain/label";
 import type { Project, ProjectId } from "../api/domain/project";
 import type { Section, SectionId } from "../api/domain/section";
@@ -7,9 +7,15 @@ import type { Task } from "./task";
 import type { Task as ApiTask, CreateTaskParams, TaskId } from "../api/domain/task";
 import { SubscriptionManager, type UnsubscribeCallback } from "./subscriptions";
 import { Maybe } from "../utils/maybe";
-import moment from "moment";
 
-type SubscriptionResult = { type: "success", tasks: Task[] } | { type: "error" };
+export enum QueryErrorKind {
+  BadRequest,
+  Unauthorized,
+  Forbidden,
+  Unknown,
+}
+
+type SubscriptionResult = { type: "success", tasks: Task[] } | { type: "error", kind: QueryErrorKind };
 type OnSubscriptionChange = (result: SubscriptionResult) => void;
 type Refresh = () => Promise<void>;
 
@@ -90,7 +96,22 @@ export class TodoistAdapter {
       }
       catch (error: any) {
         console.error(`Failed to refresh task query: ${error}`);
-        callback({ type: "error" });
+
+        let result: SubscriptionResult = { type: "error", kind: QueryErrorKind.Unknown };
+        if (error instanceof TodoistApiError) {
+          switch (error.statusCode) {
+            case 400:
+              result.kind = QueryErrorKind.BadRequest;
+              break;
+            case 401:
+              result.kind = QueryErrorKind.Unauthorized;
+              break;
+            case 403:
+              result.kind = QueryErrorKind.Forbidden;
+              break;
+          }
+        }
+        callback(result);
       }
     };
   }
