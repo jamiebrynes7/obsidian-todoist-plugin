@@ -123,16 +123,13 @@
 {/if}
 <div
   class="edit-block-button todoist-refresh-button"
+  class:todoist-refresh-fetching={fetching}
   on:click={async () => {
     await forceRefresh();
   }}
   aria-label="Refresh list"
 >
-  <ObsidianIcon
-    class={fetching ? "todoist-refresh-spin" : ""}
-    iconId="refresh-ccw"
-    size={24}
-  />
+  <ObsidianIcon iconId="refresh-ccw" size={24} />
 </div>
 <div
   class="edit-block-button todoist-add-button"

@@ -27,12 +27,11 @@
   background-color: var(--background-modifier-hover);
 }
 
-.todoist-refresh-disabled {
-  opacity: 0.5;
-  pointer-events: none;
+.is-live-preview .todoist-refresh-button.todoist-refresh-fetching {
+  opacity: 1!important;
 }
 
-.todoist-refresh-spin {
+.todoist-refresh-fetching > div {
   animation: spin 1s linear infinite reverse;
 }
 
