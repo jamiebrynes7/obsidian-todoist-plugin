@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.12.0] - 2024-02-09
+
 > Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
 
 ### Deprecated
