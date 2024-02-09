@@ -155,3 +155,7 @@ ul.todoist-task-list {
   color: var(--text-muted);
 }
 
+.todoist-project-title {
+  margin: 1em 0;
+  font-weight: 700;
+}
