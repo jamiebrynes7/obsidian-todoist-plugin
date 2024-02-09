@@ -4,9 +4,9 @@ import debug from "../log";
 import { parseQuery } from "./parser";
 import TodoistQuery from "../ui/TodoistQuery.svelte";
 import ErrorDisplay from "../ui/ErrorDisplay.svelte";
-import type { SvelteComponentDev } from "svelte/internal";
 import type { TodoistAdapter } from "../data";
 import { applyReplacements } from "./replacements";
+import type { SvelteComponent } from "svelte";
 
 export class QueryInjector {
     private adapater: TodoistAdapter;
@@ -49,12 +49,12 @@ export class QueryInjector {
 }
 
 class InjectedQuery extends MarkdownRenderChild {
-    private readonly createComp: (root: HTMLElement) => SvelteComponentDev;
-    private component: SvelteComponentDev;
+    private readonly createComp: (root: HTMLElement) => SvelteComponent;
+    private component: SvelteComponent;
 
     constructor(
         container: HTMLElement,
-        createComp: (root: HTMLElement) => SvelteComponentDev
+        createComp: (root: HTMLElement) => SvelteComponent
     ) {
         super(container);
         this.createComp = createComp;
