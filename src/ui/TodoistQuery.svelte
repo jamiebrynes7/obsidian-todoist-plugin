@@ -4,7 +4,7 @@
   import type { Query } from "../query/query";
   import CreateTaskModal from "../modals/createTask/createTaskModal";
   import NoTaskDisplay from "./NoTaskDisplay.svelte";
-  import type { TodoistAdapter } from "../data";
+  import type { QueryErrorKind, TodoistAdapter } from "../data";
   import type { Task } from "../data/task";
   import GroupedTasks from "./GroupedTasks.svelte";
   import type { TaskId } from "../api/domain/task";
@@ -12,6 +12,7 @@
   import { Notice } from "obsidian";
   import { setQuery, setTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
+  import QueryErrorDisplay from "./QueryErrorDisplay.svelte";
 
   export let query: Query;
   export let todoistAdapter: TodoistAdapter;
@@ -47,13 +48,18 @@
   let fetching: boolean = false;
   let tasks: Task[] = [];
   let tasksPendingClose: Set<TaskId> = new Set();
+  let queryError: QueryErrorKind | undefined = undefined;
 
   const [unsubscribeQuery, refreshQuery] = todoistAdapter.subscribe(
     query.filter,
     (result) => {
       switch (result.type) {
         case "success":
+          queryError = undefined;
           tasks = result.tasks;
+          break;
+        case "error":
+          queryError = result.kind;
           break;
       }
     }
@@ -66,9 +72,14 @@
       autoRefreshIntervalId = null;
     }
 
-    const interval =
-      query?.autorefresh ??
-      ($settings.autoRefreshToggle ? $settings.autoRefreshInterval : 0);
+    // Use the query autorefresh, or look to the settings if its zero
+    let interval = query.autorefresh;
+
+    if (interval === 0) {
+      interval = $settings.autoRefreshToggle
+        ? $settings.autoRefreshInterval
+        : 0;
+    }
 
     if (interval != 0) {
       autoRefreshIntervalId = window.setInterval(async () => {
@@ -111,19 +122,14 @@
   <h4 class="todoist-query-title">{title}</h4>
 {/if}
 <div
-  class={fetching
-    ? "edit-block-button todoist-refresh-button todoist-refresh-disabled"
-    : "edit-block-button todoist-refresh-button"}
+  class="edit-block-button todoist-refresh-button"
+  class:todoist-refresh-fetching={fetching}
   on:click={async () => {
     await forceRefresh();
   }}
   aria-label="Refresh list"
 >
-  <ObsidianIcon
-    class={fetching ? "todoist-refresh-spin" : ""}
-    iconId="refresh-ccw"
-    size={24}
-  />
+  <ObsidianIcon iconId="refresh-ccw" size={24} />
 </div>
 <div
   class="edit-block-button todoist-add-button"
@@ -136,7 +142,9 @@
 </div>
 <br />
 {#if fetchedOnce}
-  {#if filteredTasks.length === 0}
+  {#if queryError !== undefined}
+    <QueryErrorDisplay kind={queryError} />
+  {:else if filteredTasks.length === 0}
     <NoTaskDisplay />
   {:else if query.group}
     <GroupedTasks tasks={filteredTasks} />

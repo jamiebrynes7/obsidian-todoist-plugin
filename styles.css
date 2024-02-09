@@ -27,12 +27,11 @@
   background-color: var(--background-modifier-hover);
 }
 
-.todoist-refresh-disabled {
-  opacity: 0.5;
-  pointer-events: none;
+.is-live-preview .todoist-refresh-button.todoist-refresh-fetching {
+  opacity: 1!important;
 }
 
-.todoist-refresh-spin {
+.todoist-refresh-fetching > div {
   animation: spin 1s linear infinite reverse;
 }
 
@@ -49,7 +48,7 @@
 
 .is-live-preview .task-metadata,
 .is-live-preview .todoist-task-description {
-  margin-left: 26px;
+  margin-left: 34px;
 }
 
 .task-metadata-item {
@@ -156,3 +155,7 @@ ul.todoist-task-list {
   color: var(--text-muted);
 }
 
+.todoist-project-title {
+  margin: 1em 0;
+  font-weight: 700;
+}

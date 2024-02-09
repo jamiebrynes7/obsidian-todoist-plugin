@@ -1,3 +1,4 @@
+import debug from "../log";
 import type { Label } from "./domain/label";
 import type { Project } from "./domain/project";
 import type { Section } from "./domain/section";
@@ -65,7 +66,17 @@ export class TodoistApiClient {
       params.headers["Content-Type"] = "application/json";
     }
 
+    debug({
+      msg: "Sending Todoist API request",
+      context: params,
+    });
+
     const response = await this.fetcher.fetch(params);
+
+    debug({
+      msg: "Received Todoist API response",
+      context: response,
+    });
 
     if (response.statusCode >= 400) {
       throw new TodoistApiError(params, response);
@@ -75,10 +86,13 @@ export class TodoistApiClient {
   }
 }
 
-class TodoistApiError extends Error {
+export class TodoistApiError extends Error {
+  public statusCode: number;
+
   constructor(request: RequestParams, response: WebResponse) {
     const message = `[${request.method}] ${request.url} returned '${response.statusCode}: ${response.body}`;
     super(message)
+    this.statusCode = response.statusCode;
   }
 }
 

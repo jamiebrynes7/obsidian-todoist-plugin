@@ -128,6 +128,7 @@ class ObsidianFetcher implements WebFetcher {
             method: params.method,
             body: params.body,
             headers: params.headers,
+            throw: false,
         });
 
         return {

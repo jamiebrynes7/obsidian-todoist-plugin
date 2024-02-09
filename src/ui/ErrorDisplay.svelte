@@ -1,8 +1,8 @@
 <script lang="ts">
-  export let error: Error;
+  export let error: string;
 </script>
 
 <div class="todoist-error">
-  <p>Oh no, something went wrong!</p>
-  <code>{error}</code>
+  <p><b>Encountered error:</b></p>
+  <p>{error}</p>
 </div>
