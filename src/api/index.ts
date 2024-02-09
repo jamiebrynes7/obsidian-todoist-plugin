@@ -4,8 +4,8 @@ import type { Project } from "./domain/project";
 import type { Section } from "./domain/section";
 import type { CreateTaskParams, Task, TaskId } from "./domain/task";
 import type { RequestParams, WebFetcher, WebResponse } from "./fetcher";
-import camelize from "camelize";
-import snakeize from "snakeize";
+import camelize from "camelize-ts";
+import snakify from "snakify-ts";
 
 export class TodoistApiClient {
   private token: string;
@@ -29,7 +29,7 @@ export class TodoistApiClient {
   }
 
   public async createTask(content: string, options?: CreateTaskParams): Promise<void> {
-    const body = snakeize({ content: content, ...(options ?? {}) });
+    const body = snakify({ content: content, ...(options ?? {}) });
     await this.do("/tasks", "POST", body);
   }
 

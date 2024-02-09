@@ -1,7 +1,7 @@
 import { settings, SettingsTab } from "./settings";
 import type { ISettings } from "./settings";
 import debug from "./log";
-import { App, Plugin, requestUrl } from "obsidian";
+import { App, Notice, Plugin, requestUrl } from "obsidian";
 import type { PluginManifest } from "obsidian";
 import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
@@ -48,6 +48,11 @@ export default class TodoistPlugin extends Plugin {
             id: "todoist-add-task",
             name: "Add Todoist task",
             callback: () => {
+                if (this.options === null) {
+                    new Notice("Failed to load settings, cannot open task creation modal.");
+                    return;
+                }
+
                 new CreateTaskModal(
                     this.app,
                     this.todoistAdapter,
@@ -61,6 +66,11 @@ export default class TodoistPlugin extends Plugin {
             id: "todoist-add-task-current-page",
             name: "Add Todoist task with the current page",
             callback: () => {
+                if (this.options === null) {
+                    new Notice("Failed to load settings, cannot open task creation modal.");
+                    return;
+                }
+
                 new CreateTaskModal(
                     this.app,
                     this.todoistAdapter,

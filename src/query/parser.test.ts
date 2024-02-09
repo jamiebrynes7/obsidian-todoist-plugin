@@ -105,12 +105,12 @@ describe("parseQuery - rejections", () => {
 
 function makeQuery(opts?: Partial<Query>): Query {
     return {
-        name: opts.name ?? "",
-        filter: opts.filter ?? "",
-        autorefresh: opts.autorefresh ?? 0,
-        group: opts.group ?? false,
-        sorting: opts.sorting ?? [SortingVariant.Order],
-        show: opts.show ?? new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Description, ShowMetadataVariant.Project, ShowMetadataVariant.Labels]),
+        name: opts?.name ?? "",
+        filter: opts?.filter ?? "",
+        autorefresh: opts?.autorefresh ?? 0,
+        group: opts?.group ?? false,
+        sorting: opts?.sorting ?? [SortingVariant.Order],
+        show: opts?.show ?? new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Description, ShowMetadataVariant.Project, ShowMetadataVariant.Labels]),
     }
 }
 

@@ -6,7 +6,7 @@
   import type { SectionId } from "../../api/domain/section";
   import type { TodoistAdapter } from "../../data";
 
-  export let selected: ProjectOption;
+  export let selected: ProjectOption | undefined;
   export let todoistAdapter: TodoistAdapter;
 
   $: projectTree = createProjectTree();
@@ -25,7 +25,7 @@
       if (project.parentId) {
         if (projectRelationships.has(project.parentId)) {
           const data = projectRelationships.get(project.parentId);
-          data.subProjects.push(project.id);
+          data?.subProjects.push(project.id);
         } else {
           projectRelationships.set(project.parentId, {
             subProjects: [project.id],
@@ -49,10 +49,14 @@
       .filter((p) => p.parentId === null)
       .sort((first, second) => first.order - second.order);
 
-    const options = [];
+    const options: any[] = [];
 
     function descendPrjTree(id: ProjectId, depth: number, chain: string) {
       const project = todoistAdapter.data().projects.byId(id);
+      if (project === undefined) {
+        console.error("Failed to find project");
+        return;
+      }
       let prjName = project.name;
       let nextChain = chain + prjName + " > ";
       options.push({
@@ -67,7 +71,11 @@
 
       if (children?.sections) {
         for (const sectionId of children.sections) {
-          let section = todoistAdapter.data().sections.byId(sectionId);
+          const section = todoistAdapter.data().sections.byId(sectionId);
+          if (section === undefined) {
+            continue;
+          }
+
           options.push({
             value: {
               type: "Section",

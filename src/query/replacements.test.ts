@@ -6,7 +6,7 @@ import type { MarkdownPostProcessorContext, MarkdownRenderChild, MarkdownSection
 
 
 class FakeContext implements MarkdownPostProcessorContext {
-    docId: string;
+    docId: string = "";
     sourcePath: string;
     frontmatter: any | null | undefined;
 

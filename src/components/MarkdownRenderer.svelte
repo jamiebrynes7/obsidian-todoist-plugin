@@ -1,6 +1,7 @@
 <script lang="ts">
   import { MarkdownRenderer } from "obsidian";
   import { onMount } from "svelte";
+    import { getComponent } from "../ui/contexts";
 
   export let content: string;
 
@@ -9,8 +10,10 @@
 
   let containerEl: HTMLDivElement;
 
+  const component = getComponent();
+
   onMount(async () => {
-    await MarkdownRenderer.renderMarkdown(content, containerEl, "", null);
+    await MarkdownRenderer.renderMarkdown(content, containerEl, "", component);
 
     if (containerEl.childElementCount > 1) {
       return;
@@ -18,8 +21,8 @@
 
     const markdownContent = containerEl.querySelector("p");
 
-    if (markdownContent) {
-      markdownContent.parentElement.removeChild(markdownContent);
+    if (markdownContent !== null) {
+      markdownContent.parentElement?.removeChild(markdownContent);
       containerEl.innerHTML = markdownContent.innerHTML;
     }
   });

@@ -33,7 +33,7 @@ export function showTaskContext(
         .setIcon("popup-open")
         .onClick(() =>
           openExternal(
-            `https://todoist.com/app/project/${taskCtx.task.project.id}/task/${taskCtx.task.id}`
+            `https://todoist.com/app/project/${taskCtx.task.project?.id}/task/${taskCtx.task.id}`
           )
         )
     )

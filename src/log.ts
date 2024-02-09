@@ -5,7 +5,7 @@ let _settings: ISettings | undefined = undefined;
 settings.subscribe((update) => _settings = update);
 
 export default function debug(log: string | LogMessage) {
-  if (!_settings.debugLogging) {
+  if (!_settings?.debugLogging ?? false) {
     return;
   }
 

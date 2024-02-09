@@ -3,13 +3,13 @@
   import moment from "moment";
   import CalendarPicker from "./CalendarPicker.svelte";
 
-  export let selected: Moment = null;
+  export let selected: Moment | undefined = undefined;
 
-  let container: HTMLDivElement = null;
-  let target: HTMLDivElement = null;
+  let container: HTMLDivElement | undefined = undefined;
+  let target: HTMLDivElement | undefined = undefined;
   let drawerOpen = false;
 
-  function setDate(date: Moment) {
+  function setDate(date: Moment | undefined) {
     selected = date;
     drawerOpen = false;
   }
@@ -89,7 +89,7 @@
     <span
       class="reset-date-button"
       on:click|stopPropagation={() => {
-        setDate(null);
+        setDate(undefined);
       }}
       ><svg
         width="100%"

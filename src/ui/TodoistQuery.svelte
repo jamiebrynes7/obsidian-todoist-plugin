@@ -43,7 +43,7 @@
     },
   });
 
-  let autoRefreshIntervalId: number = null;
+  let autoRefreshIntervalId: number | undefined = undefined;
   let fetchedOnce: boolean = false;
   let fetching: boolean = false;
   let tasks: Task[] = [];
@@ -67,9 +67,9 @@
 
   // Setup auto-refresh interval.
   $: {
-    if (autoRefreshIntervalId != null) {
+    if (autoRefreshIntervalId !== undefined) {
       clearInterval(autoRefreshIntervalId);
-      autoRefreshIntervalId = null;
+      autoRefreshIntervalId = undefined;
     }
 
     // Use the query autorefresh, or look to the settings if its zero

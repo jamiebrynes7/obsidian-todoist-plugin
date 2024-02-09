@@ -11,6 +11,7 @@
   import { getQuery, getTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
   import { ShowMetadataVariant } from "../query/query";
+    import type { Priority } from "../api/domain/task";
 
   const dateOnlyCalendarSpec: CalendarSpec = {
     sameDay: "[Today]",
@@ -80,7 +81,7 @@
 
   // For some reason, the Todoist API returns priority in reverse order from
   // the p1/p2/p3/p4 fluent entry notation.
-  function getPriorityClass(priority: number): string {
+  function getPriorityClass(priority: Priority): string {
     switch (priority) {
       case 1:
         return "todoist-p4";

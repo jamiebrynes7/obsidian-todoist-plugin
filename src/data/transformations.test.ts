@@ -8,7 +8,7 @@ import { SortingVariant } from "../query/query";
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
     id,
-    createdAt: opts?.createdAt,
+    createdAt: opts?.createdAt ?? "1970-01-01",
     parentId: opts?.parentId,
     content: "",
     description: "",

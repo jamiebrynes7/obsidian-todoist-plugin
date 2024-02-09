@@ -28,7 +28,7 @@ export function groupByProject(tasks: Task[]): GroupedTasks[] {
         }
 
         const tasks = projects.get(project);
-        tasks.push(task);
+        tasks!.push(task);
     }
 
     return Array.from(projects.entries()).map(([project, tasks]) => { return { project: project, tasks: tasks }; })
@@ -91,8 +91,8 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
         return 0;
     }
 
-    const selfDate = selfInfo.m;
-    const otherDate = otherInfo.m;
+    const selfDate = selfInfo.m!;
+    const otherDate = otherInfo.m!;
 
     // Then lets check if we are the same day, if not
     // sort just based on the day.
@@ -140,9 +140,11 @@ export function buildTaskTree(tasks: Task[]): TaskTree[] {
         }
 
         const parent = mapping.get(task.parentId);
-        const child = mapping.get(task.id);
-        parent.children.push(child)
+        if (parent !== undefined) {
+            const child = mapping.get(task.id);
+            parent.children.push(child!)
+        }
     }
 
-    return roots.map(id => mapping.get(id));
+    return roots.map(id => mapping.get(id)!);
 }

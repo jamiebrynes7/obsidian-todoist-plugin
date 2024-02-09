@@ -31,6 +31,8 @@ export class QueryInjector {
                 context: query,
             });
 
+            // TODO: wire in component from Context
+
             child = new InjectedQuery(el, (root: HTMLElement) => {
                 return new TodoistQuery({
                     target: root,
@@ -40,7 +42,7 @@ export class QueryInjector {
         } catch (e) {
             console.error(e);
             child = new InjectedQuery(el, (root: HTMLElement) => {
-                return new ErrorDisplay({ target: root, props: { error: e } });
+                return new ErrorDisplay({ target: root, props: { error: e as string } });
             });
         }
 
@@ -50,7 +52,7 @@ export class QueryInjector {
 
 class InjectedQuery extends MarkdownRenderChild {
     private readonly createComp: (root: HTMLElement) => SvelteComponent;
-    private component: SvelteComponent;
+    private component: SvelteComponent | undefined = undefined;
 
     constructor(
         container: HTMLElement,
@@ -66,7 +68,7 @@ class InjectedQuery extends MarkdownRenderChild {
     }
 
     onunload() {
-        if (this.component) {
+        if (this.component !== undefined) {
             this.component.$destroy();
         }
     }

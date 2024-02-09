@@ -16,9 +16,9 @@
   export let initialCursorPosition: number | undefined;
 
   let description: string = "";
-  let activeLabels: LabelOption[] = null;
-  let activeProject: ProjectOption = null;
-  let date: Moment = null;
+  let activeLabels: LabelOption[] = [];
+  let activeProject: ProjectOption | undefined = undefined;
+  let date: Moment | undefined = undefined;
   let priority: number = 1;
 
   let inputEl: HTMLInputElement;

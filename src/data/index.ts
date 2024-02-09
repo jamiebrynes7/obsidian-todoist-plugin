@@ -129,7 +129,7 @@ export class TodoistAdapter {
 
       project: project,
       section: section,
-      parentId: apiTask.parentId,
+      parentId: apiTask.parentId ?? undefined,
 
       labels: apiTask.labels,
       priority: apiTask.priority,

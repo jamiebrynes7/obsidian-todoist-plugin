@@ -1,11 +1,13 @@
 import { App, Modal } from "obsidian";
 import EnterTokenModalContent from "./EnterTokenModalContent.svelte";
 
+type Resolver = () => void;
+
 export default class TodoistApiTokenModal extends Modal {
   public token: string;
   public waitForClose: Promise<void>;
 
-  private resolvePromise: () => void;
+  private resolvePromise: Resolver | undefined = undefined;
 
   private modalContent: EnterTokenModalContent;
 
@@ -35,6 +37,6 @@ export default class TodoistApiTokenModal extends Modal {
   onClose() {
     super.onClose();
     this.modalContent.$destroy();
-    this.resolvePromise();
+    this.resolvePromise?.();
   }
 }

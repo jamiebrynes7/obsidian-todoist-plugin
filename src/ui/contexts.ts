@@ -1,6 +1,7 @@
 import { getContext, setContext } from "svelte";
 import type { TaskId } from "../api/domain/task";
 import type { Query } from "../query/query";
+import type { Component } from "obsidian";
 
 const taskActionsKey = "todoist-task-actions";
 
@@ -24,4 +25,14 @@ export function setQuery(query: Query) {
 
 export function getQuery(): Query {
   return getContext(queryKey);
+}
+
+const componentKey = "todoist-component";
+
+export function setComponent(component: Component) {
+  setContext(componentKey, component);
+}
+
+export function getComponent(): Component {
+  return getContext(componentKey);
 }

@@ -24,7 +24,7 @@ export class Maybe<T> {
             throw new Error("tried to access inner value of empty Maybe");
         }
 
-        return this.value;
+        return this.value!;
     }
 
     public withInner<U>(func: (val: T) => U): U {

@@ -2,9 +2,9 @@ import { SortingVariant, type Query, ShowMetadataVariant } from "./query";
 import YAML from "yaml";
 
 export class ParsingError extends Error {
-  inner: Error | undefined;
+  inner: unknown | undefined;
 
-  constructor(msg: string, inner: Error | undefined = undefined) {
+  constructor(msg: string, inner: unknown | undefined = undefined) {
     super(msg);
     this.inner = inner;
   }

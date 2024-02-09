@@ -5,7 +5,7 @@
 
   const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
 
-  export let selected: Moment;
+  export let selected: Moment | undefined;
 
   const dispatch = createEventDispatcher();
 
