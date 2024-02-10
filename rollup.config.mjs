@@ -24,6 +24,7 @@ export default {
         resolve({
             browser: true,
             dedupe: ["svelte"],
+            exportConditions: ['svelte'],
         }),
         commonjs(),
         postcss(),
