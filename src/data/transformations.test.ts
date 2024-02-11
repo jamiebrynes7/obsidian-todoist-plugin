@@ -1,9 +1,8 @@
-import "mocha";
 import type { Task } from "./task";
 import type { Project } from "../api/domain/project";
 import { UnknownProject, groupByProject, type GroupedTasks, sortTasks, type TaskTree, buildTaskTree } from "./transformations";
-import { assert } from "chai";
 import { SortingVariant } from "../query/query";
+import { expect, describe, it } from "vitest";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
@@ -99,7 +98,7 @@ describe("groupByProject", () => {
       // Sort to make comparisons easier to reason about
       grouped.sort((a, b) => a.project.order - b.project.order);
 
-      assert.deepEqual(grouped, tc.expected);
+      expect(grouped).toStrictEqual(tc.expected);
     });
   }
 });
@@ -334,7 +333,7 @@ describe("sortTasks", () => {
       const cloned = [...tc.input];
       sortTasks(cloned, tc.sortingOpts);
 
-      assert.deepEqual(cloned, tc.expectedOutput);
+      expect(cloned).toStrictEqual(tc.expectedOutput);
     });
   }
 });
@@ -430,7 +429,7 @@ describe("buildTaskTree", () => {
   for (const tc of testcases) {
     it(tc.description, () => {
       const trees = buildTaskTree(tc.input);
-      assert.deepEqual(trees, tc.output);
+      expect(trees).toStrictEqual(tc.output);
     });
   }
 });

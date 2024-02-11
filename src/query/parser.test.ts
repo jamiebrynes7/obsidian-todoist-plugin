@@ -1,5 +1,4 @@
-import "mocha";
-import { assert } from "chai";
+import { describe, it, expect } from "vitest";
 import { parseQuery, ParsingError } from "./parser";
 import { type Query, SortingVariant, ShowMetadataVariant } from "./query";
 
@@ -98,7 +97,7 @@ describe("parseQuery - rejections", () => {
 
     for (const tc of testcases) {
         it(tc.description, () => {
-            assert.throws(() => { parseQuery(JSON.stringify(tc.input)); }, ParsingError);
+            expect(() => { parseQuery(JSON.stringify(tc.input)); }).toThrowError(ParsingError);
         });
     }
 });
@@ -191,7 +190,7 @@ describe("parseQuery", () => {
     for (const tc of testcases) {
         it(tc.description, () => {
             const output = parseQuery(JSON.stringify(tc.input));
-            assert.deepEqual(output, tc.expectedOutput);
+            expect(output).toStrictEqual(tc.expectedOutput);
         });
     }
 });

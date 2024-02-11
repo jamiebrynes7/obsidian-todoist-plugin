@@ -1,5 +1,4 @@
-import { assert } from "chai";
-import "mocha";
+import { describe, it, expect } from "vitest";
 import { getDueDateInfo, type DueDate, type DueDateInfo } from "./dueDate";
 import moment from "moment";
 
@@ -71,7 +70,7 @@ describe("getDueDateInfo", () => {
     for (const tc of testcases) {
         it(tc.description, () => {
             const actual = getDueDateInfo(tc.input);
-            assert.deepEqual(actual, tc.expected);
+            expect(actual).toStrictEqual(tc.expected);
         });
     }
 });

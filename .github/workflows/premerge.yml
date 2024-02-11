@@ -15,7 +15,10 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Install dependencies
-        run: nix develop --impure --command npm install 
+        run: nix develop --impure --command npm install
+
+      - name: Check
+        run: nix develop --impure --command npm run check
 
       - name: Build
         run: nix develop --impure --command npm run build

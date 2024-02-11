@@ -1,5 +1,4 @@
-import "mocha";
-import { assert } from "chai";
+import { describe, it, expect } from "vitest";
 import { applyReplacements } from "./replacements";
 import type { Query } from "./query";
 import type { MarkdownPostProcessorContext, MarkdownRenderChild, MarkdownSectionInformation } from "obsidian";
@@ -58,7 +57,7 @@ describe("applyReplacements", () => {
 
                 applyReplacements(query, new FakeContext(tc.filePath ?? ""));
 
-                assert.equal(query.filter, tc.expectedFilter);
+                expect(query.filter).toBe(tc.expectedFilter);
             });
         }
     });
