@@ -18,10 +18,10 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Install dependencies
-        run: nix develop ./nix --impure --command npm install
+        run: nix develop ./nix --impure --command bash -c "cd plugin && npm install"
 
       - name: Build
-        run: nix develop ./nix --impure --command npm run build
+        run: nix develop ./nix --impure --command bash -c "cd plugin && npm run build"
 
       - name: Release
         id: create_release
@@ -33,6 +33,6 @@ jobs:
           name: Obsidian x Todoist - v${{ github.ref }}
           draft: true
           files: |
-            dist/main.js
-            dist/manifest.json
-            dist/styles.css
+            plugin/dist/main.js
+            plugin/dist/manifest.json
+            plugin/dist/styles.css

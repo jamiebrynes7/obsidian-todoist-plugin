@@ -1,6 +1,7 @@
-node_modules/
-dist/
-package-lock.json
+# Plugin things
+plugin/node_modules/
+plugin/dist/
+plugin/package-lock.json
 
 # Nix-related things
 .direnv/
