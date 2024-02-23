@@ -20,10 +20,11 @@
           default = devenv.lib.mkShell {
             inherit inputs pkgs;
             modules = [{
-              packages = [
-                pkgs.nodejs
-                pkgs.nodePackages.typescript-language-server
-                pkgs.nodePackages.svelte-language-server
+              packages = with pkgs; [
+                nodejs
+                nodePackages.typescript-language-server
+                nodePackages.svelte-language-server
+                marksman
               ];
             }];
           };
