@@ -1,7 +1,2 @@
-# Plugin things
-plugin/node_modules/
-plugin/dist/
-
-# Nix-related things
 .direnv/
 .devenv/

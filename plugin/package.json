@@ -4,7 +4,7 @@
   "description": "A Todoist plugin for Obsidian",
   "scripts": {
     "check": "svelte-check",
-    "dev": "npm run check && vite build",
+    "dev": "npm run check && VITE_ENV=dev vite build",
     "build": "vite build",
     "test": "vitest",
     "format": "prettier --write src/**/*",
