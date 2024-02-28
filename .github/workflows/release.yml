@@ -17,11 +17,18 @@ jobs:
       - name: Setup Magic Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
 
+      - name: Use nix-develop shell
+        uses: nicknovitski/nix-develop@v1.1.0
+        with:
+          arguments: ./nix --impure
+
       - name: Install dependencies
-        run: nix develop ./nix --impure --command bash -c "cd plugin && npm install"
+        run: npm install
+        working-directory: ./plugin
 
       - name: Build
-        run: nix develop ./nix --impure --command bash -c "cd plugin && npm run build"
+        run: npm run build
+        working-directory: ./plugin
 
       - name: Release
         id: create_release
