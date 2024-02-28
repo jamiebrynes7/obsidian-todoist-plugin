@@ -7,8 +7,8 @@
     "dev": "npm run check && VITE_ENV=dev vite build",
     "build": "vite build",
     "test": "vitest",
-    "format": "prettier --write src/**/*",
-    "lint": "prettier --check src/**/*"
+    "lint:check": "biome check ./src --config-path=../",
+    "lint:fix": "biome check --apply ./src --config-path=../"
   },
   "author": "Jamie Brynes",
   "license": "ISC",
