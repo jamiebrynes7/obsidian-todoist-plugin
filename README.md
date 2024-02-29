@@ -1,96 +1,11 @@
-# Obsidian x Todoist Plugin
+![Sync with Todoist Plugin for Obsidian](./docs/static/img/social-card.jpg)
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jamiebrynes7/obsidian-todoist-plugin/premerge.yml?branch=develop&style=for-the-badge) ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jamiebrynes7/obsidian-todoist-plugin?style=for-the-badge)
+## What is it?
 
-An [Obsidian](https://obsidian.md/) plugin to materialize [Todoist](https://todoist.com/) task lists in Obsidian notes.
+An **unofficial** plugin for Obsidian that offers the ability to have your Todoist tasks sync bidirectionally with Obsidian. Please note that this is not created by, affiliated with, or supported by Doist.
 
-![Example gif](./assets/obsidian-todoist-sync.gif)
+Please refer to the [documentation](https://jamiebrynes7.github.io/obsidian-todoist-plugin/docs/overview) for details on how to install and use this plugin.
 
-## Usage
+If you like this plugin, feel free to support the development by buying a coffee:
 
-1. Install the plugin through the Obsidian's community plugins browser.
-2. Enable the plugin in Obsidian.
-3. You should get a prompt asking for your [Todoist API token](https://todoist.com/prefs/integrations). (If not, you can enter this in the settings).
-4. Place a code block like the following in any note:
-   ````markdown
-   ```todoist
-   name: My Tasks
-   filter: "today | overdue"
-   ```
-   ````
-5. Swap to preview mode and the plugin should replace this code block with the materialized result of that filter.
-
-> If you are synchronizing your vault, I recommend explicitly ignoring the `.obsidian/todoist-token` file for security reasons, if possible.
-
-## Inputs
-
-The query is defined in YAML and accepts the following keys:
-
-| Name          | Required | Description                                                                                                                                           | Type     | Default      |
-| ------------- | :------: | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------ |
-| `name`        |          | The title for the materialized query. You can use the `{task_count}` template which will be replaced by the number of tasks returned by the query.    | string   | ""           |
-| `filter`      |    ✓     | A valid [Todoist filter](https://get.todoist.help/hc/en-us/articles/205248842-Filters)<sup>[1](#footnote-1)</sup>                                     | string   |              |
-| `autorefresh` |          | The number of seconds between auto-refreshing. If omitted, the query use the default global settings.                                                 | number   | null         |
-| `sorting`     |          | Describes how to order the tasks in the query. Can be any of 'priority', 'dateAscending' (aliased as 'date'), 'dateDescending', or multiple of these. | string[] | []           |
-| `group`       |          | Denotes whether this query should have its task grouped by project & section.                                                                         | bool     | false        |
-| `show`        |          | Describes which elements of the task metadata to render. Possible values: 'due' (aliased as 'date'), 'description', 'project, and 'labels'.           | string[] | All metadata |
-
-## Examples
-
-Show current and overdue tasks, ordered by date and then priority, and finally grouped by project & section.
-
-````markdown
-```todoist
-name: Highest Priority & Date
-filter: "today | overdue"
-sorting:
-   - date
-   - priority
-group: true
-```
-````
-
-Show the inbox only.
-
-````
-```todoist
-name: Inbox
-filter: "#Inbox"
-```
-````
-
-Show items from the "Chores" project, showing only due date and description:
-
-````
-```todoist
-name: Chores
-filter: "#Chores"
-show:
-   - due
-   - description
-```
-````
-
-## Commands
-
-There are also a few commands bundled in with the plugin:
-
-1. 'Sync with Todoist'
-
-   This command refreshes all the metadata (projects, sections, and labels) for Todoist tasks. This is done at startup.
-
-2. 'Add Todoist task'
-
-   This command opens up a modal for creating a task in Todoist. You can set the project/section, labels, priority, and due date through this modal. Any text selected when this command is executed will be pulled for the task content.
-
-3. 'Add Todoist task with the current page'
-
-   Similar to the previous command, this one also appends a link to the current active page to the task input.
-
-## CSS
-
-This plugin comes with default CSS intended for use with the default Obsidian themes.
-
----
-
-<a name="footnote-1">1</a>: There are some exceptions in the Todoist API. Checkout [this issue](https://github.com/jamiebrynes7/obsidian-todoist-plugin/issues/34) for details.
+<a href="https://www.buymeacoffee.com/jamiebrynes" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
