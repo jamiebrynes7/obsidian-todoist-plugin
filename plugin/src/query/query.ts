@@ -1,18 +1,18 @@
 export enum SortingVariant {
-  Priority,
-  PriorityDescending,
-  Date,
-  DateDescending,
-  Order,
-  DateAdded,
-  DateAddedDescending,
-};
+  Priority = 0,
+  PriorityDescending = 1,
+  Date = 2,
+  DateDescending = 3,
+  Order = 4,
+  DateAdded = 5,
+  DateAddedDescending = 6,
+}
 
 export enum ShowMetadataVariant {
-  Due,
-  Project,
-  Labels,
-  Description,
+  Due = 0,
+  Project = 1,
+  Labels = 2,
+  Description = 3,
 }
 
 export type Query = {

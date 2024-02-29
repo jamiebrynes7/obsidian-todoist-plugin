@@ -1,5 +1,5 @@
-import { SortingVariant, type Query, ShowMetadataVariant } from "./query";
 import YAML from "yaml";
+import { type Query, ShowMetadataVariant, SortingVariant } from "./query";
 
 export class ParsingError extends Error {
   inner: unknown | undefined;
@@ -19,7 +19,7 @@ export class ParsingError extends Error {
 }
 
 export function parseQuery(raw: string): Query {
-  let obj: any;
+  let obj: Record<string, unknown>;
 
   try {
     obj = tryParseAsJson(raw);
@@ -34,7 +34,7 @@ export function parseQuery(raw: string): Query {
   return parseObject(obj);
 }
 
-function tryParseAsJson(raw: string): any {
+function tryParseAsJson(raw: string): Record<string, unknown> {
   try {
     return JSON.parse(raw);
   } catch (e) {
@@ -42,7 +42,7 @@ function tryParseAsJson(raw: string): any {
   }
 }
 
-function tryParseAsYaml(raw: string): any {
+function tryParseAsYaml(raw: string): Record<string, unknown> {
   try {
     return YAML.parse(raw);
   } catch (e) {
@@ -50,14 +50,17 @@ function tryParseAsYaml(raw: string): any {
   }
 }
 
-function parseObject(query: any): Query {
+function parseObject(query: Record<string, unknown>): Query {
   return {
     name: stringField(query, "name") ?? "",
     filter: asRequired("filter", stringField(query, "filter")),
     group: booleanField(query, "group") ?? false,
     autorefresh: numberField(query, "autorefresh", { isPositive: true }) ?? 0,
     sorting: optionsArrayField(query, "sorting", sortingLookup) ?? [SortingVariant.Order],
-    show: new Set(optionsArrayField(query, "show", showMetadataVariantLookup) ?? Object.values(showMetadataVariantLookup)),
+    show: new Set(
+      optionsArrayField(query, "show", showMetadataVariantLookup) ??
+        Object.values(showMetadataVariantLookup),
+    ),
   };
 }
 
@@ -69,7 +72,7 @@ function asRequired<T>(key: string, val: T | undefined): T {
   return val as T;
 }
 
-function stringField(obj: any, key: string): string | undefined {
+function stringField(obj: Record<string, unknown>, key: string): string | undefined {
   const value = obj[key];
 
   if (value === undefined) {
@@ -83,7 +86,11 @@ function stringField(obj: any, key: string): string | undefined {
   return value as string;
 }
 
-function numberField(obj: any, key: string, options?: { isPositive: boolean }): number | undefined {
+function numberField(
+  obj: Record<string, unknown>,
+  key: string,
+  options?: { isPositive: boolean },
+): number | undefined {
   const value = obj[key];
 
   if (value === undefined) {
@@ -96,7 +103,7 @@ function numberField(obj: any, key: string, options?: { isPositive: boolean }): 
 
   const num = value as number;
 
-  if (isNaN(num)) {
+  if (Number.isNaN(num)) {
     throw new ParsingError(`Field ${key} must be a number`);
   }
 
@@ -107,7 +114,7 @@ function numberField(obj: any, key: string, options?: { isPositive: boolean }): 
   return num;
 }
 
-function booleanField(obj: any, key: string): boolean | undefined {
+function booleanField(obj: Record<string, unknown>, key: string): boolean | undefined {
   const value = obj[key];
 
   if (value === undefined) {
@@ -121,7 +128,11 @@ function booleanField(obj: any, key: string): boolean | undefined {
   return value as boolean;
 }
 
-function optionsArrayField<T>(obj: any, key: string, lookup: Record<string, T>): T[] | undefined {
+function optionsArrayField<T>(
+  obj: Record<string, unknown>,
+  key: string,
+  lookup: Record<string, T>,
+): T[] | undefined {
   const value = obj[key];
 
   if (value === undefined) {
@@ -133,7 +144,7 @@ function optionsArrayField<T>(obj: any, key: string, lookup: Record<string, T>):
     throw new ParsingError(`Field ${key} must be an array from values: ${opts}`);
   }
 
-  const elems = value as any[];
+  const elems = value as Record<string, unknown>[];
   const parsedElems = [];
 
   for (const ele of elems) {
@@ -153,22 +164,22 @@ function optionsArrayField<T>(obj: any, key: string, lookup: Record<string, T>):
 }
 
 const sortingLookup: Record<string, SortingVariant> = {
-  "priority": SortingVariant.Priority,
-  "priorityAscending": SortingVariant.Priority,
-  "priorityDescending": SortingVariant.PriorityDescending,
-  "date": SortingVariant.Date,
-  "dateAscending": SortingVariant.Date,
-  "dateDescending": SortingVariant.DateDescending,
-  "order": SortingVariant.Order,
-  "dateAdded": SortingVariant.DateAdded,
-  "dateAddedAscending": SortingVariant.DateAdded,
-  "dateAddedDescending": SortingVariant.DateAddedDescending,
-}
+  priority: SortingVariant.Priority,
+  priorityAscending: SortingVariant.Priority,
+  priorityDescending: SortingVariant.PriorityDescending,
+  date: SortingVariant.Date,
+  dateAscending: SortingVariant.Date,
+  dateDescending: SortingVariant.DateDescending,
+  order: SortingVariant.Order,
+  dateAdded: SortingVariant.DateAdded,
+  dateAddedAscending: SortingVariant.DateAdded,
+  dateAddedDescending: SortingVariant.DateAddedDescending,
+};
 
 const showMetadataVariantLookup: Record<string, ShowMetadataVariant> = {
-  "due": ShowMetadataVariant.Due,
-  "date": ShowMetadataVariant.Due,
-  "description": ShowMetadataVariant.Description,
-  "labels": ShowMetadataVariant.Labels,
-  "project": ShowMetadataVariant.Project,
+  due: ShowMetadataVariant.Due,
+  date: ShowMetadataVariant.Due,
+  description: ShowMetadataVariant.Description,
+  labels: ShowMetadataVariant.Labels,
+  project: ShowMetadataVariant.Project,
 };

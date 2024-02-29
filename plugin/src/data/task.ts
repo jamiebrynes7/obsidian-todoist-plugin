@@ -5,19 +5,19 @@ import type { Section } from "../api/domain/section";
 import type { Priority, TaskId } from "../api/domain/task";
 
 export type Task = {
-  id: TaskId,
-  createdAt: string,
+  id: TaskId;
+  createdAt: string;
 
-  content: string,
-  description: string,
+  content: string;
+  description: string;
 
-  project?: Project,
-  section?: Section,
-  parentId?: TaskId,
+  project?: Project;
+  section?: Section;
+  parentId?: TaskId;
 
-  labels: string[],
-  priority: Priority,
+  labels: string[];
+  priority: Priority;
 
-  due?: DueDate,
-  order: number,
+  due?: DueDate;
+  order: number;
 };

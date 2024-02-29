@@ -1,23 +1,20 @@
 import { Menu, Notice } from "obsidian";
 import type { Point } from "obsidian";
-import type { Task } from "./data/task";
 import type { TaskId } from "./api/domain/task";
+import type { Task } from "./data/task";
 
 interface TaskContext {
   task: Task;
   closeTask: (id: TaskId) => Promise<void>;
 }
 
-export function showTaskContext(
-  taskCtx: TaskContext,
-  position: Point
-) {
+export function showTaskContext(taskCtx: TaskContext, position: Point) {
   new Menu()
     .addItem((menuItem) =>
       menuItem
         .setTitle("Complete task")
         .setIcon("check-small")
-        .onClick(async () => taskCtx.closeTask(taskCtx.task.id))
+        .onClick(async () => taskCtx.closeTask(taskCtx.task.id)),
     )
     .addItem((menuItem) =>
       menuItem
@@ -25,7 +22,7 @@ export function showTaskContext(
         .setIcon("popup-open")
         .onClick(() => {
           openExternal(`todoist://task?id=${taskCtx.task.id}`);
-        })
+        }),
     )
     .addItem((menuItem) =>
       menuItem
@@ -33,9 +30,9 @@ export function showTaskContext(
         .setIcon("popup-open")
         .onClick(() =>
           openExternal(
-            `https://todoist.com/app/project/${taskCtx.task.project?.id}/task/${taskCtx.task.id}`
-          )
-        )
+            `https://todoist.com/app/project/${taskCtx.task.project?.id}/task/${taskCtx.task.id}`,
+          ),
+        ),
     )
     .showAtPosition(position);
 }
@@ -51,7 +48,7 @@ function openExternal(url: string): void {
   const clickEvent = new MouseEvent("click", {
     bubbles: true,
     cancelable: true,
-    view: window
+    view: window,
   });
 
   link.dispatchEvent(clickEvent);

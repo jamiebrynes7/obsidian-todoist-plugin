@@ -2,25 +2,25 @@ type SubscriptionId = number;
 export type UnsubscribeCallback = () => void;
 
 export class SubscriptionManager<T> {
-    private readonly subscriptions: Map<SubscriptionId, T> = new Map();
-    private generator: Generator<SubscriptionId> = subscriptionIdGenerator();
+  private readonly subscriptions: Map<SubscriptionId, T> = new Map();
+  private generator: Generator<SubscriptionId> = subscriptionIdGenerator();
 
-    public subscribe(value: T): UnsubscribeCallback {
-        const id = this.generator.next().value;
-        this.subscriptions.set(id, value);
+  public subscribe(value: T): UnsubscribeCallback {
+    const id = this.generator.next().value;
+    this.subscriptions.set(id, value);
 
-        return () => this.subscriptions.delete(id);
-    }
+    return () => this.subscriptions.delete(id);
+  }
 
-    public listActive(): IterableIterator<T> {
-        return this.subscriptions.values();
-    }
+  public listActive(): IterableIterator<T> {
+    return this.subscriptions.values();
+  }
 }
 
 function* subscriptionIdGenerator(): Generator<SubscriptionId> {
-    let next = 0;
+  let next = 0;
 
-    while (true) {
-        yield next++;
-    }
+  while (true) {
+    yield next++;
+  }
 }
