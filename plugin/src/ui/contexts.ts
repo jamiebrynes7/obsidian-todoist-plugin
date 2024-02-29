@@ -1,13 +1,13 @@
+import type { Component } from "obsidian";
 import { getContext, setContext } from "svelte";
 import type { TaskId } from "../api/domain/task";
 import type { Query } from "../query/query";
-import type { Component } from "obsidian";
 
 const taskActionsKey = "todoist-task-actions";
 
 type TaskActions = {
-  close: (id: TaskId) => Promise<void>,
-}
+  close: (id: TaskId) => Promise<void>;
+};
 
 export function setTaskActions(actions: TaskActions) {
   setContext(taskActionsKey, actions);

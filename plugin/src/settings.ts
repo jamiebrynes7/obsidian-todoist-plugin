@@ -1,8 +1,8 @@
-import { writable } from "svelte/store";
-import { toInt, isPositiveInteger } from "./utils";
-import type TodoistPlugin from ".";
 import { App, PluginSettingTab, Setting } from "obsidian";
+import { writable } from "svelte/store";
+import type TodoistPlugin from ".";
 import { getTokenPath } from "./token";
+import { isPositiveInteger, toInt } from "./utils";
 
 const defaultSettings: ISettings = {
   fadeToggle: true,
@@ -84,8 +84,7 @@ export class SettingsTab extends PluginSettingTab {
     span.innerText = "Read the ";
 
     const changelogLink = document.createElement("a") as HTMLAnchorElement;
-    changelogLink.href =
-      "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
+    changelogLink.href = "https://github.com/jamiebrynes7/obsidian-todoist-plugin/releases";
     changelogLink.innerText = "changelog!";
 
     span.appendChild(changelogLink);
@@ -128,7 +127,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.options?.fadeToggle ?? defaultSettings.fadeToggle);
         toggle.onChange(async (value) => {
-          this.plugin.writeOptions((old) => (old.fadeToggle = value));
+          this.plugin.writeOptions((old) => {
+            old.fadeToggle = value;
+          });
         });
       });
   }
@@ -138,32 +139,40 @@ export class SettingsTab extends PluginSettingTab {
       .setName("Auto-refresh")
       .setDesc("Whether queries should auto-refresh at a set interval")
       .addToggle((toggle) => {
-        toggle.setValue(this.plugin.options?.autoRefreshToggle ?? defaultSettings.autoRefreshToggle);
+        toggle.setValue(
+          this.plugin.options?.autoRefreshToggle ?? defaultSettings.autoRefreshToggle,
+        );
         toggle.onChange((value) => {
-          this.plugin.writeOptions((old) => (old.autoRefreshToggle = value));
+          this.plugin.writeOptions((old) => {
+            old.autoRefreshToggle = value;
+          });
         });
       });
 
     new Setting(this.containerEl)
       .setName("Auto-refresh interval")
       .setDesc(
-        "The interval (in seconds) that queries should auto-refresh by default. Integer numbers only."
+        "The interval (in seconds) that queries should auto-refresh by default. Integer numbers only.",
       )
       .addText((setting) => {
-        setting.setValue(`${this.plugin.options?.autoRefreshInterval ?? defaultSettings.autoRefreshInterval}`);
+        setting.setValue(
+          `${this.plugin.options?.autoRefreshInterval ?? defaultSettings.autoRefreshInterval}`,
+        );
         setting.onChange(async (value) => {
           const newSetting = value.trim();
 
-          if (newSetting.length == 0) {
+          if (newSetting.length === 0) {
             return;
           }
 
           if (isPositiveInteger(newSetting)) {
-            await this.plugin.writeOptions(
-              (old) => (old.autoRefreshInterval = toInt(newSetting))
-            );
+            await this.plugin.writeOptions((old) => {
+              old.autoRefreshInterval = toInt(newSetting);
+            });
           } else {
-            setting.setValue(`${this.plugin.options?.autoRefreshInterval ?? defaultSettings.autoRefreshInterval}`);
+            setting.setValue(
+              `${this.plugin.options?.autoRefreshInterval ?? defaultSettings.autoRefreshInterval}`,
+            );
           }
         });
       });
@@ -174,9 +183,13 @@ export class SettingsTab extends PluginSettingTab {
       .setName("Render descriptions")
       .setDesc("Whether descriptions should be rendered with tasks.")
       .addToggle((toggle) => {
-        toggle.setValue(this.plugin.options?.renderDescription ?? defaultSettings.renderDescription);
+        toggle.setValue(
+          this.plugin.options?.renderDescription ?? defaultSettings.renderDescription,
+        );
         toggle.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.renderDescription = value));
+          await this.plugin.writeOptions((old) => {
+            old.renderDescription = value;
+          });
         });
       });
   }
@@ -188,7 +201,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.options?.renderDate ?? defaultSettings.renderDate);
         toggle.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.renderDate = value));
+          await this.plugin.writeOptions((old) => {
+            old.renderDate = value;
+          });
         });
       });
 
@@ -198,7 +213,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((setting) => {
         setting.setValue(this.plugin.options?.renderDateIcon ?? defaultSettings.renderDateIcon);
         setting.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.renderDateIcon = value));
+          await this.plugin.writeOptions((old) => {
+            old.renderDateIcon = value;
+          });
         });
       });
   }
@@ -210,7 +227,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((setting) => {
         setting.setValue(this.plugin.options?.renderProject ?? defaultSettings.renderProject);
         setting.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.renderProject = value));
+          await this.plugin.writeOptions((old) => {
+            old.renderProject = value;
+          });
         });
       });
 
@@ -218,11 +237,13 @@ export class SettingsTab extends PluginSettingTab {
       .setName("Render project & section icon")
       .setDesc("Whether rendered projects & sections should include an icon.")
       .addToggle((setting) => {
-        setting.setValue(this.plugin.options?.renderProjectIcon ?? defaultSettings.renderProjectIcon);
+        setting.setValue(
+          this.plugin.options?.renderProjectIcon ?? defaultSettings.renderProjectIcon,
+        );
         setting.onChange(async (value) => {
-          await this.plugin.writeOptions(
-            (old) => (old.renderProjectIcon = value)
-          );
+          await this.plugin.writeOptions((old) => {
+            old.renderProjectIcon = value;
+          });
         });
       });
   }
@@ -234,7 +255,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((setting) => {
         setting.setValue(this.plugin.options?.renderLabels ?? defaultSettings.renderLabels);
         setting.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.renderLabels = value));
+          await this.plugin.writeOptions((old) => {
+            old.renderLabels = value;
+          });
         });
       });
 
@@ -244,9 +267,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((setting) => {
         setting.setValue(this.plugin.options?.renderLabelsIcon ?? defaultSettings.renderLabelsIcon);
         setting.onChange(async (value) => {
-          await this.plugin.writeOptions(
-            (old) => (old.renderLabelsIcon = value)
-          );
+          await this.plugin.writeOptions((old) => {
+            old.renderLabelsIcon = value;
+          });
         });
       });
   }
@@ -256,11 +279,13 @@ export class SettingsTab extends PluginSettingTab {
       .setName("Add parenthesis to page links")
       .setDesc("When enabled, wraps Obsidian page links in Todoist tasks created from the command")
       .addToggle((setting) => {
-        setting.setValue(this.plugin.options?.shouldWrapLinksInParens ?? defaultSettings.shouldWrapLinksInParens);
+        setting.setValue(
+          this.plugin.options?.shouldWrapLinksInParens ?? defaultSettings.shouldWrapLinksInParens,
+        );
         setting.onChange(async (value) => {
-          await this.plugin.writeOptions(
-            (old) => (old.shouldWrapLinksInParens = value)
-          );
+          await this.plugin.writeOptions((old) => {
+            old.shouldWrapLinksInParens = value;
+          });
         });
       });
   }
@@ -272,7 +297,9 @@ export class SettingsTab extends PluginSettingTab {
       .addToggle((toggle) => {
         toggle.setValue(this.plugin.options?.debugLogging ?? defaultSettings.debugLogging);
         toggle.onChange(async (value) => {
-          await this.plugin.writeOptions((old) => (old.debugLogging = value));
+          await this.plugin.writeOptions((old) => {
+            old.debugLogging = value;
+          });
         });
       });
   }

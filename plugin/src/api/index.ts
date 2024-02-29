@@ -1,11 +1,11 @@
+import camelize from "camelize-ts";
+import snakify from "snakify-ts";
 import debug from "../log";
 import type { Label } from "./domain/label";
 import type { Project } from "./domain/project";
 import type { Section } from "./domain/section";
 import type { CreateTaskParams, Task, TaskId } from "./domain/task";
 import type { RequestParams, WebFetcher, WebResponse } from "./fetcher";
-import camelize from "camelize-ts";
-import snakify from "snakify-ts";
 
 export class TodoistApiClient {
   private token: string;
@@ -57,7 +57,7 @@ export class TodoistApiClient {
       url: `https://api.todoist.com/rest/v2${path}`,
       method: method,
       headers: {
-        "Authorization": `Bearer ${this.token}`,
+        Authorization: `Bearer ${this.token}`,
       },
     };
 
@@ -91,8 +91,7 @@ export class TodoistApiError extends Error {
 
   constructor(request: RequestParams, response: WebResponse) {
     const message = `[${request.method}] ${request.url} returned '${response.statusCode}: ${response.body}`;
-    super(message)
+    super(message);
     this.statusCode = response.statusCode;
   }
 }
-

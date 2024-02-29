@@ -15,9 +15,9 @@ export default class TodoistApiTokenModal extends Modal {
     super(app);
 
     this.token = "";
-    this.waitForClose = new Promise(
-      (resolve) => (this.resolvePromise = resolve)
-    );
+    this.waitForClose = new Promise((resolve) => {
+      this.resolvePromise = resolve;
+    });
 
     this.titleEl.innerText = "Setup Todoist API token";
 
