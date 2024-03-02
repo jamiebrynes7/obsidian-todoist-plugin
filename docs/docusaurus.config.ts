@@ -38,6 +38,7 @@ const config: Config = {
     ],
   ],
   themeConfig: {
+    image: "img/social-card.jpg",
     navbar: {
       title: title,
       items: [
