@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { Button, FieldError, Group, Input, Label, TextField } from "react-aria-components";
-import { TodoistApiClient } from "../../api";
-import { ObsidianFetcher } from "../../api/fetcher";
 import { ObsidianIcon } from "../components/obsidian-icon";
 
 const TokenInputValidationIcon: React.FC<{ status: TokenValidationStatus }> = ({ status }) => {
@@ -25,9 +23,10 @@ type TokenValidationStatus =
 
 type Props = {
   onTokenSubmit: (token: string) => void;
+  testToken: (token: string) => Promise<boolean>;
 };
 
-export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit }) => {
+export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, testToken }) => {
   const [token, setToken] = useState<string>("");
   const [validationStatus, setValidationStatus] = useState<TokenValidationStatus>({ kind: "none" });
 
@@ -79,15 +78,4 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit }) => {
       </Button>
     </div>
   );
-};
-
-const testToken = async (token: string) => {
-  const api = new TodoistApiClient(token, new ObsidianFetcher());
-
-  try {
-    await api.getProjects();
-    return true;
-  } catch (e) {
-    return false;
-  }
 };
