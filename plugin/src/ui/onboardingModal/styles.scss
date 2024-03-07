@@ -1,0 +1,68 @@
+.todoist-onboarding-token-form {
+  margin: 2em 0;
+
+  .react-aria-TextField {
+    display: flex;
+    flex-direction: column;
+
+    & > * + * {
+      margin-top: 0.5em;
+    }
+
+    .react-aria-Group {
+      display: flex;
+      align-items: center;
+
+      & > * + * {
+        margin-left: 0.5em;
+      }
+    }
+
+    input {
+      flex-grow: 1;
+
+      &[data-invalid] {
+        border: 1px solid var(--background-modifier-error);
+      }
+    }
+
+    .react-aria-Label {
+      font-weight: 600;
+    }
+  }
+
+  .react-aria-Button {
+    float: right;
+    margin-top: 1em;
+  }
+
+  .react-aria-FieldError {
+    color: var(--text-error);
+    font-size: var(--font-small);
+  }
+
+  .obsidian-icon.token-validation-error {
+    color: var(--text-error);
+  }
+
+  .obsidian-icon.token-validation-success {
+    color: var(--text-success);
+  }
+
+  .obsidian-icon.token-validation-in-progress {
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    color: var(--text-warning);
+    animation-name: spin;
+    animation-duration: 500ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
+}

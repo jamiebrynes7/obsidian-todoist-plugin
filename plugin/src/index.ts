@@ -2,7 +2,12 @@ import { App, Notice, Plugin, requestUrl } from "obsidian";
 import type { PluginManifest } from "obsidian";
 import "../styles.css";
 import { TodoistApiClient } from "./api";
-import type { RequestParams, WebFetcher, WebResponse } from "./api/fetcher";
+import {
+  ObsidianFetcher,
+  type RequestParams,
+  type WebFetcher,
+  type WebResponse,
+} from "./api/fetcher";
 import { TodoistAdapter } from "./data";
 import debug from "./log";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
@@ -10,7 +15,8 @@ import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import { QueryInjector } from "./query/injector";
 import { SettingsTab, settings } from "./settings";
 import type { ISettings } from "./settings";
-import { getTokenPath } from "./token";
+import { VaultTokenAccessor } from "./token";
+import { OnboardingModal } from "./ui/onboardingModal";
 
 export default class TodoistPlugin extends Plugin {
   public options: ISettings | null;
@@ -75,34 +81,23 @@ export default class TodoistPlugin extends Plugin {
     });
 
     await this.loadOptions();
+    await this.loadApiClient();
+  }
 
-    const token = await this.getToken();
-    if (token.length === 0) {
-      alert(
-        "Provided token was empty, please enter it in the settings and restart Obsidian or reload plugin.",
-      );
+  private async loadApiClient(): Promise<void> {
+    const accessor = new VaultTokenAccessor(this.app.vault);
+
+    if (await accessor.exists()) {
+      const token = await accessor.read();
+      await this.todoistAdapter.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       return;
     }
-    const api = new TodoistApiClient(token, new ObsidianFetcher());
-    await this.todoistAdapter.initialize(api);
+
+    new OnboardingModal(this.app, async (token) => {
+      await accessor.write(token);
+      await this.todoistAdapter.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+    }).open();
   }
-
-  private async getToken(): Promise<string> {
-    const tokenPath = getTokenPath(app.vault);
-
-    try {
-      const token = await this.app.vault.adapter.read(tokenPath);
-      return token;
-    } catch (e) {
-      const tokenModal = new TodoistApiTokenModal(this.app);
-      await tokenModal.waitForClose;
-      const token = tokenModal.token;
-
-      await this.app.vault.adapter.write(tokenPath, token);
-      return token;
-    }
-  }
-
   async loadOptions(): Promise<void> {
     const options = await this.loadData();
 
@@ -122,22 +117,5 @@ export default class TodoistPlugin extends Plugin {
       return old;
     });
     await this.saveData(this.options);
-  }
-}
-
-class ObsidianFetcher implements WebFetcher {
-  public async fetch(params: RequestParams): Promise<WebResponse> {
-    const response = await requestUrl({
-      url: params.url,
-      method: params.method,
-      body: params.body,
-      headers: params.headers,
-      throw: false,
-    });
-
-    return {
-      statusCode: response.status,
-      body: response.text,
-    };
   }
 }

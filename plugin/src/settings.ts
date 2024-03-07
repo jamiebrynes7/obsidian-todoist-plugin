@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import { writable } from "svelte/store";
 import type TodoistPlugin from ".";
-import { getTokenPath } from "./token";
+import { VaultTokenAccessor } from "./token";
 import { isPositiveInteger, toInt } from "./utils";
 
 const defaultSettings: ISettings = {
@@ -50,11 +50,13 @@ export interface ISettings {
 }
 
 export class SettingsTab extends PluginSettingTab {
-  private plugin: TodoistPlugin;
+  private readonly plugin: TodoistPlugin;
+  private readonly tokenAccessor: VaultTokenAccessor;
 
   constructor(app: App, plugin: TodoistPlugin) {
     super(app, plugin);
     this.plugin = plugin;
+    this.tokenAccessor = new VaultTokenAccessor(this.app.vault);
   }
 
   display() {
@@ -109,13 +111,13 @@ export class SettingsTab extends PluginSettingTab {
       .setDesc(desc)
       .addTextArea(async (text) => {
         try {
-          text.setValue(await this.app.vault.adapter.read(getTokenPath(this.app.vault)));
+          text.setValue(await this.tokenAccessor.read());
         } catch (e) {
           /* Throw away read error if file does not exist. */
         }
 
         text.onChange(async (value) => {
-          await this.app.vault.adapter.write(getTokenPath(this.app.vault), value);
+          await this.tokenAccessor.write(value);
         });
       });
   }
