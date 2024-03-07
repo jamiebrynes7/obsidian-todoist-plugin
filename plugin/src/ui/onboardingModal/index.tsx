@@ -1,6 +1,8 @@
 import { App, Modal, Notice } from "obsidian";
 import React from "react";
 import { type Root, createRoot } from "react-dom/client";
+import { TodoistApiClient } from "../../api";
+import { ObsidianFetcher } from "../../api/fetcher";
 import { TokenInputForm } from "./TokenInputForm";
 import "./styles.scss";
 
@@ -54,7 +56,18 @@ const ModalRoot: React.FC<Props> = ({ onTokenSubmit }) => {
         </a>{" "}
         on finding your API token.
       </p>
-      <TokenInputForm onTokenSubmit={onTokenSubmit} />
+      <TokenInputForm onTokenSubmit={onTokenSubmit} testToken={testToken} />
     </div>
   );
+};
+
+const testToken = async (token: string): Promise<boolean> => {
+  const api = new TodoistApiClient(token, new ObsidianFetcher());
+
+  try {
+    await api.getProjects();
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
