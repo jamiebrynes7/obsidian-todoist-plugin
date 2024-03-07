@@ -57,5 +57,11 @@ export default defineConfig({
   test: {
     watch: false,
     exclude: [...configDefaults.exclude, ".direnv/**/*"],
+    globals: true,
+    environment: "jsdom",
+    alias: {
+      obsidian: resolve(__dirname, "src/mocks/obsidian.ts"),
+    },
+    setupFiles: ["./vitest-setup.ts"],
   },
 });
