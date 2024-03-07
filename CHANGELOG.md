@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- Rebuilt the onboarding modal that users are presented with upon installing the plugin. This now offers feedback to users based on the token they've provided.
+  - We also no longer use a native browser alert if the token isn't present. Instead, we prefer to open the modal each time Obsidian is opened if there is no valid token.
+
 ## [1.12.0] - 2024-02-09
 
 > Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
