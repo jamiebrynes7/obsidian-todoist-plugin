@@ -4,6 +4,7 @@
   "include": ["src/**/*"],
   "exclude": ["node_modules/*"],
   "compilerOptions": {
+    "jsx": "react",
     "esModuleInterop": true,
     "types": ["node", "svelte"]
   }
