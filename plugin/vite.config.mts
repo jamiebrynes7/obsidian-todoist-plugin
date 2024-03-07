@@ -1,8 +1,8 @@
-import { configDefaults, defineConfig } from 'vitest/config'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import path, { resolve } from 'path'
-import { loadEnv } from 'vite'
+import { configDefaults, defineConfig } from "vitest/config";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+import path, { resolve } from "path";
+import { loadEnv } from "vite";
 
 function getOutDir(): string | undefined {
   const env = loadEnv("prod", process.cwd());
@@ -26,14 +26,10 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "styles.css",
-          dest: "",
-        },
-        {
           src: "../manifest.json",
           dest: "",
-        }
-      ]
+        },
+      ],
     }),
   ],
   build: {
@@ -42,15 +38,24 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
       fileName: "main",
-      formats: ["cjs"]
+      formats: ["cjs"],
     },
     rollupOptions: {
-      external: ["obsidian"]
+      external: ["obsidian"],
+      output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === "style.css") {
+            return "styles.css";
+          }
+
+          return assetInfo.name as string;
+        },
+      },
     },
     outDir: getOutDir(),
   },
   test: {
     watch: false,
     exclude: [...configDefaults.exclude, ".direnv/**/*"],
-  }
-})
+  },
+});

@@ -1,5 +1,6 @@
 import { App, Notice, Plugin, requestUrl } from "obsidian";
 import type { PluginManifest } from "obsidian";
+import "../styles.css";
 import { TodoistApiClient } from "./api";
 import type { RequestParams, WebFetcher, WebResponse } from "./api/fetcher";
 import { TodoistAdapter } from "./data";
