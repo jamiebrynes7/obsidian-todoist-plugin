@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
+    "@rollup/plugin-replace": "^5.0.5",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
