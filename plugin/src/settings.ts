@@ -4,7 +4,7 @@ import type TodoistPlugin from ".";
 import { VaultTokenAccessor } from "./token";
 import { isPositiveInteger, toInt } from "./utils";
 
-const defaultSettings: ISettings = {
+export const defaultSettings: ISettings = {
   fadeToggle: true,
 
   autoRefreshToggle: false,

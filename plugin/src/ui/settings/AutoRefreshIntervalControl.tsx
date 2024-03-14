@@ -1,0 +1,36 @@
+import React, { useState, type ChangeEvent } from "react";
+import { Input, TextField } from "react-aria-components";
+import { toInt } from "../../utils";
+
+type Props = {
+  initialValue: number;
+  onChange: (val: number) => Promise<void>;
+};
+
+// TODO: Add more validation and reporting to user
+export const AutoRefreshIntervalControl: React.FC<Props> = ({ initialValue, onChange }) => {
+  const [value, setValue] = useState(`${initialValue}`);
+
+  const onInputChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    setValue(ev.target.value);
+  };
+
+  const onBlur = async () => {
+    if (value.trim().length === 0) {
+      return;
+    }
+
+    const num = toInt(value);
+    if (num < 0) {
+      return;
+    }
+
+    await onChange(num);
+  };
+
+  return (
+    <TextField aria-label="Auto-refresh interval">
+      <Input value={value} onChange={onInputChange} type="number" onBlur={onBlur} />
+    </TextField>
+  );
+};
