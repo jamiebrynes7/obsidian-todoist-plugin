@@ -1,6 +1,5 @@
 import React, { useState, type ChangeEvent } from "react";
 import { Input, TextField } from "react-aria-components";
-import { toInt } from "../../utils";
 
 type Props = {
   initialValue: number;
@@ -20,7 +19,7 @@ export const AutoRefreshIntervalControl: React.FC<Props> = ({ initialValue, onCh
       return;
     }
 
-    const num = toInt(value);
+    const num = Math.floor(Number(value));
     if (num < 0) {
       return;
     }
