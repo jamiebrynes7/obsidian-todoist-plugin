@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rebuilt the onboarding modal that users are presented with upon installing the plugin. This now offers feedback to users based on the token they've provided.
   - We also no longer use a native browser alert if the token isn't present. Instead, we prefer to open the modal each time Obsidian is opened if there is no valid token.
+- Rebuilt the settings page from scratch. It is now divided into sections to organize the settings.
+  - Now includes useful links to documentation and GitHub issues.
+  - API token validation is done in the settings page with an option to open the modal if the validation fails.
 
 ## [1.12.0] - 2024-02-09
 
