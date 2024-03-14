@@ -1,31 +1,35 @@
-import { App, Notice, Plugin, requestUrl } from "obsidian";
+import { App, Notice, Plugin } from "obsidian";
 import type { PluginManifest } from "obsidian";
 import "../styles.css";
 import { TodoistApiClient } from "./api";
-import {
-  ObsidianFetcher,
-  type RequestParams,
-  type WebFetcher,
-  type WebResponse,
-} from "./api/fetcher";
+import { ObsidianFetcher } from "./api/fetcher";
 import { TodoistAdapter } from "./data";
 import debug from "./log";
 import CreateTaskModal from "./modals/createTask/createTaskModal";
-import TodoistApiTokenModal from "./modals/enterToken/enterTokenModal";
 import { QueryInjector } from "./query/injector";
-import { SettingsTab, settings } from "./settings";
-import type { ISettings } from "./settings";
+import { settings } from "./settings";
+import { type ISettings, defaultSettings } from "./settings";
 import { VaultTokenAccessor } from "./token";
 import { OnboardingModal } from "./ui/onboardingModal";
+import { SettingsTab } from "./ui/settings";
+
+type Services = {
+  todoist: TodoistAdapter;
+  tokenAccessor: VaultTokenAccessor;
+};
 
 export default class TodoistPlugin extends Plugin {
-  public options: ISettings | null;
+  public options: ISettings;
 
-  private todoistAdapter: TodoistAdapter = new TodoistAdapter();
+  public readonly services: Services;
 
   constructor(app: App, pluginManifest: PluginManifest) {
     super(app, pluginManifest);
-    this.options = null;
+    this.options = { ...defaultSettings };
+    this.services = {
+      todoist: new TodoistAdapter(),
+      tokenAccessor: new VaultTokenAccessor(this.app.vault),
+    };
 
     settings.subscribe((value) => {
       debug({
@@ -38,7 +42,7 @@ export default class TodoistPlugin extends Plugin {
   }
 
   async onload() {
-    const queryInjector = new QueryInjector(this.todoistAdapter);
+    const queryInjector = new QueryInjector(this.services.todoist);
     this.registerMarkdownCodeBlockProcessor(
       "todoist",
       queryInjector.onNewBlock.bind(queryInjector),
@@ -50,7 +54,7 @@ export default class TodoistPlugin extends Plugin {
       name: "Sync with Todoist",
       callback: async () => {
         debug("Syncing with Todoist API");
-        this.todoistAdapter.sync();
+        this.services.todoist.sync();
       },
     });
 
@@ -63,7 +67,7 @@ export default class TodoistPlugin extends Plugin {
           return;
         }
 
-        new CreateTaskModal(this.app, this.todoistAdapter, this.options, false);
+        new CreateTaskModal(this.app, this.services.todoist, this.options, false);
       },
     });
 
@@ -76,7 +80,7 @@ export default class TodoistPlugin extends Plugin {
           return;
         }
 
-        new CreateTaskModal(this.app, this.todoistAdapter, this.options, true);
+        new CreateTaskModal(this.app, this.services.todoist, this.options, true);
       },
     });
 
@@ -85,19 +89,20 @@ export default class TodoistPlugin extends Plugin {
   }
 
   private async loadApiClient(): Promise<void> {
-    const accessor = new VaultTokenAccessor(this.app.vault);
+    const accessor = this.services.tokenAccessor;
 
     if (await accessor.exists()) {
       const token = await accessor.read();
-      await this.todoistAdapter.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+      await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       return;
     }
 
     new OnboardingModal(this.app, async (token) => {
       await accessor.write(token);
-      await this.todoistAdapter.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+      await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
     }).open();
   }
+
   async loadOptions(): Promise<void> {
     const options = await this.loadData();
 

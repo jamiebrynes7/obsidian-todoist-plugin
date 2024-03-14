@@ -1,0 +1,25 @@
+.mod-cta .setting-button-icon {
+  margin-right: 0.5em;
+}
+
+.setting-item-control {
+  .react-aria-TextField {
+    display: flex;
+    flex-direction: column;
+
+    & > * + * {
+      margin-top: 0.5em;
+    }
+
+    input {
+      &[data-invalid] {
+        border: 1px solid var(--background-modifier-error);
+      }
+    }
+
+    .react-aria-FieldError {
+      color: var(--text-error);
+      font-size: var(--font-small);
+    }
+  }
+}

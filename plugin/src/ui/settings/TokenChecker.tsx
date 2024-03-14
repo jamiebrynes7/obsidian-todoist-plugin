@@ -1,0 +1,55 @@
+import React, { useEffect, useState } from "react";
+import { TodoistApiClient } from "../../api";
+import { ObsidianFetcher } from "../../api/fetcher";
+import { TokenValidation } from "../../token";
+import { TokenValidationIcon } from "../components/token-validation-icon";
+import { usePluginContext } from "../context/plugin";
+import { OnboardingModal } from "../onboardingModal";
+import { Setting } from "./SettingItem";
+
+type Props = {
+  tester: (token: string) => Promise<boolean>;
+};
+
+export const TokenChecker: React.FC<Props> = ({ tester }) => {
+  const plugin = usePluginContext();
+  const { tokenAccessor, todoist } = plugin.services;
+
+  const [tokenState, setTokenState] = useState<TokenValidation.Result>({ kind: "in-progress" });
+  const [tokenValidationCount, setTokenValidationCount] = useState(0);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we are using tokenValidationCount to force a refresh when the modal is closed.
+  useEffect(() => {
+    setTokenState({ kind: "in-progress" });
+    (async () => {
+      if (!(await tokenAccessor.exists())) {
+        setTokenState({ kind: "error", message: "API token not found" });
+        return;
+      }
+
+      const token = await tokenAccessor.read();
+      setTokenState(await TokenValidation.validate(token, tester));
+    })();
+  }, [plugin, tester, tokenValidationCount]);
+
+  const openModal = () => {
+    new OnboardingModal(plugin.app, async (token) => {
+      setTokenValidationCount((old) => old + 1);
+
+      await tokenAccessor.write(token);
+      await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+    }).open();
+  };
+
+  return (
+    <>
+      <TokenValidationIcon status={tokenState} />
+      <Setting.ButtonControl
+        label="Setup"
+        icon="settings"
+        onClick={openModal}
+        disabled={tokenState.kind !== "error"}
+      />
+    </>
+  );
+};

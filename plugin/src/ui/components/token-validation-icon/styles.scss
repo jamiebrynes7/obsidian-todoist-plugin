@@ -1,0 +1,24 @@
+.obsidian-icon.token-validation-error {
+  color: var(--text-error);
+}
+
+.obsidian-icon.token-validation-success {
+  color: var(--text-success);
+}
+
+.obsidian-icon.token-validation-in-progress {
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  color: var(--text-warning);
+  animation-name: spin;
+  animation-duration: 500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}

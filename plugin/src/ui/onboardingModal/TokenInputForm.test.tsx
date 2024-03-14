@@ -8,7 +8,7 @@ describe("TokenInputForm", () => {
     render(
       <TokenInputForm
         onTokenSubmit={() => {}}
-        testToken={async () => {
+        tester={async () => {
           return true;
         }}
       />,
@@ -22,7 +22,7 @@ describe("TokenInputForm", () => {
     render(
       <TokenInputForm
         onTokenSubmit={() => {}}
-        testToken={async () => {
+        tester={async () => {
           return true;
         }}
       />,
@@ -32,11 +32,11 @@ describe("TokenInputForm", () => {
     expect(textBox).not.toHaveAttribute("data-invalid");
   });
 
-  it("should show an error if input is empty after focus and unfocus", () => {
+  it("should show an error if input is empty after focus and unfocus", async () => {
     render(
       <TokenInputForm
         onTokenSubmit={() => {}}
-        testToken={async () => {
+        tester={async () => {
           return true;
         }}
       />,
@@ -46,12 +46,14 @@ describe("TokenInputForm", () => {
     fireEvent.focus(textBox);
     fireEvent.blur(textBox);
 
-    expect(textBox).toHaveAttribute("data-invalid", "true");
+    await waitFor(() => {
+      expect(textBox).toHaveAttribute("data-invalid", "true");
+    });
   });
 
   it("should shown an error if API test rejects token", async () => {
     const [getArgs, testToken] = makeFakeTokenTest(false);
-    render(<TokenInputForm onTokenSubmit={() => {}} testToken={testToken} />);
+    render(<TokenInputForm onTokenSubmit={() => {}} tester={testToken} />);
 
     const textBox = screen.getByRole("textbox");
     fireEvent.focus(textBox);
@@ -66,7 +68,7 @@ describe("TokenInputForm", () => {
 
   it("should enable button if API test accepts token", async () => {
     const [getArgs, testToken] = makeFakeTokenTest(true);
-    render(<TokenInputForm onTokenSubmit={() => {}} testToken={testToken} />);
+    render(<TokenInputForm onTokenSubmit={() => {}} tester={testToken} />);
 
     const textBox = screen.getByRole("textbox");
     fireEvent.focus(textBox);
@@ -88,7 +90,7 @@ describe("TokenInputForm", () => {
         onTokenSubmit={(token: string) => {
           submittedToken = token;
         }}
-        testToken={testToken}
+        tester={testToken}
       />,
     );
 
