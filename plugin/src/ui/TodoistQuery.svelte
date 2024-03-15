@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { settings } from "../settings";
-  import type { Query } from "../query/query";
+  import { GroupVariant, type Query } from "../query/query";
   import CreateTaskModal from "../modals/createTask/createTaskModal";
   import NoTaskDisplay from "./NoTaskDisplay.svelte";
   import type { QueryErrorKind, TodoistAdapter } from "../data";
@@ -146,7 +146,7 @@
     <QueryErrorDisplay kind={queryError} />
   {:else if filteredTasks.length === 0}
     <NoTaskDisplay />
-  {:else if query.group}
+  {:else if query.groupBy !== GroupVariant.None}
     <GroupedTasks tasks={filteredTasks} />
   {:else}
     <TaskListRoot tasks={filteredTasks} />

@@ -1,5 +1,5 @@
 import YAML from "yaml";
-import { type Query, ShowMetadataVariant, SortingVariant } from "./query";
+import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "./query";
 
 export class ParsingError extends Error {
   inner: unknown | undefined;
@@ -51,16 +51,22 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
 }
 
 function parseObject(query: Record<string, unknown>): Query {
+  // Keep old queries working for a period of time.
+  const hasOldGroup = booleanField(query, "group") ?? false;
+  const groupBy = hasOldGroup
+    ? GroupVariant.Project
+    : optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None;
+
   return {
     name: stringField(query, "name") ?? "",
     filter: asRequired("filter", stringField(query, "filter")),
-    group: booleanField(query, "group") ?? false,
     autorefresh: numberField(query, "autorefresh", { isPositive: true }) ?? 0,
     sorting: optionsArrayField(query, "sorting", sortingLookup) ?? [SortingVariant.Order],
     show: new Set(
       optionsArrayField(query, "show", showMetadataVariantLookup) ??
         Object.values(showMetadataVariantLookup),
     ),
+    groupBy,
   };
 }
 
@@ -163,6 +169,30 @@ function optionsArrayField<T>(
   return parsedElems;
 }
 
+function optionField<T>(
+  obj: Record<string, unknown>,
+  key: string,
+  lookup: Record<string, T>,
+): T | undefined {
+  const value = obj[key];
+
+  if (value === undefined) {
+    return undefined;
+  }
+
+  const opts = Object.keys(lookup).join(", ");
+  if (typeof value !== "string") {
+    throw new ParsingError(`Field ${key} must be one of: ${opts}`);
+  }
+
+  const lookupValue = lookup[value];
+  if (lookupValue === undefined) {
+    throw new ParsingError(`Field ${key} must be one of: ${opts}`);
+  }
+
+  return lookupValue;
+}
+
 const sortingLookup: Record<string, SortingVariant> = {
   priority: SortingVariant.Priority,
   priorityAscending: SortingVariant.Priority,
@@ -182,4 +212,13 @@ const showMetadataVariantLookup: Record<string, ShowMetadataVariant> = {
   description: ShowMetadataVariant.Description,
   labels: ShowMetadataVariant.Labels,
   project: ShowMetadataVariant.Project,
+};
+
+const groupByVariantLookup: Record<string, GroupVariant> = {
+  project: GroupVariant.Project,
+  section: GroupVariant.Section,
+  priority: GroupVariant.Priority,
+  due: GroupVariant.Date,
+  date: GroupVariant.Date,
+  labels: GroupVariant.Label,
 };

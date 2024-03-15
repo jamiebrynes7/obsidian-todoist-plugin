@@ -15,11 +15,20 @@ export enum ShowMetadataVariant {
   Description = 3,
 }
 
+export enum GroupVariant {
+  None = 0,
+  Project = 1,
+  Section = 2,
+  Priority = 3,
+  Date = 4,
+  Label = 5,
+}
+
 export type Query = {
   name: string;
   filter: string;
   autorefresh: number;
   sorting: SortingVariant[];
   show: Set<ShowMetadataVariant>;
-  group: boolean;
+  groupBy: GroupVariant;
 };

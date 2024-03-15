@@ -4,7 +4,7 @@ import type {
   MarkdownSectionInformation,
 } from "obsidian";
 import { describe, expect, it } from "vitest";
-import type { Query } from "./query";
+import { GroupVariant, type Query } from "./query";
 import { applyReplacements } from "./replacements";
 
 class FakeContext implements MarkdownPostProcessorContext {
@@ -58,7 +58,7 @@ describe("applyReplacements", () => {
           name: "",
           filter: tc.filter,
           autorefresh: 0,
-          group: false,
+          groupBy: GroupVariant.None,
           sorting: [],
           show: new Set(),
         };
