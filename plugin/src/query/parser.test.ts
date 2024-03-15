@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ParsingError, parseQuery } from "./parser";
-import { type Query, ShowMetadataVariant, SortingVariant } from "./query";
+import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "./query";
 
 describe("parseQuery - rejections", () => {
   type Testcase = {
@@ -78,6 +78,20 @@ describe("parseQuery - rejections", () => {
       },
     },
     {
+      description: "groupBy must be a string",
+      input: {
+        filter: "foobar",
+        groupBy: 1,
+      },
+    },
+    {
+      description: "groupBy must be a valid option",
+      input: {
+        filter: "foobar",
+        groupBy: "something else",
+      },
+    },
+    {
       description: "show must be an array of strings",
       input: {
         name: "foo",
@@ -109,7 +123,6 @@ function makeQuery(opts?: Partial<Query>): Query {
     name: opts?.name ?? "",
     filter: opts?.filter ?? "",
     autorefresh: opts?.autorefresh ?? 0,
-    group: opts?.group ?? false,
     sorting: opts?.sorting ?? [SortingVariant.Order],
     show:
       opts?.show ??
@@ -119,6 +132,7 @@ function makeQuery(opts?: Partial<Query>): Query {
         ShowMetadataVariant.Project,
         ShowMetadataVariant.Labels,
       ]),
+    groupBy: opts?.groupBy ?? GroupVariant.None,
   };
 }
 
@@ -162,14 +176,25 @@ describe("parseQuery", () => {
       }),
     },
     {
-      description: "with group",
+      description: "with old group -> coerced to project grouping",
       input: {
         filter: "bar",
         group: true,
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        group: true,
+        groupBy: GroupVariant.Project,
+      }),
+    },
+    {
+      description: "with group",
+      input: {
+        filter: "bar",
+        groupBy: "section",
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        groupBy: GroupVariant.Section,
       }),
     },
     {
