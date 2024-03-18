@@ -1,15 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type { Project } from "../api/domain/project";
-import { SortingVariant } from "../query/query";
-import type { Task } from "./task";
-import {
-  type GroupedTasks,
-  type TaskTree,
-  UnknownProject,
-  buildTaskTree,
-  groupByProject,
-  sortTasks,
-} from "./transformations";
+import { SortingVariant } from "../../query/query";
+import type { Task } from "../task";
+import { sortTasks } from "./sorting";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
@@ -28,77 +20,6 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
     due: opts?.due,
   };
 }
-
-function makeProject(name: string, order: number): Project {
-  return {
-    id: name,
-    parentId: null,
-    name,
-    order,
-  };
-}
-
-describe("groupByProject", () => {
-  const projectOne = makeProject("Project One", 1);
-  const projectTwo = makeProject("Project Two", 2);
-
-  type Testcase = {
-    description: string;
-    input: Task[];
-    expected: GroupedTasks[];
-  };
-
-  const testcases: Testcase[] = [
-    {
-      description: "should return empty array if no tasks",
-      input: [],
-      expected: [],
-    },
-    {
-      description: "should collect tasks into distinct projects",
-      input: [
-        makeTask("a", { project: projectOne }),
-        makeTask("b", { project: projectOne }),
-        makeTask("c", { project: projectTwo }),
-        makeTask("d", { project: projectTwo }),
-      ],
-      expected: [
-        {
-          project: projectOne,
-          tasks: [makeTask("a", { project: projectOne }), makeTask("b", { project: projectOne })],
-        },
-        {
-          project: projectTwo,
-          tasks: [makeTask("c", { project: projectTwo }), makeTask("d", { project: projectTwo })],
-        },
-      ],
-    },
-    {
-      description: "should use unknown project if project is undefined",
-      input: [makeTask("a"), makeTask("b"), makeTask("c", { project: projectOne })],
-      expected: [
-        {
-          project: projectOne,
-          tasks: [makeTask("c", { project: projectOne })],
-        },
-        {
-          project: UnknownProject,
-          tasks: [makeTask("a"), makeTask("b")],
-        },
-      ],
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const grouped = groupByProject(tc.input);
-      // Sort to make comparisons easier to reason about
-      grouped.sort((a, b) => a.project.order - b.project.order);
-
-      expect(grouped).toStrictEqual(tc.expected);
-    });
-  }
-});
 
 describe("sortTasks", () => {
   type Testcase = {
@@ -331,86 +252,6 @@ describe("sortTasks", () => {
       sortTasks(cloned, tc.sortingOpts);
 
       expect(cloned).toStrictEqual(tc.expectedOutput);
-    });
-  }
-});
-
-describe("buildTaskTree", () => {
-  type Testcase = {
-    description: string;
-    input: Task[];
-    output: TaskTree[];
-  };
-
-  const testcases: Testcase[] = [
-    {
-      description: "tasks without children should have no children",
-      input: [makeTask("a"), makeTask("b"), makeTask("c")],
-      output: [
-        { children: [], ...makeTask("a") },
-        { children: [], ...makeTask("b") },
-        { children: [], ...makeTask("c") },
-      ],
-    },
-    {
-      description: "tasks with children should be parented",
-      input: [makeTask("a"), makeTask("b", { parentId: "a" }), makeTask("c")],
-      output: [
-        {
-          ...makeTask("a"),
-          children: [
-            {
-              ...makeTask("b", { parentId: "a" }),
-              children: [],
-            },
-          ],
-        },
-        {
-          ...makeTask("c"),
-          children: [],
-        },
-      ],
-    },
-    {
-      description: "tasks with unknown parent ID are part of root",
-      input: [makeTask("b"), makeTask("a", { parentId: "c" })],
-      output: [
-        {
-          ...makeTask("b"),
-          children: [],
-        },
-        {
-          ...makeTask("a", { parentId: "c" }),
-          children: [],
-        },
-      ],
-    },
-    {
-      description: "tasks will be nested deeply",
-      input: [makeTask("a", { parentId: "c" }), makeTask("b", { parentId: "a" }), makeTask("c")],
-      output: [
-        {
-          ...makeTask("c"),
-          children: [
-            {
-              ...makeTask("a", { parentId: "c" }),
-              children: [
-                {
-                  ...makeTask("b", { parentId: "a" }),
-                  children: [],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const trees = buildTaskTree(tc.input);
-      expect(trees).toStrictEqual(tc.output);
     });
   }
 });

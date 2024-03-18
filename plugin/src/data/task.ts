@@ -1,4 +1,3 @@
-import type moment from "moment";
 import type { DueDate } from "../api/domain/dueDate";
 import type { Project } from "../api/domain/project";
 import type { Section } from "../api/domain/section";

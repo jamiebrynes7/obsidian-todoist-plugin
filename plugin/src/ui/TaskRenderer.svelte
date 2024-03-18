@@ -5,13 +5,13 @@
   import { settings } from "../settings";
   import DescriptionRenderer from "./DescriptionRenderer.svelte";
   import TaskList from "./TaskList.svelte";
-  import type { TaskTree } from "../data/transformations";
-  import { getDueDateInfo, type DueDateInfo } from "../api/domain/dueDate";
   import type { CalendarSpec } from "moment";
   import { getQuery, getTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
   import { ShowMetadataVariant } from "../query/query";
-    import type { Priority } from "../api/domain/task";
+  import type { Priority } from "../api/domain/task";
+  import { DueDateInfo } from "../data/dueDateInfo";
+  import type { TaskTree } from "../data/transformations/relationships";
 
   const dateOnlyCalendarSpec: CalendarSpec = {
     sameDay: "[Today]",
@@ -28,7 +28,7 @@
   const taskActions = getTaskActions();
 
   $: isCompletable = !taskTree.content.startsWith("*");
-  $: dateInfo = getDueDateInfo(taskTree.due);
+  $: dateInfo = new DueDateInfo(taskTree.due);
 
   $: dateLabel = getDueDateLabel(dateInfo);
   $: projectLabel = getProjectLabel(taskTree);
@@ -54,15 +54,17 @@
   $: dateTimeClass = getDateTimeClass(dateInfo);
 
   function getDueDateLabel(info: DueDateInfo): string {
-    if (info.m === undefined) {
+    if (!info.hasDueDate()) {
       return "";
     }
 
-    if (info.hasTime) {
-      return info.m.calendar();
+    const m = info.moment();
+
+    if (info.hasTime()) {
+      return m.calendar();
     }
 
-    return info.m.calendar(dateOnlyCalendarSpec);
+    return m.calendar(dateOnlyCalendarSpec);
   }
 
   function sanitizeContent(content: string): string {
@@ -97,15 +99,15 @@
   function getDateTimeClass(info: DueDateInfo): string {
     const parts = [];
 
-    if (info.hasTime) {
+    if (info.hasTime()) {
       parts.push("has-time");
     } else {
       parts.push("no-time");
     }
 
-    if (info.isOverdue) {
+    if (info.isOverdue()) {
       parts.push("task-overdue");
-    } else if (info.isToday) {
+    } else if (info.isToday()) {
       parts.push("task-today");
     }
 
