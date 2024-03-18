@@ -33,13 +33,21 @@ When enabled, tasks will fade-in or fade-out when tasks are added or removed res
 
 ### Render descriptions
 
-**Please note: This is deprecated in favor of query-based control of rendering. This will be removed in a future release.**
+:::warning
+
+This is deprecated in favor of query-based control of rendering. This will be removed in a future release.
+
+:::
 
 When enabled, queries will render the task description under the task content.
 
 ### Render dates
 
-**Please note: This is deprecated in favor of query-based control of rendering. This will be removed in a future release.**
+:::warning
+
+This is deprecated in favor of query-based control of rendering. This will be removed in a future release.
+
+:::
 
 When enabled, queries will render the task due date under the task content.
 
@@ -49,7 +57,11 @@ When enabled, queries will render an icon accompanying the due date.
 
 ### Render project & section
 
-**Please note: This is deprecated in favor of query-based control of rendering. This will be removed in a future release.**
+:::warning
+
+This is deprecated in favor of query-based control of rendering. This will be removed in a future release.
+
+:::
 
 When enabled, queries will render the project & section under the task content.
 
@@ -59,7 +71,11 @@ When enabled, queries will render an icon accompanying the project & section.
 
 ### Render labels
 
-**Please note: This is deprecated in favor of query-based control of rendering. This will be removed in a future release.**
+:::warning
+
+This is deprecated in favor of query-based control of rendering. This will be removed in a future release.
+
+:::
 
 When enabled, queries will render the labels under the task content.
 
