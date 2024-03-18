@@ -55,18 +55,6 @@ function groupByProject(tasks: Task[]): GroupedTasks[] {
   groups.sort((a, b) => {
     const aProject = a[0];
     const bProject = b[0];
-    if (aProject === undefined && bProject === undefined) {
-      return 0;
-    }
-
-    if (aProject === undefined) {
-      return -1;
-    }
-
-    if (bProject === undefined) {
-      return 1;
-    }
-
     return aProject.order - bProject.order;
   });
 
@@ -80,12 +68,12 @@ function groupByProject(tasks: Task[]): GroupedTasks[] {
 
 function groupBySection(tasks: Task[]): GroupedTasks[] {
   type SectionPartitionKey = {
-    project: Project | undefined;
+    project: Project;
     section: Section | undefined;
   };
 
   const makeHeader = (key: SectionPartitionKey) => {
-    const project = key.project?.name ?? "Unknown Project";
+    const project = key.project.name;
     const section = key.section?.name;
 
     if (section === undefined) {
@@ -105,18 +93,6 @@ function groupBySection(tasks: Task[]): GroupedTasks[] {
     const bKey: SectionPartitionKey = JSON.parse(b[0]);
 
     // First compare by project
-    if (aKey.project === undefined && bKey.project === undefined) {
-      return 0;
-    }
-
-    if (aKey.project === undefined) {
-      return -1;
-    }
-
-    if (bKey.project === undefined) {
-      return 1;
-    }
-
     const projectOrderDiff = aKey.project.order - bKey.project.order;
     if (projectOrderDiff !== 0) {
       return projectOrderDiff;
@@ -270,23 +246,23 @@ function partitionByMany<T>(
 ): Map<T | undefined, Task[]> {
   const mapped = new Map<T | undefined, Task[]>();
 
+  const insertTask = (key: T | undefined, task: Task) => {
+    if (!mapped.has(key)) {
+      mapped.set(key, []);
+    }
+
+    mapped.get(key)?.push(task);
+  };
+
   for (const task of tasks) {
     const keys = selector(task);
 
     if (keys.length === 0) {
-      if (!mapped.has(undefined)) {
-        mapped.set(undefined, []);
-      }
-
-      mapped.get(undefined)?.push(task);
+      insertTask(undefined, task);
     }
 
     for (const key of keys) {
-      if (!mapped.has(key)) {
-        mapped.set(key, []);
-      }
-
-      mapped.get(key)?.push(task);
+      insertTask(key, task);
     }
   }
 

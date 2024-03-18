@@ -10,7 +10,7 @@ export type Task = {
   content: string;
   description: string;
 
-  project?: Project;
+  project: Project;
   section?: Section;
   parentId?: TaskId;
 

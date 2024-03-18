@@ -30,7 +30,7 @@ export function showTaskContext(taskCtx: TaskContext, position: Point) {
         .setIcon("popup-open")
         .onClick(() =>
           openExternal(
-            `https://todoist.com/app/project/${taskCtx.task.project?.id}/task/${taskCtx.task.id}`,
+            `https://todoist.com/app/project/${taskCtx.task.project.id}/task/${taskCtx.task.id}`,
           ),
         ),
     )
