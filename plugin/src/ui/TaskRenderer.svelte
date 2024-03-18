@@ -115,7 +115,7 @@
   }
 
   function getProjectLabel(task: TaskTree): string {
-    const projectName = task.project?.name ?? "Unknown Project";
+    const projectName = task.project.name;
 
     if (task.section === undefined) {
       return projectName;
@@ -123,7 +123,7 @@
 
     const sectionName = task.section.name;
 
-    return `${projectName} | ${sectionName}`;
+    return `${projectName} / ${sectionName}`;
   }
 
   function onClickTaskContainer(evt: MouseEvent) {

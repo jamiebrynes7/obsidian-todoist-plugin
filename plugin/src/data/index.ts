@@ -120,7 +120,9 @@ export class TodoistAdapter {
 
   private hydrate(apiTask: ApiTask): Task {
     const project = this.projects.byId(apiTask.projectId);
-    const section = apiTask.sectionId ? this.sections.byId(apiTask.sectionId) : undefined;
+    const section = apiTask.sectionId
+      ? this.sections.byId(apiTask.sectionId) ?? makeUnknownSection(apiTask.sectionId)
+      : undefined;
 
     return {
       id: apiTask.id,
@@ -129,7 +131,7 @@ export class TodoistAdapter {
       content: apiTask.content,
       description: apiTask.description,
 
-      project: project,
+      project: project ?? makeUnknownProject(apiTask.projectId),
       section: section,
       parentId: apiTask.parentId ?? undefined,
 
@@ -141,3 +143,21 @@ export class TodoistAdapter {
     };
   }
 }
+
+const makeUnknownProject = (id: string): Project => {
+  return {
+    id,
+    parentId: null,
+    name: "Unknown Project",
+    order: Number.MAX_SAFE_INTEGER,
+  };
+};
+
+const makeUnknownSection = (id: string): Section => {
+  return {
+    id,
+    projectId: "unknown-project",
+    name: "Unknown Section",
+    order: Number.MAX_SAFE_INTEGER,
+  };
+};

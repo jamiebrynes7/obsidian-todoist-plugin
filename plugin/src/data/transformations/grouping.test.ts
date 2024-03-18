@@ -23,7 +23,7 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
     priority: opts?.priority ?? 1,
     order: opts?.order ?? 0,
 
-    project: opts?.project,
+    project: opts?.project ?? makeProject("foobar"),
     section: opts?.section,
 
     due: opts?.due,
@@ -143,31 +143,6 @@ describe("group by project", () => {
         },
       ],
     },
-    {
-      description: "unknown project items should be grouped and placed at the start",
-      input: [
-        makeTask("a", { project: projectOne }),
-        makeTask("b", { project: projectTwo }),
-        makeTask("c", { project: projectOne }),
-        makeTask("d", { project: projectTwo }),
-        makeTask("e"),
-        makeTask("f"),
-      ],
-      expected: [
-        {
-          header: "Unknown Project",
-          tasks: [makeTask("e"), makeTask("f")],
-        },
-        {
-          header: projectOne.name,
-          tasks: [makeTask("a", { project: projectOne }), makeTask("c", { project: projectOne })],
-        },
-        {
-          header: projectTwo.name,
-          tasks: [makeTask("b", { project: projectTwo }), makeTask("d", { project: projectTwo })],
-        },
-      ],
-    },
   ];
 
   for (const tc of testcases) {
@@ -215,28 +190,6 @@ describe("group by section", () => {
         {
           header: "Project Two / Section Three",
           tasks: [makeTask("e", { project: projectTwo, section: sectionThree })],
-        },
-      ],
-    },
-    {
-      description: "unknown project items should be grouped together and placed first",
-      input: [
-        makeTask("a", { project: projectOne, section: sectionOne }),
-        makeTask("b"),
-        makeTask("c", { section: sectionThree }),
-      ],
-      expected: [
-        {
-          header: "Unknown Project",
-          tasks: [makeTask("b")],
-        },
-        {
-          header: "Unknown Project / Section Three",
-          tasks: [makeTask("c", { section: sectionThree })],
-        },
-        {
-          header: "Project One / Section One",
-          tasks: [makeTask("a", { project: projectOne, section: sectionOne })],
         },
       ],
     },
