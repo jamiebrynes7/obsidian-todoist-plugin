@@ -147,7 +147,7 @@
   {:else if filteredTasks.length === 0}
     <NoTaskDisplay />
   {:else if query.groupBy !== GroupVariant.None}
-    <GroupedTasks tasks={filteredTasks} />
+    <GroupedTasks tasks={filteredTasks} variant={query.groupBy} />
   {:else}
     <TaskListRoot tasks={filteredTasks} />
   {/if}

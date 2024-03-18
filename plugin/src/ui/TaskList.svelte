@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TaskTree } from "../data/transformations";
+  import type { TaskTree } from "../data/transformations/relationships";
   import TaskRenderer from "./TaskRenderer.svelte";
 
   export let taskTrees: TaskTree[];

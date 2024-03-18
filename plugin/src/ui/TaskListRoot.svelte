@@ -2,9 +2,9 @@
   import type { Task } from "../data/task";
   import {
     buildTaskTree,
-    sortTasks,
     type TaskTree,
-  } from "../data/transformations";
+  } from "../data/transformations/relationships";
+  import { sortTasks } from "../data/transformations/sorting";
   import TaskList from "./TaskList.svelte";
   import { getQuery } from "./contexts";
 

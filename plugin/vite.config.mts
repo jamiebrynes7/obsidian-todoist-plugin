@@ -3,7 +3,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import path, { resolve } from "path";
 import { loadEnv } from "vite";
-import replace from '@rollup/plugin-replace';
+import replace from "@rollup/plugin-replace";
 
 function getOutDir(): string | undefined {
   const env = loadEnv("prod", process.cwd());
@@ -34,7 +34,7 @@ export default defineConfig({
     }),
     replace({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
-    })
+    }),
   ],
   build: {
     // We aren't building a website, so we build in library mode

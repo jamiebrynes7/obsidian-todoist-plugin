@@ -1,40 +1,7 @@
 import moment from "moment";
-import { getDueDateInfo } from "../api/domain/dueDate";
-import type { Project } from "../api/domain/project";
-import type { TaskId } from "../api/domain/task";
-import { SortingVariant } from "../query/query";
-import type { Task } from "./task";
-
-export const UnknownProject: Project = {
-  id: "unknown-project-fake",
-  parentId: null,
-  name: "Unknown Project",
-  order: Number.MAX_SAFE_INTEGER,
-};
-
-export type GroupedTasks = {
-  project: Project;
-  tasks: Task[];
-};
-
-export function groupByProject(tasks: Task[]): GroupedTasks[] {
-  const projects = new Map<Project, Task[]>();
-
-  for (const task of tasks) {
-    const project = task.project ?? UnknownProject;
-
-    if (!projects.has(project)) {
-      projects.set(project, []);
-    }
-
-    const tasks = projects.get(project);
-    tasks?.push(task);
-  }
-
-  return Array.from(projects.entries()).map(([project, tasks]) => {
-    return { project: project, tasks: tasks };
-  });
-}
+import { SortingVariant } from "../../query/query";
+import { DueDateInfo } from "../dueDateInfo";
+import type { Task } from "../task";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
   tasks.sort((first, second) => {
@@ -81,23 +48,23 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
   // 1. Any items without a due date are always after those with.
   // 2. Any items on the same day, but without time are always sorted after those with time.
 
-  const selfInfo = getDueDateInfo(self.due);
-  const otherInfo = getDueDateInfo(other.due);
+  const selfInfo = new DueDateInfo(self.due);
+  const otherInfo = new DueDateInfo(other.due);
 
-  if (selfInfo.hasDate && !otherInfo.hasDate) {
+  if (selfInfo.hasDueDate() && !otherInfo.hasDueDate()) {
     return -1;
   }
 
-  if (!selfInfo.hasDate && otherInfo.hasDate) {
+  if (!selfInfo.hasDueDate() && otherInfo.hasDueDate()) {
     return 1;
   }
 
-  if (!selfInfo.hasDate && !otherInfo.hasDate) {
+  if (!selfInfo.hasDueDate() && !otherInfo.hasDueDate()) {
     return 0;
   }
 
-  const selfDate = selfInfo.m;
-  const otherDate = otherInfo.m;
+  const selfDate = selfInfo.moment();
+  const otherDate = otherInfo.moment();
 
   if (selfDate === undefined || otherDate === undefined) {
     throw Error("Found unexpected missing moment date");
@@ -109,15 +76,15 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
     return selfDate.isBefore(otherDate, "day") ? -1 : 1;
   }
 
-  if (selfInfo.hasTime && !otherInfo.hasTime) {
+  if (selfInfo.hasTime() && !otherInfo.hasTime()) {
     return -1;
   }
 
-  if (!selfInfo.hasTime && otherInfo.hasTime) {
+  if (!selfInfo.hasTime() && otherInfo.hasTime()) {
     return 1;
   }
 
-  if (!selfInfo.hasTime && !otherInfo.hasTime) {
+  if (!selfInfo.hasTime() && !otherInfo.hasTime()) {
     return 0;
   }
 
@@ -133,40 +100,4 @@ function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
   }
 
   return selfDate.isBefore(otherDate) ? -1 : 1;
-}
-
-export type TaskTree = Task & { children: TaskTree[] };
-
-// Builds a task tree, preserving the sorting order.
-export function buildTaskTree(tasks: Task[]): TaskTree[] {
-  const mapping = new Map<TaskId, TaskTree>();
-  const roots: TaskId[] = [];
-
-  for (const task of tasks) {
-    mapping.set(task.id, { ...task, children: [] });
-  }
-
-  for (const task of tasks) {
-    if (task.parentId === undefined || !mapping.has(task.parentId)) {
-      roots.push(task.id);
-      continue;
-    }
-
-    const parent = mapping.get(task.parentId);
-    if (parent !== undefined) {
-      const child = mapping.get(task.id);
-      if (child === undefined) {
-        throw Error("Expected to find task in map");
-      }
-      parent.children.push(child);
-    }
-  }
-
-  return roots.map((id) => {
-    const tree = mapping.get(id);
-    if (tree === undefined) {
-      throw Error("Expected to find task in map");
-    }
-    return tree;
-  });
 }
