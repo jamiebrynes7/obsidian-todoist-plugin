@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rebuilt the settings page from scratch. It is now divided into sections to organize the settings.
   - Now includes useful links to documentation and GitHub issues.
   - API token validation is done in the settings page with an option to open the modal if the validation fails.
+- You can now group by different task properties like: priority, due date, and others. Please see the [documentation](https://jamiebrynes7.github.io/obsidian-todoist-plugin/docs/query-blocks#groupBy) for more details.
 
 ## [1.12.0] - 2024-02-09
 
