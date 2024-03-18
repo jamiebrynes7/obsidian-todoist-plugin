@@ -78,9 +78,34 @@ sorting:
 ```
 ````
 
+### `groupBy`
+
+The `groupBy` property controls how tasks are grouped when they are rendered. If omitted, there will be no grouping. The possible values are:
+
+- `project`: group by project, using the project order as in Todoist
+- `section`: group by project and section, using the project and section order as in Todoist
+- `due` or `date`: group by due date, all overdue tasks are grouped and shown together
+- `labels`: group by the task labels, all unlabelled tasks are grouped together
+- `priority` group by task priority, priorities are shown in high-low order
+
+For example:
+
+````
+```todoist
+filter: "today | overdue"
+groupBy: project
+```
+````
+
 ### `group`
 
-The `group` property controls whether tasks are grouped into projects when rendered. This is a simple true or false option, further improvements to the grouping capabilities are planned.
+:::warning
+
+This option is deprecated and will be removed in a future release. Please use `groupBy` instead.
+
+:::
+
+The `group` property controls whether tasks are grouped into projects when rendered.
 
 ````
 ```todoist
