@@ -1,47 +1,28 @@
-import { App, Modal, Notice } from "obsidian";
+import { Notice } from "obsidian";
 import React from "react";
-import { type Root, createRoot } from "react-dom/client";
+import type { WithModalProps } from "../../services/modals";
 import { TokenValidation } from "../../token";
 import { TokenInputForm } from "./TokenInputForm";
 import "./styles.scss";
 
 type OnTokenSubmitted = (token: string) => Promise<void>;
 
-export class OnboardingModal extends Modal {
-  private readonly onTokenSubmitted: OnTokenSubmitted;
-  private readonly reactRoot: Root;
-
-  constructor(app: App, onTokenSubmitted: OnTokenSubmitted) {
-    super(app);
-    this.onTokenSubmitted = onTokenSubmitted;
-    this.titleEl.textContent = "Sync with Todoist Setup";
-
-    const { contentEl } = this;
-    contentEl.empty();
-    this.reactRoot = createRoot(contentEl);
-
-    const callback = (token: string) => {
-      this.close();
-      this.onTokenSubmitted(token).catch((e) => {
-        console.error("Failed to save API token", e);
-        new Notice("Failed to save API token");
-      });
-    };
-
-    this.reactRoot.render(<ModalRoot onTokenSubmit={callback} />);
-  }
-
-  onClose(): void {
-    super.onClose();
-    this.reactRoot.unmount();
-  }
-}
-
-type Props = {
-  onTokenSubmit: (token: string) => void;
+type OnboardingProps = {
+  onTokenSubmit: OnTokenSubmitted;
 };
 
-const ModalRoot: React.FC<Props> = ({ onTokenSubmit }) => {
+export const OnboardingModal: React.FC<WithModalProps<OnboardingProps>> = ({
+  close,
+  onTokenSubmit,
+}) => {
+  const callback = (token: string) => {
+    close();
+    onTokenSubmit(token).catch((e) => {
+      console.error("Failed to save API token", e);
+      new Notice("Failed to save API token");
+    });
+  };
+
   return (
     <div className="onboarding-modal-root">
       <p>
@@ -55,7 +36,7 @@ const ModalRoot: React.FC<Props> = ({ onTokenSubmit }) => {
         </a>{" "}
         on finding your API token.
       </p>
-      <TokenInputForm onTokenSubmit={onTokenSubmit} tester={TokenValidation.DefaultTester} />
+      <TokenInputForm onTokenSubmit={callback} tester={TokenValidation.DefaultTester} />
     </div>
   );
 };
