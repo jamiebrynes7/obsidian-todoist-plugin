@@ -1,22 +1,15 @@
-import { App, Notice, Plugin } from "obsidian";
+import { App, Plugin } from "obsidian";
 import type { PluginManifest } from "obsidian";
 import "../styles.css";
 import { TodoistApiClient } from "./api";
 import { ObsidianFetcher } from "./api/fetcher";
-import { TodoistAdapter } from "./data";
+import { registerCommands } from "./commands";
 import debug from "./log";
-import CreateTaskModal from "./modals/createTask/createTaskModal";
 import { QueryInjector } from "./query/injector";
+import { type Services, makeServices } from "./services";
 import { settings } from "./settings";
 import { type ISettings, defaultSettings } from "./settings";
-import { VaultTokenAccessor } from "./token";
-import { OnboardingModal } from "./ui/onboardingModal";
 import { SettingsTab } from "./ui/settings";
-
-type Services = {
-  todoist: TodoistAdapter;
-  tokenAccessor: VaultTokenAccessor;
-};
 
 export default class TodoistPlugin extends Plugin {
   public options: ISettings;
@@ -26,10 +19,7 @@ export default class TodoistPlugin extends Plugin {
   constructor(app: App, pluginManifest: PluginManifest) {
     super(app, pluginManifest);
     this.options = { ...defaultSettings };
-    this.services = {
-      todoist: new TodoistAdapter(),
-      tokenAccessor: new VaultTokenAccessor(this.app.vault),
-    };
+    this.services = makeServices(this);
 
     settings.subscribe((value) => {
       debug({
@@ -49,47 +39,14 @@ export default class TodoistPlugin extends Plugin {
     );
     this.addSettingTab(new SettingsTab(this.app, this));
 
-    this.addCommand({
-      id: "todoist-sync",
-      name: "Sync with Todoist",
-      callback: async () => {
-        debug("Syncing with Todoist API");
-        this.services.todoist.sync();
-      },
-    });
-
-    this.addCommand({
-      id: "todoist-add-task",
-      name: "Add Todoist task",
-      callback: () => {
-        if (this.options === null) {
-          new Notice("Failed to load settings, cannot open task creation modal.");
-          return;
-        }
-
-        new CreateTaskModal(this.app, this.services.todoist, this.options, false);
-      },
-    });
-
-    this.addCommand({
-      id: "todoist-add-task-current-page",
-      name: "Add Todoist task with the current page",
-      callback: () => {
-        if (this.options === null) {
-          new Notice("Failed to load settings, cannot open task creation modal.");
-          return;
-        }
-
-        new CreateTaskModal(this.app, this.services.todoist, this.options, true);
-      },
-    });
+    registerCommands(this);
 
     await this.loadOptions();
     await this.loadApiClient();
   }
 
   private async loadApiClient(): Promise<void> {
-    const accessor = this.services.tokenAccessor;
+    const accessor = this.services.token;
 
     if (await accessor.exists()) {
       const token = await accessor.read();
@@ -97,10 +54,16 @@ export default class TodoistPlugin extends Plugin {
       return;
     }
 
-    new OnboardingModal(this.app, async (token) => {
-      await accessor.write(token);
-      await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
-    }).open();
+    this.services.modals
+      .onboarding({
+        onTokenSubmit: async (token) => {
+          await accessor.write(token);
+          await this.services.todoist.initialize(
+            new TodoistApiClient(token, new ObsidianFetcher()),
+          );
+        },
+      })
+      .open();
   }
 
   async loadOptions(): Promise<void> {

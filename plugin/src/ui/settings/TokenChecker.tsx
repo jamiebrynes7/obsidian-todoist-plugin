@@ -4,7 +4,6 @@ import { ObsidianFetcher } from "../../api/fetcher";
 import { TokenValidation } from "../../token";
 import { TokenValidationIcon } from "../components/token-validation-icon";
 import { usePluginContext } from "../context/plugin";
-import { OnboardingModal } from "../onboardingModal";
 import { Setting } from "./SettingItem";
 
 type Props = {
@@ -13,7 +12,7 @@ type Props = {
 
 export const TokenChecker: React.FC<Props> = ({ tester }) => {
   const plugin = usePluginContext();
-  const { tokenAccessor, todoist } = plugin.services;
+  const { token: tokenAccessor, todoist, modals } = plugin.services;
 
   const [tokenState, setTokenState] = useState<TokenValidation.Result>({ kind: "in-progress" });
   const [tokenValidationCount, setTokenValidationCount] = useState(0);
@@ -33,12 +32,16 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
   }, [plugin, tester, tokenValidationCount]);
 
   const openModal = () => {
-    new OnboardingModal(plugin.app, async (token) => {
-      setTokenValidationCount((old) => old + 1);
+    modals
+      .onboarding({
+        onTokenSubmit: async (token) => {
+          setTokenValidationCount((old) => old + 1);
 
-      await tokenAccessor.write(token);
-      await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
-    }).open();
+          await tokenAccessor.write(token);
+          await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+        },
+      })
+      .open();
   };
 
   return (
