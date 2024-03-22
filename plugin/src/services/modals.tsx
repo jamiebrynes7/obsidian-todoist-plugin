@@ -4,6 +4,7 @@ import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "..";
 import { ModalContext, type ModalInfo } from "../ui/context/modal";
 import { PluginContext } from "../ui/context/plugin";
+import { CreateTaskModal } from "../ui/createTaskModal";
 import { OnboardingModal } from "../ui/onboardingModal";
 
 type ModalOptions = {
@@ -59,6 +60,12 @@ export class ModalHandler {
   public onboarding(props: React.ComponentProps<typeof OnboardingModal>): Modal {
     return new ReactModal(this.plugin, OnboardingModal, props, {
       title: "Sync with Todoist Setup",
+    });
+  }
+
+  public taskCreation(props: React.ComponentProps<typeof CreateTaskModal>): Modal {
+    return new ReactModal(this.plugin, CreateTaskModal, props, {
+      extraModalClass: "task-creation",
     });
   }
 }

@@ -45,11 +45,17 @@ export class TodoistAdapter {
   private readonly labels: Repository<LabelId, Label>;
   private readonly subscriptions: SubscriptionManager<Refresh>;
 
+  private hasSynced = false;
+
   constructor() {
     this.projects = new Repository(() => this.api.withInner((api) => api.getProjects()));
     this.sections = new Repository(() => this.api.withInner((api) => api.getSections()));
     this.labels = new Repository(() => this.api.withInner((api) => api.getLabels()));
     this.subscriptions = new SubscriptionManager<Refresh>();
+  }
+
+  public isReady(): boolean {
+    return this.api.hasValue() && this.hasSynced;
   }
 
   public async initialize(api: TodoistApiClient) {
@@ -69,6 +75,8 @@ export class TodoistAdapter {
     for (const refresh of this.subscriptions.listActive()) {
       await refresh();
     }
+
+    this.hasSynced = true;
   }
 
   public data(): DataAccessor {
@@ -150,6 +158,7 @@ const makeUnknownProject = (id: string): Project => {
     parentId: null,
     name: "Unknown Project",
     order: Number.MAX_SAFE_INTEGER,
+    isInboxProject: false,
   };
 };
 
