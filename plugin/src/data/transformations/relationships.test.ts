@@ -13,7 +13,13 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
     priority: opts?.priority ?? 1,
     order: opts?.order ?? 0,
 
-    project: opts?.project ?? { id: "foobar", name: "Foobar", order: 1, parentId: null },
+    project: opts?.project ?? {
+      id: "foobar",
+      name: "Foobar",
+      order: 1,
+      parentId: null,
+      isInboxProject: false,
+    },
     section: opts?.section,
 
     due: opts?.due,
