@@ -2,9 +2,8 @@
   import { onMount, onDestroy } from "svelte";
   import { settings } from "../settings";
   import { GroupVariant, type Query } from "../query/query";
-  import CreateTaskModal from "../modals/createTask/createTaskModal";
   import NoTaskDisplay from "./NoTaskDisplay.svelte";
-  import type { QueryErrorKind, TodoistAdapter } from "../data";
+  import type { QueryErrorKind } from "../data";
   import type { Task } from "../data/task";
   import GroupedTasks from "./GroupedTasks.svelte";
   import type { TaskId } from "../api/domain/task";
@@ -13,9 +12,11 @@
   import { setQuery, setTaskActions } from "./contexts";
   import ObsidianIcon from "../components/ObsidianIcon.svelte";
   import QueryErrorDisplay from "./QueryErrorDisplay.svelte";
+  import type TodoistPlugin from "..";
+  import { fireCommand } from "../commands";
 
+  export let plugin: TodoistPlugin;
   export let query: Query;
-  export let todoistAdapter: TodoistAdapter;
 
   // Set context items.
   setQuery(query);
@@ -26,7 +27,7 @@
 
       let success = true;
       try {
-        await todoistAdapter.actions.closeTask(id);
+        await plugin.services.todoist.actions.closeTask(id);
       } catch (error) {
         console.error(`Failed to mark task as closed: ${error}`);
         success = false;
@@ -50,7 +51,7 @@
   let tasksPendingClose: Set<TaskId> = new Set();
   let queryError: QueryErrorKind | undefined = undefined;
 
-  const [unsubscribeQuery, refreshQuery] = todoistAdapter.subscribe(
+  const [unsubscribeQuery, refreshQuery] = plugin.services.todoist.subscribe(
     query.filter,
     (result) => {
       switch (result.type) {
@@ -105,7 +106,7 @@
   });
 
   function callTaskModal() {
-    new CreateTaskModal(app, todoistAdapter, $settings, true);
+    fireCommand(plugin, "add-task-page-content");
   }
 
   async function forceRefresh() {

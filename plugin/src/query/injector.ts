@@ -1,18 +1,17 @@
 import { MarkdownRenderChild } from "obsidian";
 import type { MarkdownPostProcessorContext } from "obsidian";
 import type { SvelteComponent } from "svelte";
-import type { TodoistAdapter } from "../data";
 import debug from "../log";
 import ErrorDisplay from "../ui/ErrorDisplay.svelte";
 import TodoistQuery from "../ui/TodoistQuery.svelte";
 import { parseQuery } from "./parser";
 import { applyReplacements } from "./replacements";
+import type TodoistPlugin from "..";
 
 export class QueryInjector {
-  private adapater: TodoistAdapter;
-
-  constructor(adapter: TodoistAdapter) {
-    this.adapater = adapter;
+  private readonly plugin: TodoistPlugin;
+  constructor(plugin: TodoistPlugin) {
+    this.plugin = plugin;
   }
 
   onNewBlock(source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) {
@@ -32,7 +31,10 @@ export class QueryInjector {
       child = new InjectedQuery(el, (root: HTMLElement) => {
         return new TodoistQuery({
           target: root,
-          props: { query: query, todoistAdapter: this.adapater },
+          props: {
+            query: query,
+            plugin: this.plugin,
+          },
         });
       });
     } catch (e) {
