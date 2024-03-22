@@ -2,29 +2,45 @@ import { Modal } from "obsidian";
 import React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "..";
+import { ModalContext, type ModalInfo } from "../ui/context/modal";
+import { PluginContext } from "../ui/context/plugin";
 import { OnboardingModal } from "../ui/onboardingModal";
 
-type ModalProps = {
-  close: () => void;
-  plugin: TodoistPlugin;
+type ModalOptions = {
+  extraModalClass?: string;
+  title?: string;
 };
 
-export type WithModalProps<T> = ModalProps & T;
-
-type WithoutModalProps<T> = Omit<T, keyof ModalProps>;
-
-class ReactModal<T> extends Modal {
+class ReactModal<T extends {}> extends Modal {
   private readonly reactRoot: Root;
-  constructor(plugin: TodoistPlugin, title: string, Component: React.FC<T & ModalProps>, props: T) {
+  constructor(plugin: TodoistPlugin, Component: React.FC<T>, props: T, opts: ModalOptions) {
     super(plugin.app);
-    this.titleEl.textContent = title;
+    this.titleEl.textContent = opts.title ?? null;
+
+    if (opts?.extraModalClass !== undefined) {
+      this.modalEl.addClass(opts.extraModalClass);
+    }
 
     const { contentEl } = this;
     contentEl.empty();
 
     this.reactRoot = createRoot(contentEl);
 
-    this.reactRoot.render(<Component {...props} close={() => this.close()} plugin={plugin} />);
+    const popoverContainerEl = this.containerEl.createDiv();
+    popoverContainerEl.style.position = "relative";
+
+    const modal: ModalInfo = {
+      close: () => this.close(),
+      popoverContainerEl: popoverContainerEl,
+    };
+
+    this.reactRoot.render(
+      <PluginContext.Provider value={plugin}>
+        <ModalContext.Provider value={modal}>
+          <Component {...props} />
+        </ModalContext.Provider>
+      </PluginContext.Provider>,
+    );
   }
 
   onClose(): void {
@@ -40,7 +56,9 @@ export class ModalHandler {
     this.plugin = plugin;
   }
 
-  public onboarding(props: WithoutModalProps<React.ComponentProps<typeof OnboardingModal>>): Modal {
-    return new ReactModal(this.plugin, "Sync with Todoist Setup", OnboardingModal, props);
+  public onboarding(props: React.ComponentProps<typeof OnboardingModal>): Modal {
+    return new ReactModal(this.plugin, OnboardingModal, props, {
+      title: "Sync with Todoist Setup",
+    });
   }
 }
