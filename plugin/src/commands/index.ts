@@ -1,9 +1,9 @@
-import { type Command as ObsidianCommand, Notice } from "obsidian";
+import { type Command as ObsidianCommand } from "obsidian";
 import type TodoistPlugin from "..";
 import debug from "../log";
-import CreateTaskModal from "../modals/createTask/createTaskModal";
+import addTaskCommands from "./addTask";
 
-type MakeCommand = (plugin: TodoistPlugin) => ObsidianCommand;
+export type MakeCommand = (plugin: TodoistPlugin) => ObsidianCommand;
 
 const syncCommand: MakeCommand = (plugin: TodoistPlugin) => {
   return {
@@ -16,37 +16,7 @@ const syncCommand: MakeCommand = (plugin: TodoistPlugin) => {
   };
 };
 
-const addTask: MakeCommand = (plugin: TodoistPlugin) => {
-  return {
-    id: "todoist-add-task",
-    name: "Add Todoist task",
-    callback: () => {
-      if (plugin.options === null) {
-        new Notice("Failed to load settings, cannot open task creation modal.");
-        return;
-      }
-
-      new CreateTaskModal(plugin.app, plugin.services.todoist, plugin.options, false);
-    },
-  };
-};
-
-const addTaskWithPage: MakeCommand = (plugin: TodoistPlugin) => {
-  return {
-    id: "todoist-add-task-current-page",
-    name: "Add Todoist task with the current page",
-    callback: () => {
-      if (plugin.options === null) {
-        new Notice("Failed to load settings, cannot open task creation modal.");
-        return;
-      }
-
-      new CreateTaskModal(plugin.app, plugin.services.todoist, plugin.options, true);
-    },
-  };
-};
-
-const commands: MakeCommand[] = [syncCommand, addTask, addTaskWithPage];
+const commands: MakeCommand[] = [syncCommand, ...addTaskCommands];
 
 export const registerCommands = (plugin: TodoistPlugin) => {
   for (const make of commands) {
