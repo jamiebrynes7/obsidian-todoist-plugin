@@ -23,3 +23,16 @@ export const registerCommands = (plugin: TodoistPlugin) => {
     plugin.addCommand(make(plugin));
   }
 };
+
+// TODO: Strongly type the IDs
+export const fireCommand = (plugin: TodoistPlugin, id: string) => {
+  for (const make of commands) {
+    const cmd = make(plugin);
+    if (cmd.id === id) {
+      cmd.callback?.();
+      return;
+    }
+  }
+
+  throw Error(`Failed to find command by ID: ${id}`);
+};

@@ -32,7 +32,7 @@ export default class TodoistPlugin extends Plugin {
   }
 
   async onload() {
-    const queryInjector = new QueryInjector(this.services.todoist);
+    const queryInjector = new QueryInjector(this);
     this.registerMarkdownCodeBlockProcessor(
       "todoist",
       queryInjector.onNewBlock.bind(queryInjector),
