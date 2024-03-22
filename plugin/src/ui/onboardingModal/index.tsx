@@ -1,7 +1,7 @@
 import { Notice } from "obsidian";
 import React from "react";
-import type { WithModalProps } from "../../services/modals";
 import { TokenValidation } from "../../token";
+import { useModalContext } from "../context/modal";
 import { TokenInputForm } from "./TokenInputForm";
 import "./styles.scss";
 
@@ -11,12 +11,11 @@ type OnboardingProps = {
   onTokenSubmit: OnTokenSubmitted;
 };
 
-export const OnboardingModal: React.FC<WithModalProps<OnboardingProps>> = ({
-  close,
-  onTokenSubmit,
-}) => {
+export const OnboardingModal: React.FC<OnboardingProps> = ({ onTokenSubmit }) => {
+  const modal = useModalContext();
+
   const callback = (token: string) => {
-    close();
+    modal.close();
     onTokenSubmit(token).catch((e) => {
       console.error("Failed to save API token", e);
       new Notice("Failed to save API token");
