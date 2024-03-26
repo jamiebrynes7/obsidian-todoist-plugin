@@ -1,9 +1,3 @@
-.modal.task-creation {
-  .modal-close-button {
-    display: none;
-  }
-}
-
 .modal-popover {
   overflow-y: auto;
 }
@@ -73,11 +67,23 @@
     display: flex;
     justify-content: space-between;
 
+    .is-mobile & {
+      flex-direction: column;
+
+      & > * + * {
+        margin-top: 0.5em;
+      }
+    }
+
     .task-creation-action {
       display: flex;
 
       & > * + * {
-        margin-left: 0.5em;
+        margin-left: 1em;
+      }
+
+      .is-mobile & {
+        justify-content: end;
       }
     }
   }
