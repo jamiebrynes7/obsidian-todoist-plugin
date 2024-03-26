@@ -54,16 +54,12 @@ export default class TodoistPlugin extends Plugin {
       return;
     }
 
-    this.services.modals
-      .onboarding({
-        onTokenSubmit: async (token) => {
-          await accessor.write(token);
-          await this.services.todoist.initialize(
-            new TodoistApiClient(token, new ObsidianFetcher()),
-          );
-        },
-      })
-      .open();
+    this.services.modals.onboarding({
+      onTokenSubmit: async (token) => {
+        await accessor.write(token);
+        await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+      },
+    });
   }
 
   async loadOptions(): Promise<void> {

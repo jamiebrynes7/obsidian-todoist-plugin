@@ -34,17 +34,15 @@ const makeCallback = (plugin: TodoistPlugin, opts?: Partial<TaskCreationOptions>
       return;
     }
 
-    plugin.services.modals
-      .taskCreation({
-        initialContent: grabSelection(plugin),
-        fileContext: getFileContext(plugin),
-        options: {
-          appendLinkToContent: false,
-          appendLinkToDescription: false,
-          ...(opts ?? {}),
-        },
-      })
-      .open();
+    plugin.services.modals.taskCreation({
+      initialContent: grabSelection(plugin),
+      fileContext: getFileContext(plugin),
+      options: {
+        appendLinkToContent: false,
+        appendLinkToDescription: false,
+        ...(opts ?? {}),
+      },
+    });
   };
 };
 

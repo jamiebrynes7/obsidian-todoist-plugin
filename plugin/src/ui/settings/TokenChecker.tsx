@@ -32,16 +32,14 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
   }, [plugin, tester, tokenValidationCount]);
 
   const openModal = () => {
-    modals
-      .onboarding({
-        onTokenSubmit: async (token) => {
-          setTokenValidationCount((old) => old + 1);
+    modals.onboarding({
+      onTokenSubmit: async (token) => {
+        setTokenValidationCount((old) => old + 1);
 
-          await tokenAccessor.write(token);
-          await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
-        },
-      })
-      .open();
+        await tokenAccessor.write(token);
+        await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
+      },
+    });
   };
 
   return (
