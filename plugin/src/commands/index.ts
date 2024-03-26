@@ -1,13 +1,12 @@
 import { type Command as ObsidianCommand } from "obsidian";
 import type TodoistPlugin from "..";
 import debug from "../log";
-import addTaskCommands from "./addTask";
+import { addTask, addTaskWithPageInContent, addTaskWithPageInDescription } from "./addTask";
 
-export type MakeCommand = (plugin: TodoistPlugin) => ObsidianCommand;
+export type MakeCommand = (plugin: TodoistPlugin) => Omit<ObsidianCommand, "id">;
 
 const syncCommand: MakeCommand = (plugin: TodoistPlugin) => {
   return {
-    id: "todoist-sync",
     name: "Sync with Todoist",
     callback: async () => {
       debug("Syncing with Todoist API");
@@ -16,23 +15,22 @@ const syncCommand: MakeCommand = (plugin: TodoistPlugin) => {
   };
 };
 
-const commands: MakeCommand[] = [syncCommand, ...addTaskCommands];
+const commands = {
+  "todoist-sync": syncCommand,
+  "add-task": addTask,
+  "add-task-page-content": addTaskWithPageInContent,
+  "add-task-page-description": addTaskWithPageInDescription,
+};
+
+type CommandId = keyof typeof commands;
 
 export const registerCommands = (plugin: TodoistPlugin) => {
-  for (const make of commands) {
-    plugin.addCommand(make(plugin));
+  for (const [id, make] of Object.entries(commands)) {
+    plugin.addCommand({ id, ...make(plugin) });
   }
 };
 
-// TODO: Strongly type the IDs
-export const fireCommand = (plugin: TodoistPlugin, id: string) => {
-  for (const make of commands) {
-    const cmd = make(plugin);
-    if (cmd.id === id) {
-      cmd.callback?.();
-      return;
-    }
-  }
-
-  throw Error(`Failed to find command by ID: ${id}`);
+export const fireCommand = <K extends CommandId>(id: K, plugin: TodoistPlugin) => {
+  const make = commands[id];
+  make(plugin).callback?.();
 };

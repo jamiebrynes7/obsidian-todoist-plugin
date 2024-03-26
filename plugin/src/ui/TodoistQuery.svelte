@@ -106,7 +106,7 @@
   });
 
   function callTaskModal() {
-    fireCommand(plugin, "add-task-page-content");
+    fireCommand("add-task-page-content", plugin);
   }
 
   async function forceRefresh() {
