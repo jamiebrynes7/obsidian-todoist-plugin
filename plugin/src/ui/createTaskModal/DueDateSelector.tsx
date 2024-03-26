@@ -18,11 +18,10 @@ import {
   type Key,
   Menu,
   MenuItem,
-  Popover,
   Section,
 } from "react-aria-components";
 import { ObsidianIcon } from "../components/obsidian-icon";
-import { useModalContext } from "../context/modal";
+import { Popover } from "./Popover";
 
 // TODO: Locale handling everywhere
 const formatter = new DateFormatter("en-US", {
@@ -40,8 +39,6 @@ type Props = {
 };
 
 export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
-  const modal = useModalContext();
-
   const label = getLabel(selected);
   const suggestions = getSuggestions();
 
@@ -60,12 +57,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
         <ObsidianIcon size={16} id="calendar" />
         {label}
       </Button>
-      <Popover
-        offset={5}
-        placement="bottom left"
-        UNSTABLE_portalContainer={modal.popoverContainerEl}
-        className="modal-popover"
-      >
+      <Popover>
         <Dialog className="task-option-dialog task-date-menu" aria-label="Due date selector">
           {({ close }) => (
             <>

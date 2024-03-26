@@ -1,17 +1,10 @@
 import classNames from "classnames";
 import React, { useMemo } from "react";
-import {
-  Button,
-  DialogTrigger,
-  ListBox,
-  ListBoxItem,
-  Popover,
-  type Selection,
-} from "react-aria-components";
+import { Button, DialogTrigger, ListBox, ListBoxItem, type Selection } from "react-aria-components";
 import type { Label } from "../../api/domain/label";
 import { ObsidianIcon } from "../components/obsidian-icon";
-import { useModalContext } from "../context/modal";
 import { usePluginContext } from "../context/plugin";
+import { Popover } from "./Popover";
 
 type Props = {
   selected: Label[];
@@ -19,7 +12,6 @@ type Props = {
 };
 
 export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
-  const modal = useModalContext();
   const plugin = usePluginContext();
 
   const options = useMemo(() => {
@@ -43,12 +35,7 @@ export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
         <ObsidianIcon size={16} id="tag" />
         Labels ({selected.length})
       </Button>
-      <Popover
-        placement="bottom left"
-        offset={5}
-        UNSTABLE_portalContainer={modal.popoverContainerEl}
-        className="modal-popover"
-      >
+      <Popover>
         <ListBox
           aria-label="Label options"
           selectionMode="multiple"
