@@ -2,11 +2,14 @@
 sidebar_position: 1
 ---
 
-# Add Task
+# Add task
 
 ![](./add-task-modal.png)
 
-The 'Add Todoist task' command allows you send tasks to Todoist from Obsidian. There are a few utilities to help you set the text content:
+The 'Add task' set of commands open up a modal that allows you to configure and send tasks to Todoist from Obsidian. Any text selected will be used to pre-populate the task content.
 
-- Any text selected will be used to pre-populate the task's text
-- You can append a link to the currently selected Obsidian page to the task's text by using the 'Add Todoist task with the current page' variant of the command
+There are a few variants of the command:
+
+- 'Add task', the basic version
+- 'Add task with current page in task content', this option will append a link to the current page in the task content before it sends it to Obsidian. The modal will inform you it will do this, but the link is not shown to keep the modal clean.
+- 'Add task with current page in task description', this option will append a link to the current page in the task description before it sends it to Obsidian. The modal will inform you it will do this, but the link is not shown to keep the modal clean.
