@@ -7,15 +7,15 @@ import {
   type Key,
   ListBox,
   ListBoxItem,
-  Popover,
   SearchField,
 } from "react-aria-components";
 import type TodoistPlugin from "../..";
 import type { Project, ProjectId } from "../../api/domain/project";
 import type { Section, SectionId } from "../../api/domain/section";
 import { ObsidianIcon } from "../components/obsidian-icon";
-import { useModalContext } from "../context/modal";
 import { usePluginContext } from "../context/plugin";
+import { Popover } from "./Popover";
+import { Platform } from "obsidian";
 
 export type ProjectIdentifier = {
   projectId: ProjectId;
@@ -30,7 +30,6 @@ type Props = {
 export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
   const plugin = usePluginContext();
   const todoistData = plugin.services.todoist.data();
-  const modal = useModalContext();
 
   const [filter, setFilter] = useState("");
   const hierarchy = useMemo(() => buildProjectHierarchy(plugin), [plugin]);
@@ -64,18 +63,16 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
         <ButtonLabel {...selected} />
         <ObsidianIcon size={12} id="chevron-down" />
       </Button>
-      <Popover
-        offset={5}
-        placement="bottom left"
-        UNSTABLE_portalContainer={modal.popoverContainerEl}
-        className="modal-popover"
-        shouldFlip={false}
-      >
+      <Popover>
         <Dialog className="task-option-dialog task-project-menu" aria-label="Project selector">
           {({ close }) => (
             <>
-              <SearchFilter filter={filter} setFilter={setFilter} />
-              <hr />
+              {!Platform.isMobile && (
+                <>
+                  <SearchFilter filter={filter} setFilter={setFilter} />
+                  <hr />
+                </>
+              )}
               <ListBox
                 aria-label="Project options"
                 selectionMode="single"
@@ -108,7 +105,12 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ filter, setFilter }) => {
 
   return (
     <SearchField aria-label="Filter projects" className="search-filter-container">
-      <Input value={filter} onChange={onChange} placeholder="Type a project name" />
+      <Input
+        value={filter}
+        onChange={onChange}
+        placeholder="Type a project name"
+        autoFocus={true}
+      />
     </SearchField>
   );
 };
