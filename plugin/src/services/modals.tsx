@@ -1,4 +1,3 @@
-import { Modal } from "obsidian";
 import React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "..";
@@ -6,26 +5,23 @@ import { ModalContext, type ModalInfo } from "../ui/context/modal";
 import { PluginContext } from "../ui/context/plugin";
 import { CreateTaskModal } from "../ui/createTaskModal";
 import { OnboardingModal } from "../ui/onboardingModal";
+import { Modal, Platform } from "obsidian";
 
 type ModalOptions = {
-  extraModalClass?: string;
   title?: string;
+  dontCloseOnExternalClick?: boolean;
 };
 
 class ReactModal<T extends {}> extends Modal {
   private readonly reactRoot: Root;
+
   constructor(plugin: TodoistPlugin, Component: React.FC<T>, props: T, opts: ModalOptions) {
     super(plugin.app);
-    this.titleEl.textContent = opts.title ?? null;
-
-    if (opts?.extraModalClass !== undefined) {
-      this.modalEl.addClass(opts.extraModalClass);
+    if (opts.title) {
+      this.titleEl.textContent = opts.title;
     }
 
-    const { contentEl } = this;
-    contentEl.empty();
-
-    this.reactRoot = createRoot(contentEl);
+    this.reactRoot = createRoot(this.contentEl);
 
     const popoverContainerEl = this.containerEl.createDiv();
     popoverContainerEl.style.position = "relative";
@@ -34,6 +30,22 @@ class ReactModal<T extends {}> extends Modal {
       close: () => this.close(),
       popoverContainerEl: popoverContainerEl,
     };
+
+    if (opts.dontCloseOnExternalClick ?? false) {
+      // HACK: In order to suppress the click event, we just re-create the element. This works okay because its simple.
+      const modalBg = this.containerEl.firstElementChild;
+      if (modalBg?.classList.contains("modal-bg")) {
+        this.containerEl.removeChild(modalBg);
+        createDiv({
+          prepend: true,
+          parent: this.containerEl,
+          cls: ["modal-bg"],
+          attr: {
+            style: "opacity: 0.85;",
+          },
+        });
+      }
+    }
 
     this.reactRoot.render(
       <PluginContext.Provider value={plugin}>
@@ -45,7 +57,6 @@ class ReactModal<T extends {}> extends Modal {
   }
 
   onClose(): void {
-    super.onClose();
     this.reactRoot.unmount();
   }
 }
@@ -57,15 +68,15 @@ export class ModalHandler {
     this.plugin = plugin;
   }
 
-  public onboarding(props: React.ComponentProps<typeof OnboardingModal>): Modal {
-    return new ReactModal(this.plugin, OnboardingModal, props, {
+  public onboarding(props: React.ComponentProps<typeof OnboardingModal>) {
+    new ReactModal(this.plugin, OnboardingModal, props, {
       title: "Sync with Todoist Setup",
-    });
+    }).open();
   }
 
-  public taskCreation(props: React.ComponentProps<typeof CreateTaskModal>): Modal {
-    return new ReactModal(this.plugin, CreateTaskModal, props, {
-      extraModalClass: "task-creation",
-    });
+  public taskCreation(props: React.ComponentProps<typeof CreateTaskModal>) {
+    new ReactModal(this.plugin, CreateTaskModal, props, {
+      dontCloseOnExternalClick: Platform.isMobileApp,
+    }).open();
   }
 }
