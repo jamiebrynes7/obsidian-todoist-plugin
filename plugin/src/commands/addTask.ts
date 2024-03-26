@@ -3,15 +3,14 @@ import type { MakeCommand } from ".";
 import type TodoistPlugin from "..";
 import type { TaskCreationOptions } from "../ui/createTaskModal";
 
-const addTask: MakeCommand = (plugin: TodoistPlugin) => {
+export const addTask: MakeCommand = (plugin: TodoistPlugin) => {
   return {
-    id: "add-task",
     name: "Add task",
     callback: makeCallback(plugin),
   };
 };
 
-const addTaskWithPageInContent: MakeCommand = (plugin: TodoistPlugin) => {
+export const addTaskWithPageInContent: MakeCommand = (plugin: TodoistPlugin) => {
   return {
     id: "add-task-page-content",
     name: "Add task with current page in task content",
@@ -19,7 +18,7 @@ const addTaskWithPageInContent: MakeCommand = (plugin: TodoistPlugin) => {
   };
 };
 
-const addTaskWithPageInDescription: MakeCommand = (plugin: TodoistPlugin) => {
+export const addTaskWithPageInDescription: MakeCommand = (plugin: TodoistPlugin) => {
   return {
     id: "add-task-page-description",
     name: "Add task with current page in task description",
@@ -59,5 +58,3 @@ const grabSelection = (plugin: TodoistPlugin): string => {
 const getFileContext = (plugin: TodoistPlugin): TFile | undefined => {
   return plugin.app.workspace.getActiveFile() ?? undefined;
 };
-
-export default [addTask, addTaskWithPageInContent, addTaskWithPageInDescription];
