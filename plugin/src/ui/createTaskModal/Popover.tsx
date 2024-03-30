@@ -1,8 +1,8 @@
-import type { PropsWithChildren } from "react";
-import { useModalContext } from "../context/modal";
-import { Popover as AriaPopover, type PopoverProps } from "react-aria-components";
-import React from "react";
 import { Platform } from "obsidian";
+import type { PropsWithChildren } from "react";
+import React from "react";
+import { Popover as AriaPopover, type PopoverProps } from "react-aria-components";
+import { useModalContext } from "../context/modal";
 
 export const Popover: React.FC<PropsWithChildren> = ({ children }) => {
   const modal = useModalContext();

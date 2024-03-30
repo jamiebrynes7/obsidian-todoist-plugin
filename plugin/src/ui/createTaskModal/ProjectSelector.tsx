@@ -1,3 +1,4 @@
+import { Platform } from "obsidian";
 import React, { useMemo, useState } from "react";
 import {
   Button,
@@ -15,7 +16,6 @@ import type { Section, SectionId } from "../../api/domain/section";
 import { ObsidianIcon } from "../components/obsidian-icon";
 import { usePluginContext } from "../context/plugin";
 import { Popover } from "./Popover";
-import { Platform } from "obsidian";
 
 export type ProjectIdentifier = {
   projectId: ProjectId;
