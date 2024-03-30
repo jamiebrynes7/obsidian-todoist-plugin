@@ -9,6 +9,7 @@ type Props = {
   content: string;
   onChange: (content: string) => void;
   autofocus?: boolean;
+  onEnterKey?: () => Promise<void>;
 };
 
 export const TaskContentInput: React.FC<Props> = ({
@@ -16,10 +17,22 @@ export const TaskContentInput: React.FC<Props> = ({
   placeholder,
   content,
   onChange,
+  onEnterKey,
   autofocus,
 }) => {
   const onInputChange = (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(ev.target.value);
+  };
+
+  const onKeyDown = async (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (onEnterKey === undefined) {
+      return;
+    }
+
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      await onEnterKey();
+    }
   };
 
   const classes = classNames("task-content-input", className);
@@ -32,6 +45,7 @@ export const TaskContentInput: React.FC<Props> = ({
         onChange={onInputChange}
         aria-label={placeholder}
         autoFocus={autofocus}
+        onKeyDown={onKeyDown}
       />
     </TextField>
   );

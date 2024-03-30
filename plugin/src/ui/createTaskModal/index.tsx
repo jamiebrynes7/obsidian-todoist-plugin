@@ -88,6 +88,10 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   };
 
   const createTask = async () => {
+    if (isSubmitButtonDisabled) {
+      return;
+    }
+
     await plugin.services.todoist.actions.createTask(
       buildWithLink(content, options.appendLinkToContent),
       {
@@ -110,6 +114,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         content={content}
         onChange={setContent}
         autofocus={true}
+        onEnterKey={createTask}
       />
       <TaskContentInput
         className="task-description"
