@@ -92,18 +92,25 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       return;
     }
 
-    await plugin.services.todoist.actions.createTask(
-      buildWithLink(content, options.appendLinkToContent),
-      {
-        description: buildWithLink(description, options.appendLinkToDescription),
-        dueDate: dueDate?.toString(),
-        priority: priority,
-        labels: labels.map((l) => l.name),
-        projectId: project.projectId,
-        sectionId: project.sectionId,
-      },
-    );
     modal.close();
+
+    try {
+      await plugin.services.todoist.actions.createTask(
+        buildWithLink(content, options.appendLinkToContent),
+        {
+          description: buildWithLink(description, options.appendLinkToDescription),
+          dueDate: dueDate?.toString(),
+          priority: priority,
+          labels: labels.map((l) => l.name),
+          projectId: project.projectId,
+          sectionId: project.sectionId,
+        },
+      );
+      new Notice("Task created successfully");
+    } catch (err) {
+      new Notice("Failed to create task");
+      console.error("Failed to create task", err);
+    }
   };
 
   return (
