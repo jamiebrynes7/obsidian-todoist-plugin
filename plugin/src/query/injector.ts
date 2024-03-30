@@ -1,12 +1,12 @@
 import { MarkdownRenderChild } from "obsidian";
 import type { MarkdownPostProcessorContext } from "obsidian";
 import type { SvelteComponent } from "svelte";
+import type TodoistPlugin from "..";
 import debug from "../log";
 import ErrorDisplay from "../ui/ErrorDisplay.svelte";
 import TodoistQuery from "../ui/TodoistQuery.svelte";
 import { parseQuery } from "./parser";
 import { applyReplacements } from "./replacements";
-import type TodoistPlugin from "..";
 
 export class QueryInjector {
   private readonly plugin: TodoistPlugin;

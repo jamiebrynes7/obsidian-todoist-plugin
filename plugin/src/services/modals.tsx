@@ -1,3 +1,4 @@
+import { Modal, Platform } from "obsidian";
 import React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "..";
@@ -5,7 +6,6 @@ import { ModalContext, type ModalInfo } from "../ui/context/modal";
 import { PluginContext } from "../ui/context/plugin";
 import { CreateTaskModal } from "../ui/createTaskModal";
 import { OnboardingModal } from "../ui/onboardingModal";
-import { Modal, Platform } from "obsidian";
 
 type ModalOptions = {
   title?: string;
