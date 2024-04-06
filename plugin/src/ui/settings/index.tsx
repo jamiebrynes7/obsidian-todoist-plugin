@@ -121,11 +121,16 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
       <Setting.Root
         name="Enable descriptions"
         description="Whether descriptions should be rendered with tasks"
+        deprecationMessage="Please use the show property in the query block instead."
       >
         <Setting.ToggleControl {...toggleProps("renderDescription")} />
       </Setting.Root>
 
-      <Setting.Root name="Enable dates" description="Whether dates should be rendered with tasks">
+      <Setting.Root
+        name="Enable dates"
+        description="Whether dates should be rendered with tasks"
+        deprecationMessage="Please use the show property in the query block instead."
+      >
         <Setting.ToggleControl {...toggleProps("renderDate")} />
       </Setting.Root>
       <Setting.Root
@@ -138,6 +143,7 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
       <Setting.Root
         name="Enable project & section"
         description="Whether the project & section should be rendered with tasks"
+        deprecationMessage="Please use the show property in the query block instead."
       >
         <Setting.ToggleControl {...toggleProps("renderProject")} />
       </Setting.Root>
@@ -148,7 +154,11 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
         <Setting.ToggleControl {...toggleProps("renderProjectIcon")} />
       </Setting.Root>
 
-      <Setting.Root name="Enable labels" description="Whether labels should be rendered with tasks">
+      <Setting.Root
+        name="Enable labels"
+        description="Whether labels should be rendered with tasks"
+        deprecationMessage="Please use the show property in the query block instead."
+      >
         <Setting.ToggleControl {...toggleProps("renderLabels")} />
       </Setting.Root>
       <Setting.Root
