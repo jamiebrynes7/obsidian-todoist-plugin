@@ -6,16 +6,41 @@ import { ObsidianIcon } from "../components/obsidian-icon";
 type RootProps = {
   name: string;
   description: string;
+  deprecationMessage?: string;
 };
 
-const Root: React.FC<PropsWithChildren<RootProps>> = ({ children, name, description }) => {
+const Root: React.FC<PropsWithChildren<RootProps>> = ({
+  children,
+  name,
+  description,
+  deprecationMessage,
+}) => {
+  const renderDeprecationNotice = deprecationMessage !== undefined;
   return (
     <div className="setting-item">
       <div className="setting-item-info">
         <div className="setting-item-name">{name}</div>
-        <div className="setting-item-description">{description}</div>
+        <div className="setting-item-description">
+          {description}
+          {renderDeprecationNotice && <DeprecationNotice message={deprecationMessage} />}
+        </div>
       </div>
       <div className="setting-item-control">{children}</div>
+    </div>
+  );
+};
+
+type DeprecationNoticeProps = {
+  message: string;
+};
+
+const DeprecationNotice: React.FC<DeprecationNoticeProps> = ({ message }) => {
+  return (
+    <div className="setting-item-deprecation-notice">
+      <ObsidianIcon size={24} id="lucide-alert-triangle" />
+      <div className="setting-item-deprecation-notice-message">
+        This setting is deprecated and will be removed in a future release. {message}
+      </div>
     </div>
   );
 };

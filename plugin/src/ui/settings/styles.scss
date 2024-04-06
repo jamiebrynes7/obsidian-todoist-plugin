@@ -23,3 +23,15 @@
     }
   }
 }
+
+.setting-item-deprecation-notice {
+  display: flex;
+  background-color: rgba(var(--color-yellow-rgb), 0.2);
+  padding: 4px 12px;
+  border-radius: 8px;
+  margin-top: 0.5em;
+
+  .setting-item-deprecation-notice-message {
+    margin-left: 0.5em;
+  }
+}
