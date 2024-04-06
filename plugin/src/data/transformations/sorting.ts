@@ -26,7 +26,7 @@ function compareTask<T extends Task>(self: T, other: T, sorting: SortingVariant)
     case SortingVariant.Priority:
       // Note that priority in the API is reversed to that of in the app.
       return other.priority - self.priority;
-    case SortingVariant.PriorityDescending:
+    case SortingVariant.PriorityAscending:
       return self.priority - other.priority;
     case SortingVariant.Date:
       return compareTaskDate(self, other);

@@ -63,7 +63,7 @@ describe("sortTasks", () => {
         makeTask("b", { priority: 1 }),
         makeTask("c", { priority: 4 }),
       ],
-      sortingOpts: [SortingVariant.PriorityDescending],
+      sortingOpts: [SortingVariant.PriorityAscending],
       expectedOutput: [
         makeTask("b", { priority: 1 }),
         makeTask("a", { priority: 2 }),
