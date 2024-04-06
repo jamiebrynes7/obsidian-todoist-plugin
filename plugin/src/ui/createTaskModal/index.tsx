@@ -1,13 +1,13 @@
-import { CalendarDate } from "@internationalized/date";
+import { getLocalTimeZone, toCalendarDateTime, toZoned } from "@internationalized/date";
 import { Notice, TFile } from "obsidian";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import type TodoistPlugin from "../..";
 import type { Label } from "../../api/domain/label";
-import type { Priority } from "../../api/domain/task";
+import type { CreateTaskParams, Priority } from "../../api/domain/task";
 import { useModalContext } from "../context/modal";
 import { usePluginContext } from "../context/plugin";
-import { DueDateSelector } from "./DueDateSelector";
+import { type DueDate, DueDateSelector } from "./DueDateSelector";
 import { LabelSelector } from "./LabelSelector";
 import { PrioritySelector } from "./PrioritySelector";
 import { type ProjectIdentifier, ProjectSelector } from "./ProjectSelector";
@@ -62,7 +62,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
   const [content, setContent] = useState(initialContent);
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<CalendarDate | undefined>(undefined);
+  const [dueDate, setDueDate] = useState<DueDate | undefined>(undefined);
   const [priority, setPriority] = useState<Priority>(1);
   const [labels, setLabels] = useState<Label[]>([]);
   const [project, setProject] = useState<ProjectIdentifier>(getDefaultProject(plugin));
@@ -94,17 +94,29 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
     modal.close();
 
+    const params: CreateTaskParams = {
+      description: buildWithLink(description, options.appendLinkToDescription),
+      priority: priority,
+      labels: labels.map((l) => l.name),
+      projectId: project.projectId,
+      sectionId: project.sectionId,
+    };
+
+    if (dueDate !== undefined) {
+      if (dueDate.time !== undefined) {
+        params.dueDatetime = toZoned(
+          toCalendarDateTime(dueDate.date, dueDate.time),
+          getLocalTimeZone(),
+        ).toAbsoluteString();
+      } else {
+        params.dueDate = dueDate.date.toString();
+      }
+    }
+
     try {
       await plugin.services.todoist.actions.createTask(
         buildWithLink(content, options.appendLinkToContent),
-        {
-          description: buildWithLink(description, options.appendLinkToDescription),
-          dueDate: dueDate?.toString(),
-          priority: priority,
-          labels: labels.map((l) => l.name),
-          projectId: project.projectId,
-          sectionId: project.sectionId,
-        },
+        params,
       );
       new Notice("Task created successfully");
     } catch (err) {

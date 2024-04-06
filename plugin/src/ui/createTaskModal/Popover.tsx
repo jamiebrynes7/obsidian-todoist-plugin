@@ -4,16 +4,25 @@ import React from "react";
 import { Popover as AriaPopover, type PopoverProps } from "react-aria-components";
 import { useModalContext } from "../context/modal";
 
-export const Popover: React.FC<PropsWithChildren> = ({ children }) => {
+type Props = {
+  maxHeight?: number;
+  defaultPlacement?: PlacementDetails["placement"];
+};
+
+export const Popover: React.FC<PropsWithChildren<Props>> = ({
+  children,
+  defaultPlacement,
+  maxHeight,
+}) => {
   const modal = useModalContext();
 
   return (
     <AriaPopover
-      maxHeight={500}
+      maxHeight={maxHeight ?? 500}
       offset={5}
       UNSTABLE_portalContainer={modal.popoverContainerEl}
       className="modal-popover"
-      {...getPlacementDetails()}
+      {...getPlacementDetails(defaultPlacement)}
     >
       {children}
     </AriaPopover>
@@ -22,7 +31,9 @@ export const Popover: React.FC<PropsWithChildren> = ({ children }) => {
 
 type PlacementDetails = Pick<PopoverProps, "placement" | "shouldFlip">;
 
-export const getPlacementDetails = (): PlacementDetails => {
+export const getPlacementDetails = (
+  defaultPlacement: PlacementDetails["placement"] = undefined,
+): PlacementDetails => {
   if (Platform.isMobile) {
     return {
       placement: "top left",
@@ -31,7 +42,7 @@ export const getPlacementDetails = (): PlacementDetails => {
   }
 
   return {
-    placement: "bottom left",
+    placement: defaultPlacement ?? "bottom left",
     shouldFlip: false,
   };
 };

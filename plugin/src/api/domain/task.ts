@@ -26,10 +26,11 @@ export type Task = {
 export type Priority = 1 | 2 | 3 | 4;
 
 export type CreateTaskParams = {
+  priority: number;
+  projectId: ProjectId;
   description?: string;
-  priority?: number;
-  projectId?: ProjectId;
   sectionId?: SectionId;
   dueDate?: string;
+  dueDatetime?: string;
   labels?: string[];
 };

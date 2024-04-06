@@ -196,6 +196,30 @@
       }
     }
   }
+
+  .time-picker-container {
+    display: flex;
+    justify-content: center;
+
+    .time-picker-button {
+      flex-grow: 1;
+      margin: 0em 1em 1em 1em;
+      color: var(--text-muted);
+      box-shadow: none;
+      background-color: unset;
+      border: 1px solid var(--color-base-25);
+
+      &:hover,
+      &:focus {
+        border: 1px solid var(--interactive-accent);
+        box-shadow: var(--box-shadow-hover);
+      }
+
+      .obsidian-icon {
+        margin-right: 0.5em;
+      }
+    }
+  }
 }
 
 .task-priority-menu {
@@ -304,6 +328,54 @@ button.project-selector {
 
     &[data-filtered="true"] {
       display: none;
+    }
+  }
+}
+
+.task-time-menu {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+
+  & > * + * {
+    margin-top: 1em;
+  }
+
+  .task-time-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-ui-small);
+
+    .task-time-picker-label {
+      font-weight: 600;
+    }
+
+    .task-time-picker-input {
+      display: flex;
+      padding: 4px;
+      border-radius: 6px;
+      min-width: 100px;
+      border: 1px solid var(--color-base-25);
+
+      .task-time-picker-input-segment {
+        padding: 0 2px;
+
+        &:focus {
+          background-color: var(--interactive-accent);
+          border-radius: 4px;
+          color: var(--text-on-accent);
+        }
+      }
+    }
+  }
+
+  .task-time-controls {
+    display: flex;
+    justify-content: end;
+
+    & > * + * {
+      margin-left: 1em;
     }
   }
 }
