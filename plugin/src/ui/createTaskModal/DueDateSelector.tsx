@@ -1,54 +1,97 @@
 import {
   CalendarDate,
   DateFormatter,
+  Time,
   endOfWeek,
   getLocalTimeZone,
   isToday,
+  toCalendarDateTime,
   today,
 } from "@internationalized/date";
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Calendar,
   CalendarCell,
   CalendarGrid,
+  DateInput,
+  DateSegment,
   Dialog,
   DialogTrigger,
   Heading,
   type Key,
+  Label,
   Menu,
   MenuItem,
   Section,
+  TimeField,
 } from "react-aria-components";
 import { ObsidianIcon } from "../components/obsidian-icon";
 import { Popover } from "./Popover";
 
-// TODO: Locale handling everywhere
 const formatter = new DateFormatter("en-US", {
   month: "short",
   day: "numeric",
+});
+
+const timeFormatter = new DateFormatter("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
 });
 
 const weekdayFormatter = new DateFormatter("en-US", {
   weekday: "short",
 });
 
+export type DueDate = {
+  date: CalendarDate;
+  time: Time | undefined;
+};
+
 type Props = {
-  selected: CalendarDate | undefined;
-  setSelected: (selected: CalendarDate | undefined) => void;
+  selected: DueDate | undefined;
+  setSelected: (selected: DueDate | undefined) => void;
 };
 
 export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
   const label = getLabel(selected);
   const suggestions = getSuggestions();
 
-  const onSelected = (key: Key) => {
-    const selected = suggestions.find((s) => s.id === key);
+  const selectDate = (date: CalendarDate) => {
     if (selected === undefined) {
+      setSelected({ date, time: undefined });
+    } else {
+      setSelected({ date, time: selected.time });
+    }
+  };
+
+  const selectedDateSuggestion = (key: Key) => {
+    const suggestion = suggestions.find((s) => s.id === key);
+    if (suggestion === undefined) {
       return;
     }
 
-    setSelected(selected.target);
+    if (suggestion.target === undefined) {
+      setSelected(undefined);
+    } else {
+      setSelected({ date: suggestion.target, time: selected?.time });
+    }
+  };
+
+  const setTime = (time: Time | undefined) => {
+    if (selected === undefined) {
+      if (time !== undefined) {
+        setSelected({
+          date: today(getLocalTimeZone()),
+          time,
+        });
+      }
+    } else {
+      setSelected({
+        date: selected.date,
+        time,
+      });
+    }
   };
 
   return (
@@ -57,13 +100,13 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
         <ObsidianIcon size={16} id="calendar" />
         {label}
       </Button>
-      <Popover>
+      <Popover maxHeight={600}>
         <Dialog className="task-option-dialog task-date-menu" aria-label="Due date selector">
           {({ close }) => (
             <>
               <Menu
                 onAction={(key: Key) => {
-                  onSelected(key);
+                  selectedDateSuggestion(key);
                   close();
                 }}
                 aria-label="Due date suggestions"
@@ -78,9 +121,9 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
               <Calendar
                 aria-label="Task date"
                 className="date-picker"
-                value={selected ?? null}
+                value={selected?.date ?? null}
                 onChange={(date) => {
-                  setSelected(date);
+                  selectDate(date);
                   close();
                 }}
                 minValue={today(getLocalTimeZone())}
@@ -94,6 +137,24 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
                 </header>
                 <CalendarGrid>{(date) => <CalendarCell date={date} />}</CalendarGrid>
               </Calendar>
+              <hr />
+              <DialogTrigger>
+                <div className="time-picker-container">
+                  <Button className="time-picker-button">
+                    <ObsidianIcon size={10} id="clock" />
+                    Time
+                  </Button>
+                </div>
+                <Popover defaultPlacement="top">
+                  <TimeDialog
+                    selectedTime={selected?.time}
+                    setTime={(time) => {
+                      close();
+                      setTime(time);
+                    }}
+                  />
+                </Popover>
+              </DialogTrigger>
             </>
           )}
         </Dialog>
@@ -102,20 +163,36 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
   );
 };
 
-const getLabel = (selected: CalendarDate | undefined) => {
+const getLabel = (selected: DueDate | undefined) => {
   if (selected === undefined) {
     return "Due date";
   }
 
-  if (isToday(selected, getLocalTimeZone())) {
-    return "Today";
-  }
+  const date = selected.date;
+  const dayPart = (() => {
+    if (isToday(date, getLocalTimeZone())) {
+      return "Today";
+    }
 
-  if (today(getLocalTimeZone()).add({ days: 1 }).compare(selected) === 0) {
-    return "Tomorrow";
-  }
+    if (today(getLocalTimeZone()).add({ days: 1 }).compare(date) === 0) {
+      return "Tomorrow";
+    }
 
-  return formatter.format(selected.toDate(getLocalTimeZone()));
+    return formatter.format(date.toDate(getLocalTimeZone()));
+  })();
+
+  const time = selected.time;
+  const timePart = (() => {
+    if (time === undefined) {
+      return "";
+    }
+
+    return timeFormatter.format(
+      toCalendarDateTime(today(getLocalTimeZone()), time).toDate(getLocalTimeZone()),
+    );
+  })();
+
+  return [dayPart, timePart].join(" ").trimEnd();
 };
 
 type DateSuggestionProps = {
@@ -172,4 +249,42 @@ const getSuggestions = (): DateSuggestionProps[] => {
   ];
 
   return suggestions;
+};
+
+type TimeDialogProps = {
+  selectedTime: Time | undefined;
+  setTime: (time: Time | undefined) => void;
+};
+
+const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTime, setTime }) => {
+  const [taskTime, setTaskTime] = useState(selectedTime);
+
+  return (
+    <Dialog className="task-option-dialog task-time-menu" aria-label="Time selector">
+      {({ close }) => (
+        <>
+          <TimeField className="task-time-picker" value={taskTime ?? null} onChange={setTaskTime}>
+            <Label className="task-time-picker-label">Time</Label>
+            <DateInput className="task-time-picker-input">
+              {(segment) => (
+                <DateSegment className="task-time-picker-input-segment" segment={segment} />
+              )}
+            </DateInput>
+          </TimeField>
+          <div className="task-time-controls">
+            <Button onPress={close}>Cancel</Button>
+            <Button
+              className="mod-cta"
+              onPress={() => {
+                close();
+                setTime(taskTime);
+              }}
+            >
+              Save
+            </Button>
+          </div>
+        </>
+      )}
+    </Dialog>
+  );
 };
