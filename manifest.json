@@ -6,5 +6,6 @@
   "description": "Materialize Todoist tasks within Obsidian notes.",
   "author": "Jamie Brynes",
   "authorUrl": "https://github.com/jamiebrynes7/obsidian-todoist-plugin",
-  "isDesktopOnly": false
+  "isDesktopOnly": false,
+  "fundingUrl": "https://www.buymeacoffee.com/jamiebrynes"
 }
