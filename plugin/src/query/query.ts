@@ -1,6 +1,6 @@
 export enum SortingVariant {
   Priority = 0,
-  PriorityDescending = 1,
+  PriorityAscending = 1,
   Date = 2,
   DateDescending = 3,
   Order = 4,

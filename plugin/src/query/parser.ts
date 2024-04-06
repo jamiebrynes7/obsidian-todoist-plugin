@@ -195,8 +195,8 @@ function optionField<T>(
 
 const sortingLookup: Record<string, SortingVariant> = {
   priority: SortingVariant.Priority,
-  priorityAscending: SortingVariant.Priority,
-  priorityDescending: SortingVariant.PriorityDescending,
+  priorityAscending: SortingVariant.PriorityAscending,
+  priorityDescending: SortingVariant.Priority,
   date: SortingVariant.Date,
   dateAscending: SortingVariant.Date,
   dateDescending: SortingVariant.DateDescending,
