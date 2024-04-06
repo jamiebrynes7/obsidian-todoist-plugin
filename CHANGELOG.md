@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - You can now group by different task properties like: priority, due date, and others. Please see the [documentation](https://jamiebrynes7.github.io/obsidian-todoist-plugin/docs/query-blocks#groupBy) for more details.
 - Rebuilt the add task dialog from scratch. This should fix a number of bugs with the date picker, improves the UX, and brings it inline with the native Todoist experience.
 - Added a new command 'Add task with current page in task description' which offers the ability to append a link to the current page to the task description when it is created.
+- Added support for adding time to due dates in the "create task" modal.
 
 ## [1.12.0] - 2024-02-09
 
