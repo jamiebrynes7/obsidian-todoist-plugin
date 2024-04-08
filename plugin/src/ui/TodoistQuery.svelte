@@ -14,9 +14,11 @@
   import QueryErrorDisplay from "./QueryErrorDisplay.svelte";
   import type TodoistPlugin from "..";
   import { fireCommand } from "../commands";
+  import type { QueryWarning } from "../query/parser";
 
   export let plugin: TodoistPlugin;
   export let query: Query;
+  export let warnings: QueryWarning[];
 
   // Set context items.
   setQuery(query);

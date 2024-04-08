@@ -18,7 +18,9 @@ export class ParsingError extends Error {
   }
 }
 
-export function parseQuery(raw: string): Query {
+export type QueryWarning = string;
+
+export function parseQuery(raw: string): [Query, QueryWarning[]] {
   let obj: Record<string, unknown>;
 
   try {
@@ -31,7 +33,7 @@ export function parseQuery(raw: string): Query {
     }
   }
 
-  return parseObject(obj);
+  return [parseObject(obj), []];
 }
 
 function tryParseAsJson(raw: string): Record<string, unknown> {
