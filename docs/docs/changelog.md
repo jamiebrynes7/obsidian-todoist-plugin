@@ -24,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a new command 'Add task with current page in task description' which offers the ability to append a link to the current page to the task description when it is created.
 - Added support for adding time to due dates in the "create task" modal.
 
+### 🔁 Changes
+
+- Added rendered deprecation warnings to queries. Please follow the warnings to avoid breaking changes in the future!
+
 ### 🐛 Bug Fixes
 
 - The `priorityAscending` and `priorityDescending` options now sort tasks in the correct order.
