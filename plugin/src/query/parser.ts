@@ -1,6 +1,13 @@
 import YAML from "yaml";
 import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "./query";
 
+const possibleWarnings: Record<string, string> = {
+  JsonQuery:
+    "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+  GroupParameter:
+    "The 'group' field is deprecated and will be removed in a future version. Please use 'groupBy' instead.",
+};
+
 export class ParsingError extends Error {
   inner: unknown | undefined;
 
@@ -22,9 +29,11 @@ export type QueryWarning = string;
 
 export function parseQuery(raw: string): [Query, QueryWarning[]] {
   let obj: Record<string, unknown>;
+  const warnings: QueryWarning[] = [];
 
   try {
     obj = tryParseAsJson(raw);
+    warnings.push(possibleWarnings.JsonQuery);
   } catch (e) {
     try {
       obj = tryParseAsYaml(raw);
@@ -33,7 +42,10 @@ export function parseQuery(raw: string): [Query, QueryWarning[]] {
     }
   }
 
-  return [parseObject(obj), []];
+  const [query, parsingWarnings] = parseObject(obj);
+  warnings.push(...parsingWarnings);
+
+  return [query, warnings];
 }
 
 function tryParseAsJson(raw: string): Record<string, unknown> {
@@ -52,24 +64,32 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
   }
 }
 
-function parseObject(query: Record<string, unknown>): Query {
+function parseObject(query: Record<string, unknown>): [Query, QueryWarning[]] {
   // Keep old queries working for a period of time.
   const hasOldGroup = booleanField(query, "group") ?? false;
   const groupBy = hasOldGroup
     ? GroupVariant.Project
     : optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None;
 
-  return {
-    name: stringField(query, "name") ?? "",
-    filter: asRequired("filter", stringField(query, "filter")),
-    autorefresh: numberField(query, "autorefresh", { isPositive: true }) ?? 0,
-    sorting: optionsArrayField(query, "sorting", sortingLookup) ?? [SortingVariant.Order],
-    show: new Set(
-      optionsArrayField(query, "show", showMetadataVariantLookup) ??
-        Object.values(showMetadataVariantLookup),
-    ),
-    groupBy,
-  };
+  const warnings: QueryWarning[] = [];
+  if (hasOldGroup) {
+    warnings.push(possibleWarnings.GroupParameter);
+  }
+
+  return [
+    {
+      name: stringField(query, "name") ?? "",
+      filter: asRequired("filter", stringField(query, "filter")),
+      autorefresh: numberField(query, "autorefresh", { isPositive: true }) ?? 0,
+      sorting: optionsArrayField(query, "sorting", sortingLookup) ?? [SortingVariant.Order],
+      show: new Set(
+        optionsArrayField(query, "show", showMetadataVariantLookup) ??
+          Object.values(showMetadataVariantLookup),
+      ),
+      groupBy,
+    },
+    warnings,
+  ];
 }
 
 function asRequired<T>(key: string, val: T | undefined): T {

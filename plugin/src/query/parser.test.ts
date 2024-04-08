@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ParsingError, parseQuery } from "./parser";
+import { ParsingError, type QueryWarning, parseQuery } from "./parser";
 import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "./query";
 
 describe("parseQuery - rejections", () => {
@@ -225,6 +225,45 @@ describe("parseQuery", () => {
     it(tc.description, () => {
       const [output, _] = parseQuery(JSON.stringify(tc.input));
       expect(output).toStrictEqual(tc.expectedOutput);
+    });
+  }
+});
+
+describe("parseQuery - warnings", () => {
+  type Testcase = {
+    description: string;
+    input: unknown;
+    expectedWarnings: QueryWarning[];
+  };
+
+  const testcases: Testcase[] = [
+    {
+      description: "JSON input format",
+      input: {
+        name: "foo",
+        filter: "bar",
+      },
+      expectedWarnings: [
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+      ],
+    },
+    {
+      description: "old group parameter",
+      input: {
+        filter: "bar",
+        group: true,
+      },
+      expectedWarnings: [
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+        "The 'group' field is deprecated and will be removed in a future version. Please use 'groupBy' instead.",
+      ],
+    },
+  ];
+
+  for (const tc of testcases) {
+    it(tc.description, () => {
+      const [_, warnings] = parseQuery(JSON.stringify(tc.input));
+      expect(warnings).toStrictEqual(tc.expectedWarnings);
     });
   }
 });
