@@ -151,3 +151,20 @@ ul.todoist-task-list {
   margin: 1em 0;
   font-weight: 600;
 }
+
+.todoist-query-warnings {
+  padding: 16px;
+  background-color: rgba(var(--color-yellow-rgb), 0.2);
+  border-radius: 4px;
+}
+
+.todoist-query-warnings-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.todoist-query-warnings-icon {
+  margin-right: 0.5em;
+}
