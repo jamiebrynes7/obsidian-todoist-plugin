@@ -144,6 +144,25 @@
   <ObsidianIcon iconId="plus" size={24} />
 </div>
 <br />
+{#if warnings.length !== 0}
+  <div class="todoist-query-warnings">
+    <div class="todoist-query-warnings-header">
+      <ObsidianIcon
+        iconId="lucide-alert-triangle"
+        size={24}
+        class="todoist-query-warnings-icon"
+      />
+      <span>Warning</span>
+    </div>
+    <div>
+      <ul>
+        {#each warnings as warning}
+          <li>{warning}</li>
+        {/each}
+      </ul>
+    </div>
+  </div>
+{/if}
 {#if fetchedOnce}
   {#if queryError !== undefined}
     <QueryErrorDisplay kind={queryError} />
