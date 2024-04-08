@@ -18,7 +18,7 @@ export class QueryInjector {
     let child: InjectedQuery;
 
     try {
-      const query = parseQuery(source);
+      const [query, warnings] = parseQuery(source);
       applyReplacements(query, ctx);
 
       debug({
@@ -33,6 +33,7 @@ export class QueryInjector {
           target: root,
           props: {
             query: query,
+            warnings: warnings,
             plugin: this.plugin,
           },
         });

@@ -223,7 +223,7 @@ describe("parseQuery", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const output = parseQuery(JSON.stringify(tc.input));
+      const [output, _] = parseQuery(JSON.stringify(tc.input));
       expect(output).toStrictEqual(tc.expectedOutput);
     });
   }
