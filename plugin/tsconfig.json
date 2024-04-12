@@ -6,6 +6,9 @@
   "compilerOptions": {
     "jsx": "react",
     "esModuleInterop": true,
-    "types": ["node", "svelte"]
+    "types": ["node", "svelte"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

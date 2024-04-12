@@ -1,9 +1,10 @@
-import { configDefaults, defineConfig } from "vitest/config";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { viteStaticCopy } from "vite-plugin-static-copy";
 import path, { resolve } from "path";
-import { loadEnv } from "vite";
 import replace from "@rollup/plugin-replace";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+import { loadEnv } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+import tsConfigPaths from "vite-tsconfig-paths";
+import { configDefaults, defineConfig } from "vitest/config";
 
 function getOutDir(): string | undefined {
   const env = loadEnv("prod", process.cwd());
@@ -21,6 +22,7 @@ function getOutDir(): string | undefined {
 
 export default defineConfig({
   plugins: [
+    tsConfigPaths(),
     svelte({
       emitCss: false,
     }),
