@@ -11,5 +11,8 @@
     "rules": {
       "recommended": true
     }
+  },
+  "organizeImports": {
+    "enabled": true
   }
 }
