@@ -32,7 +32,6 @@
                 jq
                 nodejs
                 nodePackages.typescript-language-server
-                nodePackages.svelte-language-server
                 marksman
               ];
               enterShell = enterShellBySystem.${system} or "";
