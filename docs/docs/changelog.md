@@ -10,6 +10,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+> Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
+
+### ✨ Features
+
+- Rebuilt the task renderer from the ground up. This now resembles Todoist more closely and has improved the default styling.
+
 ## v1.13.0 (2024-04-10)
 
 ### ✨ Features
