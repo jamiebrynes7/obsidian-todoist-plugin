@@ -6,15 +6,8 @@ const defaultSettings: Settings = {
   autoRefreshToggle: false,
   autoRefreshInterval: 60,
 
-  renderDescription: true,
-
-  renderDate: true,
   renderDateIcon: true,
-
-  renderProject: true,
   renderProjectIcon: true,
-
-  renderLabels: true,
   renderLabelsIcon: true,
 
   shouldWrapLinksInParens: false,
@@ -27,15 +20,10 @@ export type Settings = {
   autoRefreshToggle: boolean;
   autoRefreshInterval: number;
 
-  renderDescription: boolean;
-
-  renderDate: boolean;
   renderDateIcon: boolean;
 
-  renderProject: boolean;
   renderProjectIcon: boolean;
 
-  renderLabels: boolean;
   renderLabelsIcon: boolean;
 
   shouldWrapLinksInParens: boolean;

@@ -120,48 +120,18 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
       >
         <Setting.ToggleControl {...toggleProps("fadeToggle")} />
       </Setting.Root>
-      <Setting.Root
-        name="Enable descriptions"
-        description="Whether descriptions should be rendered with tasks"
-        deprecationMessage="Please use the show property in the query block instead."
-      >
-        <Setting.ToggleControl {...toggleProps("renderDescription")} />
-      </Setting.Root>
 
-      <Setting.Root
-        name="Enable dates"
-        description="Whether dates should be rendered with tasks"
-        deprecationMessage="Please use the show property in the query block instead."
-      >
-        <Setting.ToggleControl {...toggleProps("renderDate")} />
-      </Setting.Root>
       <Setting.Root
         name="Enable dates icon"
         description="Whether rendered dates should include an icon"
       >
         <Setting.ToggleControl {...toggleProps("renderDateIcon")} />
       </Setting.Root>
-
-      <Setting.Root
-        name="Enable project & section"
-        description="Whether the project & section should be rendered with tasks"
-        deprecationMessage="Please use the show property in the query block instead."
-      >
-        <Setting.ToggleControl {...toggleProps("renderProject")} />
-      </Setting.Root>
       <Setting.Root
         name="Enable project & section icon"
         description="Whether rendered projects & sections should include an icon"
       >
         <Setting.ToggleControl {...toggleProps("renderProjectIcon")} />
-      </Setting.Root>
-
-      <Setting.Root
-        name="Enable labels"
-        description="Whether labels should be rendered with tasks"
-        deprecationMessage="Please use the show property in the query block instead."
-      >
-        <Setting.ToggleControl {...toggleProps("renderLabels")} />
       </Setting.Root>
       <Setting.Root
         name="Enable label icon"
