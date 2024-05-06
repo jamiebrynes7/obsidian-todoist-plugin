@@ -39,9 +39,7 @@ export const Task: React.FC<Props> = ({ tree }) => {
   const isDisabled = tree.content.startsWith("*");
 
   const shouldRenderDescription =
-    settings.renderDescription &&
-    query.show.has(ShowMetadataVariant.Description) &&
-    tree.description !== "";
+    query.show.has(ShowMetadataVariant.Description) && tree.description !== "";
 
   const transitionOpacity = settings.fadeToggle ? 0 : 1;
 
