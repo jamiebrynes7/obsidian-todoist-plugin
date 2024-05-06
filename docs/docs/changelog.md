@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
 
+### Breaking changes
+
+- Removed the deprecated settings for rendering the description, due date, labels, or projects. Please use the `show` property in the query.
+
 ### ✨ Features
 
 - Rebuilt the task renderer from the ground up. This now resembles Todoist more closely and has improved the default styling.
