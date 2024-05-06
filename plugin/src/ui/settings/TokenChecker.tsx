@@ -1,9 +1,9 @@
+import { PluginContext } from "@/ui/context";
 import React, { useEffect, useState } from "react";
 import { TodoistApiClient } from "../../api";
 import { ObsidianFetcher } from "../../api/fetcher";
 import { TokenValidation } from "../../token";
 import { TokenValidationIcon } from "../components/token-validation-icon";
-import { usePluginContext } from "../context/plugin";
 import { Setting } from "./SettingItem";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const TokenChecker: React.FC<Props> = ({ tester }) => {
-  const plugin = usePluginContext();
+  const plugin = PluginContext.use();
   const { token: tokenAccessor, todoist, modals } = plugin.services;
 
   const [tokenState, setTokenState] = useState<TokenValidation.Result>({ kind: "in-progress" });

@@ -1,6 +1,5 @@
 import path, { resolve } from "path";
 import replace from "@rollup/plugin-replace";
-import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { loadEnv } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -23,9 +22,6 @@ function getOutDir(): string | undefined {
 export default defineConfig({
   plugins: [
     tsConfigPaths(),
-    svelte({
-      emitCss: false,
-    }),
     viteStaticCopy({
       targets: [
         {

@@ -1,3 +1,5 @@
+import { useSettingsStore } from "@/settings";
+import { ModalContext, PluginContext } from "@/ui/context";
 import { getLocalTimeZone, toCalendarDateTime, toZoned } from "@internationalized/date";
 import { Notice, TFile } from "obsidian";
 import React, { useEffect, useState } from "react";
@@ -5,8 +7,6 @@ import { Button } from "react-aria-components";
 import type TodoistPlugin from "../..";
 import type { Label } from "../../api/domain/label";
 import type { CreateTaskParams, Priority } from "../../api/domain/task";
-import { useModalContext } from "../context/modal";
-import { usePluginContext } from "../context/plugin";
 import { type DueDate, DueDateSelector } from "./DueDateSelector";
 import { LabelSelector } from "./LabelSelector";
 import { PrioritySelector } from "./PrioritySelector";
@@ -26,7 +26,7 @@ type CreateTaskProps = {
 };
 
 export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
-  const plugin = usePluginContext();
+  const plugin = PluginContext.use();
 
   const [isReady, setIsReady] = useState(plugin.services.todoist.isReady());
 
@@ -57,8 +57,9 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   fileContext,
   options: initialOptions,
 }) => {
-  const plugin = usePluginContext();
-  const modal = useModalContext();
+  const plugin = PluginContext.use();
+  const settings = useSettingsStore();
+  const modal = ModalContext.use();
 
   const [content, setContent] = useState(initialContent);
   const [description, setDescription] = useState("");
@@ -75,11 +76,11 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     const builder = [initial];
     if (withLink && fileContext !== undefined) {
       builder.push(" ");
-      if (plugin.options.shouldWrapLinksInParens) {
+      if (settings.shouldWrapLinksInParens) {
         builder.push("(");
       }
       builder.push(getLinkForFile(fileContext));
-      if (plugin.options.shouldWrapLinksInParens) {
+      if (settings.shouldWrapLinksInParens) {
         builder.push(")");
       }
     }

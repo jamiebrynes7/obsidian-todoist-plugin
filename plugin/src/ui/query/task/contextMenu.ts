@@ -1,27 +1,27 @@
-import { Menu, Notice } from "obsidian";
+import type { Task } from "@/data/task";
+import type TodoistPlugin from "@/index";
+import { Menu } from "obsidian";
 import type { Point } from "obsidian";
-import type { TaskId } from "./api/domain/task";
-import type { Task } from "./data/task";
 
-interface TaskContext {
+type TaskContext = {
   task: Task;
-  closeTask: (id: TaskId) => Promise<void>;
-}
+  plugin: TodoistPlugin;
+};
 
-export function showTaskContext(taskCtx: TaskContext, position: Point) {
+export function showTaskContext(ctx: TaskContext, position: Point) {
   new Menu()
     .addItem((menuItem) =>
       menuItem
         .setTitle("Complete task")
         .setIcon("check-small")
-        .onClick(async () => taskCtx.closeTask(taskCtx.task.id)),
+        .onClick(async () => await ctx.plugin.services.todoist.actions.closeTask(ctx.task.id)),
     )
     .addItem((menuItem) =>
       menuItem
         .setTitle("Open task in Todoist (app)")
         .setIcon("popup-open")
         .onClick(() => {
-          openExternal(`todoist://task?id=${taskCtx.task.id}`);
+          openExternal(`todoist://task?id=${ctx.task.id}`);
         }),
     )
     .addItem((menuItem) =>
@@ -30,7 +30,7 @@ export function showTaskContext(taskCtx: TaskContext, position: Point) {
         .setIcon("popup-open")
         .onClick(() =>
           openExternal(
-            `https://todoist.com/app/project/${taskCtx.task.project.id}/task/${taskCtx.task.id}`,
+            `https://todoist.com/app/project/${ctx.task.project.id}/task/${ctx.task.id}`,
           ),
         ),
     )

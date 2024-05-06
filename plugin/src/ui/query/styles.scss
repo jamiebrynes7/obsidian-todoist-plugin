@@ -1,0 +1,258 @@
+.todoist-query-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .todoist-query-title {
+    font-size: 1.25em;
+  }
+
+  .todoist-query-controls {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+
+    * + * {
+      margin-left: 0.5em;
+    }
+
+    .todoist-query-control-button {
+      padding: var(--size-2-2) var(--size-2-3);
+      color: var(--text-muted);
+      border-radius: var(--radius-s);
+      border: 1px solid var(--color-base-40);
+      box-shadow: none;
+
+      transition: opacity 0.33s;
+      opacity: 0;
+
+      .block-language-todoist:hover & {
+        opacity: 1;
+      }
+
+      &:hover {
+        background-color: inherit;
+        border: 1px solid var(--interactive-accent);
+      }
+
+      .markdown-reading-view &.edit-query {
+        display: none;
+      }
+
+      &.refresh-query.is-refreshing > .obsidian-icon {
+        @-webkit-keyframes spin {
+          100% {
+            -webkit-transform: rotate(360deg);
+          }
+        }
+
+        animation: spin 1s linear infinite reverse;
+      }
+    }
+  }
+}
+
+.todoist-query-warnings {
+  --todoist-callout-color: rgba(var(--color-yellow-rgb), 0.2);
+}
+
+.todoist-tasks-list {
+  margin-top: 1em;
+
+  .todoist-tasks-list {
+    margin-top: 0em;
+    margin-left: 2em;
+
+    & + .todoist-task-container {
+      border-top: none;
+    }
+
+    .todoist-task-container:first-child {
+      border-top: none;
+    }
+  }
+}
+
+.todoist-task-container {
+  display: flex;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--todoist-task-separator-color);
+
+  &:first-child {
+    border-top: 1px solid var(--todoist-task-separator-color);
+  }
+
+  &[data-priority="1"] {
+    --todoist-checkbox-border: var(--todoist-p4-border);
+    --todoist-checkbox-border-hover: var(--todoist-p4-border-hover);
+    --todoist-checkbox-background: var(--todoist-p4-background);
+  }
+  &[data-priority="2"] {
+    --todoist-checkbox-border: var(--todoist-p3-border);
+    --todoist-checkbox-border-hover: var(--todoist-p3-border-hover);
+    --todoist-checkbox-background: var(--todoist-p3-background);
+  }
+  &[data-priority="3"] {
+    --todoist-checkbox-border: var(--todoist-p2-border);
+    --todoist-checkbox-border-hover: var(--todoist-p2-border-hover);
+    --todoist-checkbox-background: var(--todoist-p2-background);
+  }
+  &[data-priority="4"] {
+    --todoist-checkbox-border: var(--todoist-p1-border);
+    --todoist-checkbox-border-hover: var(--todoist-p1-border-hover);
+    --todoist-checkbox-background: var(--todoist-p1-background);
+  }
+
+  .todoist-task-checkbox {
+    margin-top: 3px;
+
+    div {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      border: 1px solid var(--todoist-checkbox-border);
+      background-color: var(--todoist-checkbox-background);
+
+      &:hover {
+        border: 1px solid var(--todoist-checkbox-border-hover);
+      }
+    }
+  }
+
+  .todoist-task {
+    margin-left: 0.5em;
+    width: 100%;
+
+    .todoist-task-description {
+      font-size: var(--font-small);
+      color: var(--text-muted);
+    }
+
+    .todoist-task-metadata {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-smaller);
+      margin-top: 0.25em;
+      --icon-size: 14px;
+      color: var(--text-muted);
+
+      & > div {
+        display: flex;
+
+        & > * + * {
+          margin-left: 0.5em;
+        }
+      }
+
+      .task-metadata-item {
+        display: flex;
+        align-items: center;
+
+        & > * + * {
+          margin-left: 0.25em;
+        }
+
+        &[data-task-metadata-kind="project"] .obsidian-icon {
+          color: var(--todoist-project-color);
+        }
+      }
+    }
+  }
+
+  &[data-project-color="berry_red"] {
+    --todoist-project-color: var(--todoist-berry-red);
+  }
+
+  &[data-project-color="red"] {
+    --todoist-project-color: var(--todoist-red);
+  }
+
+  &[data-project-color="orange"] {
+    --todoist-project-color: var(--todoist-orange);
+  }
+
+  &[data-project-color="yellow"] {
+    --todoist-project-color: var(--todoist-yellow);
+  }
+
+  &[data-project-color="olive_green"] {
+    --todoist-project-color: var(--todoist-olive-green);
+  }
+
+  &[data-project-color="lime_green"] {
+    --todoist-project-color: var(--todoist-lime-green);
+  }
+
+  &[data-project-color="green"] {
+    --todoist-project-color: var(--todoist-green);
+  }
+
+  &[data-project-color="mint_green"] {
+    --todoist-project-color: var(--todoist-mint-green);
+  }
+
+  &[data-project-color="teal"] {
+    --todoist-project-color: var(--todoist-teal);
+  }
+
+  &[data-project-color="sky_blue"] {
+    --todoist-project-color: var(--todoist-sky-blue);
+  }
+
+  &[data-project-color="light_blue"] {
+    --todoist-project-color: var(--todoist-light-blue);
+  }
+
+  &[data-project-color="blue"] {
+    --todoist-project-color: var(--todoist-blue);
+  }
+
+  &[data-project-color="grape"] {
+    --todoist-project-color: var(--todoist-grape);
+  }
+
+  &[data-project-color="violet"] {
+    --todoist-project-color: var(--todoist-violet);
+  }
+
+  &[data-project-color="lavender"] {
+    --todoist-project-color: var(--todoist-lavender);
+  }
+
+  &[data-project-color="magenta"] {
+    --todoist-project-color: var(--todoist-magenta);
+  }
+
+  &[data-project-color="salmon"] {
+    --todoist-project-color: var(--todoist-salmon);
+  }
+
+  &[data-project-color="charcoal"] {
+    --todoist-project-color: var(--todoist-charcoal);
+  }
+
+  &[data-project-color="grey"] {
+    --todoist-project-color: var(--todoist-grey);
+  }
+
+  &[data-project-color="taupe"] {
+    --todoist-project-color: var(--todoist-taupe);
+  }
+}
+
+.todoist-group + .todoist-group {
+  margin-top: 2em;
+}
+
+.todoist-group-title {
+  margin: 1em 0;
+  font-weight: 600;
+}
+
+.todoist-no-tasks {
+  --todoist-callout-color: rgba(var(--color-green-rgb), 0.2);
+}
+
+.todoist-query-error {
+  --todoist-callout-color: rgba(var(--color-red-rgb), 0.2);
+}

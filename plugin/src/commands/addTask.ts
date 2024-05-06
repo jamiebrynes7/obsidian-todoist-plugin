@@ -28,11 +28,6 @@ export const addTaskWithPageInDescription: MakeCommand = (plugin: TodoistPlugin)
 
 const makeCallback = (plugin: TodoistPlugin, opts?: Partial<TaskCreationOptions>) => {
   return () => {
-    if (plugin.options === null) {
-      new Notice("Failed to load settings, cannot open task creation modal.");
-      return;
-    }
-
     plugin.services.modals.taskCreation({
       initialContent: grabSelection(plugin),
       fileContext: getFileContext(plugin),
