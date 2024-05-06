@@ -1,10 +1,10 @@
+import { PluginContext } from "@/ui/context";
 import { App, PluginSettingTab } from "obsidian";
 import React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "../..";
-import { type ISettings } from "../../settings";
+import { type Settings, useSettingsStore } from "../../settings";
 import { TokenValidation } from "../../token";
-import { PluginContext } from "../context/plugin";
 import { AutoRefreshIntervalControl } from "./AutoRefreshIntervalControl";
 import { Setting } from "./SettingItem";
 import { TokenChecker } from "./TokenChecker";
@@ -35,18 +35,20 @@ type Props = {
 };
 
 type SettingsKeys<V> = {
-  [K in keyof ISettings]: ISettings[K] extends V ? K : never;
-}[keyof ISettings];
+  [K in keyof Settings]: Settings[K] extends V ? K : never;
+}[keyof Settings];
 
 const SettingsRoot: React.FC<Props> = ({ plugin }) => {
+  const settings = useSettingsStore();
+
   const toggleProps = (key: SettingsKeys<boolean>) => {
     const onClick = async (val: boolean) => {
-      await plugin.writeOptions((old) => {
-        old[key] = val;
+      await plugin.writeOptions({
+        [key]: val,
       });
     };
 
-    const value = plugin.options[key];
+    const value = settings[key];
 
     return {
       value,
@@ -55,8 +57,8 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
   };
 
   const updateAutoRefreshInterval = async (val: number) => {
-    await plugin.writeOptions((old) => {
-      old.autoRefreshInterval = val;
+    await plugin.writeOptions({
+      autoRefreshInterval: val,
     });
   };
 
@@ -106,7 +108,7 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
         description="The interval, in seconds, that queries will be auto-refreshed by default"
       >
         <AutoRefreshIntervalControl
-          initialValue={plugin.options.autoRefreshInterval}
+          initialValue={settings.autoRefreshInterval}
           onChange={updateAutoRefreshInterval}
         />
       </Setting.Root>

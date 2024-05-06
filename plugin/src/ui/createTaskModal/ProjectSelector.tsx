@@ -1,3 +1,4 @@
+import { PluginContext } from "@/ui/context";
 import { Platform } from "obsidian";
 import React, { useMemo, useState } from "react";
 import {
@@ -14,7 +15,6 @@ import type TodoistPlugin from "../..";
 import type { Project, ProjectId } from "../../api/domain/project";
 import type { Section, SectionId } from "../../api/domain/section";
 import { ObsidianIcon } from "../components/obsidian-icon";
-import { usePluginContext } from "../context/plugin";
 import { Popover } from "./Popover";
 
 export type ProjectIdentifier = {
@@ -28,7 +28,7 @@ type Props = {
 };
 
 export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
-  const plugin = usePluginContext();
+  const plugin = PluginContext.use();
   const todoistData = plugin.services.todoist.data();
 
   const [filter, setFilter] = useState("");
@@ -223,7 +223,7 @@ const ProjectLabel: React.FC<{ project: Project }> = ({ project }) => {
 };
 
 const ButtonLabel: React.FC<ProjectIdentifier> = ({ projectId, sectionId }) => {
-  const { projects, sections } = usePluginContext().services.todoist.data();
+  const { projects, sections } = PluginContext.use().services.todoist.data();
 
   const selectedProject = projects.byId(projectId);
   if (selectedProject === undefined) {

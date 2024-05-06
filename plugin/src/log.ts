@@ -1,13 +1,7 @@
-import type { ISettings } from "./settings";
-import { settings } from "./settings";
-
-let _settings: ISettings | undefined = undefined;
-settings.subscribe((update) => {
-  _settings = update;
-});
+import { useSettingsStore } from "@/settings";
 
 export default function debug(log: string | LogMessage) {
-  if (!_settings?.debugLogging ?? false) {
+  if (!useSettingsStore.getState().debugLogging) {
     return;
   }
 

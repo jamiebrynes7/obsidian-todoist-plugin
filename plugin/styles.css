@@ -1,98 +1,24 @@
-.todoist-query-title {
-  display: inline;
-  font-size: 1.25em;
-}
-
-.is-live-preview .todoist-refresh-button {
-  /* The refresh button sits next to the built-in 'Edit' button. So we need to place this excatly to the right of that one. But with --size-2-2 as buffer to it. */
-  margin-right: calc(var(--icon-size) + 3 * var(--size-2-2));
-}
-
-.is-live-preview .todoist-add-button {
-  /* The add button is two buttons in, so we need to double the padding size */
-  margin-right: calc(2 * var(--icon-size) + 6 * var(--size-2-2));
-}
-
-.markdown-reading-view .todoist-add-button,
-.markdown-reading-view .todoist-refresh-button {
-  float: right;
-  margin-left: 8px;
-  color: var(--text-muted);
-  border-radius: var(--radius-s);
-  padding: var(--size-2-2) var(--size-2-3);
-}
-
-.markdown-reading-view .todoist-add-button:hover,
-.markdown-reading-view .todoist-refresh-button:hover {
-  background-color: var(--background-modifier-hover);
-}
-
-.is-live-preview .todoist-refresh-button.todoist-refresh-fetching {
-  opacity: 1 !important;
-}
-
-.todoist-refresh-fetching>div {
-  animation: spin 1s linear infinite reverse;
-}
-
-@-webkit-keyframes spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-.markdown-reading-view .task-metadata,
-.markdown-reading-view .todoist-task-description {
-  margin-left: 6px;
-}
-
-.is-live-preview .task-metadata,
-.is-live-preview .todoist-task-description {
-  margin-left: 34px;
-}
-
-.task-metadata-item {
-  display: flex;
-  align-items: center;
-}
-
-.task-metadata-item>*+* {
-  margin-left: 0.25rem;
-}
-
-.task-metadata-item.task-overdue {
-  color: var(--text-error);
-}
-
-.todoist-project {
-  white-space: normal;
-}
-
-.todoist-error {
-  background-color: rgb(var(--background-modifier-error-rgb), 0.5);
-  border: 1px solid var(--background-modifier-error);
-  padding: 0 10px 20px 10px;
-  margin-top: 20px;
-}
-
-.todoist-success {
-  border: 1px solid var(--background-modifier-border);
-  padding: 0 10px 20px 10px;
-  margin-top: 20px;
-}
-
-.todoist-task-content {
-  display: inline;
-  text-indent: 0px;
-}
-
-ul.todoist-task-list {
-  white-space: normal;
-  padding-inline-start: calc(var(--list-indent) - 11px);
-}
-
-.markdown-reading-view .hide-in-reading-view {
-  display: none;
+body {
+  --todoist-berry-red: #b8256f;
+  --todoist-red: #db4035;
+  --todoist-orange: #ff9933;
+  --todoist-yellow: #fad000;
+  --todoist-olive-green: #afb83b;
+  --todoist-lime-green: #7ecc49;
+  --todoist-green: #299438;
+  --todoist-mint-green: #6accbc;
+  --todoist-teal: #158fad;
+  --todoist-sky-blue: #14aaf5;
+  --todoist-light-blue: #96c3eb;
+  --todoist-blue: #4073ff;
+  --todoist-grape: #884dff;
+  --todoist-violet: #af38eb;
+  --todoist-lavender: #eb96eb;
+  --todoist-magenta: #e05194;
+  --todoist-salmon: #ff8d85;
+  --todoist-charcoal: #808080;
+  --todoist-grey: #b8b8b8;
+  --todoist-taupe: #ccac93;
 }
 
 .theme-dark {
@@ -107,6 +33,12 @@ ul.todoist-task-list {
   --todoist-p3-border: #5297ff;
   --todoist-p3-border-hover: #5297ff80;
   --todoist-p3-background: rgba(82, 151, 255, .1);
+
+  --todoist-p4-border: var(--color-base-50);
+  --todoist-p4-border-hover: var(--color-base-50);
+  --todoist-p4-background: unset;
+
+  --todoist-task-separator-color: var(--color-base-30);
 }
 
 .theme-light {
@@ -121,50 +53,10 @@ ul.todoist-task-list {
   --todoist-p3-border: #246fe0;
   --todoist-p3-border-hover: #246fe080;
   --todoist-p3-background: rgba(36, 111, 224, .1);
-}
 
-.todoist-p1 input {
-  --checkbox-border-color: var(--todoist-p1-border);
-  --checkbox-border-color-hover: var(--todoist-p1-border-hover);
-  background-color: var(--todoist-p1-background);
+  --todoist-p4-border: var(--color-base-50);
+  --todoist-p4-border-hover: var(--color-base-50);
+  --todoist-p4-background: unset;
 
-}
-
-.todoist-p2 input {
-  --checkbox-border-color: var(--todoist-p2-border);
-  --checkbox-border-color-hover: var(--todoist-p2-border-hover);
-  background-color: var(--todoist-p2-background);
-}
-
-.todoist-p3 input {
-  --checkbox-border-color: var(--todoist-p3-border);
-  --checkbox-border-color-hover: var(--todoist-p3-border-hover);
-  background-color: var(--todoist-p3-background);
-}
-
-.todoist-task-description {
-  font-size: 80%;
-  color: var(--text-muted);
-}
-
-.todoist-group-title {
-  margin: 1em 0;
-  font-weight: 600;
-}
-
-.todoist-query-warnings {
-  padding: 16px;
-  background-color: rgba(var(--color-yellow-rgb), 0.2);
-  border-radius: 4px;
-}
-
-.todoist-query-warnings-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-
-.todoist-query-warnings-icon {
-  margin-right: 0.5em;
+  --todoist-task-separator-color: var(--color-base-25);
 }

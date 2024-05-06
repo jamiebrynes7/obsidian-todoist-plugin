@@ -20,6 +20,7 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
       order: 1,
       parentId: null,
       isInboxProject: false,
+      color: "grey",
     },
     section: opts?.section,
 

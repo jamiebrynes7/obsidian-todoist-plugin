@@ -1,8 +1,8 @@
+import { ModalContext } from "@/ui/context";
 import { Platform } from "obsidian";
 import type { PropsWithChildren } from "react";
 import React from "react";
 import { Popover as AriaPopover, type PopoverProps } from "react-aria-components";
-import { useModalContext } from "../context/modal";
 
 type Props = {
   maxHeight?: number;
@@ -14,7 +14,7 @@ export const Popover: React.FC<PropsWithChildren<Props>> = ({
   defaultPlacement,
   maxHeight,
 }) => {
-  const modal = useModalContext();
+  const modal = ModalContext.use();
 
   return (
     <AriaPopover

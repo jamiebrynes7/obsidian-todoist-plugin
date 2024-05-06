@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { setIcon } from "obsidian";
 import React, { useEffect } from "react";
 import { useRef } from "react";
@@ -10,8 +11,7 @@ type Props = {
 };
 
 export const ObsidianIcon: React.FC<Props> = ({ size, id, className }) => {
-  const div = useRef<HTMLDivElement | null>(null);
-
+  const div = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (div.current === null) {
       return;
@@ -20,5 +20,5 @@ export const ObsidianIcon: React.FC<Props> = ({ size, id, className }) => {
     setIcon(div.current, id, size);
   }, [id, size]);
 
-  return <div className={`obsidian-icon ${className ?? ""}`} ref={div} />;
+  return <div className={classNames("obsidian-icon", className)} ref={div} />;
 };

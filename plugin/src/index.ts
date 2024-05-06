@@ -4,31 +4,17 @@ import "../styles.css";
 import { TodoistApiClient } from "./api";
 import { ObsidianFetcher } from "./api/fetcher";
 import { registerCommands } from "./commands";
-import debug from "./log";
 import { QueryInjector } from "./query/injector";
 import { type Services, makeServices } from "./services";
-import { settings } from "./settings";
-import { type ISettings, defaultSettings } from "./settings";
+import { type Settings, useSettingsStore } from "./settings";
 import { SettingsTab } from "./ui/settings";
 
 export default class TodoistPlugin extends Plugin {
-  public options: ISettings;
-
   public readonly services: Services;
 
   constructor(app: App, pluginManifest: PluginManifest) {
     super(app, pluginManifest);
-    this.options = { ...defaultSettings };
     this.services = makeServices(this);
-
-    settings.subscribe((value) => {
-      debug({
-        msg: "Settings changed",
-        context: value,
-      });
-
-      this.options = value;
-    });
   }
 
   async onload() {
@@ -65,21 +51,18 @@ export default class TodoistPlugin extends Plugin {
   async loadOptions(): Promise<void> {
     const options = await this.loadData();
 
-    settings.update((old) => {
+    useSettingsStore.setState((old) => {
       return {
         ...old,
-        ...(options || {}),
+        ...options,
       };
-    });
+    }, true);
 
-    await this.saveData(this.options);
+    await this.saveData(useSettingsStore.getState());
   }
 
-  async writeOptions(changeOpts: (settings: ISettings) => void): Promise<void> {
-    settings.update((old) => {
-      changeOpts(old);
-      return old;
-    });
-    await this.saveData(this.options);
+  async writeOptions(update: Partial<Settings>): Promise<void> {
+    useSettingsStore.setState(update);
+    await this.saveData(useSettingsStore.getState());
   }
 }

@@ -6,4 +6,5 @@ export type Project = {
   name: string;
   order: number;
   isInboxProject: boolean;
+  color: string;
 };

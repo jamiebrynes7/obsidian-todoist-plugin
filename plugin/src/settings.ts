@@ -1,6 +1,6 @@
-import { writable } from "svelte/store";
+import { create } from "zustand";
 
-export const defaultSettings: ISettings = {
+const defaultSettings: Settings = {
   fadeToggle: true,
 
   autoRefreshToggle: false,
@@ -22,9 +22,7 @@ export const defaultSettings: ISettings = {
   debugLogging: false,
 };
 
-export const settings = writable<ISettings>({ ...defaultSettings });
-
-export interface ISettings {
+export type Settings = {
   fadeToggle: boolean;
   autoRefreshToggle: boolean;
   autoRefreshInterval: number;
@@ -43,4 +41,8 @@ export interface ISettings {
   shouldWrapLinksInParens: boolean;
 
   debugLogging: boolean;
-}
+};
+
+export const useSettingsStore = create<Settings>((set) => ({
+  ...defaultSettings,
+}));

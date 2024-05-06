@@ -37,6 +37,7 @@ function makeProject(id: string, opts?: Partial<Project>): Project {
     name: opts?.name ?? "Project",
     order: opts?.order ?? 1,
     isInboxProject: false,
+    color: "grey",
   };
 }
 

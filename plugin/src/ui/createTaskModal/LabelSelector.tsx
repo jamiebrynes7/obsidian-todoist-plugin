@@ -1,9 +1,8 @@
-import classNames from "classnames";
+import { PluginContext } from "@/ui/context";
 import React, { useMemo } from "react";
 import { Button, DialogTrigger, ListBox, ListBoxItem, type Selection } from "react-aria-components";
 import type { Label } from "../../api/domain/label";
 import { ObsidianIcon } from "../components/obsidian-icon";
-import { usePluginContext } from "../context/plugin";
 import { Popover } from "./Popover";
 
 type Props = {
@@ -12,7 +11,7 @@ type Props = {
 };
 
 export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
-  const plugin = usePluginContext();
+  const plugin = PluginContext.use();
 
   const options = useMemo(() => {
     return Array.from(plugin.services.todoist.data().labels.iter());

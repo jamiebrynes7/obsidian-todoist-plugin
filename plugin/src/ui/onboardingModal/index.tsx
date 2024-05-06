@@ -1,7 +1,7 @@
+import { ModalContext } from "@/ui/context";
 import { Notice } from "obsidian";
 import React from "react";
 import { TokenValidation } from "../../token";
-import { useModalContext } from "../context/modal";
 import { TokenInputForm } from "./TokenInputForm";
 import "./styles.scss";
 
@@ -12,7 +12,7 @@ type OnboardingProps = {
 };
 
 export const OnboardingModal: React.FC<OnboardingProps> = ({ onTokenSubmit }) => {
-  const modal = useModalContext();
+  const modal = ModalContext.use();
 
   const callback = (token: string) => {
     modal.close();

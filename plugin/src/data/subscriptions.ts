@@ -12,7 +12,7 @@ export class SubscriptionManager<T> {
     return () => this.subscriptions.delete(id);
   }
 
-  public listActive(): IterableIterator<T> {
+  public list(): IterableIterator<T> {
     return this.subscriptions.values();
   }
 }
