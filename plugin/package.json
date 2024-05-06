@@ -33,7 +33,6 @@
     "@rollup/plugin-replace": "^5.0.5",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
-    "@tsconfig/svelte": "^5.0.0",
     "@types/node": "^18.11.17",
     "@types/react-dom": "^18.2.19",
     "jsdom": "^24.0.0",
