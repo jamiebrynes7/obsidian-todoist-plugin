@@ -52,6 +52,12 @@ export class TodoistApiClient {
     return camelize(JSON.parse(response.body)) as Label[];
   }
 
+  public async editTask(id: TaskId, content: string, options?: CreateTaskParams): Promise<void> {
+    const body = snakify({ content: content, ...(options ?? {}) });
+    await this.do(`/tasks/${id}`, "POST", body);
+  }
+
+
   private async do(path: string, method: string, json?: object): Promise<WebResponse> {
     const params: RequestParams = {
       url: `https://api.todoist.com/rest/v2${path}`,
