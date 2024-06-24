@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import React from "react";
 import { Button, type Key, Label, Menu, MenuItem, MenuTrigger } from "react-aria-components";
-import { type Priority } from "../../api/domain/task";
-import { ObsidianIcon } from "../components/obsidian-icon";
+import { type Priority } from "../../../api/domain/task";
+import { ObsidianIcon } from "../obsidian-icon";
 import { Popover } from "./Popover";
 
 type Props = {

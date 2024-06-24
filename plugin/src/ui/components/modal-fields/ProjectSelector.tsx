@@ -11,10 +11,10 @@ import {
   ListBoxItem,
   SearchField,
 } from "react-aria-components";
-import type TodoistPlugin from "../..";
-import type { Project, ProjectId } from "../../api/domain/project";
-import type { Section, SectionId } from "../../api/domain/section";
-import { ObsidianIcon } from "../components/obsidian-icon";
+import type TodoistPlugin from "../../..";
+import type { Project, ProjectId } from "../../../api/domain/project";
+import type { Section, SectionId } from "../../../api/domain/section";
+import { ObsidianIcon } from "../obsidian-icon";
 import { Popover } from "./Popover";
 
 export type ProjectIdentifier = {

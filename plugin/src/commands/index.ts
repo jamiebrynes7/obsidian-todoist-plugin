@@ -1,7 +1,7 @@
 import { type Command as ObsidianCommand } from "obsidian";
 import type TodoistPlugin from "..";
 import debug from "../log";
-import { addTask, addTaskWithPageInContent, addTaskWithPageInDescription } from "./addTask";
+import { addTask, addTaskWithPageInContent, addTaskWithPageInDescription} from "./addTask";
 
 export type MakeCommand = (plugin: TodoistPlugin) => Omit<ObsidianCommand, "id">;
 

@@ -16,6 +16,12 @@ export function showTaskContext(ctx: TaskContext, position: Point) {
         .setIcon("check-small")
         .onClick(async () => await ctx.plugin.services.todoist.actions.closeTask(ctx.task.id)),
     )
+    .addItem((menuItem) => 
+      menuItem
+        .setTitle("Edit Task")
+        .setIcon("pencil")
+        .onClick(() => ctx.plugin.services.modals.taskEditor({task: ctx.task}))
+    )
     .addItem((menuItem) =>
       menuItem
         .setTitle("Open task in Todoist (app)")
