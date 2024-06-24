@@ -24,6 +24,12 @@ export function showTaskContext(ctx: TaskContext, position: Point) {
     )
     .addItem((menuItem) =>
       menuItem
+        .setTitle("Edit Task")
+        .setIcon("pencil")
+        .onClick(() => ctx.plugin.services.modals.taskEditor({ task: ctx.task })),
+    )
+    .addItem((menuItem) =>
+      menuItem
         .setTitle("Open task in Todoist (app)")
         .setIcon("popup-open")
         .onClick(() => {
