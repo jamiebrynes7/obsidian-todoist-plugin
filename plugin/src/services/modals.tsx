@@ -4,6 +4,7 @@ import React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "..";
 import { CreateTaskModal } from "../ui/createTaskModal";
+import { EditTaskModal } from "../ui/editTaskModal";
 import { OnboardingModal } from "../ui/onboardingModal";
 
 type ModalOptions = {
@@ -75,6 +76,12 @@ export class ModalHandler {
 
   public taskCreation(props: React.ComponentProps<typeof CreateTaskModal>) {
     new ReactModal(this.plugin, CreateTaskModal, props, {
+      dontCloseOnExternalClick: Platform.isMobileApp,
+    }).open();
+  }
+
+  public taskEditor(props: React.ComponentProps<typeof EditTaskModal>) {
+    new ReactModal(this.plugin, EditTaskModal, props, {
       dontCloseOnExternalClick: Platform.isMobileApp,
     }).open();
   }

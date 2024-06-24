@@ -6,11 +6,11 @@ import Markdown from "@/ui/components/markdown";
 import { PluginContext, QueryContext } from "@/ui/context";
 import { TaskList } from "@/ui/query/task/TaskList";
 import { TaskMetadata } from "@/ui/query/task/TaskMetadata";
-import { showTaskContext } from "@/ui/query/task/contextMenu";
 import { motion } from "framer-motion";
 import { Notice } from "obsidian";
 import React, { type MouseEvent } from "react";
 import { Checkbox } from "react-aria-components";
+import { showTaskContext } from "./contextMenu";
 
 type Props = {
   tree: TaskTree;

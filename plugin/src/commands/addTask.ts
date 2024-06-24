@@ -1,4 +1,4 @@
-import { MarkdownView, Notice, TFile } from "obsidian";
+import { MarkdownView, TFile } from "obsidian";
 import type { MakeCommand } from ".";
 import type TodoistPlugin from "..";
 import type { TaskCreationOptions } from "../ui/createTaskModal";

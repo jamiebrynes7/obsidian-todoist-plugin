@@ -32,6 +32,8 @@ export class TodoistAdapter {
     closeTask: async (id: TaskId) => await this.closeTask(id),
     createTask: async (content: string, params: CreateTaskParams) =>
       await this.api.withInner((api) => api.createTask(content, params)),
+    editTask: async (id: TaskId, content: string, params: CreateTaskParams) =>
+      await this.api.withInner((api) => api.editTask(id, content, params)),
   };
 
   private readonly api: Maybe<TodoistApiClient> = Maybe.Empty();

@@ -1,34 +1,29 @@
-import { useSettingsStore } from "@/settings";
 import { ModalContext, PluginContext } from "@/ui/context";
 import { getLocalTimeZone, toCalendarDateTime, toZoned } from "@internationalized/date";
-import { Notice, TFile } from "obsidian";
+import { Notice } from "obsidian";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import type TodoistPlugin from "../..";
 import type { Label } from "../../api/domain/label";
 import type { CreateTaskParams, Priority } from "../../api/domain/task";
+import type { Task } from "../../data/task";
 import { type DueDate, DueDateSelector } from "../components/modal-fields/DueDateSelector";
-import { LabelSelector } from "../components/modal-fields/LabelSelector";
+import * as LabelSelector from "../components/modal-fields/LabelSelector";
 import { PrioritySelector } from "../components/modal-fields/PrioritySelector";
 import {
   type ProjectIdentifier,
   ProjectSelector,
 } from "../components/modal-fields/ProjectSelector";
 import { TaskContentInput } from "../components/modal-fields/TaskContentInput";
+
+import { parseAbsolute, parseDate, toTime } from "@internationalized/date";
 import "./styles.scss";
 
-export type TaskCreationOptions = {
-  appendLinkToContent: boolean;
-  appendLinkToDescription: boolean;
+type TaskProps = {
+  task: Task;
 };
 
-type CreateTaskProps = {
-  initialContent: string;
-  fileContext: TFile | undefined;
-  options: TaskCreationOptions;
-};
-
-export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
+export const EditTaskModal: React.FC<TaskProps> = (props) => {
   const plugin = PluginContext.use();
 
   const [isReady, setIsReady] = useState(plugin.services.todoist.isReady());
@@ -52,46 +47,24 @@ export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
     return <div className="task-creation-modal-root">Loading Todoist data...</div>;
   }
 
-  return <CreateTaskModalContent {...props} />;
+  return <EditTaskModalContent {...props} />;
 };
 
-const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
-  initialContent,
-  fileContext,
-  options: initialOptions,
-}) => {
+const EditTaskModalContent: React.FC<TaskProps> = ({ task }) => {
   const plugin = PluginContext.use();
-  const settings = useSettingsStore();
   const modal = ModalContext.use();
 
-  const [content, setContent] = useState(initialContent);
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<DueDate | undefined>(undefined);
-  const [priority, setPriority] = useState<Priority>(1);
-  const [labels, setLabels] = useState<Label[]>([]);
+  const [content, setContent] = useState(task.content);
+  const [description, setDescription] = useState(task.description);
+
+  const [dueDate, setDueDate] = useState<DueDate | undefined>(getInitialDueDateFromTask(task));
+  const [priority, setPriority] = useState<Priority>(task.priority);
+  const [labels, setLabels] = useState<Label[]>(getInitialLabelsFromTask(task, plugin));
   const [project, setProject] = useState<ProjectIdentifier>(getDefaultProject(plugin));
 
-  const [options, setOptions] = useState<TaskCreationOptions>(initialOptions);
+  const isSubmitButtonDisabled = content === "";
 
-  const isSubmitButtonDisabled = content === "" && !options.appendLinkToContent;
-
-  const buildWithLink = (initial: string, withLink: boolean) => {
-    const builder = [initial];
-    if (withLink && fileContext !== undefined) {
-      builder.push(" ");
-      if (settings.shouldWrapLinksInParens) {
-        builder.push("(");
-      }
-      builder.push(getLinkForFile(fileContext));
-      if (settings.shouldWrapLinksInParens) {
-        builder.push(")");
-      }
-    }
-
-    return builder.join("");
-  };
-
-  const createTask = async () => {
+  const editTask = async () => {
     if (isSubmitButtonDisabled) {
       return;
     }
@@ -99,7 +72,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     modal.close();
 
     const params: CreateTaskParams = {
-      description: buildWithLink(description, options.appendLinkToDescription),
+      description: description,
       priority: priority,
       labels: labels.map((l) => l.name),
       projectId: project.projectId,
@@ -118,14 +91,11 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     }
 
     try {
-      await plugin.services.todoist.actions.createTask(
-        buildWithLink(content, options.appendLinkToContent),
-        params,
-      );
-      new Notice("Task created successfully");
+      await plugin.services.todoist.actions.editTask(task.id, content, params);
+      new Notice("Task edited successfully");
     } catch (err) {
-      new Notice("Failed to create task");
-      console.error("Failed to create task", err);
+      new Notice("Failed to edit task");
+      console.error("Failed to edit task", err);
     }
   };
 
@@ -137,7 +107,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         content={content}
         onChange={setContent}
         autofocus={true}
-        onEnterKey={createTask}
+        onEnterKey={editTask}
       />
       <TaskContentInput
         className="task-description"
@@ -148,17 +118,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       <div className="task-creation-selectors">
         <DueDateSelector selected={dueDate} setSelected={setDueDate} />
         <PrioritySelector selected={priority} setSelected={setPriority} />
-        <LabelSelector selected={labels} setSelected={setLabels} />
-      </div>
-      <div className="task-creation-notes">
-        <ul>
-          {options.appendLinkToContent && (
-            <li>A link to this page will be appended to the task name</li>
-          )}
-          {options.appendLinkToDescription && (
-            <li>A link to this page will be appended to the task description</li>
-          )}
-        </ul>
+        <LabelSelector.LabelSelector selected={labels} setSelected={setLabels} />
       </div>
       <hr />
       <div className="task-creation-controls">
@@ -172,10 +132,10 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
           <Button
             className="mod-cta"
             isDisabled={isSubmitButtonDisabled}
-            onPress={createTask}
-            aria-label="Add task"
+            onPress={editTask}
+            aria-label="Edit task"
           >
-            Add task
+            Edit Task
           </Button>
         </div>
       </div>
@@ -199,9 +159,21 @@ const getDefaultProject = (plugin: TodoistPlugin): ProjectIdentifier => {
   throw Error("Could not find inbox project");
 };
 
-const getLinkForFile = (file: TFile): string => {
-  const vault = encodeURIComponent(file.vault.getName());
-  const filepath = encodeURIComponent(file.path);
+const getInitialDueDateFromTask = (task: Task): DueDate | undefined => {
+  if (task.due === undefined) {
+    return undefined;
+  }
 
-  return `[${file.name}](obsidian://open?vault=${vault}&file=${filepath})`;
+  return {
+    date: parseDate(task.due.date),
+    time:
+      task.due.datetime === undefined
+        ? undefined
+        : toTime(parseAbsolute(task.due.datetime, getLocalTimeZone())),
+  };
+};
+
+const getInitialLabelsFromTask = (task: Task, plugin: TodoistPlugin): Label[] => {
+  const labels = Array.from(plugin.services.todoist.data().labels.iter());
+  return labels.filter((label) => task.labels.contains(label.name));
 };

@@ -26,7 +26,7 @@ import {
   Section,
   TimeField,
 } from "react-aria-components";
-import { ObsidianIcon } from "../components/obsidian-icon";
+import { ObsidianIcon } from "../obsidian-icon";
 import { Popover } from "./Popover";
 
 const formatter = new DateFormatter("en-US", {

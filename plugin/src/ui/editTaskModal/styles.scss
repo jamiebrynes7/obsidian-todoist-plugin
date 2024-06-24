@@ -1,0 +1,381 @@
+.modal-popover {
+  overflow-y: auto;
+}
+
+.task-creation-modal-root {
+  .task-content-input textarea {
+    width: 100%;
+    border: 0;
+    background-color: unset;
+    box-shadow: none;
+    resize: none;
+    padding: 0px;
+
+    &:focus,
+    &:hover {
+      border: 0;
+      background-color: unset;
+      box-shadow: none;
+    }
+  }
+
+  .task-name textarea {
+    font-size: var(--font-ui-large);
+    font-weight: var(--font-semibold);
+  }
+
+  .task-description textarea {
+    font-size: var(--font-ui-small);
+  }
+
+  .task-creation-selectors {
+    margin-top: 0.5em;
+    display: flex;
+    align-items: center;
+
+    & > * + * {
+      margin-left: 0.5em;
+    }
+
+    button {
+      box-shadow: none;
+      background-color: unset;
+      border: 1px solid var(--color-base-25);
+      color: var(--text-muted);
+
+      .obsidian-icon {
+        margin-right: 0.5em;
+      }
+
+      &:hover,
+      &:focus {
+        border: 1px solid var(--interactive-accent);
+        box-shadow: var(--box-shadow-hover);
+      }
+    }
+  }
+
+  .task-creation-notes {
+    ul {
+      padding-inline-start: 16px;
+      font-size: var(--font-smallest);
+      color: var(--text-muted);
+    }
+  }
+
+  .task-creation-controls {
+    display: flex;
+    justify-content: space-between;
+
+    .is-mobile & {
+      flex-direction: column;
+
+      & > * + * {
+        margin-top: 0.5em;
+      }
+    }
+
+    .task-creation-action {
+      display: flex;
+
+      & > * + * {
+        margin-left: 1em;
+      }
+
+      .is-mobile & {
+        justify-content: end;
+      }
+    }
+  }
+
+  hr {
+    margin: 1em 0;
+    border-color: var(--color-base-25);
+  }
+}
+
+.task-option-dialog {
+  background-color: var(--modal-background);
+  border: var(--modal-border-width) solid var(--modal-border-color);
+  border-radius: 4px;
+  min-width: 200px;
+  box-shadow: var(--shadow-s);
+  padding: 0.5em 0;
+}
+
+.task-date-menu {
+  .react-aria-MenuItem[data-focused] {
+    background-color: var(--background-modifier-cover);
+  }
+
+  .date-suggestion-elem {
+    padding: 8px 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-smaller);
+    .date-suggestion-label {
+      display: flex;
+      align-items: center;
+      font-weight: var(--font-semibold);
+
+      .obsidian-icon {
+        margin-right: 1em;
+      }
+    }
+
+    .date-suggestion-day {
+      color: var(--text-faint);
+    }
+  }
+
+  hr {
+    width: 100%;
+    border-color: var(--color-base-25);
+    margin: 1em 0;
+  }
+
+  .date-picker {
+    padding: 0px 1em;
+    font-size: var(--font-small);
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    h4 {
+      margin-left: 0.5em;
+      font-size: var(--font-small);
+      font-weight: var(--font-semibold);
+    }
+
+    .date-picker-controls {
+      display: flex;
+      align-items: center;
+      justify-content: right;
+
+      button {
+        box-shadow: none;
+        background-color: unset;
+        border: 1px solid rgba(0, 0, 0, 0);
+        color: var(--text-muted);
+
+        &[data-disabled] {
+          opacity: 0.5;
+        }
+
+        &:hover:not([data-disabled]) {
+          border: 1px solid var(--interactive-accent);
+          box-shadow: var(--box-shadow-hover);
+        }
+      }
+    }
+
+    .react-aria-CalendarCell {
+      text-align: center;
+      padding: 6px;
+      border-radius: 2px;
+
+      &:hover {
+        background-color: var(--background-modifier-cover);
+      }
+
+      &[data-outside-month] {
+        display: none;
+      }
+
+      &[data-disabled] {
+        color: var(--text-faint);
+      }
+
+      &[data-selected] {
+        background-color: var(--interactive-accent);
+        color: var(--text-on-accent);
+      }
+    }
+  }
+
+  .time-picker-container {
+    display: flex;
+    justify-content: center;
+
+    .time-picker-button {
+      flex-grow: 1;
+      margin: 0em 1em 1em 1em;
+      color: var(--text-muted);
+      box-shadow: none;
+      background-color: unset;
+      border: 1px solid var(--color-base-25);
+
+      &:hover,
+      &:focus {
+        border: 1px solid var(--interactive-accent);
+        box-shadow: var(--box-shadow-hover);
+      }
+
+      .obsidian-icon {
+        margin-right: 0.5em;
+      }
+    }
+  }
+}
+
+.task-priority-menu {
+  .priority-option {
+    padding: 8px 1em;
+    font-size: var(--font-smaller);
+
+    &:hover {
+      background-color: var(--background-modifier-cover);
+    }
+
+    &.is-selected {
+      background-color: var(--interactive-accent);
+      color: var(--text-on-accent);
+    }
+  }
+}
+
+.task-label-menu {
+  .label-option {
+    padding: 8px 1em;
+    font-size: var(--font-smaller);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+      background-color: var(--background-modifier-cover);
+    }
+  }
+}
+
+button.project-selector {
+  box-shadow: none;
+  background-color: unset;
+  border: 1px solid var(--color-base-25);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+
+  & > * + * {
+    margin-left: 0.5em;
+  }
+
+  &:hover,
+  &:focus {
+    border: 1px solid var(--interactive-accent);
+    box-shadow: var(--box-shadow-hover);
+  }
+}
+
+.task-project-menu {
+  .search-filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input {
+      flex-grow: 1;
+      margin: 0 4px;
+
+      &:hover {
+        box-shadow: none;
+        border: 1px solid var(--interactive-accent);
+      }
+    }
+  }
+
+  hr {
+    margin: 0.5em 0;
+    border-color: var(--color-base-10);
+  }
+
+  .project-option {
+    padding: 8px 1em;
+    font-size: var(--font-smaller);
+
+    display: flex;
+    align-items: center;
+
+    --project-padding: 8px;
+    padding-left: var(--project-padding);
+
+    // Each level of depth we add 24 px to the padding
+    &[data-depth="1"] {
+      --project-padding: 32px;
+    }
+    &[data-depth="2"] {
+      --project-padding: 56px;
+    }
+    &[data-depth="3"] {
+      --project-padding: 80px;
+    }
+    &[data-depth="3"] {
+      --project-padding: 104px;
+    }
+
+    & > * + * {
+      margin-left: 0.5em;
+    }
+
+    &:hover {
+      background-color: var(--background-modifier-cover);
+    }
+
+    &[data-filtered="true"] {
+      display: none;
+    }
+  }
+}
+
+.task-time-menu {
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+
+  & > * + * {
+    margin-top: 1em;
+  }
+
+  .task-time-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-ui-small);
+
+    .task-time-picker-label {
+      font-weight: 600;
+    }
+
+    .task-time-picker-input {
+      display: flex;
+      padding: 4px;
+      border-radius: 6px;
+      min-width: 100px;
+      border: 1px solid var(--color-base-25);
+
+      .task-time-picker-input-segment {
+        padding: 0 2px;
+
+        &:focus {
+          background-color: var(--interactive-accent);
+          border-radius: 4px;
+          color: var(--text-on-accent);
+        }
+      }
+    }
+  }
+
+  .task-time-controls {
+    display: flex;
+    justify-content: end;
+
+    & > * + * {
+      margin-left: 1em;
+    }
+  }
+}

@@ -1,8 +1,8 @@
 import { PluginContext } from "@/ui/context";
 import React, { useMemo } from "react";
 import { Button, DialogTrigger, ListBox, ListBoxItem, type Selection } from "react-aria-components";
-import type { Label } from "../../api/domain/label";
-import { ObsidianIcon } from "../components/obsidian-icon";
+import type { Label } from "../../../api/domain/label";
+import { ObsidianIcon } from "../obsidian-icon";
 import { Popover } from "./Popover";
 
 type Props = {

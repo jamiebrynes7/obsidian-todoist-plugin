@@ -57,7 +57,6 @@ export class TodoistApiClient {
     await this.do(`/tasks/${id}`, "POST", body);
   }
 
-
   private async do(path: string, method: string, json?: object): Promise<WebResponse> {
     const params: RequestParams = {
       url: `https://api.todoist.com/rest/v2${path}`,
