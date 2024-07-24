@@ -1,5 +1,5 @@
 import { RenderChildContext } from "@/ui/context";
-import { MarkdownRenderer } from "obsidian";
+import { MarkdownRenderer, Component } from "obsidian";
 import React, { useEffect, useRef } from "react";
 
 interface MarkdownProps {
@@ -10,6 +10,7 @@ interface MarkdownProps {
 const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
   const renderChild = RenderChildContext.use();
   const ref = useRef<HTMLDivElement>(null);
+  const componentRef = useRef<Component | null>(null);
 
   useEffect(() => {
     const renderMarkdown = async () => {
@@ -17,7 +18,16 @@ const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
         return;
       }
 
-      await MarkdownRenderer.renderMarkdown(content, ref.current, "", renderChild);
+      // Create a new component or use existing one
+      if (componentRef.current === null) {
+        componentRef.current = new Component();
+      }
+
+      // Attach renderChild to the component
+      componentRef.current.addChild(renderChild);
+
+      // Render markdown content
+      await MarkdownRenderer.renderMarkdown(content, ref.current, "", componentRef.current);
 
       if (ref.current.childElementCount > 1) {
         return;
