@@ -10,7 +10,7 @@ interface MarkdownProps {
 const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
   const renderChild = RenderChildContext.use();
   const ref = useRef<HTMLDivElement>(null);
-  const componentRef = useRef<Component | null>(null);
+  let componentRef = useRef<Component | null>(null);
 
   useEffect(() => {
     const renderMarkdown = async () => {
