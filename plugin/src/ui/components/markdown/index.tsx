@@ -42,18 +42,6 @@ const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
     };
 
     renderMarkdown();
-
-    // Cleanup component on unmount
-    return () => {
-      if (componentRef.current !== null) {
-        componentRef.current.removeChild(renderChild);
-        componentRef.current = null;
-      }
-    };
-  }, [content, renderChild]);
-
-  return <div ref={ref} className={className} />;
-};
   }, [content, renderChild]);
 
   return <div ref={ref} className={className} />;
