@@ -1,0 +1,47 @@
+@import "colors";
+
+body {
+  @each $name, $color in $todoist-colors {
+    --todoist-#{$name}: #{$color};
+  }
+}
+
+.theme-dark {
+  --todoist-p1-border: #ff7066;
+  --todoist-p1-border-hover: #ff706680;
+  --todoist-p1-background: rgba(255, 112, 102, 0.1);
+
+  --todoist-p2-border: #ff9a14;
+  --todoist-p2-border-hover: #ff9a1480;
+  --todoist-p2-background: rgba(255, 154, 20, 0.1);
+
+  --todoist-p3-border: #5297ff;
+  --todoist-p3-border-hover: #5297ff80;
+  --todoist-p3-background: rgba(82, 151, 255, 0.1);
+
+  --todoist-p4-border: var(--color-base-50);
+  --todoist-p4-border-hover: var(--color-base-50);
+  --todoist-p4-background: unset;
+
+  --todoist-task-separator-color: var(--color-base-30);
+}
+
+.theme-light {
+  --todoist-p1-border: #d1453b;
+  --todoist-p1-border-hover: #d1453b80;
+  --todoist-p1-background: rgba(209, 69, 59, 0.1);
+
+  --todoist-p2-border: #eb8909;
+  --todoist-p2-border-hover: #eb890980;
+  --todoist-p2-background: rgba(235, 137, 9, 0.1);
+
+  --todoist-p3-border: #246fe0;
+  --todoist-p3-border-hover: #246fe080;
+  --todoist-p3-background: rgba(36, 111, 224, 0.1);
+
+  --todoist-p4-border: var(--color-base-50);
+  --todoist-p4-border-hover: var(--color-base-50);
+  --todoist-p4-background: unset;
+
+  --todoist-task-separator-color: var(--color-base-25);
+}

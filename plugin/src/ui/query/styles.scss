@@ -1,3 +1,5 @@
+@import "../../styles/colors.scss";
+
 .todoist-query-header {
   display: flex;
   align-items: center;
@@ -160,164 +162,14 @@
           color: var(--todoist-label-color);
         }
 
-        &[data-project-color="berry_red"] {
-          --todoist-project-color: var(--todoist-berry-red);
-        }
+        @each $name, $color in $todoist-colors {
+          &[data-project-color="#{$name}"] {
+            --todoist-project-color: var(--todoist-#{$name});
+          }
 
-        &[data-project-color="red"] {
-          --todoist-project-color: var(--todoist-red);
-        }
-
-        &[data-project-color="orange"] {
-          --todoist-project-color: var(--todoist-orange);
-        }
-
-        &[data-project-color="yellow"] {
-          --todoist-project-color: var(--todoist-yellow);
-        }
-
-        &[data-project-color="olive_green"] {
-          --todoist-project-color: var(--todoist-olive-green);
-        }
-
-        &[data-project-color="lime_green"] {
-          --todoist-project-color: var(--todoist-lime-green);
-        }
-
-        &[data-project-color="green"] {
-          --todoist-project-color: var(--todoist-green);
-        }
-
-        &[data-project-color="mint_green"] {
-          --todoist-project-color: var(--todoist-mint-green);
-        }
-
-        &[data-project-color="teal"] {
-          --todoist-project-color: var(--todoist-teal);
-        }
-
-        &[data-project-color="sky_blue"] {
-          --todoist-project-color: var(--todoist-sky-blue);
-        }
-
-        &[data-project-color="light_blue"] {
-          --todoist-project-color: var(--todoist-light-blue);
-        }
-
-        &[data-project-color="blue"] {
-          --todoist-project-color: var(--todoist-blue);
-        }
-
-        &[data-project-color="grape"] {
-          --todoist-project-color: var(--todoist-grape);
-        }
-
-        &[data-project-color="violet"] {
-          --todoist-project-color: var(--todoist-violet);
-        }
-
-        &[data-project-color="lavender"] {
-          --todoist-project-color: var(--todoist-lavender);
-        }
-
-        &[data-project-color="magenta"] {
-          --todoist-project-color: var(--todoist-magenta);
-        }
-
-        &[data-project-color="salmon"] {
-          --todoist-project-color: var(--todoist-salmon);
-        }
-
-        &[data-project-color="charcoal"] {
-          --todoist-project-color: var(--todoist-charcoal);
-        }
-
-        &[data-project-color="grey"] {
-          --todoist-project-color: var(--todoist-grey);
-        }
-
-        &[data-project-color="taupe"] {
-          --todoist-project-color: var(--todoist-taupe);
-        }
-
-        &[data-label-color="berry_red"] {
-          --todoist-label-color: var(--todoist-berry-red);
-        }
-
-        &[data-label-color="red"] {
-          --todoist-label-color: var(--todoist-red);
-        }
-
-        &[data-label-color="orange"] {
-          --todoist-label-color: var(--todoist-orange);
-        }
-
-        &[data-label-color="yellow"] {
-          --todoist-label-color: var(--todoist-yellow);
-        }
-
-        &[data-label-color="olive_green"] {
-          --todoist-label-color: var(--todoist-olive-green);
-        }
-
-        &[data-label-color="lime_green"] {
-          --todoist-label-color: var(--todoist-lime-green);
-        }
-
-        &[data-label-color="green"] {
-          --todoist-label-color: var(--todoist-green);
-        }
-
-        &[data-label-color="mint_green"] {
-          --todoist-label-color: var(--todoist-mint-green);
-        }
-
-        &[data-label-color="teal"] {
-          --todoist-label-color: var(--todoist-teal);
-        }
-
-        &[data-label-color="sky_blue"] {
-          --todoist-label-color: var(--todoist-sky-blue);
-        }
-
-        &[data-label-color="light_blue"] {
-          --todoist-label-color: var(--todoist-light-blue);
-        }
-
-        &[data-label-color="blue"] {
-          --todoist-label-color: var(--todoist-blue);
-        }
-
-        &[data-label-color="grape"] {
-          --todoist-label-color: var(--todoist-grape);
-        }
-
-        &[data-label-color="violet"] {
-          --todoist-label-color: var(--todoist-violet);
-        }
-
-        &[data-label-color="lavender"] {
-          --todoist-label-color: var(--todoist-lavender);
-        }
-
-        &[data-label-color="magenta"] {
-          --todoist-label-color: var(--todoist-magenta);
-        }
-
-        &[data-label-color="salmon"] {
-          --todoist-label-color: var(--todoist-salmon);
-        }
-
-        &[data-label-color="charcoal"] {
-          --todoist-label-color: var(--todoist-charcoal);
-        }
-
-        &[data-label-color="grey"] {
-          --todoist-label-color: var(--todoist-grey);
-        }
-
-        &[data-label-color="taupe"] {
-          --todoist-label-color: var(--todoist-taupe);
+          &[data-label-color="#{$name}"] {
+            --todoist-label-color: var(--todoist-#{$name});
+          }
         }
       }
     }

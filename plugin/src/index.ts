@@ -1,6 +1,6 @@
+import "@/styles/main.scss";
 import { App, Plugin } from "obsidian";
 import type { PluginManifest } from "obsidian";
-import "../styles.css";
 import { TodoistApiClient } from "./api";
 import { ObsidianFetcher } from "./api/fetcher";
 import { registerCommands } from "./commands";
