@@ -27,6 +27,12 @@ type DataAccessor = {
   labels: RepositoryReader<LabelId, Label>;
 };
 
+class LabelsRepository extends Repository<LabelId, Label> {
+  byName(name: string): Label | undefined {
+    return [...this.iter()].find((label) => label.name === name);
+  }
+}
+
 export class TodoistAdapter {
   public actions = {
     closeTask: async (id: TaskId) => await this.closeTask(id),
@@ -37,7 +43,7 @@ export class TodoistAdapter {
   private readonly api: Maybe<TodoistApiClient> = Maybe.Empty();
   private readonly projects: Repository<ProjectId, Project>;
   private readonly sections: Repository<SectionId, Section>;
-  private readonly labels: Repository<LabelId, Label>;
+  private readonly labels: LabelsRepository;
   private readonly subscriptions: SubscriptionManager<Subscription>;
 
   private readonly tasksPendingClose: TaskId[];
@@ -47,7 +53,7 @@ export class TodoistAdapter {
   constructor() {
     this.projects = new Repository(() => this.api.withInner((api) => api.getProjects()));
     this.sections = new Repository(() => this.api.withInner((api) => api.getSections()));
-    this.labels = new Repository(() => this.api.withInner((api) => api.getLabels()));
+    this.labels = new LabelsRepository(() => this.api.withInner((api) => api.getLabels()));
     this.subscriptions = new SubscriptionManager<Subscription>();
     this.tasksPendingClose = [];
   }
@@ -108,6 +114,8 @@ export class TodoistAdapter {
       ? this.sections.byId(apiTask.sectionId) ?? makeUnknownSection(apiTask.sectionId)
       : undefined;
 
+    const labels = apiTask.labels.map((id) => this.labels.byName(id) ?? makeUnknownLabel());
+
     return {
       id: apiTask.id,
       createdAt: apiTask.createdAt,
@@ -119,7 +127,7 @@ export class TodoistAdapter {
       section: section,
       parentId: apiTask.parentId ?? undefined,
 
-      labels: apiTask.labels,
+      labels: labels,
       priority: apiTask.priority,
 
       due: apiTask.due ?? undefined,
@@ -170,6 +178,14 @@ const makeUnknownSection = (id: string): Section => {
     projectId: "unknown-project",
     name: "Unknown Section",
     order: Number.MAX_SAFE_INTEGER,
+  };
+};
+
+const makeUnknownLabel = (): Label => {
+  return {
+    id: "unknown-label",
+    name: "Unknown Label",
+    color: "grey",
   };
 };
 

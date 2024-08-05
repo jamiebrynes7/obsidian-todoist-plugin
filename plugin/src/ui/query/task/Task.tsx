@@ -51,7 +51,6 @@ export const Task: React.FC<Props> = ({ tree }) => {
         data-priority={tree.priority}
         data-duedate-metadata={getDueMetadataInfo(tree)}
         data-has-time={getTimeMetadataInfo(tree)}
-        data-project-color={tree.project.color}
         initial={{ opacity: transitionOpacity }}
         animate={{ opacity: 1 }}
         exit={{ opacity: transitionOpacity }}

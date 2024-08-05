@@ -1,3 +1,4 @@
+import type { Label } from "@/api/domain/label";
 import { describe, expect, it, vi } from "vitest";
 import type { DueDate } from "../../api/domain/dueDate";
 import type { Project } from "../../api/domain/project";
@@ -54,6 +55,14 @@ function makeDueDate(date: string): DueDate {
   return {
     recurring: false,
     date,
+  };
+}
+
+function makeLabel(name: string): Label {
+  return {
+    id: name,
+    name,
+    color: "grey",
   };
 }
 
@@ -294,54 +303,62 @@ describe("group by date", () => {
 });
 
 describe("group by label", () => {
+  const labelOne = makeLabel("foo");
+  const labelTwo = makeLabel("bar");
   const testcases: TestCase[] = [
     {
       description: "should group tasks by labels",
       input: [
-        makeTask("a", { labels: ["foo"] }),
-        makeTask("b", { labels: ["foo"] }),
-        makeTask("c", { labels: ["bar"] }),
+        makeTask("a", { labels: [labelOne] }),
+        makeTask("b", { labels: [labelOne] }),
+        makeTask("c", { labels: [labelTwo] }),
       ],
       expected: [
         {
           header: "bar",
-          tasks: [makeTask("c", { labels: ["bar"] })],
+          tasks: [makeTask("c", { labels: [labelTwo] })],
         },
         {
           header: "foo",
-          tasks: [makeTask("a", { labels: ["foo"] }), makeTask("b", { labels: ["foo"] })],
+          tasks: [makeTask("a", { labels: [labelOne] }), makeTask("b", { labels: [labelOne] })],
         },
       ],
     },
     {
       description: "should place task in multiple groups for multiple labels",
       input: [
-        makeTask("a", { labels: ["foo"] }),
-        makeTask("b", { labels: ["foo", "bar"] }),
-        makeTask("c", { labels: ["bar"] }),
+        makeTask("a", { labels: [labelOne] }),
+        makeTask("b", { labels: [labelOne, labelTwo] }),
+        makeTask("c", { labels: [labelTwo] }),
       ],
       expected: [
         {
           header: "bar",
-          tasks: [makeTask("b", { labels: ["foo", "bar"] }), makeTask("c", { labels: ["bar"] })],
+          tasks: [
+            makeTask("b", { labels: [labelOne, labelTwo] }),
+            makeTask("c", { labels: [labelTwo] }),
+          ],
         },
         {
           header: "foo",
-          tasks: [makeTask("a", { labels: ["foo"] }), makeTask("b", { labels: ["foo", "bar"] })],
+          tasks: [
+            makeTask("a", { labels: [labelOne] }),
+            makeTask("b", { labels: [labelOne, labelTwo] }),
+          ],
         },
       ],
     },
     {
       description: "should group tasks w/ no labels and place at the end",
       input: [
-        makeTask("a", { labels: ["foo"] }),
-        makeTask("b", { labels: ["foo"] }),
+        makeTask("a", { labels: [labelOne] }),
+        makeTask("b", { labels: [labelOne] }),
         makeTask("c"),
       ],
       expected: [
         {
           header: "foo",
-          tasks: [makeTask("a", { labels: ["foo"] }), makeTask("b", { labels: ["foo"] })],
+          tasks: [makeTask("a", { labels: [labelOne] }), makeTask("b", { labels: [labelOne] })],
         },
         {
           header: "No label",

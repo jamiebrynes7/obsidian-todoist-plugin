@@ -214,11 +214,11 @@ function groupByLabel(tasks: Task[]): GroupedTasks[] {
       return -1;
     }
 
-    return aLabel.localeCompare(bLabel);
+    return aLabel.name.localeCompare(bLabel.name);
   });
   return groups.map(([label, tasks]) => {
     return {
-      header: label ?? "No label",
+      header: label?.name ?? "No label",
       tasks,
     };
   });

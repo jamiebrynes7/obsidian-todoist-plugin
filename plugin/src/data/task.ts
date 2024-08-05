@@ -1,3 +1,4 @@
+import type { Label } from "@/api/domain/label";
 import type { DueDate } from "../api/domain/dueDate";
 import type { Project } from "../api/domain/project";
 import type { Section } from "../api/domain/section";
@@ -14,7 +15,7 @@ export type Task = {
   section?: Section;
   parentId?: TaskId;
 
-  labels: string[];
+  labels: Label[];
   priority: Priority;
 
   due?: DueDate;
