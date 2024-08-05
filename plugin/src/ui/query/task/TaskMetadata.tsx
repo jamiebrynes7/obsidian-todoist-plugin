@@ -6,10 +6,15 @@ import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import type { CalendarSpec } from "moment";
 import React from "react";
 
+type MetadataContent = {
+  content: string;
+  attr?: Record<string, string>;
+};
+
 type MetadataDefinition = {
   name: string;
   isShown: (query: Query, task: Task) => boolean;
-  content: (task: Task) => string;
+  content: (task: Task) => MetadataContent[];
   icon: {
     id: string;
     shouldRender: (setting: Settings) => boolean;
@@ -22,10 +27,17 @@ const metadata: MetadataDefinition[] = [
   {
     name: "project",
     isShown: (query, task) => query.show.has(ShowMetadataVariant.Project),
-    content: (task) =>
-      task.section === undefined
-        ? task.project.name
-        : `${task.project.name} / ${task.section.name}`,
+    content: (task) => [
+      {
+        content:
+          task.section === undefined
+            ? task.project.name
+            : `${task.project.name} / ${task.section.name}`,
+        attr: {
+          "data-project-color": task.project.color,
+        },
+      },
+    ],
     icon: {
       id: "hash",
       shouldRender: (settings) => settings.renderProjectIcon,
@@ -36,7 +48,7 @@ const metadata: MetadataDefinition[] = [
   {
     name: "due",
     isShown: (query, task) => query.show.has(ShowMetadataVariant.Due) && task.due !== undefined,
-    content: (task) => dateLabel(task),
+    content: (task) => [{ content: dateLabel(task) }],
     icon: {
       id: "calendar",
       shouldRender: (settings) => settings.renderDateIcon,
@@ -47,7 +59,11 @@ const metadata: MetadataDefinition[] = [
   {
     name: "labels",
     isShown: (query, task) => query.show.has(ShowMetadataVariant.Labels) && task.labels.length > 0,
-    content: (task) => task.labels.join(", "),
+    content: (task) =>
+      task.labels.map((label) => ({
+        content: label.name,
+        attr: { "data-label-color": label.color },
+      })),
     icon: {
       id: "tag",
       shouldRender: (settings) => settings.renderLabelsIcon,
@@ -108,21 +124,27 @@ const getMetadataElems = (
   return metadata
     .filter((meta) => meta.side === side)
     .filter((meta) => meta.isShown(query, task))
-    .map((meta) => {
-      const content = <span>{meta.content(task)}</span>;
-      const icon = meta.icon.shouldRender(settings) ? (
-        <ObsidianIcon id={meta.icon.id} size={16} />
-      ) : undefined;
+    .flatMap((meta) => {
+      return meta.content(task).map((content) => {
+        const icon = meta.icon.shouldRender(settings) ? (
+          <ObsidianIcon id={meta.icon.id} size={16} />
+        ) : undefined;
 
-      const children = [icon, content];
-      if (meta.icon.orientation === "after") {
-        children.reverse();
-      }
+        const children = [icon, <span>{content.content}</span>];
+        if (meta.icon.orientation === "after") {
+          children.reverse();
+        }
 
-      return (
-        <div className="task-metadata-item" key={meta.name} data-task-metadata-kind={meta.name}>
-          {children}
-        </div>
-      );
+        return (
+          <div
+            className="task-metadata-item"
+            key={meta.name}
+            data-task-metadata-kind={meta.name}
+            {...content.attr}
+          >
+            {children}
+          </div>
+        );
+      });
     });
 };
