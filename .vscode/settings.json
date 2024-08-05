@@ -1,5 +1,5 @@
 {
-  "biome.lspBin": "/home/jamiebrynes/workspace/obsidian-todoist-plugin/plugin/node_modules/@biomejs/cli-linux-x64-musl/biome",
+  "biome.lspBin": "./plugin/node_modules/@biomejs/biome/bin/biome",
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
