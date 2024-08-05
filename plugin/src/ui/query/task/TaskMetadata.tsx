@@ -34,7 +34,7 @@ const metadata: MetadataDefinition[] = [
             ? task.project.name
             : `${task.project.name} / ${task.section.name}`,
         attr: {
-          "data-project-color": task.project.color,
+          "data-project-color": task.project.color.replace("_", "-"),
         },
       },
     ],
@@ -62,7 +62,7 @@ const metadata: MetadataDefinition[] = [
     content: (task) =>
       task.labels.map((label) => ({
         content: label.name,
-        attr: { "data-label-color": label.color },
+        attr: { "data-label-color": label.color.replace("_", "-") },
       })),
     icon: {
       id: "tag",
