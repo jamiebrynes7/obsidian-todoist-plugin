@@ -1,4 +1,5 @@
 import { type OnSubscriptionChange, type Refresh, type SubscriptionResult } from "@/data";
+import { t } from "@/i18n";
 import type TodoistPlugin from "@/index";
 import type { QueryWarning } from "@/query/parser";
 import { GroupVariant, type Query } from "@/query/query";
@@ -101,8 +102,10 @@ const getTitle = (query: Query, result: SubscriptionResult): string => {
   }
 
   switch (result.type) {
-    case "error":
-      return `${query.name} (Error)`;
+    case "error": {
+      const postfix = t().query.header.errorPostfix;
+      return `${query.name} ${postfix}`;
+    }
     case "success":
       return query.name.replace("{task_count}", result.tasks.length.toString());
   }

@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import type { QueryWarning } from "@/query/parser";
 import { Callout } from "@/ui/components/callout";
 import React from "react";
@@ -11,10 +12,12 @@ export const QueryWarnings: React.FC<Props> = ({ warnings }) => {
     return <></>;
   }
 
+  const i18n = t().query.warning;
+
   return (
     <Callout
       className="todoist-query-warnings"
-      title="Warnings"
+      title={i18n.header}
       iconId="lucide-alert-triangle"
       contents={warnings}
     />

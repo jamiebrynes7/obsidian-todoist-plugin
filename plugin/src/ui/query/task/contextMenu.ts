@@ -1,4 +1,5 @@
 import type { Task } from "@/data/task";
+import { t } from "@/i18n";
 import type TodoistPlugin from "@/index";
 import { Menu } from "obsidian";
 import type { Point } from "obsidian";
@@ -9,16 +10,17 @@ type TaskContext = {
 };
 
 export function showTaskContext(ctx: TaskContext, position: Point) {
+  const i18n = t().query.contextMenu;
   new Menu()
     .addItem((menuItem) =>
       menuItem
-        .setTitle("Complete task")
+        .setTitle(i18n.completeTaskLabel)
         .setIcon("check-small")
         .onClick(async () => await ctx.plugin.services.todoist.actions.closeTask(ctx.task.id)),
     )
     .addItem((menuItem) =>
       menuItem
-        .setTitle("Open task in Todoist (app)")
+        .setTitle(i18n.openTaskInAppLabel)
         .setIcon("popup-open")
         .onClick(() => {
           openExternal(`todoist://task?id=${ctx.task.id}`);
@@ -26,7 +28,7 @@ export function showTaskContext(ctx: TaskContext, position: Point) {
     )
     .addItem((menuItem) =>
       menuItem
-        .setTitle("Open task in Todoist (web)")
+        .setTitle(i18n.openTaskInBrowserLabel)
         .setIcon("popup-open")
         .onClick(() =>
           openExternal(

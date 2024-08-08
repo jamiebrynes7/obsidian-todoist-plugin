@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
 import React, { useEffect, useState } from "react";
 import { TodoistApiClient } from "../../api";
@@ -42,11 +43,13 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
     });
   };
 
+  const buttonLabel = t().settings.general.apiToken.buttonLabel;
+
   return (
     <>
       <TokenValidationIcon status={tokenState} />
       <Setting.ButtonControl
-        label="Setup"
+        label={buttonLabel}
         icon="settings"
         onClick={openModal}
         disabled={tokenState.kind !== "error"}

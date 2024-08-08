@@ -1,15 +1,20 @@
 import { QueryErrorKind } from "@/data";
+import { t } from "@/i18n";
+import type { Translations } from "@/i18n/translation";
 import { Callout } from "@/ui/components/callout";
 import React from "react";
 
-const getErrorMessage = (kind: QueryErrorKind): string => {
+const getErrorMessage = (
+  kind: QueryErrorKind,
+  i18n: Translations["query"]["displays"]["error"],
+): string => {
   switch (kind) {
     case QueryErrorKind.BadRequest:
-      return "The Todoist API has rejected the request. Please check the filter to ensure it is valid.";
+      return i18n.badRequest;
     case QueryErrorKind.Unauthorized:
-      return "The Todoist API request is missing or has the incorrect credentials. Please check the API token in the settings.";
+      return i18n.unauthorized;
     default:
-      return "Unknown error occurred. Please check the Console in the Developer Tools window for more information";
+      return i18n.unknown;
   }
 };
 
@@ -18,12 +23,14 @@ type Props = {
 };
 
 export const ErrorDisplay: React.FC<Props> = ({ kind }) => {
-  const errorMessage = getErrorMessage(kind);
+  const i18n = t().query.displays.error;
+
+  const errorMessage = getErrorMessage(kind, i18n);
 
   return (
     <Callout
       className="todoist-query-error"
-      title="Error"
+      title={i18n.header}
       iconId="lucide-alert-triangle"
       contents={[errorMessage]}
     />

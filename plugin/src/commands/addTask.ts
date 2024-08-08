@@ -1,27 +1,34 @@
+import type { Translations } from "@/i18n/translation";
 import { MarkdownView, Notice, TFile } from "obsidian";
 import type { MakeCommand } from ".";
 import type TodoistPlugin from "..";
 import type { TaskCreationOptions } from "../ui/createTaskModal";
 
-export const addTask: MakeCommand = (plugin: TodoistPlugin) => {
+export const addTask: MakeCommand = (plugin: TodoistPlugin, i18n: Translations["commands"]) => {
   return {
-    name: "Add task",
+    name: i18n.addTask,
     callback: makeCallback(plugin),
   };
 };
 
-export const addTaskWithPageInContent: MakeCommand = (plugin: TodoistPlugin) => {
+export const addTaskWithPageInContent: MakeCommand = (
+  plugin: TodoistPlugin,
+  i18n: Translations["commands"],
+) => {
   return {
     id: "add-task-page-content",
-    name: "Add task with current page in task content",
+    name: i18n.addTaskPageContent,
     callback: makeCallback(plugin, { appendLinkToContent: true }),
   };
 };
 
-export const addTaskWithPageInDescription: MakeCommand = (plugin: TodoistPlugin) => {
+export const addTaskWithPageInDescription: MakeCommand = (
+  plugin: TodoistPlugin,
+  i18n: Translations["commands"],
+) => {
   return {
     id: "add-task-page-description",
-    name: "Add task with current page in task description",
+    name: i18n.addTaskPageDescription,
     callback: makeCallback(plugin, { appendLinkToDescription: true }),
   };
 };

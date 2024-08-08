@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
 import React, { useMemo } from "react";
 import { Button, DialogTrigger, ListBox, ListBoxItem, type Selection } from "react-aria-components";
@@ -28,15 +29,18 @@ export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
     setSelected(options.filter((l) => selection.has(l.id)));
   };
 
+  const i18n = t().createTaskModal.labelSelector;
+
   return (
     <DialogTrigger>
-      <Button className="label-selector" aria-label="Set labels">
+      <Button className="label-selector" aria-label={i18n.buttonLabel}>
         <ObsidianIcon size={16} id="tag" />
+        {i18n.buttonText(selected.length)}
         Labels ({selected.length})
       </Button>
       <Popover>
         <ListBox
-          aria-label="Label options"
+          aria-label={i18n.labelOptionsLabel}
           selectionMode="multiple"
           className="task-option-dialog task-label-menu"
           selectedKeys={selectedKeys}

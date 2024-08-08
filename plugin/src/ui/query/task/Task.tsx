@@ -1,5 +1,6 @@
 import { DueDateInfo } from "@/data/dueDateInfo";
 import type { TaskTree } from "@/data/transformations/relationships";
+import { t } from "@/i18n";
 import { ShowMetadataVariant } from "@/query/query";
 import { useSettingsStore } from "@/settings";
 import Markdown from "@/ui/components/markdown";
@@ -32,7 +33,7 @@ export const Task: React.FC<Props> = ({ tree }) => {
       await plugin.services.todoist.actions.closeTask(tree.id);
     } catch (error: unknown) {
       console.error("Failed to close task", error);
-      new Notice("Failed to close task", 2000);
+      new Notice(t().query.failedCloseMessage, 2000);
     }
   };
 

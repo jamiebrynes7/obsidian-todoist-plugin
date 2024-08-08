@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import {
   CalendarDate,
   DateFormatter,
@@ -94,14 +95,16 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
     }
   };
 
+  const i18n = t().createTaskModal.dateSelector;
+
   return (
     <DialogTrigger>
-      <Button className="due-date-selector" aria-label="Set due Date">
+      <Button className="due-date-selector" aria-label={i18n.buttonLabel}>
         <ObsidianIcon size={16} id="calendar" />
         {label}
       </Button>
       <Popover maxHeight={600}>
-        <Dialog className="task-option-dialog task-date-menu" aria-label="Due date selector">
+        <Dialog className="task-option-dialog task-date-menu" aria-label={i18n.dialogLabel}>
           {({ close }) => (
             <>
               <Menu
@@ -109,7 +112,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
                   selectedDateSuggestion(key);
                   close();
                 }}
-                aria-label="Due date suggestions"
+                aria-label={i18n.suggestionsLabel}
               >
                 <Section>
                   {suggestions.map((props) => (
@@ -119,7 +122,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
               </Menu>
               <hr />
               <Calendar
-                aria-label="Task date"
+                aria-label={i18n.datePickerLabel}
                 className="date-picker"
                 value={selected?.date ?? null}
                 onChange={(date) => {
@@ -164,18 +167,20 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
 };
 
 const getLabel = (selected: DueDate | undefined) => {
+  const i18n = t().createTaskModal.dateSelector;
+
   if (selected === undefined) {
-    return "Due date";
+    return i18n.emptyDate;
   }
 
   const date = selected.date;
   const dayPart = (() => {
     if (isToday(date, getLocalTimeZone())) {
-      return "Today";
+      return i18n.today;
     }
 
     if (today(getLocalTimeZone()).add({ days: 1 }).compare(date) === 0) {
-      return "Tomorrow";
+      return i18n.tomorrow;
     }
 
     return formatter.format(date.toDate(getLocalTimeZone()));
@@ -220,30 +225,32 @@ const DateSuggestion: React.FC<DateSuggestionProps> = ({ id, icon, label, target
 };
 
 const getSuggestions = (): DateSuggestionProps[] => {
+  const i18n = t().createTaskModal.dateSelector;
+
   const startOfNextWeek = endOfWeek(today(getLocalTimeZone()), "en-US").add({ days: 1 });
   const suggestions = [
     {
       id: "today",
       icon: "calendar",
-      label: "Today",
+      label: i18n.today,
       target: today(getLocalTimeZone()),
     },
     {
       id: "tomorrow",
       icon: "sun",
-      label: "Tomorrow",
+      label: i18n.tomorrow,
       target: today(getLocalTimeZone()).add({ days: 1 }),
     },
     {
       id: "next-week",
       icon: "calendar-clock",
-      label: "Next week",
+      label: i18n.nextWeek,
       target: startOfNextWeek,
     },
     {
       id: "no-date",
       icon: "ban",
-      label: "No date",
+      label: i18n.noDate,
       target: undefined,
     },
   ];
@@ -258,13 +265,14 @@ type TimeDialogProps = {
 
 const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTime, setTime }) => {
   const [taskTime, setTaskTime] = useState(selectedTime);
+  const i18n = t().createTaskModal.dateSelector.timeDialog;
 
   return (
     <Dialog className="task-option-dialog task-time-menu" aria-label="Time selector">
       {({ close }) => (
         <>
           <TimeField className="task-time-picker" value={taskTime ?? null} onChange={setTaskTime}>
-            <Label className="task-time-picker-label">Time</Label>
+            <Label className="task-time-picker-label">{i18n.timeLabel}</Label>
             <DateInput className="task-time-picker-input">
               {(segment) => (
                 <DateSegment className="task-time-picker-input-segment" segment={segment} />
@@ -272,7 +280,7 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTime, setTime }) => {
             </DateInput>
           </TimeField>
           <div className="task-time-controls">
-            <Button onPress={close}>Cancel</Button>
+            <Button onPress={close}>{i18n.cancelButtonLabel}</Button>
             <Button
               className="mod-cta"
               onPress={() => {
@@ -280,7 +288,7 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTime, setTime }) => {
                 setTime(taskTime);
               }}
             >
-              Save
+              {i18n.saveButtonLabel}
             </Button>
           </div>
         </>

@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import classNames from "classnames";
 import type { PropsWithChildren } from "react";
 import React, { useState } from "react";
@@ -35,11 +36,12 @@ type DeprecationNoticeProps = {
 };
 
 const DeprecationNotice: React.FC<DeprecationNoticeProps> = ({ message }) => {
+  const prefix = t().settings.deprecation.warningMessage;
   return (
     <div className="setting-item-deprecation-notice">
       <ObsidianIcon size={24} id="lucide-alert-triangle" />
       <div className="setting-item-deprecation-notice-message">
-        This setting is deprecated and will be removed in a future release. {message}
+        {prefix} {message}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
 import { Platform } from "obsidian";
 import React, { useMemo, useState } from "react";
@@ -57,14 +58,16 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
     setSelected({ projectId: id });
   };
 
+  const i18n = t().createTaskModal.projectSelector;
+
   return (
     <DialogTrigger>
-      <Button className="project-selector" aria-label="Set project">
+      <Button className="project-selector" aria-label={i18n.buttonLabel}>
         <ButtonLabel {...selected} />
         <ObsidianIcon size={12} id="chevron-down" />
       </Button>
       <Popover>
-        <Dialog className="task-option-dialog task-project-menu" aria-label="Project selector">
+        <Dialog className="task-option-dialog task-project-menu" aria-label={i18n.selectorLabel}>
           {({ close }) => (
             <>
               {!Platform.isMobile && (
@@ -74,7 +77,7 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
                 </>
               )}
               <ListBox
-                aria-label="Project options"
+                aria-label={i18n.optionsLabel}
                 selectionMode="single"
                 onAction={(key) => {
                   onSelect(key);
@@ -103,14 +106,11 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ filter, setFilter }) => {
     setFilter(changeEv.target.value.toLowerCase());
   };
 
+  const i18n = t().createTaskModal.projectSelector.search;
+
   return (
-    <SearchField aria-label="Filter projects" className="search-filter-container">
-      <Input
-        value={filter}
-        onChange={onChange}
-        placeholder="Type a project name"
-        autoFocus={true}
-      />
+    <SearchField aria-label={i18n.label} className="search-filter-container">
+      <Input value={filter} onChange={onChange} placeholder={i18n.placeholder} autoFocus={true} />
     </SearchField>
   );
 };

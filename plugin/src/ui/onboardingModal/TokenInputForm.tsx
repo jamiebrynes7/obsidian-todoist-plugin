@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import React, { useState } from "react";
 import { Button, FieldError, Group, Input, Label, TextField } from "react-aria-components";
 import { TokenValidation } from "../../token";
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
+  const i18n = t().onboardingModal;
   const [token, setToken] = useState<string>("");
   const [validationStatus, setValidationStatus] = useState<TokenValidation.Result>({
     kind: "none",
@@ -34,7 +36,7 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
         isInvalid={validationStatus.kind === "error"}
         onFocusChange={onFocusChange}
       >
-        <Label>API Token</Label>
+        <Label>{i18n.tokenInputLabel}</Label>
         <Group>
           <Input />
           <TokenValidationIcon status={validationStatus} />
@@ -42,7 +44,7 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
         <FieldError>{validationStatus.kind === "error" ? validationStatus.message : ""}</FieldError>
       </TextField>
       <Button type="submit" isDisabled={!canSubmit} onPress={() => onTokenSubmit(token)}>
-        Submit
+        {i18n.submitButtonLabel}
       </Button>
     </div>
   );

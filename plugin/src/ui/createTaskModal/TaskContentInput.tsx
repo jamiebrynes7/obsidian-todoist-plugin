@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import React from "react";
-import { TextArea, TextField } from "react-aria-components";
+import { TextField } from "react-aria-components";
 import TextareaAutosize from "react-textarea-autosize";
 
 type Props = {
