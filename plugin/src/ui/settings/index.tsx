@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
 import { App, PluginSettingTab } from "obsidian";
 import React from "react";
@@ -62,12 +63,14 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
     });
   };
 
+  const i18n = t().settings;
+
   return (
     <PluginContext.Provider value={plugin}>
-      <h2>General</h2>
-      <Setting.Root name="Links" description="">
+      <h2>{i18n.general.header}</h2>
+      <Setting.Root name={i18n.general.links.label} description="">
         <Setting.ButtonControl
-          label="Docs"
+          label={i18n.general.links.docsButtonLabel}
           icon="book-open"
           onClick={() => {
             location.replace(
@@ -76,7 +79,7 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
           }}
         />
         <Setting.ButtonControl
-          label="Feedback"
+          label={i18n.general.links.feedbackButtonLabel}
           icon="github"
           onClick={() => {
             location.replace(
@@ -85,27 +88,30 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
           }}
         />
         <Setting.ButtonControl
-          label="Donate"
+          label={i18n.general.links.donateButtonLabel}
           icon="coffee"
           onClick={() => {
             location.replace("https://www.buymeacoffee.com/jamiebrynes");
           }}
         />
       </Setting.Root>
-      <Setting.Root name="API token" description="The Todoist API token to use when fetching tasks">
+      <Setting.Root
+        name={i18n.general.apiToken.label}
+        description={i18n.general.apiToken.description}
+      >
         <TokenChecker tester={TokenValidation.DefaultTester} />
       </Setting.Root>
 
-      <h2>Auto-refresh</h2>
+      <h2>{i18n.autoRefresh.header}</h2>
       <Setting.Root
-        name="Enable auto-refresh"
-        description="Whether queries should auto-refresh at a set interval"
+        name={i18n.autoRefresh.toggle.label}
+        description={i18n.autoRefresh.toggle.description}
       >
         <Setting.ToggleControl {...toggleProps("autoRefreshToggle")} />
       </Setting.Root>
       <Setting.Root
-        name="Auto-refresh interval"
-        description="The interval, in seconds, that queries will be auto-refreshed by default"
+        name={i18n.autoRefresh.interval.label}
+        description={i18n.autoRefresh.interval.description}
       >
         <AutoRefreshIntervalControl
           initialValue={settings.autoRefreshInterval}
@@ -113,45 +119,45 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
         />
       </Setting.Root>
 
-      <h2>Rendering</h2>
+      <h2>{i18n.rendering.header}</h2>
       <Setting.Root
-        name="Enable task fade animation"
-        description="Whether tasks should fade in and out when created or completed"
+        name={i18n.rendering.taskFadeAnimation.label}
+        description={i18n.rendering.taskFadeAnimation.description}
       >
         <Setting.ToggleControl {...toggleProps("fadeToggle")} />
       </Setting.Root>
 
       <Setting.Root
-        name="Enable dates icon"
-        description="Whether rendered dates should include an icon"
+        name={i18n.rendering.dateIcon.label}
+        description={i18n.rendering.dateIcon.description}
       >
         <Setting.ToggleControl {...toggleProps("renderDateIcon")} />
       </Setting.Root>
       <Setting.Root
-        name="Enable project & section icon"
-        description="Whether rendered projects & sections should include an icon"
+        name={i18n.rendering.projectIcon.label}
+        description={i18n.rendering.projectIcon.description}
       >
         <Setting.ToggleControl {...toggleProps("renderProjectIcon")} />
       </Setting.Root>
       <Setting.Root
-        name="Enable label icon"
-        description="Whether rendered labels should include an icon"
+        name={i18n.rendering.labelsIcon.label}
+        description={i18n.rendering.labelsIcon.description}
       >
         <Setting.ToggleControl {...toggleProps("renderLabelsIcon")} />
       </Setting.Root>
 
-      <h2>Task creation</h2>
+      <h2>{i18n.taskCreation.header}</h2>
       <Setting.Root
-        name="Add parenthesis to page links"
-        description="When enabled, wraps Obsidian page links in Todoist tasks created from the command"
+        name={i18n.taskCreation.wrapLinksInParens.label}
+        description={i18n.taskCreation.wrapLinksInParens.description}
       >
         <Setting.ToggleControl {...toggleProps("shouldWrapLinksInParens")} />
       </Setting.Root>
 
-      <h2>Advanced</h2>
+      <h2>{i18n.advanced.header}</h2>
       <Setting.Root
-        name="Enable debug logging"
-        description="Whether debug logging should be enabled"
+        name={i18n.advanced.debugLogging.label}
+        description={i18n.advanced.debugLogging.description}
       >
         <Setting.ToggleControl {...toggleProps("debugLogging")} />
       </Setting.Root>
