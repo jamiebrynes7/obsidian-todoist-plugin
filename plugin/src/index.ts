@@ -1,3 +1,4 @@
+import { setLanguage } from "@/i18n";
 import "@/styles/main.scss";
 import { App, Plugin } from "obsidian";
 import type { PluginManifest } from "obsidian";
@@ -26,6 +27,7 @@ export default class TodoistPlugin extends Plugin {
     this.addSettingTab(new SettingsTab(this.app, this));
 
     registerCommands(this);
+    setLanguage(document.documentElement.lang);
 
     await this.loadOptions();
     await this.loadApiClient();
