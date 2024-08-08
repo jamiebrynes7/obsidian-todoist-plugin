@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { useSettingsStore } from "@/settings";
 import { ModalContext, PluginContext } from "@/ui/context";
 import { getLocalTimeZone, toCalendarDateTime, toZoned } from "@internationalized/date";
@@ -45,8 +46,10 @@ export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
     return () => window.clearInterval(id);
   }, []);
 
+  const i18n = t().createTaskModal;
+
   if (!isReady) {
-    return <div className="task-creation-modal-root">Loading Todoist data...</div>;
+    return <div className="task-creation-modal-root">{i18n.loadingMessage}</div>;
   }
 
   return <CreateTaskModalContent {...props} />;
@@ -71,6 +74,8 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   const [options, setOptions] = useState<TaskCreationOptions>(initialOptions);
 
   const isSubmitButtonDisabled = content === "" && !options.appendLinkToContent;
+
+  const i18n = t().createTaskModal;
 
   const buildWithLink = (initial: string, withLink: boolean) => {
     const builder = [initial];
@@ -119,9 +124,9 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         buildWithLink(content, options.appendLinkToContent),
         params,
       );
-      new Notice("Task created successfully");
+      new Notice(i18n.successNotice);
     } catch (err) {
-      new Notice("Failed to create task");
+      new Notice(i18n.errorNotice);
       console.error("Failed to create task", err);
     }
   };
@@ -130,7 +135,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     <div className="task-creation-modal-root">
       <TaskContentInput
         className="task-name"
-        placeholder="Task name"
+        placeholder={i18n.taskNamePlaceholder}
         content={content}
         onChange={setContent}
         autofocus={true}
@@ -138,7 +143,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       />
       <TaskContentInput
         className="task-description"
-        placeholder="Description"
+        placeholder={i18n.descriptionPlaceholder}
         content={description}
         onChange={setDescription}
       />
@@ -149,12 +154,8 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       </div>
       <div className="task-creation-notes">
         <ul>
-          {options.appendLinkToContent && (
-            <li>A link to this page will be appended to the task name</li>
-          )}
-          {options.appendLinkToDescription && (
-            <li>A link to this page will be appended to the task description</li>
-          )}
+          {options.appendLinkToContent && <li>{i18n.appendedLinkToContentMessage}</li>}
+          {options.appendLinkToDescription && <li>{i18n.appendedLinkToDescriptionMessage}</li>}
         </ul>
       </div>
       <hr />
@@ -163,16 +164,16 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
           <ProjectSelector selected={project} setSelected={setProject} />
         </div>
         <div className="task-creation-action">
-          <Button onPress={() => modal.close()} aria-label="Cancel">
-            Cancel
+          <Button onPress={() => modal.close()} aria-label={i18n.cancelButtonLabel}>
+            {i18n.cancelButtonLabel}
           </Button>
           <Button
             className="mod-cta"
             isDisabled={isSubmitButtonDisabled}
             onPress={createTask}
-            aria-label="Add task"
+            aria-label={i18n.addTaskButtonLabel}
           >
-            Add task
+            {i18n.addTaskButtonLabel}
           </Button>
         </div>
       </div>
@@ -192,7 +193,9 @@ const getDefaultProject = (plugin: TodoistPlugin): ProjectIdentifier => {
     }
   }
 
-  new Notice("Error: could not find inbox project");
+  const i18n = t().createTaskModal;
+
+  new Notice(i18n.failedToFindInboxNotice);
   throw Error("Could not find inbox project");
 };
 

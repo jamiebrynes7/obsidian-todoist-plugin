@@ -1,3 +1,4 @@
+import { t } from "@/i18n";
 import { TodoistApiClient } from "./api";
 import { ObsidianFetcher } from "./api/fetcher";
 
@@ -9,8 +10,10 @@ export namespace TokenValidation {
     | { kind: "success" };
 
   export const validate = async (token: string, tester: TokenTester): Promise<Result> => {
+    const i18n = t().tokenValidation;
+
     if (token.length === 0) {
-      return { kind: "error", message: "API token must not be empty" };
+      return { kind: "error", message: i18n.emptyTokenError };
     }
 
     const [isValid, _] = await Promise.all([
@@ -21,7 +24,7 @@ export namespace TokenValidation {
     if (!isValid) {
       return {
         kind: "error",
-        message: "Oops! Todoist does not recognize this token. Please double check and try again!",
+        message: i18n.invalidTokenError,
       };
     }
 
