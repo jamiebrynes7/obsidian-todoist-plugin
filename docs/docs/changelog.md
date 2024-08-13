@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 toc_max_heading_level: 2
 ---
 
@@ -12,7 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-> Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are based on the default theme.
+:::info
+
+Help wanted!
+
+This release has added rudimentary support for translating the plugin into other languages. If you'd like to help out, please see the [translation contribution guide](./contributing/translation).
+
+:::
+
+:::warning
+
+Note: the style changes in this release mean that you may need to tweak any custom CSS or themes. The changes are designed for the
+default Obsidian theme.
+
+:::
 
 ### Breaking changes
 
@@ -21,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - Rebuilt the task renderer from the ground up. This now resembles Todoist more closely and has improved the default styling.
+- Added support for translations in the plugin
 
 ## v1.13.0 (2024-04-10)
 
