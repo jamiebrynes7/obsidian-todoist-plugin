@@ -26,16 +26,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-
-      - name: Setup Magic Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
-
-      - name: Use nix-develop shell
-        uses: nicknovitski/nix-develop@v1.1.0
-        with:
-          arguments: ./nix --impure
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Install dependencies
         run: npm install

@@ -1,0 +1,13 @@
+name: "Common Setup"
+description: "Sets up Nix and the development environment"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@main
+    - name: Setup Magic Nix cache
+      uses: DeterminateSystems/magic-nix-cache-action@main
+    - name: Use nix-develop shell
+      uses: nicknovitski/nix-develop@v1.1.0
+      with:
+        arguments: ./nix --impure
