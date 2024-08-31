@@ -1,6 +1,6 @@
 # Translations
 
-Before getting started, you should ensure you read the general [contribution guide](./code). This will ensure that you have a working build environment and are ready to go!
+Before getting started, you should ensure you read the general [contribution guide](./general). This will ensure that you have a working build environment and are ready to go!
 
 ## Architecture
 
