@@ -16,10 +16,7 @@ export namespace TokenValidation {
       return { kind: "error", message: i18n.emptyTokenError };
     }
 
-    const [isValid, _] = await Promise.all([
-      tester(token),
-      new Promise<void>((res) => setTimeout(() => res(), 1000)),
-    ]);
+    const isValid = await tester(token);
 
     if (!isValid) {
       return {

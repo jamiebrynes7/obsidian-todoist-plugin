@@ -1,8 +1,8 @@
 import { t } from "@/i18n";
-import React, { useState } from "react";
+import { TokenValidation } from "@/token";
+import { TokenValidationIcon } from "@/ui/components/token-validation-icon";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, FieldError, Group, Input, Label, TextField } from "react-aria-components";
-import { TokenValidation } from "../../token";
-import { TokenValidationIcon } from "../components/token-validation-icon";
 
 type Props = {
   onTokenSubmit: (token: string) => void;
@@ -16,26 +16,40 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
     kind: "none",
   });
 
-  const onFocusChange = async (isFocused: boolean) => {
-    if (isFocused) {
-      return;
+  // The epoch ensures that only the latest validation request is processed.
+  // The debounce ensures that we don't fire off too many requests.
+  const validationEpoch = useRef(0);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  // When the token changes, queue up a debounced validation attempt.
+  useEffect(() => {
+    setValidationStatus({ kind: "in-progress" });
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
     }
 
-    setValidationStatus({ kind: "in-progress" });
-    const result = await TokenValidation.validate(token, tester);
-    setValidationStatus(result);
-  };
+    const timeoutId = setTimeout(() => {
+      const epoch = ++validationEpoch.current;
+      TokenValidation.validate(token, tester).then((result) => {
+        if (epoch === validationEpoch.current) {
+          setValidationStatus(result);
+        }
+      });
+    }, 500);
+
+    debounceTimeout.current = timeoutId;
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [token, tester]);
 
   const canSubmit = token.length > 0 && validationStatus.kind === "success";
 
   return (
     <div className="todoist-onboarding-token-form">
-      <TextField
-        value={token}
-        onChange={setToken}
-        isInvalid={validationStatus.kind === "error"}
-        onFocusChange={onFocusChange}
-      >
+      <TextField value={token} onChange={setToken} isInvalid={validationStatus.kind === "error"}>
         <Label>{i18n.tokenInputLabel}</Label>
         <Group>
           <Input />
