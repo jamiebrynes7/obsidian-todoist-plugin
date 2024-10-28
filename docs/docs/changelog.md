@@ -36,6 +36,10 @@ default Obsidian theme.
 - Rebuilt the task renderer from the ground up. This now resembles Todoist more closely and has improved the default styling.
 - Added support for translations in the plugin
 
+### 🔁 Changes
+
+- Tweaked the onboarding modal to hopefully be more reliable in validating the token and allowing you to save the token.
+
 ## v1.13.0 (2024-04-10)
 
 ### ✨ Features
