@@ -4,7 +4,7 @@ import { type Query, ShowMetadataVariant } from "@/query/query";
 import type { Settings } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import type { CalendarSpec } from "moment";
-import React from "react";
+import type React from "react";
 
 type MetadataContent = {
   content: string;
@@ -130,7 +130,7 @@ const getMetadataElems = (
           <ObsidianIcon id={meta.icon.id} size={16} />
         ) : undefined;
 
-        const children = [icon, <span>{content.content}</span>];
+        const children = [icon, <span key="content">{content.content}</span>];
         if (meta.icon.orientation === "after") {
           children.reverse();
         }

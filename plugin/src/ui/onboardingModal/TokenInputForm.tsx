@@ -1,7 +1,8 @@
 import { t } from "@/i18n";
 import { TokenValidation } from "@/token";
 import { TokenValidationIcon } from "@/ui/components/token-validation-icon";
-import React, { useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, FieldError, Group, Input, Label, TextField } from "react-aria-components";
 
 type Props = {

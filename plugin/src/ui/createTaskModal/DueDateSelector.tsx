@@ -1,15 +1,16 @@
 import { t } from "@/i18n";
 import {
-  CalendarDate,
+  type CalendarDate,
   DateFormatter,
-  Time,
+  type Time,
   endOfWeek,
   getLocalTimeZone,
   isToday,
   toCalendarDateTime,
   today,
 } from "@internationalized/date";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import {
   Button,
   Calendar,
@@ -116,7 +117,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
               >
                 <Section>
                   {suggestions.map((props) => (
-                    <DateSuggestion {...props} />
+                    <DateSuggestion key={props.id} {...props} />
                   ))}
                 </Section>
               </Menu>

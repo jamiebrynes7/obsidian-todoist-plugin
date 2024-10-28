@@ -1,6 +1,6 @@
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 import "./styles.scss";
 
 type Props = {
@@ -20,7 +20,7 @@ export const Callout: React.FC<Props> = ({ title, contents, iconId, className })
       {contents && (
         <ul className="callout-contents">
           {contents.map((content) => (
-            <li>{content}</li>
+            <li key={content}>{content}</li>
           ))}
         </ul>
       )}

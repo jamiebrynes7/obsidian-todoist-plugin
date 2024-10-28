@@ -1,6 +1,6 @@
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
-import { type Command as ObsidianCommand } from "obsidian";
+import type { Command as ObsidianCommand } from "obsidian";
 import type TodoistPlugin from "..";
 import debug from "../log";
 import { addTask, addTaskWithPageInContent, addTaskWithPageInDescription } from "./addTask";

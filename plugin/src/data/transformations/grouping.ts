@@ -1,6 +1,6 @@
 import type { Project } from "../../api/domain/project";
 import type { Section } from "../../api/domain/section";
-import { type Priority } from "../../api/domain/task";
+import type { Priority } from "../../api/domain/task";
 import { GroupVariant } from "../../query/query";
 import { DueDateInfo } from "../dueDateInfo";
 import type { Task } from "../task";

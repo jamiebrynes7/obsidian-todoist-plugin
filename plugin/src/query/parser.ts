@@ -69,7 +69,7 @@ function parseObject(query: Record<string, unknown>): [Query, QueryWarning[]] {
   const hasOldGroup = booleanField(query, "group") ?? false;
   const groupBy = hasOldGroup
     ? GroupVariant.Project
-    : optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None;
+    : (optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None);
 
   const warnings: QueryWarning[] = [];
   if (hasOldGroup) {

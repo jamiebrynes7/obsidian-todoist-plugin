@@ -1,4 +1,4 @@
-import { type OnSubscriptionChange, type Refresh, type SubscriptionResult } from "@/data";
+import type { OnSubscriptionChange, Refresh, SubscriptionResult } from "@/data";
 import { t } from "@/i18n";
 import type TodoistPlugin from "@/index";
 import type { QueryWarning } from "@/query/parser";
@@ -8,7 +8,8 @@ import { PluginContext, QueryContext } from "@/ui/context";
 import { QueryHeader } from "@/ui/query/QueryHeader";
 import { QueryWarnings } from "@/ui/query/QueryWarnings";
 import { Displays } from "@/ui/query/displays";
-import React, { useCallback, useEffect, useState } from "react";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./styles.scss";
 
 const useSubscription = (

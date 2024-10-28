@@ -12,7 +12,7 @@ import { QueryError } from "@/ui/query/QueryError";
 import { QueryRoot } from "@/ui/query/QueryRoot";
 import { MarkdownRenderChild } from "obsidian";
 import type { MarkdownPostProcessorContext } from "obsidian";
-import React from "react";
+import type React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import { type StoreApi, type UseBoundStore, create } from "zustand";
 

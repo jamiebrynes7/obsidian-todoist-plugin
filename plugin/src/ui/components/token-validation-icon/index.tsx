@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import type { TokenValidation } from "../../../token";
 import { ObsidianIcon } from "../obsidian-icon";
 import "./styles.scss";

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 import { TextField } from "react-aria-components";
 import TextareaAutosize from "react-textarea-autosize";
 

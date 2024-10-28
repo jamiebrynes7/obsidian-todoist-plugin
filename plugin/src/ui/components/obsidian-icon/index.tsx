@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { setIcon } from "obsidian";
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { useRef } from "react";
 import "./styles.scss";
 

@@ -1,7 +1,7 @@
 import type { TaskTree } from "@/data/transformations/relationships";
 import { Task } from "@/ui/query/task/Task";
 import { AnimatePresence } from "framer-motion";
-import React from "react";
+import type React from "react";
 
 type Props = {
   trees: TaskTree[];

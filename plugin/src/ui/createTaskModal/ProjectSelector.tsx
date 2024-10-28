@@ -1,7 +1,8 @@
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
 import { Platform } from "obsidian";
-import React, { useMemo, useState } from "react";
+import type React from "react";
+import { useMemo, useState } from "react";
 import {
   Button,
   Dialog,
@@ -85,7 +86,12 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
                 }}
               >
                 {hierarchy.map((nested) => (
-                  <NestedProjectItem nested={nested} depth={0} filter={filter} />
+                  <NestedProjectItem
+                    key={nested.project.id}
+                    nested={nested}
+                    depth={0}
+                    filter={filter}
+                  />
                 ))}
               </ListBox>
             </>
@@ -126,10 +132,15 @@ const NestedProjectItem: React.FC<NestedProjectItemProps> = ({ nested, depth, fi
     <>
       <ProjectOption project={nested.project} depth={depth} filter={filter} />
       {nested.sections.map((section) => (
-        <SectionOption section={section} depth={depth} filter={filter} />
+        <SectionOption key={section.id} section={section} depth={depth} filter={filter} />
       ))}
       {nested.children.map((nested) => (
-        <NestedProjectItem nested={nested} depth={depth + 1} filter={filter} />
+        <NestedProjectItem
+          key={nested.project.id}
+          nested={nested}
+          depth={depth + 1}
+          filter={filter}
+        />
       ))}
     </>
   );

@@ -1,7 +1,8 @@
 import { t } from "@/i18n";
 import classNames from "classnames";
 import type { PropsWithChildren } from "react";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { ObsidianIcon } from "../components/obsidian-icon";
 
 type RootProps = {
