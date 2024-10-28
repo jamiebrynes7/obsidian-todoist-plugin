@@ -1,6 +1,6 @@
 import { setLanguage } from "@/i18n";
 import "@/styles/main.scss";
-import { App, Plugin } from "obsidian";
+import { type App, Plugin } from "obsidian";
 import type { PluginManifest } from "obsidian";
 import { TodoistApiClient } from "./api";
 import { ObsidianFetcher } from "./api/fetcher";

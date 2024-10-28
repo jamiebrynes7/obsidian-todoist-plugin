@@ -1,7 +1,7 @@
 import { t } from "@/i18n";
 import type { QueryWarning } from "@/query/parser";
 import { Callout } from "@/ui/components/callout";
-import React from "react";
+import type React from "react";
 
 type Props = {
   warnings: QueryWarning[];

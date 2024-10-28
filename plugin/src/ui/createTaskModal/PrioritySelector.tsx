@@ -1,9 +1,9 @@
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 import { Button, type Key, Label, Menu, MenuItem, MenuTrigger } from "react-aria-components";
-import { type Priority } from "../../api/domain/task";
+import type { Priority } from "../../api/domain/task";
 import { ObsidianIcon } from "../components/obsidian-icon";
 import { Popover } from "./Popover";
 
@@ -46,7 +46,7 @@ export const PrioritySelector: React.FC<Props> = ({ selected, setSelected }) => 
             const isSelected = priority === selected;
             const className = classNames("priority-option", { "is-selected": isSelected });
             return (
-              <MenuItem className={className} id={priority}>
+              <MenuItem key={priority} className={className} id={priority}>
                 <Label>{label}</Label>
               </MenuItem>
             );

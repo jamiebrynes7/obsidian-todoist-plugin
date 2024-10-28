@@ -1,6 +1,7 @@
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo } from "react";
 import { Button, DialogTrigger, ListBox, ListBoxItem, type Selection } from "react-aria-components";
 import type { Label } from "../../api/domain/label";
 import { ObsidianIcon } from "../components/obsidian-icon";
@@ -47,7 +48,7 @@ export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
           onSelectionChange={onSelectionChange}
         >
           {options.map((l) => (
-            <LabelItem label={l} isSelected={selectedKeys.contains(l.id)} />
+            <LabelItem key={l.id} label={l} isSelected={selectedKeys.contains(l.id)} />
           ))}
         </ListBox>
       </Popover>

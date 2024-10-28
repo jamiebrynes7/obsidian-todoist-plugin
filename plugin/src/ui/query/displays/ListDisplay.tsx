@@ -4,7 +4,7 @@ import { sortTasks } from "@/data/transformations/sorting";
 import type { SortingVariant } from "@/query/query";
 import { QueryContext } from "@/ui/context";
 import { TaskList } from "@/ui/query/task/TaskList";
-import React from "react";
+import type React from "react";
 
 type Props = {
   tasks: Task[];

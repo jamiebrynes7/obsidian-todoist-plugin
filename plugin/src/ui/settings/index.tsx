@@ -1,7 +1,7 @@
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
-import { App, PluginSettingTab } from "obsidian";
-import React from "react";
+import { type App, PluginSettingTab } from "obsidian";
+import type React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "../..";
 import { type Settings, useSettingsStore } from "../../settings";

@@ -1,4 +1,5 @@
-import React, { useState, type ChangeEvent } from "react";
+import type React from "react";
+import { type ChangeEvent, useState } from "react";
 import { Input, TextField } from "react-aria-components";
 
 type Props = {

@@ -1,6 +1,7 @@
 import { RenderChildContext } from "@/ui/context";
 import { MarkdownRenderer } from "obsidian";
-import React, { useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 
 interface MarkdownProps {
   content: string;

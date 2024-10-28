@@ -1,5 +1,5 @@
 import type { Translations } from "@/i18n/translation";
-import { MarkdownView, Notice, TFile } from "obsidian";
+import { MarkdownView, Notice, type TFile } from "obsidian";
 import type { MakeCommand } from ".";
 import type TodoistPlugin from "..";
 import type { TaskCreationOptions } from "../ui/createTaskModal";

@@ -1,6 +1,6 @@
 import { ModalContext, type ModalInfo, PluginContext } from "@/ui/context";
 import { Modal, Platform } from "obsidian";
-import React from "react";
+import type React from "react";
 import { type Root, createRoot } from "react-dom/client";
 import type TodoistPlugin from "..";
 import { CreateTaskModal } from "../ui/createTaskModal";

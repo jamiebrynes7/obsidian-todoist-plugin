@@ -1,7 +1,7 @@
 import { ModalContext } from "@/ui/context";
 import { Platform } from "obsidian";
 import type { PropsWithChildren } from "react";
-import React from "react";
+import type React from "react";
 import { Popover as AriaPopover, type PopoverProps } from "react-aria-components";
 
 type Props = {

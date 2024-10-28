@@ -2,7 +2,7 @@ import { fireCommand } from "@/commands";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import { MarkdownEditButtonContext, PluginContext } from "@/ui/context";
 import classNames from "classnames";
-import React from "react";
+import type React from "react";
 import { Button } from "react-aria-components";
 
 type Props = {

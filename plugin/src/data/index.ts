@@ -2,7 +2,7 @@ import { type TodoistApiClient, TodoistApiError } from "../api";
 import type { Label, LabelId } from "../api/domain/label";
 import type { Project, ProjectId } from "../api/domain/project";
 import type { Section, SectionId } from "../api/domain/section";
-import type { CreateTaskParams, Task as ApiTask, TaskId } from "../api/domain/task";
+import type { Task as ApiTask, CreateTaskParams, TaskId } from "../api/domain/task";
 import { Maybe } from "../utils/maybe";
 import { Repository, type RepositoryReader } from "./repository";
 import { SubscriptionManager, type UnsubscribeCallback } from "./subscriptions";
@@ -111,7 +111,7 @@ export class TodoistAdapter {
   private hydrate(apiTask: ApiTask): Task {
     const project = this.projects.byId(apiTask.projectId);
     const section = apiTask.sectionId
-      ? this.sections.byId(apiTask.sectionId) ?? makeUnknownSection(apiTask.sectionId)
+      ? (this.sections.byId(apiTask.sectionId) ?? makeUnknownSection(apiTask.sectionId))
       : undefined;
 
     const labels = apiTask.labels.map((id) => this.labels.byName(id) ?? makeUnknownLabel());
