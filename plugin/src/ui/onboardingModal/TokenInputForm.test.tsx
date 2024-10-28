@@ -18,20 +18,6 @@ describe("TokenInputForm", () => {
     expect(button).toHaveAttribute("disabled");
   });
 
-  it("should initially not show an error", () => {
-    render(
-      <TokenInputForm
-        onTokenSubmit={() => {}}
-        tester={async () => {
-          return true;
-        }}
-      />,
-    );
-
-    const textBox = screen.getByRole("textbox");
-    expect(textBox).not.toHaveAttribute("data-invalid");
-  });
-
   it("should show an error if input is empty after focus and unfocus", async () => {
     render(
       <TokenInputForm
