@@ -39,6 +39,7 @@ default Obsidian theme.
 ### 🔁 Changes
 
 - Tweaked the onboarding modal to hopefully be more reliable in validating the token and allowing you to save the token.
+- Greatly reduced plugin startup time. This should improve your vault's load time.
 
 ## v1.13.0 (2024-04-10)
 
