@@ -35,6 +35,8 @@ default Obsidian theme.
 
 - Rebuilt the task renderer from the ground up. This now resembles Todoist more closely and has improved the default styling.
 - Added support for translations in the plugin
+- Added a setting to control whether the embedded "Add task" button in a query should automatically add a link to the current page.
+  - This behaviour can now be turned off or configured to append to the task name or description.
 
 ### 🔁 Changes
 
