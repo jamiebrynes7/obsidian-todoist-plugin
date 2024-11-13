@@ -36,7 +36,7 @@ export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
     <DialogTrigger>
       <Button className="label-selector" aria-label={i18n.buttonLabel}>
         <ObsidianIcon size={16} id="tag" />
-        {i18n.buttonText(selected.length)} ({selected.length})
+        {i18n.buttonText(selected.length)}
       </Button>
       <Popover>
         <ListBox
