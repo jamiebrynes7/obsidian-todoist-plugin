@@ -1,12 +1,12 @@
-import { type TodoistApiClient, TodoistApiError } from "../api";
-import type { Label, LabelId } from "../api/domain/label";
-import type { Project, ProjectId } from "../api/domain/project";
-import type { Section, SectionId } from "../api/domain/section";
-import type { Task as ApiTask, CreateTaskParams, TaskId } from "../api/domain/task";
-import { Maybe } from "../utils/maybe";
-import { Repository, type RepositoryReader } from "./repository";
-import { SubscriptionManager, type UnsubscribeCallback } from "./subscriptions";
-import type { Task } from "./task";
+import { type TodoistApiClient, TodoistApiError } from "@/api";
+import type { Label, LabelId } from "@/api/domain/label";
+import type { Project, ProjectId } from "@/api/domain/project";
+import type { Section, SectionId } from "@/api/domain/section";
+import type { Task as ApiTask, CreateTaskParams, TaskId } from "@/api/domain/task";
+import { Repository, type RepositoryReader } from "@/data/repository";
+import { SubscriptionManager, type UnsubscribeCallback } from "@/data/subscriptions";
+import type { Task } from "@/data/task";
+import { Maybe } from "@/utils/maybe";
 
 export enum QueryErrorKind {
   BadRequest = 0,

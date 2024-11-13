@@ -1,6 +1,6 @@
+import type { Task } from "@/data/task";
+import { type TaskTree, buildTaskTree } from "@/data/transformations/relationships";
 import { describe, expect, it } from "vitest";
-import type { Task } from "../task";
-import { type TaskTree, buildTaskTree } from "./relationships";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {

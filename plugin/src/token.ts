@@ -1,6 +1,6 @@
+import { TodoistApiClient } from "@/api";
+import { ObsidianFetcher } from "@/api/fetcher";
 import { t } from "@/i18n";
-import { TodoistApiClient } from "./api";
-import { ObsidianFetcher } from "./api/fetcher";
 
 export namespace TokenValidation {
   export type Result =

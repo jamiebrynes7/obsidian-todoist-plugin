@@ -1,7 +1,7 @@
+import type { Task } from "@/data//task";
+import { DueDateInfo } from "@/data/dueDateInfo";
+import { SortingVariant } from "@/query/query";
 import moment from "moment";
-import { SortingVariant } from "../../query/query";
-import { DueDateInfo } from "../dueDateInfo";
-import type { Task } from "../task";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
   tasks.sort((first, second) => {

@@ -1,6 +1,6 @@
-import type { DueDate } from "./dueDate";
-import type { ProjectId } from "./project";
-import type { SectionId } from "./section";
+import type { DueDate } from "@/api/domain/dueDate";
+import type { ProjectId } from "@/api/domain/project";
+import type { SectionId } from "@/api/domain/section";
 
 export type TaskId = string;
 

@@ -1,6 +1,6 @@
+import type { DueDate } from "@/api/domain/dueDate";
+import { now } from "@/now";
 import moment from "moment";
-import type { DueDate } from "../api/domain/dueDate";
-import { now } from "../now";
 
 export class DueDateInfo {
   private m: moment.Moment | undefined;

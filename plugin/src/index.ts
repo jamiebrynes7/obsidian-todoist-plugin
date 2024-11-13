@@ -1,14 +1,14 @@
 import { setLanguage } from "@/i18n";
 import "@/styles/main.scss";
+import { TodoistApiClient } from "@/api";
+import { ObsidianFetcher } from "@/api/fetcher";
+import { registerCommands } from "@/commands";
+import { QueryInjector } from "@/query/injector";
+import { type Services, makeServices } from "@/services";
+import { type Settings, useSettingsStore } from "@/settings";
+import { SettingsTab } from "@/ui/settings";
 import { type App, Plugin } from "obsidian";
 import type { PluginManifest } from "obsidian";
-import { TodoistApiClient } from "./api";
-import { ObsidianFetcher } from "./api/fetcher";
-import { registerCommands } from "./commands";
-import { QueryInjector } from "./query/injector";
-import { type Services, makeServices } from "./services";
-import { type Settings, useSettingsStore } from "./settings";
-import { SettingsTab } from "./ui/settings";
 
 export default class TodoistPlugin extends Plugin {
   public readonly services: Services;

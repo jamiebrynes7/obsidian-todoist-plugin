@@ -1,5 +1,5 @@
+import { DeepPartial } from "@/utils/types";
 import { describe, expect, it } from "vitest";
-import { DeepPartial } from "./types";
 
 type TestObject = {
   a: number;

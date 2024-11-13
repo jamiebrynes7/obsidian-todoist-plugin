@@ -1,5 +1,5 @@
+import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 import YAML from "yaml";
-import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "./query";
 
 const possibleWarnings: Record<string, string> = {
   JsonQuery:

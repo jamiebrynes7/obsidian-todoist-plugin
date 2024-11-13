@@ -1,5 +1,5 @@
+import type { Query } from "@/query/query";
 import type { MarkdownPostProcessorContext } from "obsidian";
-import type { Query } from "./query";
 
 export function applyReplacements(query: Query, ctx: MarkdownPostProcessorContext) {
   // Replace {filename} with the base file name of file where the query originated.

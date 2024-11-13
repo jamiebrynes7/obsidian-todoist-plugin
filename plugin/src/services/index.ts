@@ -1,7 +1,7 @@
-import type TodoistPlugin from "..";
-import { TodoistAdapter } from "../data";
-import { ModalHandler } from "./modals";
-import { VaultTokenAccessor } from "./tokenAccessor";
+import { TodoistAdapter } from "@/data";
+import type TodoistPlugin from "@/index";
+import { ModalHandler } from "@/services/modals";
+import { VaultTokenAccessor } from "@/services/tokenAccessor";
 
 export type Services = {
   modals: ModalHandler;

@@ -1,5 +1,5 @@
-import type { TaskId } from "../../api/domain/task";
-import type { Task } from "../task";
+import type { TaskId } from "@/api/domain/task";
+import type { Task } from "@/data/task";
 
 export type TaskTree = Task & { children: TaskTree[] };
 

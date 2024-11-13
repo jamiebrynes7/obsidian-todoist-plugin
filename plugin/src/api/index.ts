@@ -1,11 +1,11 @@
+import type { Label } from "@/api/domain/label";
+import type { Project } from "@/api/domain/project";
+import type { Section } from "@/api/domain/section";
+import type { CreateTaskParams, Task, TaskId } from "@/api/domain/task";
+import type { RequestParams, WebFetcher, WebResponse } from "@/api/fetcher";
+import debug from "@/log";
 import camelize from "camelize-ts";
 import snakify from "snakify-ts";
-import debug from "../log";
-import type { Label } from "./domain/label";
-import type { Project } from "./domain/project";
-import type { Section } from "./domain/section";
-import type { CreateTaskParams, Task, TaskId } from "./domain/task";
-import type { RequestParams, WebFetcher, WebResponse } from "./fetcher";
 
 export class TodoistApiClient {
   private token: string;
