@@ -49,6 +49,10 @@ When enabled, queries will render an icon accompanying the labels.
 
 When enabled, page links added to tasks created via the [command](./commands/add-task) will be wrapped in parenthesis. This may help identifying links if you primarily use Todoist on mobile platforms.
 
+### Add task button adds page link
+
+When enabled, the embedded add task button in queries will add a link to the page to the task in the specified place. This behaviour can also be disabled completely.
+
 ## Advanced
 
 ### Debug logging
