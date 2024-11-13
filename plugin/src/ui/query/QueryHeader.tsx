@@ -1,9 +1,21 @@
-import { fireCommand } from "@/commands";
+import { type CommandId, fireCommand } from "@/commands";
+import { type Settings, useSettingsStore } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import { MarkdownEditButtonContext, PluginContext } from "@/ui/context";
 import classNames from "classnames";
 import type React from "react";
 import { Button } from "react-aria-components";
+
+const getAddTaskCommandId = (settings: Settings): CommandId => {
+  switch (settings.addTaskButtonAddsPageLink) {
+    case "content":
+      return "add-task-page-content";
+    case "description":
+      return "add-task-page-description";
+    case "off":
+      return "add-task";
+  }
+};
 
 type Props = {
   title: string;
@@ -15,6 +27,8 @@ export const QueryHeader: React.FC<Props> = ({ title, isFetching, refresh }) => 
   const plugin = PluginContext.use();
   const { click: editBlock } = MarkdownEditButtonContext.use()();
 
+  const settings = useSettingsStore();
+
   return (
     <div className="todoist-query-header">
       <span className="todoist-query-title">{title}</span>
@@ -22,7 +36,7 @@ export const QueryHeader: React.FC<Props> = ({ title, isFetching, refresh }) => 
         <HeaderButton
           className="add-task"
           iconId="plus"
-          action={() => fireCommand("add-task-page-content", plugin)}
+          action={() => fireCommand(getAddTaskCommandId(settings), plugin)}
         />
         <HeaderButton
           className={classNames("refresh-query", { "is-refreshing": isFetching })}

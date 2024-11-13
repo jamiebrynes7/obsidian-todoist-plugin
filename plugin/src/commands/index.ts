@@ -31,7 +31,7 @@ const commands = {
   "add-task-page-description": addTaskWithPageInDescription,
 };
 
-type CommandId = keyof typeof commands;
+export type CommandId = keyof typeof commands;
 
 export const registerCommands = (plugin: TodoistPlugin) => {
   const i18n = t().commands;
