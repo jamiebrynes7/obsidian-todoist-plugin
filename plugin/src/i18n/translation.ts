@@ -50,6 +50,15 @@ export type Translations = {
         label: string;
         description: string;
       };
+      addTaskButtonAddsPageLink: {
+        label: string;
+        description: string;
+        options: {
+          off: string;
+          description: string;
+          content: string;
+        };
+      };
     };
     advanced: {
       header: string;

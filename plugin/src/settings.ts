@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+export type AddPageLinkSetting = "off" | "description" | "content";
+
 const defaultSettings: Settings = {
   fadeToggle: true,
 
@@ -11,6 +13,7 @@ const defaultSettings: Settings = {
   renderLabelsIcon: true,
 
   shouldWrapLinksInParens: false,
+  addTaskButtonAddsPageLink: "content",
 
   debugLogging: false,
 };
@@ -27,6 +30,7 @@ export type Settings = {
   renderLabelsIcon: boolean;
 
   shouldWrapLinksInParens: boolean;
+  addTaskButtonAddsPageLink: AddPageLinkSetting;
 
   debugLogging: boolean;
 };
