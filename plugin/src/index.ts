@@ -30,7 +30,10 @@ export default class TodoistPlugin extends Plugin {
     setLanguage(document.documentElement.lang);
 
     await this.loadOptions();
-    await this.loadApiClient();
+
+    this.app.workspace.onLayoutReady(async () => {
+      await this.loadApiClient();
+    });
   }
 
   private async loadApiClient(): Promise<void> {
