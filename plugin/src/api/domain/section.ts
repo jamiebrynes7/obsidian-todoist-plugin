@@ -1,4 +1,4 @@
-import type { ProjectId } from "./project";
+import type { ProjectId } from "@/api/domain/project";
 
 export type SectionId = string;
 

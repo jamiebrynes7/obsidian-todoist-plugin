@@ -1,7 +1,7 @@
+import type { Task } from "@/data/task";
+import { sortTasks } from "@/data/transformations/sorting";
+import { SortingVariant } from "@/query/query";
 import { describe, expect, it } from "vitest";
-import { SortingVariant } from "../../query/query";
-import type { Task } from "../task";
-import { sortTasks } from "./sorting";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {

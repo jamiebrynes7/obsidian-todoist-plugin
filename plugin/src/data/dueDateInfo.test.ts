@@ -1,6 +1,6 @@
+import type { DueDate } from "@/api/domain/dueDate";
+import { DueDateInfo } from "@/data/dueDateInfo";
 import { describe, expect, it, vi } from "vitest";
-import type { DueDate } from "../api/domain/dueDate";
-import { DueDateInfo } from "./dueDateInfo";
 
 vi.mock("../now.ts", () => {
   return {

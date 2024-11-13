@@ -1,8 +1,8 @@
+import type { DueDate } from "@/api/domain/dueDate";
 import type { Label } from "@/api/domain/label";
-import type { DueDate } from "../api/domain/dueDate";
-import type { Project } from "../api/domain/project";
-import type { Section } from "../api/domain/section";
-import type { Priority, TaskId } from "../api/domain/task";
+import type { Project } from "@/api/domain/project";
+import type { Section } from "@/api/domain/section";
+import type { Priority, TaskId } from "@/api/domain/task";
 
 export type Task = {
   id: TaskId;

@@ -1,8 +1,8 @@
+import type { MakeCommand } from "@/commands";
 import type { Translations } from "@/i18n/translation";
-import { MarkdownView, Notice, type TFile } from "obsidian";
-import type { MakeCommand } from ".";
-import type TodoistPlugin from "..";
-import type { TaskCreationOptions } from "../ui/createTaskModal";
+import type TodoistPlugin from "@/index";
+import type { TaskCreationOptions } from "@/ui/createTaskModal";
+import { MarkdownView, type TFile } from "obsidian";
 
 export const addTask: MakeCommand = (plugin: TodoistPlugin, i18n: Translations["commands"]) => {
   return {

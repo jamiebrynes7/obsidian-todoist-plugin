@@ -1,11 +1,11 @@
+import type { DueDate } from "@/api/domain/dueDate";
 import type { Label } from "@/api/domain/label";
+import type { Project } from "@/api/domain/project";
+import type { Section } from "@/api/domain/section";
+import type { Task } from "@/data/task";
+import { type GroupedTasks, groupBy } from "@/data/transformations/grouping";
+import { GroupVariant } from "@/query/query";
 import { describe, expect, it, vi } from "vitest";
-import type { DueDate } from "../../api/domain/dueDate";
-import type { Project } from "../../api/domain/project";
-import type { Section } from "../../api/domain/section";
-import { GroupVariant } from "../../query/query";
-import type { Task } from "../task";
-import { type GroupedTasks, groupBy } from "./grouping";
 
 vi.mock("../../now.ts", () => {
   return {

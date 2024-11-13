@@ -1,11 +1,11 @@
+import { GroupVariant, type Query } from "@/query/query";
+import { applyReplacements } from "@/query/replacements";
 import type {
   MarkdownPostProcessorContext,
   MarkdownRenderChild,
   MarkdownSectionInformation,
 } from "obsidian";
 import { describe, expect, it } from "vitest";
-import { GroupVariant, type Query } from "./query";
-import { applyReplacements } from "./replacements";
 
 class FakeContext implements MarkdownPostProcessorContext {
   docId = "";
