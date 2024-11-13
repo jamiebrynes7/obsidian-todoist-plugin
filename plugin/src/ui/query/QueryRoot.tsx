@@ -109,6 +109,8 @@ const getTitle = (query: Query, result: SubscriptionResult): string => {
     }
     case "success":
       return query.name.replace("{task_count}", result.tasks.length.toString());
+    case "not-ready":
+      return "";
   }
 };
 
@@ -118,6 +120,10 @@ const QueryResponseHandler: React.FC<{
 }> = ({ result, query }) => {
   if (result.type === "error") {
     return <Displays.Error kind={result.kind} />;
+  }
+
+  if (result.type === "not-ready") {
+    return <Displays.NotReady />;
   }
 
   const tasks = result.tasks;

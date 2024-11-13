@@ -17,7 +17,8 @@ export enum QueryErrorKind {
 
 export type SubscriptionResult =
   | { type: "success"; tasks: Task[] }
-  | { type: "error"; kind: QueryErrorKind };
+  | { type: "error"; kind: QueryErrorKind }
+  | { type: "not-ready" };
 export type OnSubscriptionChange = (result: SubscriptionResult) => void;
 export type Refresh = () => Promise<void>;
 
@@ -100,7 +101,7 @@ export class TodoistAdapter {
   private buildQueryFetcher(query: string): SubscriptionFetcher {
     return async () => {
       if (!this.api.hasValue()) {
-        return [];
+        return undefined;
       }
       const data = await this.api.withInner((api) => api.getTasks(query));
       const hydrated = data.map((t) => this.hydrate(t));
@@ -189,7 +190,7 @@ const makeUnknownLabel = (): Label => {
   };
 };
 
-type SubscriptionFetcher = () => Promise<Task[]>;
+type SubscriptionFetcher = () => Promise<Task[] | undefined>;
 
 class Subscription {
   private readonly userCallback: OnSubscriptionChange;
@@ -211,7 +212,11 @@ class Subscription {
   public update = async () => {
     try {
       const data = await this.fetch();
-      this.result = { type: "success", tasks: data };
+      if (data === undefined) {
+        this.result = { type: "not-ready" };
+      } else {
+        this.result = { type: "success", tasks: data };
+      }
     } catch (error: unknown) {
       console.error(`Failed to refresh task query: ${error}`);
 
