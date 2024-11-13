@@ -153,6 +153,33 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
       >
         <Setting.ToggleControl {...toggleProps("shouldWrapLinksInParens")} />
       </Setting.Root>
+      <Setting.Root
+        name={i18n.taskCreation.addTaskButtonAddsPageLink.label}
+        description={i18n.taskCreation.addTaskButtonAddsPageLink.description}
+      >
+        <Setting.DropdownControl
+          value={settings.addTaskButtonAddsPageLink}
+          options={[
+            {
+              label: i18n.taskCreation.addTaskButtonAddsPageLink.options.off,
+              value: "off",
+            },
+            {
+              label: i18n.taskCreation.addTaskButtonAddsPageLink.options.description,
+              value: "description",
+            },
+            {
+              label: i18n.taskCreation.addTaskButtonAddsPageLink.options.content,
+              value: "content",
+            },
+          ]}
+          onClick={async (val) => {
+            await plugin.writeOptions({
+              addTaskButtonAddsPageLink: val,
+            });
+          }}
+        />
+      </Setting.Root>
 
       <h2>{i18n.advanced.header}</h2>
       <Setting.Root

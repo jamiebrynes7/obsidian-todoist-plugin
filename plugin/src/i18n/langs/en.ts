@@ -53,6 +53,16 @@ export const en: Translations = {
         description:
           "When enabled, wraps Obsidian page links in Todoist tasks created from the command",
       },
+      addTaskButtonAddsPageLink: {
+        label: "Add task button adds page link",
+        description:
+          "When enabled, the embedded add task button in queries will add a link to the page to the task in the specified place",
+        options: {
+          off: "Disabled",
+          description: "Task description",
+          content: "Task name",
+        },
+      },
     },
     advanced: {
       header: "Advanced",
