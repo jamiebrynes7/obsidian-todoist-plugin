@@ -160,6 +160,10 @@ export type Translations = {
     warning: {
       header: string;
     };
+    groupedHeaders: {
+      noDueDate: string;
+      overdue: string;
+    };
   };
   commands: {
     sync: string;
