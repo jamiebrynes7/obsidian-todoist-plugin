@@ -1,6 +1,7 @@
 import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";
 import type { Priority } from "@/api/domain/task";
+import { formatAsHeader } from "@/data/dueDateFormatter";
 import { DueDateInfo } from "@/data/dueDateInfo";
 import type { Task } from "@/data/task";
 import { GroupVariant } from "@/query/query";
@@ -123,6 +124,7 @@ function groupBySection(tasks: Task[]): GroupedTasks[] {
 }
 
 function groupByDate(tasks: Task[]): GroupedTasks[] {
+  // TODO: Localize
   const makeHeader = (date: string | undefined): string => {
     if (date === undefined) {
       return "No due date";
@@ -132,17 +134,7 @@ function groupByDate(tasks: Task[]): GroupedTasks[] {
       return "Overdue";
     }
 
-    const due = new DueDateInfo({ recurring: false, date });
-    const m = due.moment();
-
-    const parts = [m.format("MMM D"), m.format("dddd")];
-    if (due.isToday()) {
-      parts.push("Today");
-    } else if (due.isTomorrow()) {
-      parts.push("Tomorrow");
-    }
-
-    return parts.join(" ‧ ");
+    return formatAsHeader(new DueDateInfo({ recurring: false, date }));
   };
 
   const dates = partitionBy(tasks, (task: Task) => {

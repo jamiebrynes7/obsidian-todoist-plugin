@@ -1,7 +1,8 @@
 import { t } from "@/i18n";
+import { timezone } from "@/infra/time";
 import { useSettingsStore } from "@/settings";
 import { ModalContext, PluginContext } from "@/ui/context";
-import { getLocalTimeZone, toCalendarDateTime, toZoned } from "@internationalized/date";
+import { toCalendarDateTime, toZoned } from "@internationalized/date";
 import { Notice, type TFile } from "obsidian";
 import type React from "react";
 import { useEffect, useState } from "react";
@@ -113,7 +114,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       if (dueDate.time !== undefined) {
         params.dueDatetime = toZoned(
           toCalendarDateTime(dueDate.date, dueDate.time),
-          getLocalTimeZone(),
+          timezone(),
         ).toAbsoluteString();
       } else {
         params.dueDate = dueDate.date.toString();

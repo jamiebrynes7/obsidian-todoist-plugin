@@ -184,4 +184,15 @@ export const en: Translations = {
     invalidTokenError:
       "Oops! Todoist does not recognize this token. Please double check and try again!",
   },
+  dates: {
+    today: "Today",
+    tomorrow: "Tomorrow",
+    yesterday: "Yesterday",
+    lastWeekday: (weekday: string) => {
+      return `Last ${weekday}`;
+    },
+    dateTime: (date: string, time: string) => {
+      return `${date} at ${time}`;
+    },
+  },
 };

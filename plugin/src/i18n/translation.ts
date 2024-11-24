@@ -171,4 +171,11 @@ export type Translations = {
     emptyTokenError: string;
     invalidTokenError: string;
   };
+  dates: {
+    today: string;
+    tomorrow: string;
+    yesterday: string;
+    lastWeekday: (weekday: string) => string;
+    dateTime: (date: string, time: string) => string;
+  };
 };
