@@ -4,6 +4,7 @@ import type { Priority } from "@/api/domain/task";
 import { DueDate } from "@/data/dueDate";
 import { formatAsHeader } from "@/data/dueDateFormatter";
 import type { Task } from "@/data/task";
+import { t } from "@/i18n";
 import { GroupVariant } from "@/query/query";
 
 export type GroupedTasks = {
@@ -124,14 +125,14 @@ function groupBySection(tasks: Task[]): GroupedTasks[] {
 }
 
 function groupByDate(tasks: Task[]): GroupedTasks[] {
-  // TODO: Localize
+  const i18n = t().query.groupedHeaders;
   const makeHeader = (date: string | undefined): string => {
     if (date === undefined) {
-      return "No due date";
+      return i18n.noDueDate;
     }
 
     if (date === "Overdue") {
-      return "Overdue";
+      return i18n.overdue;
     }
 
     return formatAsHeader(new DueDate({ recurring: false, date }));

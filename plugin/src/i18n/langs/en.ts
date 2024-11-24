@@ -172,6 +172,10 @@ export const en: Translations = {
     warning: {
       header: "Warnings",
     },
+    groupedHeaders: {
+      noDueDate: "No due date",
+      overdue: "Overdue",
+    },
   },
   commands: {
     sync: "Sync with Todoist",
