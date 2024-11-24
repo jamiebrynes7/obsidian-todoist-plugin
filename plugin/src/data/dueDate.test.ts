@@ -1,5 +1,5 @@
-import type { DueDate } from "@/api/domain/dueDate";
-import { DueDateInfo } from "@/data/dueDateInfo";
+import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
+import { DueDate } from "@/data/dueDate";
 import { CalendarDate, ZonedDateTime } from "@internationalized/date";
 import { describe, expect, it, vi } from "vitest";
 
@@ -13,7 +13,7 @@ vi.mock("../infra/time.ts", () => {
 
 type TestCase = {
   description: string;
-  input: DueDate;
+  input: ApiDueDate;
   expected: boolean;
 };
 
@@ -40,7 +40,7 @@ describe("hasTime", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const info = new DueDateInfo(tc.input);
+      const info = new DueDate(tc.input);
       const hasTime = info.hasTime();
       expect(hasTime).toEqual(tc.expected);
     });
@@ -78,7 +78,7 @@ describe("isToday", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const info = new DueDateInfo(tc.input);
+      const info = new DueDate(tc.input);
       const isToday = info.isToday();
       expect(isToday).toEqual(tc.expected);
     });
@@ -133,7 +133,7 @@ describe("isOverdue", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const info = new DueDateInfo(tc.input);
+      const info = new DueDate(tc.input);
       const isOverdue = info.isOverdue();
       expect(isOverdue).toEqual(tc.expected);
     });
@@ -179,7 +179,7 @@ describe("isTomorrow", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const info = new DueDateInfo(tc.input);
+      const info = new DueDate(tc.input);
       const isTomorrow = info.isTomorrow();
       expect(isTomorrow).toEqual(tc.expected);
     });

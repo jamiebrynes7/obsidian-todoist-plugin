@@ -1,5 +1,5 @@
+import { DueDate } from "@/data/dueDate";
 import { formatAsHeader, formatDueDate } from "@/data/dueDateFormatter";
-import { DueDateInfo } from "@/data/dueDateInfo";
 import { CalendarDate, ZonedDateTime } from "@internationalized/date";
 import { describe, expect, test, vi } from "vitest";
 
@@ -20,14 +20,14 @@ vi.mock("../infra/locale.ts", () => {
 describe("formatDueDate", () => {
   type Testcase = {
     description: string;
-    dueDate: DueDateInfo;
+    dueDate: DueDate;
     expected: string;
   };
 
   const testcases: Testcase[] = [
     {
       description: "Today, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-01",
       }),
@@ -35,7 +35,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Today, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-01",
         datetime: "2024-06-01T12:00:00",
@@ -44,7 +44,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Tomorrow, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-02",
       }),
@@ -52,7 +52,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Tomorrow, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-02",
         datetime: "2024-06-02T12:00:00",
@@ -61,7 +61,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Next week, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-05",
       }),
@@ -69,7 +69,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Next week, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-05",
         datetime: "2024-06-05T12:00:00",
@@ -78,7 +78,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Future date, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-30",
       }),
@@ -86,7 +86,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Future date, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-06-30",
         datetime: "2024-06-30T12:00:00",
@@ -95,7 +95,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Yesterday, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-05-31",
       }),
@@ -103,7 +103,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Yesterday, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-05-31",
         datetime: "2024-05-31T12:00:00",
@@ -112,7 +112,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Last week, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-05-29",
       }),
@@ -120,7 +120,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Last week, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2024-05-29",
         datetime: "2024-05-29T12:00:00",
@@ -129,7 +129,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Next year, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2025-06-10",
       }),
@@ -137,7 +137,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Next year, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2025-06-10",
         datetime: "2025-06-10T12:00:00",
@@ -146,7 +146,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Last year, no time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2023-08-15",
       }),
@@ -154,7 +154,7 @@ describe("formatDueDate", () => {
     },
     {
       description: "Last year, with time",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         recurring: false,
         date: "2023-08-15",
         datetime: "2023-08-15T12:00:00",
@@ -174,14 +174,14 @@ describe("formatDueDate", () => {
 describe("formatAsHeader", () => {
   type Testcase = {
     description: string;
-    dueDate: DueDateInfo;
+    dueDate: DueDate;
     expected: string;
   };
 
   const testcases: Testcase[] = [
     {
       description: "Today",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         date: "2024-06-01",
         recurring: false,
       }),
@@ -189,7 +189,7 @@ describe("formatAsHeader", () => {
     },
     {
       description: "Tomorrow",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         date: "2024-06-02",
         recurring: false,
       }),
@@ -197,7 +197,7 @@ describe("formatAsHeader", () => {
     },
     {
       description: "Other date",
-      dueDate: new DueDateInfo({
+      dueDate: new DueDate({
         date: "2024-06-03",
         recurring: false,
       }),

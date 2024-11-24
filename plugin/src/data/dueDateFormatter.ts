@@ -1,4 +1,4 @@
-import type { DueDateInfo } from "@/data/dueDateInfo";
+import type { DueDate } from "@/data/dueDate";
 import { t } from "@/i18n";
 import { locale } from "@/infra/locale";
 
@@ -31,7 +31,7 @@ const getFormatter = (style: string): Intl.DateTimeFormat => {
   return formatterCache[style];
 };
 
-export const formatDueDate = (dueDate: DueDateInfo): string => {
+export const formatDueDate = (dueDate: DueDate): string => {
   const date = formatDate(dueDate);
 
   if (dueDate.hasTime()) {
@@ -44,7 +44,7 @@ export const formatDueDate = (dueDate: DueDateInfo): string => {
   return date;
 };
 
-const formatDate = (dueDate: DueDateInfo): string => {
+const formatDate = (dueDate: DueDate): string => {
   const i18n = t().dates;
 
   if (dueDate.isToday()) {
@@ -74,7 +74,7 @@ const formatDate = (dueDate: DueDateInfo): string => {
   return dueDate.format(getFormatter("date"));
 };
 
-export const formatAsHeader = (dueDate: DueDateInfo): string => {
+export const formatAsHeader = (dueDate: DueDate): string => {
   const formatParts: string[] = [
     dueDate.format(getFormatter("date")),
     dueDate.format(getFormatter("weekday")),
