@@ -74,12 +74,11 @@ const metadata: MetadataDefinition[] = [
 ];
 
 const dateLabel = (task: Task): string => {
-  const info = new DueDateInfo(task.due);
-  if (!info.hasDueDate()) {
+  if (task.due === undefined) {
     return "";
   }
 
-  return formatDueDate(info);
+  return formatDueDate(new DueDateInfo(task.due));
 };
 
 type TaskMetadataProps = {

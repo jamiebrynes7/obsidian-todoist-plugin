@@ -48,20 +48,22 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
   // 1. Any items without a due date are always after those with.
   // 2. Any items on the same day, but without time are always sorted after those with time.
 
-  const selfInfo = new DueDateInfo(self.due);
-  const otherInfo = new DueDateInfo(other.due);
+  if (self.due === undefined) {
+    if (other.due === undefined) {
+      return 0;
+    }
 
-  if (selfInfo.hasDueDate() && !otherInfo.hasDueDate()) {
-    return -1;
-  }
-
-  if (!selfInfo.hasDueDate() && otherInfo.hasDueDate()) {
+    // Self doesn't have date, but other does
     return 1;
   }
 
-  if (!selfInfo.hasDueDate() && !otherInfo.hasDueDate()) {
-    return 0;
+  // Self has date, but other doesn't
+  if (other.due === undefined) {
+    return -1;
   }
+
+  const selfInfo = new DueDateInfo(self.due);
+  const otherInfo = new DueDateInfo(other.due);
 
   const dateCmp = selfInfo.compareDate(otherInfo);
 

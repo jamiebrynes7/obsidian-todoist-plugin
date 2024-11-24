@@ -3,24 +3,16 @@ import { now, timezone, today } from "@/infra/time";
 import { CalendarDate, ZonedDateTime, parseAbsolute, parseDate } from "@internationalized/date";
 
 export class DueDateInfo {
-  private inner: ZonedDateTime | CalendarDate | undefined;
+  private inner: ZonedDateTime | CalendarDate;
 
-  constructor(dueDate: DueDate | undefined) {
-    if (dueDate === undefined) {
-      this.inner = undefined;
+  constructor(dueDate: DueDate) {
+    if (dueDate.datetime !== undefined) {
+      // Todoist's datetime comes as a UTC timezone, but without the trailing 'Z'.
+      // So we just patch it in and carry on our merry way.
+      this.inner = parseAbsolute(`${dueDate.datetime}Z`, timezone());
     } else {
-      if (dueDate.datetime !== undefined) {
-        // Todoist's datetime comes as a UTC timezone, but without the trailing 'Z'.
-        // So we just patch it in and carry on our merry way.
-        this.inner = parseAbsolute(`${dueDate.datetime}Z`, timezone());
-      } else {
-        this.inner = parseDate(dueDate.date);
-      }
+      this.inner = parseDate(dueDate.date);
     }
-  }
-
-  hasDueDate(): boolean {
-    return this.inner !== undefined;
   }
 
   hasTime(): boolean {
@@ -29,19 +21,10 @@ export class DueDateInfo {
 
   isToday(): boolean {
     const date = this.calendarDate();
-
-    if (date === undefined) {
-      return false;
-    }
-
     return date.compare(today()) === 0;
   }
 
   isOverdue(): boolean {
-    if (this.inner === undefined) {
-      return false;
-    }
-
     if (this.inner instanceof CalendarDate) {
       return this.inner.compare(today()) < 0;
     }
@@ -51,51 +34,26 @@ export class DueDateInfo {
 
   isTomorrow(): boolean {
     const date = this.calendarDate();
-
-    if (date === undefined) {
-      return false;
-    }
-
     return date.compare(today().add({ days: 1 })) === 0;
   }
 
   isYesterday(): boolean {
     const date = this.calendarDate();
-
-    if (date === undefined) {
-      return false;
-    }
-
     return date.compare(today().add({ days: -1 })) === 0;
   }
 
   isInLastWeek(): boolean {
     const date = this.calendarDate();
-
-    if (date === undefined) {
-      return false;
-    }
-
     return date.compare(today().add({ days: -7 })) >= 0 && date.compare(today()) < 0;
   }
 
   isInNextWeek(): boolean {
     const date = this.calendarDate();
-
-    if (date === undefined) {
-      return false;
-    }
-
     return date.compare(today().add({ days: 7 })) <= 0 && date.compare(today()) > 0;
   }
 
   isCurrentYear(): boolean {
     const date = this.calendarDate();
-
-    if (date === undefined) {
-      return false;
-    }
-
     return date.year === today().year;
   }
 
@@ -106,11 +64,6 @@ export class DueDateInfo {
   compareDate(other: DueDateInfo): -1 | 0 | 1 {
     const thisDate = this.calendarDate();
     const otherDate = other.calendarDate();
-
-    if (thisDate === undefined || otherDate === undefined) {
-      throw new Error("Called compareDate() on a due date with no due date");
-    }
-
     const cmp = thisDate.compare(otherDate);
 
     if (cmp === 0) {
@@ -125,10 +78,6 @@ export class DueDateInfo {
   }
 
   compareDateTime(other: DueDateInfo): -1 | 0 | 1 {
-    if (this.inner === undefined || other.inner === undefined) {
-      throw new Error("Called compareDateTime on due date with no due date");
-    }
-
     if (!(this.inner instanceof ZonedDateTime) || !(other.inner instanceof ZonedDateTime)) {
       throw new Error("Called compareDateTime on due dates without time");
     }
@@ -146,10 +95,6 @@ export class DueDateInfo {
   }
 
   private naiveDate(): Date {
-    if (this.inner === undefined) {
-      throw new Error("Called naiveDate() on a due date with no due date");
-    }
-
     if (this.inner instanceof CalendarDate) {
       return this.inner.toDate(timezone());
     }
@@ -157,11 +102,7 @@ export class DueDateInfo {
     return this.inner.toDate();
   }
 
-  private calendarDate(): CalendarDate | undefined {
-    if (this.inner === undefined) {
-      return undefined;
-    }
-
+  private calendarDate(): CalendarDate {
     if (this.inner instanceof CalendarDate) {
       return this.inner;
     }
