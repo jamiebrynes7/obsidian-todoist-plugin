@@ -1,10 +1,10 @@
 import { t } from "@/i18n";
+import { timezone } from "@/infra/time";
 import {
   type CalendarDate,
   DateFormatter,
   type Time,
   endOfWeek,
-  getLocalTimeZone,
   isToday,
   toCalendarDateTime,
   today,
@@ -84,7 +84,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
     if (selected === undefined) {
       if (time !== undefined) {
         setSelected({
-          date: today(getLocalTimeZone()),
+          date: today(timezone()),
           time,
         });
       }
@@ -130,7 +130,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
                   selectDate(date);
                   close();
                 }}
-                minValue={today(getLocalTimeZone())}
+                minValue={today(timezone())}
               >
                 <header>
                   <Heading level={4} />
@@ -176,15 +176,15 @@ const getLabel = (selected: DueDate | undefined) => {
 
   const date = selected.date;
   const dayPart = (() => {
-    if (isToday(date, getLocalTimeZone())) {
+    if (isToday(date, timezone())) {
       return i18n.today;
     }
 
-    if (today(getLocalTimeZone()).add({ days: 1 }).compare(date) === 0) {
+    if (today(timezone()).add({ days: 1 }).compare(date) === 0) {
       return i18n.tomorrow;
     }
 
-    return formatter.format(date.toDate(getLocalTimeZone()));
+    return formatter.format(date.toDate(timezone()));
   })();
 
   const time = selected.time;
@@ -193,9 +193,7 @@ const getLabel = (selected: DueDate | undefined) => {
       return "";
     }
 
-    return timeFormatter.format(
-      toCalendarDateTime(today(getLocalTimeZone()), time).toDate(getLocalTimeZone()),
-    );
+    return timeFormatter.format(toCalendarDateTime(today(timezone()), time).toDate(timezone()));
   })();
 
   return [dayPart, timePart].join(" ").trimEnd();
@@ -209,8 +207,7 @@ type DateSuggestionProps = {
 };
 
 const DateSuggestion: React.FC<DateSuggestionProps> = ({ id, icon, label, target }) => {
-  const dayOfWeek =
-    target !== undefined ? weekdayFormatter.format(target.toDate(getLocalTimeZone())) : "";
+  const dayOfWeek = target !== undefined ? weekdayFormatter.format(target.toDate(timezone())) : "";
 
   return (
     <MenuItem id={id} aria-label={label}>
@@ -228,19 +225,19 @@ const DateSuggestion: React.FC<DateSuggestionProps> = ({ id, icon, label, target
 const getSuggestions = (): DateSuggestionProps[] => {
   const i18n = t().createTaskModal.dateSelector;
 
-  const startOfNextWeek = endOfWeek(today(getLocalTimeZone()), "en-US").add({ days: 1 });
+  const startOfNextWeek = endOfWeek(today(timezone()), "en-US").add({ days: 1 });
   const suggestions = [
     {
       id: "today",
       icon: "calendar",
       label: i18n.today,
-      target: today(getLocalTimeZone()),
+      target: today(timezone()),
     },
     {
       id: "tomorrow",
       icon: "sun",
       label: i18n.tomorrow,
-      target: today(getLocalTimeZone()).add({ days: 1 }),
+      target: today(timezone()).add({ days: 1 }),
     },
     {
       id: "next-week",

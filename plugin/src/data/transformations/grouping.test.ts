@@ -5,11 +5,14 @@ import type { Section } from "@/api/domain/section";
 import type { Task } from "@/data/task";
 import { type GroupedTasks, groupBy } from "@/data/transformations/grouping";
 import { GroupVariant } from "@/query/query";
+import { CalendarDate, ZonedDateTime } from "@internationalized/date";
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("../../now.ts", () => {
+vi.mock("../../infra/time.ts", () => {
   return {
-    now: () => new Date("2024-01-01T12:00:00"),
+    today: () => new CalendarDate(2024, 1, 1),
+    now: () => new ZonedDateTime(2024, 1, 1, "Etc/UTC", 0, 12), // 2024-01-01T12:00:00Z
+    timezone: () => "Etc/UTC",
   };
 });
 

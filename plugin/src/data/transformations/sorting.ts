@@ -1,7 +1,7 @@
 import type { Task } from "@/data//task";
 import { DueDateInfo } from "@/data/dueDateInfo";
 import { SortingVariant } from "@/query/query";
-import moment from "moment";
+import { parseAbsoluteToLocal } from "@internationalized/date";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
   tasks.sort((first, second) => {
@@ -63,17 +63,12 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
     return 0;
   }
 
-  const selfDate = selfInfo.moment();
-  const otherDate = otherInfo.moment();
-
-  if (selfDate === undefined || otherDate === undefined) {
-    throw Error("Found unexpected missing moment date");
-  }
+  const dateCmp = selfInfo.compareDate(otherInfo);
 
   // Then lets check if we are the same day, if not
   // sort just based on the day.
-  if (!selfDate.isSame(otherDate, "day")) {
-    return selfDate.isBefore(otherDate, "day") ? -1 : 1;
+  if (dateCmp !== 0) {
+    return dateCmp;
   }
 
   if (selfInfo.hasTime() && !otherInfo.hasTime()) {
@@ -88,16 +83,12 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
     return 0;
   }
 
-  return selfDate.isBefore(otherDate) ? -1 : 1;
+  return selfInfo.compareDateTime(otherInfo);
 }
 
 function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
-  const selfDate = moment(self.createdAt);
-  const otherDate = moment(other.createdAt);
+  const selfDate = parseAbsoluteToLocal(self.createdAt);
+  const otherDate = parseAbsoluteToLocal(other.createdAt);
 
-  if (selfDate === otherDate) {
-    return 0;
-  }
-
-  return selfDate.isBefore(otherDate) ? -1 : 1;
+  return selfDate.compare(otherDate) < 0 ? -1 : 1;
 }

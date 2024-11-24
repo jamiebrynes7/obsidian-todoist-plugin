@@ -1,9 +1,9 @@
+import { formatDueDate } from "@/data/dueDateFormatter";
 import { DueDateInfo } from "@/data/dueDateInfo";
 import type { Task } from "@/data/task";
 import { type Query, ShowMetadataVariant } from "@/query/query";
 import type { Settings } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
-import type { CalendarSpec } from "moment";
 import type React from "react";
 
 type MetadataContent = {
@@ -79,22 +79,7 @@ const dateLabel = (task: Task): string => {
     return "";
   }
 
-  const m = info.moment();
-
-  if (info.hasTime()) {
-    return m.calendar();
-  }
-
-  return m.calendar(dateOnlyCalendarSpec);
-};
-
-const dateOnlyCalendarSpec: CalendarSpec = {
-  sameDay: "[Today]",
-  nextDay: "[Tomorrow]",
-  nextWeek: "dddd",
-  lastDay: "[Yesterday]",
-  lastWeek: "[Last] dddd",
-  sameElse: "MMM Do",
+  return formatDueDate(info);
 };
 
 type TaskMetadataProps = {

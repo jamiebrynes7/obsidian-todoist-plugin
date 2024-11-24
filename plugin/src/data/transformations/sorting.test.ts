@@ -104,14 +104,14 @@ describe("sortTasks", () => {
         makeTask("d", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
         makeTask("e", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
         }),
@@ -121,14 +121,14 @@ describe("sortTasks", () => {
         makeTask("e", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
         }),
         makeTask("d", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
@@ -153,14 +153,14 @@ describe("sortTasks", () => {
         makeTask("e", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
         }),
         makeTask("d", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
@@ -196,14 +196,14 @@ describe("sortTasks", () => {
         makeTask("d", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
         makeTask("e", {
           due: {
             recurring: false,
-            date: "2020-03-20",
+            date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
         }),
@@ -212,29 +212,29 @@ describe("sortTasks", () => {
     {
       description: "can sort by dateAdded",
       input: [
-        makeTask("a", { createdAt: "2020-03-03T13:00:00" }),
-        makeTask("b", { createdAt: "2020-03-02T11:00:00" }),
-        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+        makeTask("a", { createdAt: "2020-03-03T13:00:00Z" }),
+        makeTask("b", { createdAt: "2020-03-02T11:00:00Z" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00Z" }),
       ],
       sortingOpts: [SortingVariant.DateAdded],
       expectedOutput: [
-        makeTask("b", { createdAt: "2020-03-02T11:00:00" }),
-        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
-        makeTask("a", { createdAt: "2020-03-03T13:00:00" }),
+        makeTask("b", { createdAt: "2020-03-02T11:00:00Z" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00Z" }),
+        makeTask("a", { createdAt: "2020-03-03T13:00:00Z" }),
       ],
     },
     {
       description: "can sort by dateAddedDescending",
       input: [
-        makeTask("a", { createdAt: "2020-03-02T11:00:00" }),
-        makeTask("b", { createdAt: "2020-03-03T13:00:00" }),
-        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
+        makeTask("a", { createdAt: "2020-03-02T11:00:00Z" }),
+        makeTask("b", { createdAt: "2020-03-03T13:00:00Z" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00Z" }),
       ],
       sortingOpts: [SortingVariant.DateAddedDescending],
       expectedOutput: [
-        makeTask("b", { createdAt: "2020-03-03T13:00:00" }),
-        makeTask("c", { createdAt: "2020-03-02T12:00:00" }),
-        makeTask("a", { createdAt: "2020-03-02T11:00:00" }),
+        makeTask("b", { createdAt: "2020-03-03T13:00:00Z" }),
+        makeTask("c", { createdAt: "2020-03-02T12:00:00Z" }),
+        makeTask("a", { createdAt: "2020-03-02T11:00:00Z" }),
       ],
     },
     {
