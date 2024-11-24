@@ -8,7 +8,7 @@
     "build": "vite build",
     "test": "vitest",
     "lint:check": "biome check ./src --config-path=../",
-    "lint:fix": "biome check --apply ./src --config-path=../"
+    "lint:fix": "biome check --write ./src --config-path=../"
   },
   "author": "Jamie Brynes",
   "license": "ISC",
