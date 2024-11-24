@@ -50,7 +50,7 @@ export const Task: React.FC<Props> = ({ tree }) => {
         className="todoist-task-container"
         onContextMenu={onContextMenu}
         data-priority={tree.priority}
-        data-duedate-metadata={getDueMetadataInfo(tree)}
+        data-due-metadata={getDueMetadataInfo(tree)}
         data-has-time={getTimeMetadataInfo(tree)}
         initial={{ opacity: transitionOpacity }}
         animate={{ opacity: 1 }}
