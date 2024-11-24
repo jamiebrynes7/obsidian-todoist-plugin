@@ -13,52 +13,12 @@ vi.mock("../infra/time.ts", () => {
 
 type TestCase = {
   description: string;
-  input: DueDate | undefined;
+  input: DueDate;
   expected: boolean;
 };
 
-describe("hasDueDate", () => {
-  const testcases: TestCase[] = [
-    {
-      description: "should be false for empty due date",
-      input: undefined,
-      expected: false,
-    },
-    {
-      description: "should be true for just date",
-      input: {
-        recurring: false,
-        date: "2024-01-01",
-      },
-      expected: true,
-    },
-    {
-      description: "should be true for datetime",
-      input: {
-        recurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T12:00:00",
-      },
-      expected: true,
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDateInfo(tc.input);
-      const hasDueDate = info.hasDueDate();
-      expect(hasDueDate).toEqual(tc.expected);
-    });
-  }
-});
-
 describe("hasTime", () => {
   const testcases: TestCase[] = [
-    {
-      description: "should be false for empty due date",
-      input: undefined,
-      expected: false,
-    },
     {
       description: "should be false for just date",
       input: {
@@ -89,11 +49,6 @@ describe("hasTime", () => {
 
 describe("isToday", () => {
   const testcases: TestCase[] = [
-    {
-      description: "should be false for empty due date",
-      input: undefined,
-      expected: false,
-    },
     {
       description: "should be false for different day",
       input: {
@@ -132,11 +87,6 @@ describe("isToday", () => {
 
 describe("isOverdue", () => {
   const testcases: TestCase[] = [
-    {
-      description: "should be false for empty due date",
-      input: undefined,
-      expected: false,
-    },
     {
       description: "should be false if date in future",
       input: {
@@ -192,11 +142,6 @@ describe("isOverdue", () => {
 
 describe("isTomorrow", () => {
   const testcases: TestCase[] = [
-    {
-      description: "should be false for empty due date",
-      input: undefined,
-      expected: false,
-    },
     {
       description: "should be false for same day",
       input: {

@@ -77,6 +77,10 @@ export const Task: React.FC<Props> = ({ tree }) => {
 };
 
 function getDueMetadataInfo(task: TaskTree): string | undefined {
+  if (task.due === undefined) {
+    return undefined;
+  }
+
   const info = new DueDateInfo(task.due);
 
   if (info.isOverdue()) {
@@ -92,7 +96,11 @@ function getDueMetadataInfo(task: TaskTree): string | undefined {
   return undefined;
 }
 
-function getTimeMetadataInfo(task: TaskTree): boolean {
+function getTimeMetadataInfo(task: TaskTree): boolean | undefined {
+  if (task.due === undefined) {
+    return undefined;
+  }
+
   return new DueDateInfo(task.due).hasTime();
 }
 
