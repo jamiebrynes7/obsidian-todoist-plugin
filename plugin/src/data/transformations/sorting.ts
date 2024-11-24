@@ -1,5 +1,5 @@
 import type { Task } from "@/data//task";
-import { DueDateInfo } from "@/data/dueDateInfo";
+import { DueDate } from "@/data/dueDate";
 import { SortingVariant } from "@/query/query";
 import { parseAbsoluteToLocal } from "@internationalized/date";
 
@@ -62,8 +62,8 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
     return -1;
   }
 
-  const selfInfo = new DueDateInfo(self.due);
-  const otherInfo = new DueDateInfo(other.due);
+  const selfInfo = new DueDate(self.due);
+  const otherInfo = new DueDate(other.due);
 
   const dateCmp = selfInfo.compareDate(otherInfo);
 

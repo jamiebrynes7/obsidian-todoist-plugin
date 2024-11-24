@@ -1,11 +1,11 @@
-import type { DueDate } from "@/api/domain/dueDate";
+import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
 import { now, timezone, today } from "@/infra/time";
 import { CalendarDate, ZonedDateTime, parseAbsolute, parseDate } from "@internationalized/date";
 
-export class DueDateInfo {
+export class DueDate {
   private inner: ZonedDateTime | CalendarDate;
 
-  constructor(dueDate: DueDate) {
+  constructor(dueDate: ApiDueDate) {
     if (dueDate.datetime !== undefined) {
       // Todoist's datetime comes as a UTC timezone, but without the trailing 'Z'.
       // So we just patch it in and carry on our merry way.
@@ -61,7 +61,7 @@ export class DueDateInfo {
     return formatter.format(this.naiveDate());
   }
 
-  compareDate(other: DueDateInfo): -1 | 0 | 1 {
+  compareDate(other: DueDate): -1 | 0 | 1 {
     const thisDate = this.calendarDate();
     const otherDate = other.calendarDate();
     const cmp = thisDate.compare(otherDate);
@@ -77,7 +77,7 @@ export class DueDateInfo {
     return 1;
   }
 
-  compareDateTime(other: DueDateInfo): -1 | 0 | 1 {
+  compareDateTime(other: DueDate): -1 | 0 | 1 {
     if (!(this.inner instanceof ZonedDateTime) || !(other.inner instanceof ZonedDateTime)) {
       throw new Error("Called compareDateTime on due dates without time");
     }

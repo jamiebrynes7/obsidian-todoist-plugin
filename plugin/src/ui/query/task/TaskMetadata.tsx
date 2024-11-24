@@ -1,5 +1,5 @@
+import { DueDate } from "@/data/dueDate";
 import { formatDueDate } from "@/data/dueDateFormatter";
-import { DueDateInfo } from "@/data/dueDateInfo";
 import type { Task } from "@/data/task";
 import { type Query, ShowMetadataVariant } from "@/query/query";
 import type { Settings } from "@/settings";
@@ -78,7 +78,7 @@ const dateLabel = (task: Task): string => {
     return "";
   }
 
-  return formatDueDate(new DueDateInfo(task.due));
+  return formatDueDate(new DueDate(task.due));
 };
 
 type TaskMetadataProps = {

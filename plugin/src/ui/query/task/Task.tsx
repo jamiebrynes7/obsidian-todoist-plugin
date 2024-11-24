@@ -1,4 +1,4 @@
-import { DueDateInfo } from "@/data/dueDateInfo";
+import { DueDate } from "@/data/dueDate";
 import type { TaskTree } from "@/data/transformations/relationships";
 import { t } from "@/i18n";
 import { ShowMetadataVariant } from "@/query/query";
@@ -81,7 +81,7 @@ function getDueMetadataInfo(task: TaskTree): string | undefined {
     return undefined;
   }
 
-  const info = new DueDateInfo(task.due);
+  const info = new DueDate(task.due);
 
   if (info.isOverdue()) {
     return "overdue";
@@ -101,7 +101,7 @@ function getTimeMetadataInfo(task: TaskTree): boolean | undefined {
     return undefined;
   }
 
-  return new DueDateInfo(task.due).hasTime();
+  return new DueDate(task.due).hasTime();
 }
 
 const sanitizeContent = (content: string): string => {
