@@ -30,6 +30,7 @@ default Obsidian theme.
 ### Breaking changes
 
 - Removed the deprecated settings for rendering the description, due date, labels, or projects. Please use the `show` property in the query.
+- Removed the `group` property in queries. Please use the `groupBy` property instead.
 
 ### ✨ Features
 
