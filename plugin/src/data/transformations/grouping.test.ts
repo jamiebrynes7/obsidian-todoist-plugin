@@ -16,6 +16,12 @@ vi.mock("../../infra/time.ts", () => {
   };
 });
 
+vi.mock("../../infra/locale.ts", () => {
+  return {
+    locale: () => "en-US",
+  };
+});
+
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
     id,
