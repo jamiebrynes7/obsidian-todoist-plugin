@@ -1,6 +1,7 @@
 import type { DueDate } from "@/data/dueDate";
 import { t } from "@/i18n";
 import { locale } from "@/infra/locale";
+import { timezone } from "@/infra/time";
 
 const formatStyles: Record<string, Intl.DateTimeFormatOptions> = {
   time: {
@@ -27,7 +28,10 @@ const getFormatter = (style: string): Intl.DateTimeFormat => {
     return formatterCache[style];
   }
 
-  formatterCache[style] = new Intl.DateTimeFormat(locale(), formatStyles[style]);
+  formatterCache[style] = new Intl.DateTimeFormat(locale(), {
+    timeZone: timezone(),
+    ...formatStyles[style],
+  });
   return formatterCache[style];
 };
 
