@@ -70,14 +70,6 @@ describe("parseQuery - rejections", () => {
       },
     },
     {
-      description: "group must be a boolean",
-      input: {
-        name: "foo",
-        filter: "bar",
-        group: "foobar",
-      },
-    },
-    {
       description: "groupBy must be a string",
       input: {
         filter: "foobar",
@@ -176,17 +168,6 @@ describe("parseQuery", () => {
       }),
     },
     {
-      description: "with old group -> coerced to project grouping",
-      input: {
-        filter: "bar",
-        group: true,
-      },
-      expectedOutput: makeQuery({
-        filter: "bar",
-        groupBy: GroupVariant.Project,
-      }),
-    },
-    {
       description: "with group",
       input: {
         filter: "bar",
@@ -245,17 +226,6 @@ describe("parseQuery - warnings", () => {
       },
       expectedWarnings: [
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
-      ],
-    },
-    {
-      description: "old group parameter",
-      input: {
-        filter: "bar",
-        group: true,
-      },
-      expectedWarnings: [
-        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
-        "The 'group' field is deprecated and will be removed in a future version. Please use 'groupBy' instead.",
       ],
     },
   ];
