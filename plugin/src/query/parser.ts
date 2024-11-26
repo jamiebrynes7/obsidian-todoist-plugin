@@ -4,8 +4,6 @@ import YAML from "yaml";
 const possibleWarnings: Record<string, string> = {
   JsonQuery:
     "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
-  GroupParameter:
-    "The 'group' field is deprecated and will be removed in a future version. Please use 'groupBy' instead.",
 };
 
 export class ParsingError extends Error {
@@ -65,17 +63,6 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
 }
 
 function parseObject(query: Record<string, unknown>): [Query, QueryWarning[]] {
-  // Keep old queries working for a period of time.
-  const hasOldGroup = booleanField(query, "group") ?? false;
-  const groupBy = hasOldGroup
-    ? GroupVariant.Project
-    : (optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None);
-
-  const warnings: QueryWarning[] = [];
-  if (hasOldGroup) {
-    warnings.push(possibleWarnings.GroupParameter);
-  }
-
   return [
     {
       name: stringField(query, "name") ?? "",
@@ -86,9 +73,9 @@ function parseObject(query: Record<string, unknown>): [Query, QueryWarning[]] {
         optionsArrayField(query, "show", showMetadataVariantLookup) ??
           Object.values(showMetadataVariantLookup),
       ),
-      groupBy,
+      groupBy: optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None,
     },
-    warnings,
+    [],
   ];
 }
 
