@@ -53,7 +53,7 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
         label={buttonLabel}
         icon="settings"
         onClick={openModal}
-        disabled={tokenState.kind !== "error"}
+        disabled={tokenState.kind === "in-progress"}
       />
     </>
   );
