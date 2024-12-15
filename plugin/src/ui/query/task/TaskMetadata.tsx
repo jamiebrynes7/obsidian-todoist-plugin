@@ -111,7 +111,7 @@ const getMetadataElems = (
     .flatMap((meta) => {
       return meta.content(task).map((content) => {
         const icon = meta.icon.shouldRender(settings) ? (
-          <ObsidianIcon id={meta.icon.id} size={16} />
+          <ObsidianIcon id={meta.icon.id} size="s" />
         ) : undefined;
 
         const children = [icon, <span key="content">{content.content}</span>];

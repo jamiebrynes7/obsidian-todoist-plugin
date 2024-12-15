@@ -35,7 +35,7 @@ export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
   return (
     <DialogTrigger>
       <Button className="label-selector" aria-label={i18n.buttonLabel}>
-        <ObsidianIcon size={16} id="tag" />
+        <ObsidianIcon size="m" id="tag" />
         {i18n.buttonText(selected.length)}
       </Button>
       <Popover>
@@ -70,7 +70,7 @@ const LabelItem: React.FC<LabelItemProps> = ({ label, isSelected }) => {
       textValue={label.name}
     >
       {label.name}
-      {isSelected && <ObsidianIcon size={10} id="check" />}
+      {isSelected && <ObsidianIcon size="xs" id="check" />}
     </ListBoxItem>
   );
 };

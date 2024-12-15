@@ -74,7 +74,7 @@ const HeaderButton: React.FC<ButtonProps> = ({ iconId, action, className }) => {
 
   return (
     <Button className={classNames("todoist-query-control-button", className)} onPress={handler}>
-      <ObsidianIcon id={iconId} size={14} />
+      <ObsidianIcon id={iconId} size="s" />
     </Button>
   );
 };

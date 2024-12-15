@@ -65,7 +65,7 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
     <DialogTrigger>
       <Button className="project-selector" aria-label={i18n.buttonLabel}>
         <ButtonLabel {...selected} />
-        <ObsidianIcon size={12} id="chevron-down" />
+        <ObsidianIcon size="s" id="chevron-down" />
       </Button>
       <Popover>
         <Dialog className="task-option-dialog task-project-menu" aria-label={i18n.selectorLabel}>
@@ -216,7 +216,7 @@ const ItemKey = {
 const SectionLabel: React.FC<{ section: Section }> = ({ section }) => {
   return (
     <>
-      <ObsidianIcon size={12} id="gallery-vertical" />
+      <ObsidianIcon size="s" id="gallery-vertical" />
       <div>{section.name}</div>
     </>
   );
@@ -227,7 +227,7 @@ const ProjectLabel: React.FC<{ project: Project }> = ({ project }) => {
 
   return (
     <>
-      <ObsidianIcon size={12} id={projectIcon} />
+      <ObsidianIcon size="s" id={projectIcon} />
       <div>{project.name}</div>
     </>
   );

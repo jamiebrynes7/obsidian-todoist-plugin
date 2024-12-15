@@ -14,7 +14,7 @@ export const Callout: React.FC<Props> = ({ title, contents, iconId, className })
   return (
     <div className={classNames("todoist-callout", className)}>
       <div className="callout-header">
-        <ObsidianIcon id={iconId} size={24} />
+        <ObsidianIcon id={iconId} size="l" />
         <span>{title}</span>
       </div>
       {contents && (
