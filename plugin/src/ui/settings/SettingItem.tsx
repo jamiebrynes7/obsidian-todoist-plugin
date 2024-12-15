@@ -40,7 +40,7 @@ const DeprecationNotice: React.FC<DeprecationNoticeProps> = ({ message }) => {
   const prefix = t().settings.deprecation.warningMessage;
   return (
     <div className="setting-item-deprecation-notice">
-      <ObsidianIcon size={24} id="lucide-alert-triangle" />
+      <ObsidianIcon size="l" id="lucide-alert-triangle" />
       <div className="setting-item-deprecation-notice-message">
         {prefix} {message}
       </div>
@@ -58,7 +58,7 @@ type ButtonProps = {
 const ButtonControl: React.FC<ButtonProps> = ({ label, icon, onClick, disabled }) => {
   return (
     <button className="mod-cta" onClick={onClick} type="button" disabled={disabled}>
-      {icon !== undefined && <ObsidianIcon size={24} id={icon} className="setting-button-icon" />}
+      {icon !== undefined && <ObsidianIcon size="l" id={icon} className="setting-button-icon" />}
       {label}
     </button>
   );

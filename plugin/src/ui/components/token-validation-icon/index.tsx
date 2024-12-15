@@ -8,10 +8,10 @@ export const TokenValidationIcon: React.FC<{ status: TokenValidation.Result }> =
     case "none":
       return <></>;
     case "in-progress":
-      return <ObsidianIcon id="loader-2" className="token-validation-in-progress" size={16} />;
+      return <ObsidianIcon id="loader-2" className="token-validation-in-progress" size="m" />;
     case "error":
-      return <ObsidianIcon id="x-circle" className="token-validation-error" size={16} />;
+      return <ObsidianIcon id="x-circle" className="token-validation-error" size="m" />;
     case "success":
-      return <ObsidianIcon id="check-circle-2" className="token-validation-success" size={16} />;
+      return <ObsidianIcon id="check-circle-2" className="token-validation-success" size="m" />;
   }
 };

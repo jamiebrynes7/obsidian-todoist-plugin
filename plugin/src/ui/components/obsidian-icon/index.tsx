@@ -6,7 +6,7 @@ import { useRef } from "react";
 import "./styles.scss";
 
 type Props = {
-  size: number;
+  size: "xs" | "s" | "m" | "l" | "xl";
   id: string;
   className?: string;
 };
@@ -18,8 +18,8 @@ export const ObsidianIcon: React.FC<Props> = ({ size, id, className }) => {
       return;
     }
 
-    setIcon(div.current, id, size);
-  }, [id, size]);
+    setIcon(div.current, id);
+  }, [id]);
 
-  return <div className={classNames("obsidian-icon", className)} ref={div} />;
+  return <div className={classNames("obsidian-icon", className)} data-icon-size={size} ref={div} />;
 };

@@ -1,4 +1,13 @@
+$sizes: xs, s, m, l, xl;
+
 .obsidian-icon {
   display: flex;
   align-items: center;
+
+  @each $size in $sizes {
+    &[data-icon-size="#{$size}"] {
+      --icon-size: var(--icon-#{$size});
+      --icon-stroke: var(--icon-#{$size}-stroke-width);
+    }
+  }
 }

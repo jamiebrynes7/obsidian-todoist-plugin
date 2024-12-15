@@ -101,7 +101,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
   return (
     <DialogTrigger>
       <Button className="due-date-selector" aria-label={i18n.buttonLabel}>
-        <ObsidianIcon size={16} id="calendar" />
+        <ObsidianIcon size="s" id="calendar" />
         {label}
       </Button>
       <Popover maxHeight={600}>
@@ -145,7 +145,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
               <DialogTrigger>
                 <div className="time-picker-container">
                   <Button className="time-picker-button">
-                    <ObsidianIcon size={10} id="clock" />
+                    <ObsidianIcon size="xs" id="clock" />
                     Time
                   </Button>
                 </div>
@@ -213,7 +213,7 @@ const DateSuggestion: React.FC<DateSuggestionProps> = ({ id, icon, label, target
     <MenuItem id={id} aria-label={label}>
       <div className="date-suggestion-elem">
         <div className="date-suggestion-label">
-          <ObsidianIcon id={icon} size={12} />
+          <ObsidianIcon id={icon} size="s" />
           {label}
         </div>
         <div className="date-suggestion-day">{dayOfWeek}</div>
