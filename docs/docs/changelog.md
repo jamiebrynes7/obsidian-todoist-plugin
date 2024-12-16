@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## v2.0.1 (2024-12-16)
+
 ### 🔁 Changes
 
 - Tweaked the size of icons throughout the plugin.
