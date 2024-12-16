@@ -1,15 +1,27 @@
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
 import { now, timezone, today } from "@/infra/time";
-import { CalendarDate, ZonedDateTime, parseAbsolute, parseDate } from "@internationalized/date";
+import {
+  CalendarDate,
+  ZonedDateTime,
+  fromDate,
+  parseAbsolute,
+  parseDate,
+  parseDateTime,
+} from "@internationalized/date";
 
 export class DueDate {
   private inner: ZonedDateTime | CalendarDate;
 
   constructor(dueDate: ApiDueDate) {
     if (dueDate.datetime !== undefined) {
-      // Todoist's datetime comes as a UTC timezone, but without the trailing 'Z'.
-      // So we just patch it in and carry on our merry way.
-      this.inner = parseAbsolute(`${dueDate.datetime}Z`, timezone());
+      // If the datetime comes with a trailing Z, then the task has a fixed timezone. We repsect
+      // this and convert it into their local timezone. Otherwise, it is a floating timezone and we
+      // simply parse it as a local datetime.
+      if (dueDate.datetime.endsWith("Z")) {
+        this.inner = parseAbsolute(dueDate.datetime, timezone());
+      } else {
+        this.inner = fromDate(parseDateTime(dueDate.datetime).toDate(timezone()), timezone());
+      }
     } else {
       this.inner = parseDate(dueDate.date);
     }
