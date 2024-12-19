@@ -59,6 +59,11 @@ const dueDateMeta: MetadataDefinition = {
       id: "calendar",
       shouldRender: (settings, task) => settings.renderDateIcon,
     },
+    after: {
+      id: "refresh-cw",
+      shouldRender: (settings, task) => settings.renderDateIcon && (task.due?.isRecurring ?? false),
+      size: "xs",
+    },
   },
   side: "left",
 };
