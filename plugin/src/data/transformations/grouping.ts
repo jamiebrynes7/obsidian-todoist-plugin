@@ -135,7 +135,7 @@ function groupByDate(tasks: Task[]): GroupedTasks[] {
       return i18n.overdue;
     }
 
-    return formatAsHeader(new DueDate({ recurring: false, date }));
+    return formatAsHeader(new DueDate({ isRecurring: false, date }));
   };
 
   const dates = partitionBy(tasks, (task: Task) => {

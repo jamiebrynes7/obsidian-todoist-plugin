@@ -28,7 +28,7 @@ describe("formatDueDate", () => {
     {
       description: "Today, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-01",
       }),
       expected: "Today",
@@ -36,7 +36,7 @@ describe("formatDueDate", () => {
     {
       description: "Today, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-01",
         datetime: "2024-06-01T12:00:00",
       }),
@@ -45,7 +45,7 @@ describe("formatDueDate", () => {
     {
       description: "Tomorrow, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-02",
       }),
       expected: "Tomorrow",
@@ -53,7 +53,7 @@ describe("formatDueDate", () => {
     {
       description: "Tomorrow, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-02",
         datetime: "2024-06-02T12:00:00",
       }),
@@ -62,7 +62,7 @@ describe("formatDueDate", () => {
     {
       description: "Next week, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-05",
       }),
       expected: "Wednesday",
@@ -70,7 +70,7 @@ describe("formatDueDate", () => {
     {
       description: "Next week, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-05",
         datetime: "2024-06-05T12:00:00",
       }),
@@ -79,7 +79,7 @@ describe("formatDueDate", () => {
     {
       description: "Future date, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-30",
       }),
       expected: "Jun 30",
@@ -87,7 +87,7 @@ describe("formatDueDate", () => {
     {
       description: "Future date, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-06-30",
         datetime: "2024-06-30T12:00:00",
       }),
@@ -96,7 +96,7 @@ describe("formatDueDate", () => {
     {
       description: "Yesterday, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-05-31",
       }),
       expected: "Yesterday",
@@ -104,7 +104,7 @@ describe("formatDueDate", () => {
     {
       description: "Yesterday, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-05-31",
         datetime: "2024-05-31T12:00:00",
       }),
@@ -113,7 +113,7 @@ describe("formatDueDate", () => {
     {
       description: "Last week, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-05-29",
       }),
       expected: "Last Wednesday",
@@ -121,7 +121,7 @@ describe("formatDueDate", () => {
     {
       description: "Last week, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2024-05-29",
         datetime: "2024-05-29T12:00:00",
       }),
@@ -130,7 +130,7 @@ describe("formatDueDate", () => {
     {
       description: "Next year, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2025-06-10",
       }),
       expected: "Jun 10, 2025",
@@ -138,7 +138,7 @@ describe("formatDueDate", () => {
     {
       description: "Next year, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2025-06-10",
         datetime: "2025-06-10T12:00:00",
       }),
@@ -147,7 +147,7 @@ describe("formatDueDate", () => {
     {
       description: "Last year, no time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2023-08-15",
       }),
       expected: "Aug 15, 2023",
@@ -155,7 +155,7 @@ describe("formatDueDate", () => {
     {
       description: "Last year, with time",
       dueDate: new DueDate({
-        recurring: false,
+        isRecurring: false,
         date: "2023-08-15",
         datetime: "2023-08-15T12:00:00",
       }),
@@ -183,7 +183,7 @@ describe("formatAsHeader", () => {
       description: "Today",
       dueDate: new DueDate({
         date: "2024-06-01",
-        recurring: false,
+        isRecurring: false,
       }),
       expected: "Jun 1 ‧ Saturday ‧ Today",
     },
@@ -191,7 +191,7 @@ describe("formatAsHeader", () => {
       description: "Tomorrow",
       dueDate: new DueDate({
         date: "2024-06-02",
-        recurring: false,
+        isRecurring: false,
       }),
       expected: "Jun 2 ‧ Sunday ‧ Tomorrow",
     },
@@ -199,7 +199,7 @@ describe("formatAsHeader", () => {
       description: "Other date",
       dueDate: new DueDate({
         date: "2024-06-03",
-        recurring: false,
+        isRecurring: false,
       }),
       expected: "Jun 3 ‧ Monday",
     },

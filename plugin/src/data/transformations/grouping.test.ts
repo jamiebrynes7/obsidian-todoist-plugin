@@ -62,7 +62,7 @@ function makeSection(id: string, projectId: string, opts?: Partial<Section>): Se
 
 function makeDueDate(date: string): DueDate {
   return {
-    recurring: false,
+    isRecurring: false,
     date,
   };
 }

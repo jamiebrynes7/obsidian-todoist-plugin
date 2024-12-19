@@ -1,5 +1,5 @@
 export type DueDate = {
-  recurring: boolean;
+  isRecurring: boolean;
   date: string;
   datetime?: string;
 };
