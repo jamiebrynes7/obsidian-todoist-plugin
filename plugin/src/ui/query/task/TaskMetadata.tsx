@@ -11,67 +11,76 @@ type MetadataContent = {
   attr?: Record<string, string>;
 };
 
+type IconDefinition = {
+  id: string;
+  shouldRender: (settings: Settings, task: Task) => boolean;
+  size?: React.ComponentProps<typeof ObsidianIcon>["size"];
+};
+
+type IconOrientation = "before" | "after";
+
 type MetadataDefinition = {
   name: string;
   isShown: (query: Query, task: Task) => boolean;
   content: (task: Task) => MetadataContent[];
-  icon: {
-    id: string;
-    shouldRender: (setting: Settings) => boolean;
-    orientation: "before" | "after";
-  };
+  icons: Partial<Record<IconOrientation, IconDefinition>>;
   side: "left" | "right";
 };
 
-const metadata: MetadataDefinition[] = [
-  {
-    name: "project",
-    isShown: (query, task) => query.show.has(ShowMetadataVariant.Project),
-    content: (task) => [
-      {
-        content:
-          task.section === undefined
-            ? task.project.name
-            : `${task.project.name} / ${task.section.name}`,
-        attr: {
-          "data-project-color": task.project.color.replace("_", "-"),
-        },
+const projectMeta: MetadataDefinition = {
+  name: "project",
+  isShown: (query, task) => query.show.has(ShowMetadataVariant.Project),
+  content: (task) => [
+    {
+      content:
+        task.section === undefined
+          ? task.project.name
+          : `${task.project.name} / ${task.section.name}`,
+      attr: {
+        "data-project-color": task.project.color.replace("_", "-"),
       },
-    ],
-    icon: {
+    },
+  ],
+  icons: {
+    after: {
       id: "hash",
-      shouldRender: (settings) => settings.renderProjectIcon,
-      orientation: "after",
+      shouldRender: (settings, task) => settings.renderProjectIcon,
     },
-    side: "right",
   },
-  {
-    name: "due",
-    isShown: (query, task) => query.show.has(ShowMetadataVariant.Due) && task.due !== undefined,
-    content: (task) => [{ content: dateLabel(task) }],
-    icon: {
+  side: "right",
+};
+
+const dueDateMeta: MetadataDefinition = {
+  name: "due",
+  isShown: (query, task) => query.show.has(ShowMetadataVariant.Due) && task.due !== undefined,
+  content: (task) => [{ content: dateLabel(task) }],
+  icons: {
+    before: {
       id: "calendar",
-      shouldRender: (settings) => settings.renderDateIcon,
-      orientation: "before",
+      shouldRender: (settings, task) => settings.renderDateIcon,
     },
-    side: "left",
   },
-  {
-    name: "labels",
-    isShown: (query, task) => query.show.has(ShowMetadataVariant.Labels) && task.labels.length > 0,
-    content: (task) =>
-      task.labels.map((label) => ({
-        content: label.name,
-        attr: { "data-label-color": label.color.replace("_", "-") },
-      })),
-    icon: {
+  side: "left",
+};
+
+const labelsMeta: MetadataDefinition = {
+  name: "labels",
+  isShown: (query, task) => query.show.has(ShowMetadataVariant.Labels) && task.labels.length > 0,
+  content: (task) =>
+    task.labels.map((label) => ({
+      content: label.name,
+      attr: { "data-label-color": label.color.replace("_", "-") },
+    })),
+  icons: {
+    before: {
       id: "tag",
-      shouldRender: (settings) => settings.renderLabelsIcon,
-      orientation: "before",
+      shouldRender: (settings, task) => settings.renderLabelsIcon,
     },
-    side: "left",
   },
-];
+  side: "left",
+};
+
+const metadata: MetadataDefinition[] = [projectMeta, dueDateMeta, labelsMeta];
 
 const dateLabel = (task: Task): string => {
   if (task.due === undefined) {
@@ -110,15 +119,24 @@ const getMetadataElems = (
     .filter((meta) => meta.isShown(query, task))
     .flatMap((meta) => {
       return meta.content(task).map((content) => {
-        const icon = meta.icon.shouldRender(settings) ? (
-          <ObsidianIcon id={meta.icon.id} size="s" />
-        ) : undefined;
+        const children = [<span key="content">{content.content}</span>];
 
-        const children = [icon, <span key="content">{content.content}</span>];
-        if (meta.icon.orientation === "after") {
-          children.reverse();
+        for (const [orientation, iconDef] of Object.entries(meta.icons)) {
+          if (iconDef.shouldRender(settings, task)) {
+            const icon = (
+              <ObsidianIcon key={iconDef.id} id={iconDef.id} size={iconDef.size ?? "s"} />
+            );
+
+            switch (orientation) {
+              case "before":
+                children.unshift(icon);
+                break;
+              case "after":
+                children.push(icon);
+                break;
+            }
+          }
         }
-
         return (
           <div
             className="task-metadata-item"
