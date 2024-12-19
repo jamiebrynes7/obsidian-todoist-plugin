@@ -22,7 +22,7 @@ describe("hasTime", () => {
     {
       description: "should be false for just date",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
       },
       expected: false,
@@ -30,7 +30,7 @@ describe("hasTime", () => {
     {
       description: "should be true for datetime",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
         datetime: "2024-01-01T12:00:00",
       },
@@ -52,7 +52,7 @@ describe("isToday", () => {
     {
       description: "should be false for different day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-02",
       },
       expected: false,
@@ -60,7 +60,7 @@ describe("isToday", () => {
     {
       description: "should be true for same day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
       },
       expected: true,
@@ -68,7 +68,7 @@ describe("isToday", () => {
     {
       description: "should be true for datetime same day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
         datetime: "2024-01-01T12:00:00",
       },
@@ -90,7 +90,7 @@ describe("isOverdue", () => {
     {
       description: "should be false if date in future",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-02",
       },
       expected: false,
@@ -98,7 +98,7 @@ describe("isOverdue", () => {
     {
       description: "should be false for same day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
       },
       expected: false,
@@ -106,7 +106,7 @@ describe("isOverdue", () => {
     {
       description: "should be true for day in the past",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2023-12-15",
       },
       expected: true,
@@ -114,7 +114,7 @@ describe("isOverdue", () => {
     {
       description: "should be true for same day earlier in the day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
         datetime: "2024-01-01T08:00:00",
       },
@@ -123,7 +123,7 @@ describe("isOverdue", () => {
     {
       description: "should be false for same day later in the day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
         datetime: "2024-01-01T14:00:00",
       },
@@ -145,7 +145,7 @@ describe("isTomorrow", () => {
     {
       description: "should be false for same day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-01",
       },
       expected: false,
@@ -153,7 +153,7 @@ describe("isTomorrow", () => {
     {
       description: "should be true for next day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-02",
       },
       expected: true,
@@ -161,7 +161,7 @@ describe("isTomorrow", () => {
     {
       description: "should be false for any other day",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-03",
       },
       expected: false,
@@ -169,7 +169,7 @@ describe("isTomorrow", () => {
     {
       description: "should be true for datetime tomorrow",
       input: {
-        recurring: false,
+        isRecurring: false,
         date: "2024-01-02",
         datetime: "2024-01-02T12:00:00",
       },

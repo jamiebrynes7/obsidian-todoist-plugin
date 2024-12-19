@@ -91,26 +91,26 @@ describe("sortTasks", () => {
         makeTask("a"),
         makeTask("b", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-20",
           },
         }),
         makeTask("c", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
           },
         }),
         makeTask("d", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
         makeTask("e", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
@@ -120,27 +120,27 @@ describe("sortTasks", () => {
       expectedOutput: [
         makeTask("e", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
         }),
         makeTask("d", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
         makeTask("c", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
           },
         }),
         makeTask("b", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-20",
           },
         }),
@@ -152,27 +152,27 @@ describe("sortTasks", () => {
       input: [
         makeTask("e", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
         }),
         makeTask("d", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
         makeTask("c", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
           },
         }),
         makeTask("b", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-20",
           },
         }),
@@ -183,26 +183,26 @@ describe("sortTasks", () => {
         makeTask("a"),
         makeTask("b", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-20",
           },
         }),
         makeTask("c", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
           },
         }),
         makeTask("d", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T15:00:00",
           },
         }),
         makeTask("e", {
           due: {
-            recurring: false,
+            isRecurring: false,
             date: "2020-03-15",
             datetime: "2020-03-15T13:00:00",
           },
@@ -240,15 +240,15 @@ describe("sortTasks", () => {
     {
       description: "will sort using specified parameters in order",
       input: [
-        makeTask("a", { priority: 2, due: { recurring: false, date: "2020-03-20" } }),
-        makeTask("b", { priority: 2, due: { recurring: false, date: "2020-03-19" } }),
-        makeTask("c", { priority: 3, due: { recurring: false, date: "2020-03-25" } }),
+        makeTask("a", { priority: 2, due: { isRecurring: false, date: "2020-03-20" } }),
+        makeTask("b", { priority: 2, due: { isRecurring: false, date: "2020-03-19" } }),
+        makeTask("c", { priority: 3, due: { isRecurring: false, date: "2020-03-25" } }),
       ],
       sortingOpts: [SortingVariant.Priority, SortingVariant.Date],
       expectedOutput: [
-        makeTask("c", { priority: 3, due: { recurring: false, date: "2020-03-25" } }),
-        makeTask("b", { priority: 2, due: { recurring: false, date: "2020-03-19" } }),
-        makeTask("a", { priority: 2, due: { recurring: false, date: "2020-03-20" } }),
+        makeTask("c", { priority: 3, due: { isRecurring: false, date: "2020-03-25" } }),
+        makeTask("b", { priority: 2, due: { isRecurring: false, date: "2020-03-19" } }),
+        makeTask("a", { priority: 2, due: { isRecurring: false, date: "2020-03-20" } }),
       ],
     },
   ];
