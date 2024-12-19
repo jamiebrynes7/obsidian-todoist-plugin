@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- Tasks which are marked as recurring in Todoist will now have a icon to indicate this next to the date in the task metadata.
+
 ## v2.0.1 (2024-12-16)
 
 ### 🔁 Changes
