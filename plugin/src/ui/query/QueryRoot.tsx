@@ -16,13 +16,17 @@ const useSubscription = (
   plugin: TodoistPlugin,
   query: Query,
   callback: OnSubscriptionChange,
-): [Refresh, boolean, boolean] => {
+): [Refresh, boolean, boolean, Date | undefined] => {
   const [refresher, setRefresher] = useState<Refresh | undefined>(undefined);
   const [isFetching, setIsFetching] = useState(false);
   const [hasFetchedOnce, setHasFetchedOnce] = useState(false);
+  const [refreshedTimestamp, setRefreshedTimestamp] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
-    const [unsub, refresh] = plugin.services.todoist.subscribe(query.filter, callback);
+    const [unsub, refresh] = plugin.services.todoist.subscribe(query.filter, (results) => {
+      callback(results);
+      setRefreshedTimestamp(new Date());
+    });
     setRefresher(() => {
       return refresh;
     });
@@ -44,7 +48,7 @@ const useSubscription = (
     forceRefresh();
   }, [forceRefresh]);
 
-  return [forceRefresh, isFetching, hasFetchedOnce];
+  return [forceRefresh, isFetching, hasFetchedOnce, refreshedTimestamp];
 };
 
 type Props = {
@@ -56,7 +60,11 @@ export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
   const plugin = PluginContext.use();
   const settings = useSettingsStore();
   const [result, setResult] = useState<SubscriptionResult>({ type: "success", tasks: [] });
-  const [refresh, isFetching, hasFetchedOnce] = useSubscription(plugin, query, setResult);
+  const [refresh, isFetching, hasFetchedOnce, refreshedTimestamp] = useSubscription(
+    plugin,
+    query,
+    setResult,
+  );
 
   useEffect(() => {
     const interval = getAutorefreshInterval(query, settings);
@@ -74,7 +82,12 @@ export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
 
   return (
     <>
-      <QueryHeader title={getTitle(query, result)} isFetching={isFetching} refresh={refresh} />
+      <QueryHeader
+        title={getTitle(query, result)}
+        isFetching={isFetching}
+        refresh={refresh}
+        refreshedTimestamp={refreshedTimestamp}
+      />
       <QueryWarnings warnings={warnings} />
       {hasFetchedOnce && <QueryResponseHandler result={result} query={query} />}
     </>

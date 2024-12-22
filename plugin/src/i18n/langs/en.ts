@@ -168,6 +168,10 @@ export const en: Translations = {
     failedCloseMessage: "Failed to close task",
     header: {
       errorPostfix: "(Error)",
+      refreshTooltip: {
+        lastRefreshed: (datetime: string) => `Last refreshed at: ${datetime}`,
+        notRefreshed: "Not queried yet",
+      },
     },
     warning: {
       header: "Warnings",

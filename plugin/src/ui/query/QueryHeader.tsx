@@ -1,9 +1,12 @@
 import { type CommandId, fireCommand } from "@/commands";
+import { t } from "@/i18n";
 import { type Settings, useSettingsStore } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import { MarkdownEditButtonContext, PluginContext } from "@/ui/context";
+import { useObsidianTooltip } from "@/ui/hooks";
 import classNames from "classnames";
 import type React from "react";
+import { useRef } from "react";
 import { Button } from "react-aria-components";
 
 const getAddTaskCommandId = (settings: Settings): CommandId => {
@@ -21,13 +24,25 @@ type Props = {
   title: string;
   isFetching: boolean;
   refresh: () => Promise<void>;
+  refreshedTimestamp: Date | undefined;
 };
 
-export const QueryHeader: React.FC<Props> = ({ title, isFetching, refresh }) => {
+export const QueryHeader: React.FC<Props> = ({
+  title,
+  isFetching,
+  refresh,
+  refreshedTimestamp,
+}) => {
   const plugin = PluginContext.use();
   const { click: editBlock } = MarkdownEditButtonContext.use()();
 
   const settings = useSettingsStore();
+  const i18n = t().query.header.refreshTooltip;
+
+  const refreshedAtDisplay =
+    refreshedTimestamp !== undefined
+      ? i18n.lastRefreshed(refreshedTimestamp.toLocaleString())
+      : i18n.notRefreshed;
 
   return (
     <div className="todoist-query-header">
@@ -44,6 +59,7 @@ export const QueryHeader: React.FC<Props> = ({ title, isFetching, refresh }) => 
           action={async () => {
             await refresh();
           }}
+          tooltip={refreshedAtDisplay}
         />
         <HeaderButton
           className="edit-query"
@@ -61,9 +77,12 @@ type ButtonProps = {
   iconId: string;
   action: () => Promise<void> | void;
   className: string;
+  tooltip?: string;
 };
 
-const HeaderButton: React.FC<ButtonProps> = ({ iconId, action, className }) => {
+const HeaderButton: React.FC<ButtonProps> = ({ iconId, action, className, tooltip }) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   const handler = async () => {
     const result = action();
 
@@ -72,8 +91,14 @@ const HeaderButton: React.FC<ButtonProps> = ({ iconId, action, className }) => {
     }
   };
 
+  useObsidianTooltip(buttonRef.current, tooltip ?? "");
+
   return (
-    <Button className={classNames("todoist-query-control-button", className)} onPress={handler}>
+    <Button
+      className={classNames("todoist-query-control-button", className)}
+      onPress={handler}
+      ref={buttonRef}
+    >
       <ObsidianIcon id={iconId} size="s" />
     </Button>
   );

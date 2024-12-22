@@ -156,6 +156,10 @@ export type Translations = {
     failedCloseMessage: string;
     header: {
       errorPostfix: string;
+      refreshTooltip: {
+        lastRefreshed: (datetime: string) => string;
+        notRefreshed: string;
+      };
     };
     warning: {
       header: string;
