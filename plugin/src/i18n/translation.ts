@@ -164,6 +164,7 @@ export type Translations = {
     warning: {
       header: string;
       jsonQuery: string;
+      unknownKey: (key: string) => string;
     };
     groupedHeaders: {
       noDueDate: string;

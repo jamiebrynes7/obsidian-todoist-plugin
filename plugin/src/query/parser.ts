@@ -58,7 +58,17 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
   }
 }
 
+const validQueryKeys = new Set(["name", "filter", "autorefresh", "sorting", "show", "groupBy"]);
+
 function parseObject(query: Record<string, unknown>): [Query, QueryWarning[]] {
+  const warnings: QueryWarning[] = [];
+
+  for (const key of Object.keys(query)) {
+    if (!validQueryKeys.has(key)) {
+      warnings.push(t().query.warning.unknownKey(key));
+    }
+  }
+
   return [
     {
       name: stringField(query, "name") ?? "",
@@ -71,7 +81,7 @@ function parseObject(query: Record<string, unknown>): [Query, QueryWarning[]] {
       ),
       groupBy: optionField(query, "groupBy", groupByVariantLookup) ?? GroupVariant.None,
     },
-    [],
+    warnings,
   ];
 }
 

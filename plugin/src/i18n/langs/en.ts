@@ -177,6 +177,7 @@ export const en: Translations = {
       header: "Warnings",
       jsonQuery:
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+      unknownKey: (key: string) => `Found unexpected query key '${key}'. Is this a typo?`,
     },
     groupedHeaders: {
       noDueDate: "No due date",
