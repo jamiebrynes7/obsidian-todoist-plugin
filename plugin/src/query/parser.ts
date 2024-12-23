@@ -1,10 +1,6 @@
+import { t } from "@/i18n";
 import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 import YAML from "yaml";
-
-const possibleWarnings: Record<string, string> = {
-  JsonQuery:
-    "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
-};
 
 export class ParsingError extends Error {
   inner: unknown | undefined;
@@ -31,7 +27,7 @@ export function parseQuery(raw: string): [Query, QueryWarning[]] {
 
   try {
     obj = tryParseAsJson(raw);
-    warnings.push(possibleWarnings.JsonQuery);
+    warnings.push(t().query.warning.jsonQuery);
   } catch (e) {
     try {
       obj = tryParseAsYaml(raw);

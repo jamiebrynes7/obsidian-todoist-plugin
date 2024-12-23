@@ -163,6 +163,7 @@ export type Translations = {
     };
     warning: {
       header: string;
+      jsonQuery: string;
     };
     groupedHeaders: {
       noDueDate: string;
