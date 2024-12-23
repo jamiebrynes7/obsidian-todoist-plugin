@@ -175,6 +175,8 @@ export const en: Translations = {
     },
     warning: {
       header: "Warnings",
+      jsonQuery:
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
     },
     groupedHeaders: {
       noDueDate: "No due date",
