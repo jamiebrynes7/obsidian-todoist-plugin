@@ -228,6 +228,17 @@ describe("parseQuery - warnings", () => {
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
       ],
     },
+    {
+      description: "Unknown query key",
+      input: {
+        namee: "foo",
+        filter: "bar",
+      },
+      expectedWarnings: [
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+        "Found unexpected query key 'namee'. Is this a typo?",
+      ],
+    },
   ];
 
   for (const tc of testcases) {
