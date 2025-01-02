@@ -1,4 +1,5 @@
 import { en } from "@/i18n/langs/en";
+import { nl } from "@/i18n/langs/nl";
 import type { Translations } from "@/i18n/translation";
 import { DeepPartial, type DeepReadonly } from "@/utils/types";
 
@@ -57,4 +58,6 @@ export const getTranslationStatus = (): TranslationStatus => {
 
 // Register new languages here. The key should be the language key as seen
 // in the root of the HTML document (e.g. "fr", "es", etc.).
-const registry: Record<string, DeepPartial<Translations>> = {};
+const registry: Record<string, DeepPartial<Translations>> = {
+  nl: nl,
+};
