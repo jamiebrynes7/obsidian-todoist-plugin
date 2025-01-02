@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A warning will now be displayed if there is an unexpected key in the query YAML/JSON.
 
+### 🌐 Translations
+
+- Added translations for Dutch (`nl` language code). Thanks [@tr3kl0v](https://github.com/tr3kl0v) for the contribution!
+
 ## v2.0.1 (2024-12-16)
 
 ### 🔁 Changes
