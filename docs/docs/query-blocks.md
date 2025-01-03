@@ -99,7 +99,7 @@ groupBy: project
 
 ### `show`
 
-The `show` property controls which elements of the task metadata to render. This will override the plugin level settings if provided. If omitted, all task metadata will be rendered.
+The `show` property controls which elements of the task metadata to render. If omitted, all task metadata will be rendered.
 
 The possible values are:
 
@@ -116,5 +116,16 @@ filter: "today | overdue"
 show:
     - due
     - project
+```
+````
+
+You can also set this to `none` to hide all task metadata.
+
+For example:
+
+````
+```todoist
+filter: "today | overdue"
+show: none
 ```
 ````
