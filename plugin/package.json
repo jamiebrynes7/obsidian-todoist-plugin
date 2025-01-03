@@ -25,6 +25,7 @@
     "snakify-ts": "^2.3.0",
     "tslib": "^2.4.1",
     "yaml": "^2.1.3",
+    "zod": "^3.24.1",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
