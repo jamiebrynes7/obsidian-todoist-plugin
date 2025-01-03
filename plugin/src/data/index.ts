@@ -12,7 +12,8 @@ export enum QueryErrorKind {
   BadRequest = 0,
   Unauthorized = 1,
   Forbidden = 2,
-  Unknown = 3,
+  ServerError = 3,
+  Unknown = 4,
 }
 
 export type SubscriptionResult =
@@ -225,16 +226,14 @@ class Subscription {
         kind: QueryErrorKind.Unknown,
       };
       if (error instanceof TodoistApiError) {
-        switch (error.statusCode) {
-          case 400:
-            result.kind = QueryErrorKind.BadRequest;
-            break;
-          case 401:
-            result.kind = QueryErrorKind.Unauthorized;
-            break;
-          case 403:
-            result.kind = QueryErrorKind.Forbidden;
-            break;
+        if (error.statusCode === 400) {
+          result.kind = QueryErrorKind.BadRequest;
+        } else if (error.statusCode === 401) {
+          result.kind = QueryErrorKind.Unauthorized;
+        } else if (error.statusCode === 403) {
+          result.kind = QueryErrorKind.Forbidden;
+        } else if (error.statusCode > 500) {
+          result.kind = QueryErrorKind.ServerError;
         }
       }
 

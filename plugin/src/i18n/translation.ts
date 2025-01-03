@@ -145,6 +145,7 @@ export type Translations = {
         header: string;
         badRequest: string;
         unauthorized: string;
+        serverError: string;
         unknown: string;
       };
       parsingError: {
