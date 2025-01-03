@@ -3,11 +3,13 @@ import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@
 import YAML from "yaml";
 import { z } from "zod";
 
+type ErrorTree = string | { msg: string; children: ErrorTree[] };
+
 export class ParsingError extends Error {
-  messages: string[];
+  messages: ErrorTree[];
   inner: unknown | undefined;
 
-  constructor(msgs: string[], inner: unknown | undefined = undefined) {
+  constructor(msgs: ErrorTree[], inner: unknown | undefined = undefined) {
     super(msgs.join("\n"));
     this.inner = inner;
     this.messages = msgs;
@@ -123,7 +125,7 @@ const querySchema = z.object({
     .optional()
     .transform((val) => val ?? defaults.sorting),
   show: z
-    .array(showSchema)
+    .union([z.array(showSchema), z.literal("none").transform(() => [])])
     .optional()
     .transform((val) => val ?? defaults.show),
   groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
@@ -159,16 +161,27 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
   ];
 }
 
-function formatZodError(error: z.ZodError): string[] {
+function formatZodError(error: z.ZodError): ErrorTree[] {
   return error.errors.map((err) => {
-    const field = err.path[0];
+    const field = formatPath(err.path);
     switch (err.code) {
       case "invalid_type":
         return `Field '${field}' is ${err.received === "undefined" ? "required" : `must be a ${err.expected}`}`;
       case "invalid_enum_value":
         return `Field '${field}' has invalid value '${err.received}'. Valid options are: ${err.options?.join(", ")}`;
+      case "invalid_union":
+        return {
+          msg: "One of the following rules must be met:",
+          children: err.unionErrors.flatMap(formatZodError),
+        };
+      case "invalid_literal":
+        return `Field '${field}' has invalid value '${err.received}', must be exactly '${err.expected}'`;
       default:
         return `Field '${field}': ${err.message}`;
     }
   });
+}
+
+function formatPath(path: (string | number)[]): string {
+  return path.map((p) => (typeof p === "number" ? `[${p}]` : p)).join(".");
 }
