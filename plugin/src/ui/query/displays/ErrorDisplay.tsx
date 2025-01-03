@@ -12,7 +12,10 @@ const getErrorMessage = (
     case QueryErrorKind.BadRequest:
       return i18n.badRequest;
     case QueryErrorKind.Unauthorized:
+    case QueryErrorKind.Forbidden:
       return i18n.unauthorized;
+    case QueryErrorKind.ServerError:
+      return i18n.serverError;
     default:
       return i18n.unknown;
   }

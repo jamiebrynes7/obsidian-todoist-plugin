@@ -155,6 +155,8 @@ export const en: Translations = {
           "The Todoist API has rejected the request. Please check the filter to ensure it is valid.",
         unauthorized:
           "The Todoist API request is missing or has the incorrect credentials. Please check the API token in the settings.",
+        serverError:
+          "The Todoist API has returned an error. Please check Todoist's status page: https://status.todoist.net/ and try again later.",
         unknown:
           "Unknown error occurred. Please check the Console in the Developer Tools window for more information",
       },
