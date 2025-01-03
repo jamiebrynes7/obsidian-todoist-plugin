@@ -1,7 +1,9 @@
 import { t } from "@/i18n";
 import { ParsingError } from "@/query/parser";
-import { Callout } from "@/ui/components/callout";
+import { Callout, type Contents } from "@/ui/components/callout";
 import type React from "react";
+
+type ErrorTree = string | { msg: string; children: ErrorTree[] };
 
 type Props = {
   error: unknown;
@@ -20,7 +22,7 @@ export const QueryError: React.FC<Props> = ({ error }) => {
   );
 };
 
-const getErrorMessages = (error: unknown): string[] | undefined => {
+const getErrorMessages = (error: unknown): Contents[] | undefined => {
   if (error instanceof ParsingError) {
     return error.messages;
   }

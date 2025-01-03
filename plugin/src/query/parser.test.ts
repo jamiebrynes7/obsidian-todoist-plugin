@@ -99,6 +99,14 @@ describe("parseQuery - rejections", () => {
         show: ["foo", "bar"],
       },
     },
+    {
+      description: "show must be 'none' literal",
+      input: {
+        name: "foo",
+        filter: "bar",
+        show: "nonee",
+      },
+    },
   ];
 
   for (const tc of testcases) {
@@ -198,6 +206,17 @@ describe("parseQuery", () => {
       expectedOutput: makeQuery({
         filter: "bar",
         show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Project]),
+      }),
+    },
+    {
+      description: "with show = none",
+      input: {
+        filter: "bar",
+        show: "none",
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set(),
       }),
     },
   ];
