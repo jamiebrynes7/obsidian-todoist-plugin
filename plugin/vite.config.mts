@@ -1,9 +1,12 @@
-import path, { resolve } from "path";
+import { execSync } from "node:child_process";
+import path, { resolve } from "node:path";
 import replace from "@rollup/plugin-replace";
 import { loadEnv } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { configDefaults, defineConfig } from "vitest/config";
+
+const { version } = require("./package.json");
 
 function getOutDir(): string | undefined {
   const env = loadEnv("prod", process.cwd());
@@ -19,6 +22,12 @@ function getOutDir(): string | undefined {
   return path.join(vaultDir, ".obsidian", "plugins", "todoist-sync-plugin");
 }
 
+function getBuildStamp(): string {
+  const commitSha = execSync("git rev-parse --short HEAD").toString().trim();
+  const timestamp = new Date().toISOString().slice(2, 16).replace(/[-:]/g, "");
+  return `v${version}-${commitSha}-${timestamp}`;
+}
+
 export default defineConfig({
   plugins: [
     tsConfigPaths(),
@@ -32,6 +41,7 @@ export default defineConfig({
     }),
     replace({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+      SYNC_WITH_TODOIST_BUILD_STAMP: getBuildStamp(),
     }),
   ],
   build: {
