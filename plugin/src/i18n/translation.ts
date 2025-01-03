@@ -66,6 +66,10 @@ export type Translations = {
         label: string;
         description: string;
       };
+      buildStamp: {
+        label: string;
+        description: string;
+      };
     };
     deprecation: {
       warningMessage: string;

@@ -70,6 +70,10 @@ export const en: Translations = {
         label: "Enable debug logging",
         description: "Whether debug logging should be enabled",
       },
+      buildStamp: {
+        label: "Build stamp",
+        description: "Stamp for the build of this plugin",
+      },
     },
     deprecation: {
       warningMessage: "This setting is deprecated and will be removed in a future release.",

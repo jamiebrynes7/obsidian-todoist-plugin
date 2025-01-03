@@ -10,6 +10,7 @@ import { AutoRefreshIntervalControl } from "./AutoRefreshIntervalControl";
 import { Setting } from "./SettingItem";
 import { TokenChecker } from "./TokenChecker";
 import "./styles.scss";
+import { BuildStamp } from "@/stamp";
 
 export class SettingsTab extends PluginSettingTab {
   private readonly plugin: TodoistPlugin;
@@ -187,6 +188,12 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
         description={i18n.advanced.debugLogging.description}
       >
         <Setting.ToggleControl {...toggleProps("debugLogging")} />
+      </Setting.Root>
+      <Setting.Root
+        name={i18n.advanced.buildStamp.label}
+        description={i18n.advanced.buildStamp.description}
+      >
+        <span className="setting-item-build-stamp">{BuildStamp}</span>
       </Setting.Root>
     </PluginContext.Provider>
   );
