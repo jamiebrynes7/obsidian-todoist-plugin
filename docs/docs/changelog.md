@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔁 Changes
 
 - A warning will now be displayed if there is an unexpected key in the query YAML/JSON.
+- API requests resulting in 5xx server errors now show a dedicated error message in the rendered query.
+- There is now a build stamp indicating version, commit SHA, and time of build in the settings.
 
 ### 🌐 Translations
 
