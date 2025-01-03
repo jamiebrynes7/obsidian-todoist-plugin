@@ -1,4 +1,5 @@
 import { t } from "@/i18n";
+import { ParsingError } from "@/query/parser";
 import { Callout } from "@/ui/components/callout";
 import type React from "react";
 
@@ -14,14 +15,18 @@ export const QueryError: React.FC<Props> = ({ error }) => {
       className="todoist-query-error"
       title={i18n.header}
       iconId="lucide-alert-triangle"
-      contents={[getErrorMessage(error) ?? i18n.unknownErrorMessage]}
+      contents={getErrorMessages(error) ?? [i18n.unknownErrorMessage]}
     />
   );
 };
 
-const getErrorMessage = (error: unknown): string | undefined => {
+const getErrorMessages = (error: unknown): string[] | undefined => {
+  if (error instanceof ParsingError) {
+    return error.messages;
+  }
+
   if (error instanceof Error) {
-    return error.message;
+    return [error.message];
   }
 
   return;
