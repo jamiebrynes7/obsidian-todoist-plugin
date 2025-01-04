@@ -11,484 +11,629 @@ vi.mock("../infra/time.ts", () => {
   };
 });
 
-type TestCase = {
-  description: string;
-  input: ApiDueDate;
-  expected: boolean;
-};
+vi.mock("../infra/locale.ts", () => {
+  return {
+    locale: () => "en-US",
+  };
+});
 
-describe("hasTime", () => {
+const makeDate = (year: number, month: number, day: number, hours?: number): Date =>
+  new Date(Date.UTC(year, month, day, hours ?? 0));
+
+describe("parse", () => {
+  type TestCase = {
+    description: string;
+    input: ApiDueDate;
+    expected: DueDate;
+  };
+
   const testcases: TestCase[] = [
     {
-      description: "should be false for just date",
+      description: "should parse a due date",
       input: {
+        date: "2024-02-01",
         isRecurring: false,
-        date: "2024-01-01",
       },
-      expected: false,
+      expected: {
+        start: {
+          raw: makeDate(2024, 1, 1),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: undefined,
+      },
     },
     {
-      description: "should be true for datetime",
+      description: "should parse a due date with time",
       input: {
+        date: "2024-02-01",
+        datetime: "2024-02-01T12:00:00",
         isRecurring: false,
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 1, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+    },
+    {
+      description: "should parse a due date with time and timezone",
+      input: {
+        date: "2024-02-01",
+        datetime: "2024-02-01T12:00:00Z",
+        isRecurring: false,
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 1, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+    },
+    {
+      description: "should parse a due date for today",
+      input: {
+        date: "2024-01-01",
+        isRecurring: false,
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 0, 1),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+    },
+    {
+      description: "should parse a due date for today with time",
+      input: {
         date: "2024-01-01",
         datetime: "2024-01-01T12:00:00",
-      },
-      expected: true,
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const hasTime = info.hasTime();
-      expect(hasTime).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isToday", () => {
-  const testcases: TestCase[] = [
-    {
-      description: "should be false for different day",
-      input: {
         isRecurring: false,
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 0, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+    },
+    {
+      description: "should parse a due date for tomorrow",
+      input: {
         date: "2024-01-02",
+        isRecurring: false,
       },
-      expected: false,
+      expected: {
+        start: {
+          raw: makeDate(2024, 0, 2),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: undefined,
+      },
     },
     {
-      description: "should be true for same day",
+      description: "should parse a due date for tomorrow with time",
       input: {
-        isRecurring: false,
-        date: "2024-01-01",
-      },
-      expected: true,
-    },
-    {
-      description: "should be true for datetime same day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T12:00:00",
-      },
-      expected: true,
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isToday = info.isToday();
-      expect(isToday).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isOverdue", () => {
-  const testcases: TestCase[] = [
-    {
-      description: "should be false if date in future",
-      input: {
-        isRecurring: false,
         date: "2024-01-02",
-      },
-      expected: false,
-    },
-    {
-      description: "should be false for same day",
-      input: {
         isRecurring: false,
-        date: "2024-01-01",
-      },
-      expected: false,
-    },
-    {
-      description: "should be true for day in the past",
-      input: {
-        isRecurring: false,
-        date: "2023-12-15",
-      },
-      expected: true,
-    },
-    {
-      description: "should be true for same day earlier in the day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T08:00:00",
-      },
-      expected: true,
-    },
-    {
-      description: "should be false for same day later in the day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T14:00:00",
-      },
-      expected: false,
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isOverdue = info.isOverdue();
-      expect(isOverdue).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isTomorrow", () => {
-  const testcases: TestCase[] = [
-    {
-      description: "should be false for same day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
-      },
-      expected: false,
-    },
-    {
-      description: "should be true for next day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
-      },
-      expected: true,
-    },
-    {
-      description: "should be false for any other day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-03",
-      },
-      expected: false,
-    },
-    {
-      description: "should be true for datetime tomorrow",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
         datetime: "2024-01-02T12:00:00",
       },
-      expected: true,
+      expected: {
+        start: {
+          raw: makeDate(2024, 0, 2, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: undefined,
+      },
     },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isTomorrow = info.isTomorrow();
-      expect(isTomorrow).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isYesterday", () => {
-  const testcases: TestCase[] = [
     {
-      description: "should be true for day before",
+      description: "should parse a due date for yesterday",
       input: {
-        isRecurring: false,
         date: "2023-12-31",
+        isRecurring: false,
       },
-      expected: true,
+      expected: {
+        start: {
+          raw: makeDate(2023, 11, 31),
+          hasTime: false,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: "yesterday",
+        },
+        end: undefined,
+      },
     },
     {
-      description: "should be false for any other previous day",
+      description: "should parse a due date for yesterday with time",
       input: {
-        isRecurring: false,
-        date: "2023-12-28",
-      },
-      expected: false,
-    },
-    {
-      description: "should be false for same day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
-      },
-      expected: false,
-    },
-    {
-      description: "should be false for any other future day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
-      },
-      expected: false,
-    },
-    {
-      description: "should be true for datetime day before",
-      input: {
-        isRecurring: false,
         date: "2023-12-31",
+        isRecurring: false,
         datetime: "2023-12-31T12:00:00",
       },
-      expected: true,
-    },
-    {
-      description: "should be false for datetime any other previous day",
-      input: {
-        isRecurring: false,
-        date: "2023-12-28",
-        datetime: "2023-12-28T12:00:00",
+      expected: {
+        start: {
+          raw: makeDate(2023, 11, 31, 12),
+          hasTime: true,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: "yesterday",
+        },
+        end: undefined,
       },
-      expected: false,
     },
     {
-      description: "should be false for datetime same day",
+      description: "should parse a due date for next week",
       input: {
+        date: "2024-01-06",
         isRecurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T12:00:00",
       },
-      expected: false,
-    },
-    {
-      description: "should be false for datetime any other future day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
-        datetime: "2024-01-02T12:00:00",
+      expected: {
+        start: {
+          raw: makeDate(2024, 0, 6),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+        end: undefined,
       },
-      expected: false,
     },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isTomorrow = info.isYesterday();
-      expect(isTomorrow).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isInLastWeek", () => {
-  const testcases: TestCase[] = [
     {
-      description: "should be true for day in last week",
+      description: "should parse a due date for next week with time",
       input: {
+        date: "2024-01-06",
         isRecurring: false,
-        date: "2023-12-28",
+        datetime: "2024-01-06T12:00:00",
       },
-      expected: true,
-    },
-    {
-      description: "should be false for any other previous day",
-      input: {
-        isRecurring: false,
-        date: "2023-12-24",
+      expected: {
+        start: {
+          raw: makeDate(2024, 0, 6, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+        end: undefined,
       },
-      expected: false,
     },
     {
-      description: "should be false for same day",
+      description: "should parse a due date for last week",
       input: {
+        date: "2023-12-29",
         isRecurring: false,
-        date: "2024-01-01",
       },
-      expected: false,
-    },
-    {
-      description: "should be false for any other future day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
+      expected: {
+        start: {
+          raw: makeDate(2023, 11, 29),
+          hasTime: false,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: "lastWeek",
+        },
+        end: undefined,
       },
-      expected: false,
     },
     {
-      description: "should be true for datetime day in last week",
+      description: "should parse a due date for last week with time",
       input: {
+        date: "2023-12-29",
         isRecurring: false,
-        date: "2023-12-28",
-        datetime: "2023-12-28T12:00:00",
+        datetime: "2023-12-29T12:00:00",
       },
-      expected: true,
-    },
-    {
-      description: "should be false for datetime any other previous day",
-      input: {
-        isRecurring: false,
-        date: "2023-12-24",
-        datetime: "2023-12-24T12:00:00",
+      expected: {
+        start: {
+          raw: makeDate(2023, 11, 29, 12),
+          hasTime: true,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: "lastWeek",
+        },
+        end: undefined,
       },
-      expected: false,
     },
     {
-      description: "should be false for datetime same day",
+      description: "should parse a date not this year",
       input: {
+        date: "2025-01-01",
         isRecurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T12:00:00",
       },
-      expected: false,
-    },
-    {
-      description: "should be false for any datetime other future day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
-        datetime: "2024-01-02T12:00:00",
+      expected: {
+        start: {
+          raw: makeDate(2025, 0, 1),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
       },
-      expected: false,
     },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isTomorrow = info.isInLastWeek();
-      expect(isTomorrow).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isInNextWeek", () => {
-  const testcases: TestCase[] = [
     {
-      description: "should be false for any previous day",
+      description: "should parse a date not this year with time",
       input: {
+        date: "2025-01-01",
         isRecurring: false,
-        date: "2023-12-24",
+        datetime: "2025-01-01T12:00:00",
       },
-      expected: false,
-    },
-    {
-      description: "should be false for same day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
+      expected: {
+        start: {
+          raw: makeDate(2025, 0, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
       },
-      expected: false,
     },
     {
-      description: "should be true for future day within a week",
+      description: "should parse a date that's overdue",
       input: {
-        isRecurring: false,
-        date: "2024-01-02",
-      },
-      expected: true,
-    },
-    {
-      description: "should be false for any other future day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-09",
-      },
-      expected: false,
-    },
-    {
-      description: "should be false for datetime any previous day",
-      input: {
-        isRecurring: false,
-        date: "2023-12-24",
-        datetime: "2023-12-24T12:00:00",
-      },
-      expected: false,
-    },
-    {
-      description: "should be false for dateimt same day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-01",
-        datetime: "2024-01-01T12:00:00",
-      },
-      expected: false,
-    },
-    {
-      description: "should be true for datetime future day within a week",
-      input: {
-        isRecurring: false,
-        date: "2024-01-02",
-        datetime: "2024-01-02T12:00:00",
-      },
-      expected: true,
-    },
-    {
-      description: "should be false for datetime any other future day",
-      input: {
-        isRecurring: false,
-        date: "2024-01-09",
-        datetime: "2024-01-09T12:00:00",
-      },
-      expected: false,
-    },
-  ];
-
-  for (const tc of testcases) {
-    it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isTomorrow = info.isInNextWeek();
-      expect(isTomorrow).toEqual(tc.expected);
-    });
-  }
-});
-
-describe("isCurrentYear", () => {
-  const testcases: TestCase[] = [
-    {
-      description: "should be true for current year",
-      input: {
-        isRecurring: false,
-        date: "2024-06-01",
-      },
-      expected: true,
-    },
-    {
-      description: "should be false for last year",
-      input: {
-        isRecurring: false,
         date: "2023-06-01",
+        isRecurring: false,
       },
-      expected: false,
+      expected: {
+        start: {
+          raw: makeDate(2023, 5, 1),
+          hasTime: false,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
+      },
     },
     {
-      description: "should be false for next year",
+      description: "should parse a date that's overdue with time",
       input: {
-        isRecurring: false,
-        date: "2025-06-01",
-      },
-      expected: false,
-    },
-    {
-      description: "should be true for datetime current year",
-      input: {
-        isRecurring: false,
-        date: "2024-06-01",
-        datetime: "2024-06-01T12:00:00",
-      },
-      expected: true,
-    },
-    {
-      description: "should be false for datetime last year",
-      input: {
-        isRecurring: false,
         date: "2023-06-01",
+        isRecurring: false,
         datetime: "2023-06-01T12:00:00",
       },
-      expected: false,
-    },
-    {
-      description: "should be false for datetime next year",
-      input: {
-        isRecurring: false,
-        date: "2025-06-01",
-        datetime: "2025-06-01T12:00:00",
+      expected: {
+        start: {
+          raw: makeDate(2023, 5, 1, 12),
+          hasTime: true,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
       },
-      expected: false,
     },
   ];
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const info = new DueDate(tc.input);
-      const isTomorrow = info.isCurrentYear();
-      expect(isTomorrow).toEqual(tc.expected);
+      const output = DueDate.parse(tc.input);
+      expect(output).toStrictEqual(tc.expected);
+    });
+  }
+});
+
+describe("format", () => {
+  type Testcase = {
+    description: string;
+    dueDate: DueDate;
+    expected: string;
+  };
+
+  const testcases: Testcase[] = [
+    {
+      description: "today, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+      expected: "Today",
+    },
+    {
+      description: "today, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+      expected: "Today at 12:00 PM",
+    },
+    {
+      description: "tomorrow, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 2),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: undefined,
+      },
+      expected: "Tomorrow",
+    },
+    {
+      description: "tomorrow, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 2, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: undefined,
+      },
+      expected: "Tomorrow at 12:00 PM",
+    },
+    {
+      description: "yesterday, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 11, 31),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: "yesterday",
+        },
+        end: undefined,
+      },
+      expected: "Yesterday",
+    },
+    {
+      description: "tomorrow, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 11, 31, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: "yesterday",
+        },
+        end: undefined,
+      },
+      expected: "Yesterday at 12:00 PM",
+    },
+    {
+      description: "next week, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 5),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+        end: undefined,
+      },
+      expected: "Friday",
+    },
+    {
+      description: "next week, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 5, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+        end: undefined,
+      },
+      expected: "Friday at 12:00 PM",
+    },
+    {
+      description: "last week, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 11, 27),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: "lastWeek",
+        },
+        end: undefined,
+      },
+      expected: "Last Wednesday",
+    },
+    {
+      description: "last week, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 11, 27, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: "lastWeek",
+        },
+        end: undefined,
+      },
+      expected: "Last Wednesday at 12:00 PM",
+    },
+    {
+      description: "future date, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 30),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+      expected: "Jan 30",
+    },
+    {
+      description: "future date, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 30, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+      expected: "Jan 30 at 12:00 PM",
+    },
+    {
+      description: "next year, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2025, 0, 2),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+      expected: "Jan 2, 2025",
+    },
+    {
+      description: "next year, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2025, 0, 30, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+      expected: "Jan 30, 2025 at 12:00 PM",
+    },
+    {
+      description: "last year, no time",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 0, 2),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+      expected: "Jan 2, 2023",
+    },
+    {
+      description: "last year, with time",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 0, 30, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+        end: undefined,
+      },
+      expected: "Jan 30, 2023 at 12:00 PM",
+    },
+  ];
+
+  for (const tc of testcases) {
+    it(tc.description, () => {
+      const actual = DueDate.format(tc.dueDate);
+      expect(actual).toBe(tc.expected);
+    });
+  }
+});
+
+describe("formatAsHeader", () => {
+  type Testcase = {
+    description: string;
+    dueDate: DueDate;
+    expected: string;
+  };
+
+  const testcases: Testcase[] = [
+    {
+      description: "today",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+      expected: "Jan 1 ‧ Monday ‧ Today",
+    },
+    {
+      description: "tomrrow",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 2),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: undefined,
+      },
+      expected: "Jan 2 ‧ Tuesday ‧ Tomorrow",
+    },
+    {
+      description: "other date",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 5),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+        end: undefined,
+      },
+      expected: "Jan 5 ‧ Friday",
+    },
+  ];
+
+  for (const tc of testcases) {
+    it(tc.description, () => {
+      const actual = DueDate.formatHeader(tc.dueDate);
+      expect(actual).toBe(tc.expected);
     });
   }
 });

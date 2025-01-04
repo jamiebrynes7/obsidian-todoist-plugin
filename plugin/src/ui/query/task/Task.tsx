@@ -81,19 +81,13 @@ function getDueMetadataInfo(task: TaskTree): string | undefined {
     return undefined;
   }
 
-  const info = new DueDate(task.due);
+  const info = DueDate.parse(task.due);
 
-  if (info.isOverdue()) {
+  if (info.start.isOverdue) {
     return "overdue";
   }
-  if (info.isToday()) {
-    return "today";
-  }
-  if (info.isTomorrow()) {
-    return "tomorrow";
-  }
 
-  return undefined;
+  return info.start.flag;
 }
 
 function getTimeMetadataInfo(task: TaskTree): boolean | undefined {
@@ -101,7 +95,7 @@ function getTimeMetadataInfo(task: TaskTree): boolean | undefined {
     return undefined;
   }
 
-  return new DueDate(task.due).hasTime();
+  return DueDate.parse(task.due).start.hasTime;
 }
 
 const sanitizeContent = (content: string): string => {

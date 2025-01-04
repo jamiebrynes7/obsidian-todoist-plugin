@@ -62,30 +62,28 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
     return -1;
   }
 
-  const selfInfo = new DueDate(self.due);
-  const otherInfo = new DueDate(other.due);
-
-  const dateCmp = selfInfo.compareDate(otherInfo);
+  const selfInfo = DueDate.parse(self.due).start;
+  const otherInfo = DueDate.parse(other.due).start;
 
   // Then lets check if we are the same day, if not
   // sort just based on the day.
-  if (dateCmp !== 0) {
-    return dateCmp;
+  if (!isSameDay(selfInfo.raw, otherInfo.raw)) {
+    return selfInfo.raw < otherInfo.raw ? -1 : 1;
   }
 
-  if (selfInfo.hasTime() && !otherInfo.hasTime()) {
+  if (selfInfo.hasTime && !otherInfo.hasTime) {
     return -1;
   }
 
-  if (!selfInfo.hasTime() && otherInfo.hasTime()) {
+  if (!selfInfo.hasTime && otherInfo.hasTime) {
     return 1;
   }
 
-  if (!selfInfo.hasTime() && !otherInfo.hasTime()) {
+  if (!selfInfo.hasTime && !otherInfo.hasTime) {
     return 0;
   }
 
-  return selfInfo.compareDateTime(otherInfo);
+  return selfInfo.raw < otherInfo.raw ? -1 : 1;
 }
 
 function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
@@ -93,4 +91,12 @@ function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
   const otherDate = parseAbsoluteToLocal(other.createdAt);
 
   return selfDate.compare(otherDate) < 0 ? -1 : 1;
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
