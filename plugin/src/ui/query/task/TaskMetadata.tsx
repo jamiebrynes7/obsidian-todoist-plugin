@@ -91,7 +91,7 @@ const dateLabel = (task: Task): string => {
     return "";
   }
 
-  return DueDate.format(DueDate.parse(task.due));
+  return DueDate.format(DueDate.parse(task.due, task.duration));
 };
 
 type TaskMetadataProps = {
