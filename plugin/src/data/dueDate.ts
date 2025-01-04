@@ -1,4 +1,5 @@
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
+import type { Duration as ApiDuration } from "@/api/domain/task";
 import { t } from "@/i18n";
 import { locale } from "@/infra/locale";
 import { now, timezone, today } from "@/infra/time";
@@ -21,10 +22,10 @@ export type DateInfo = {
 
 export type DueDate = {
   start: DateInfo;
-  end: undefined;
+  end: DateInfo | undefined;
 };
 
-const parseDueDate = (dueDate: ApiDueDate): DueDate => {
+const parseDueDate = (dueDate: ApiDueDate, duration?: ApiDuration): DueDate => {
   let start: ZonedDateTime | CalendarDate;
   if (dueDate.datetime !== undefined) {
     // If the datetime comes with a trailing Z, then the task has a fixed timezone. We repsect
@@ -39,9 +40,24 @@ const parseDueDate = (dueDate: ApiDueDate): DueDate => {
     start = parseDate(dueDate.date);
   }
 
+  let end: ZonedDateTime | undefined;
+  if (duration !== undefined && start instanceof ZonedDateTime) {
+    switch (duration.unit) {
+      case "day":
+        end = start.add({ days: duration.amount });
+        break;
+      case "minute":
+        end = start.add({ minutes: duration.amount });
+        break;
+      default: {
+        const _: never = duration.unit;
+      }
+    }
+  }
+
   return {
     start: calculateDateInfo(start),
-    end: undefined,
+    end: end !== undefined ? calculateDateInfo(end) : undefined,
   };
 };
 
@@ -117,6 +133,11 @@ const formatDueDate = (due: DueDate): string => {
   if (due.start.hasTime) {
     const i18n = t().dates;
     const time = getFormatter("time").format(due.start.raw);
+
+    if (due.end !== undefined) {
+      const endTime = getFormatter("time").format(due.end.raw);
+      return i18n.dateTimeDuration(date, time, endTime);
+    }
 
     return i18n.dateTime(date, time);
   }

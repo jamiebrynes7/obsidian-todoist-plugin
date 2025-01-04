@@ -192,5 +192,6 @@ export type Translations = {
     yesterday: string;
     lastWeekday: (weekday: string) => string;
     dateTime: (date: string, time: string) => string;
+    dateTimeDuration: (date: string, startTime: string, endTime: string) => string;
   };
 };

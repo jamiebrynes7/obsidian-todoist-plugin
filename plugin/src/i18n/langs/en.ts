@@ -211,5 +211,8 @@ export const en: Translations = {
     dateTime: (date: string, time: string) => {
       return `${date} at ${time}`;
     },
+    dateTimeDuration: (date: string, startTime: string, endTime: string) => {
+      return `${date} at ${startTime}-${endTime}`;
+    },
   },
 };

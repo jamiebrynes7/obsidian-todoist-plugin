@@ -19,6 +19,7 @@ export type Task = {
   priority: Priority;
 
   due: DueDate | null;
+  duration: Duration | null;
 
   order: number;
 };
@@ -33,4 +34,9 @@ export type CreateTaskParams = {
   dueDate?: string;
   dueDatetime?: string;
   labels?: string[];
+};
+
+export type Duration = {
+  amount: number;
+  unit: "minute" | "day";
 };
