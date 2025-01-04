@@ -2,7 +2,6 @@ import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";
 import type { Priority } from "@/api/domain/task";
 import { DueDate } from "@/data/dueDate";
-import { formatAsHeader } from "@/data/dueDateFormatter";
 import type { Task } from "@/data/task";
 import { t } from "@/i18n";
 import { GroupVariant } from "@/query/query";
@@ -135,7 +134,7 @@ function groupByDate(tasks: Task[]): GroupedTasks[] {
       return i18n.overdue;
     }
 
-    return formatAsHeader(new DueDate({ isRecurring: false, date }));
+    return DueDate.formatHeader(DueDate.parse({ isRecurring: false, date }));
   };
 
   const dates = partitionBy(tasks, (task: Task) => {
@@ -143,7 +142,7 @@ function groupByDate(tasks: Task[]): GroupedTasks[] {
       return undefined;
     }
 
-    if (new DueDate(task.due).isOverdue()) {
+    if (DueDate.parse(task.due).start.isOverdue) {
       return "Overdue";
     }
 
