@@ -44,6 +44,8 @@ filter: "today | overdue"
 
 The `autorefresh` option allows you to specify the number of seconds between automatic refreshes. This takes precedence over the plugin level setting. Omitting this option means the query will follow the plugin level settings.
 
+Note: When viewing completed tasks with `autorefresh` enabled, the refresh interval must be at least 9 seconds due to Todoist API rate limits.
+
 For example:
 
 ````
@@ -127,5 +129,48 @@ For example:
 ```todoist
 filter: "today | overdue"
 show: none
+```
+````
+
+### `viewCompleted`
+
+The `viewCompleted` option allows you to include completed tasks in your query results. By default, this is set to `false`. When set to `true`, completed tasks will be shown according to the specified `completedSince` and `completedUntil` parameters.
+
+For example:
+
+````
+```todoist
+viewCompleted: true
+completedLimit: 30
+```
+````
+
+### `completedLimit`
+
+The `completedLimit` option controls how many completed tasks to fetch. This value must not exceed 200 due to Todoist API limitations. If not specified, defaults to 30 tasks.
+
+For example:
+
+````
+```todoist
+viewCompleted: true
+completedLimit: 30
+```
+````
+
+### `completedSince` and `completedUntil`
+
+These options allow you to specify a date range for completed tasks. Both parameters accept ISO datetime strings.
+
+- `completedSince`: Only show tasks completed after this date (inclusive)
+- `completedUntil`: Only show tasks completed before this date (inclusive)
+
+For example:
+
+````
+```todoist
+viewCompleted: true
+completedSince: "2024-01-01T00:00:00"
+completedUntil: "2024-03-31T23:59:59"
 ```
 ````
