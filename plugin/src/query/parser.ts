@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { z } from "zod";
 
 type ErrorTree = string | { msg: string; children: ErrorTree[] };
+const MIN_COMPLETED_TASKS_AUTOREFRESH = 9;
 
 export class ParsingError extends Error {
   messages: ErrorTree[];
@@ -163,7 +164,7 @@ const querySchema = z
   .refine(
     (data) => {
       if (data.viewCompleted && data.autorefresh > 0) {
-        return data.autorefresh >= 9; // because of Todoist sync API limits
+        return data.autorefresh >= MIN_COMPLETED_TASKS_AUTOREFRESH; // because of Todoist sync API limits
       }
       return true;
     },

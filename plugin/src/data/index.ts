@@ -153,6 +153,7 @@ export class TodoistAdapter {
   private hydrateCompletedTask(apiCompletedTask: CompletedTask): Task {
     const project = this.getProjectById(apiCompletedTask.project_id);
     const section = this.getSectionById(apiCompletedTask.section_id);
+    const labels = this.getLabelsByIds(apiCompletedTask.item_object.labels);
 
     return {
       id: apiCompletedTask.task_id,
@@ -164,7 +165,7 @@ export class TodoistAdapter {
 
       project: project ?? makeUnknownProject(apiCompletedTask.project_id),
       section: section,
-      labels: apiCompletedTask.item_object.labels,
+      labels: labels,
     };
   }
 

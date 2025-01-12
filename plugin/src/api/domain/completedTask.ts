@@ -1,6 +1,5 @@
 import type { DueDate } from "@/api/domain/dueDate";
 import type { Priority } from "@/api/domain/task";
-import type { Label } from "./label";
 
 export type CompletedTask = {
   id: string;
@@ -15,7 +14,7 @@ export type CompletedTask = {
     due?: DueDate | null;
     description: string;
     priority: Priority;
-    labels: Label[];
+    labels: string[];
   };
 };
 
