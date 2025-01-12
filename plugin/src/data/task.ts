@@ -6,7 +6,7 @@ import type { Priority, TaskId } from "@/api/domain/task";
 
 export type Task = {
   id: TaskId;
-  createdAt: string;
+  createdAt?: string;
 
   content: string;
   description: string;
@@ -19,5 +19,5 @@ export type Task = {
   priority: Priority;
 
   due?: DueDate;
-  order: number;
+  order?: number;
 };

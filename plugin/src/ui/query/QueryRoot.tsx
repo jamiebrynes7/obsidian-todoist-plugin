@@ -23,7 +23,7 @@ const useSubscription = (
   const [refreshedTimestamp, setRefreshedTimestamp] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
-    const [unsub, refresh] = plugin.services.todoist.subscribe(query.filter, (results) => {
+    const [unsub, refresh] = plugin.services.todoist.subscribe(query, (results) => {
       callback(results);
       setRefreshedTimestamp(new Date());
     });
@@ -148,6 +148,14 @@ const QueryResponseHandler: React.FC<{
     return (
       <QueryContext.Provider value={query}>
         <Displays.Grouped tasks={tasks} />
+      </QueryContext.Provider>
+    );
+  }
+
+  if (query.viewCompleted) {
+    return (
+      <QueryContext.Provider value={query}>
+        <Displays.Completed tasks={tasks} />
       </QueryContext.Provider>
     );
   }
