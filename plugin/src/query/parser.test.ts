@@ -110,7 +110,6 @@ describe("parseQuery - rejections", () => {
     {
       description: "completedLimit must be between 1 and 200",
       input: {
-        filter: "bar",
         viewCompleted: true,
         completedLimit: 201,
       },
@@ -118,7 +117,6 @@ describe("parseQuery - rejections", () => {
     {
       description: "completedSince must be valid datetime",
       input: {
-        filter: "bar",
         viewCompleted: true,
         completedSince: "invalid-date",
       },
@@ -126,7 +124,6 @@ describe("parseQuery - rejections", () => {
     {
       description: "completedUntil must be after completedSince",
       input: {
-        filter: "bar",
         viewCompleted: true,
         completedSince: "2024-03-01T00:00:00",
         completedUntil: "2024-02-01T00:00:00",
@@ -135,7 +132,6 @@ describe("parseQuery - rejections", () => {
     {
       description: "autorefresh must be at least 9 seconds when viewing completed tasks",
       input: {
-        filter: "bar",
         viewCompleted: true,
         autorefresh: 5,
       },
