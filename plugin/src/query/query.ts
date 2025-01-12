@@ -32,7 +32,7 @@ export type Query = {
   show: Set<ShowMetadataVariant>;
   groupBy: GroupVariant;
   viewCompleted: boolean;
-  completedLimit: number;
+  completedLimit?: number;
   completedSince?: Date;
   completedUntil?: Date;
 };
