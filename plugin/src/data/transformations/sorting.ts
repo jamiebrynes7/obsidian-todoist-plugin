@@ -33,7 +33,7 @@ function compareTask<T extends Task>(self: T, other: T, sorting: SortingVariant)
     case SortingVariant.DateDescending:
       return -compareTaskDate(self, other);
     case SortingVariant.Order:
-      return self.order - other.order;
+      return (self.order ?? 0) - (other.order ?? 0);
     case SortingVariant.DateAdded:
       return compareTaskDateAdded(self, other);
     case SortingVariant.DateAddedDescending:
@@ -89,8 +89,9 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
 }
 
 function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
-  const selfDate = parseAbsoluteToLocal(self.createdAt);
-  const otherDate = parseAbsoluteToLocal(other.createdAt);
+  const now = new Date().toISOString();
+  const selfDate = parseAbsoluteToLocal(self.createdAt ?? now);
+  const otherDate = parseAbsoluteToLocal(other.createdAt ?? now);
 
   return selfDate.compare(otherDate) < 0 ? -1 : 1;
 }

@@ -31,4 +31,8 @@ export type Query = {
   sorting: SortingVariant[];
   show: Set<ShowMetadataVariant>;
   groupBy: GroupVariant;
+  viewCompleted: boolean;
+  completedLimit: number;
+  completedSince?: Date;
+  completedUntil?: Date;
 };

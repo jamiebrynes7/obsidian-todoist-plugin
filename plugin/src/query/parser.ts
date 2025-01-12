@@ -114,6 +114,7 @@ const defaults = {
     ShowMetadataVariant.Project,
   ],
   groupBy: GroupVariant.None,
+  completedLimit: 30,
 };
 
 const querySchema = z.object({
@@ -129,9 +130,42 @@ const querySchema = z.object({
     .optional()
     .transform((val) => val ?? defaults.show),
   groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
-});
+  viewCompleted: z.boolean().optional().default(false),
+  completedLimit: z
+    .number()
+    .optional()
+    .default(defaults.completedLimit)
+    .refine((val) => val >= 1 && val <= 200, {
+      message: "Completed tasks limit must be between 1 and 200", // because of Todoist API limits
+    }),
+    completedSince: z.string().datetime({ local: true }).transform((val) => val ? new Date(val) : undefined).optional(),
+    completedUntil: z.string().datetime({ local: true }).transform((val) => val ? new Date(val) : undefined).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.completedSince && data.completedUntil) {
+        return data.completedUntil >= data.completedSince;
+      }
+      return true;
+    },
+    {
+      message: "completedUntil must be later than or equal to completedSince",
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.viewCompleted && data.autorefresh > 0) {
+        return data.autorefresh >= 9; // because of Todoist sync API limits
+      }
+      return true;
+    },
+    {
+      message: "When viewing completed tasks, autorefresh must be at least 9 seconds",
+    },
+  );
 
-const validQueryKeys: string[] = querySchema.keyof().options;
+const baseSchema = querySchema._def.schema._def.schema;
+const validQueryKeys = Object.keys(baseSchema.shape);
 
 function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]] {
   const warnings: QueryWarning[] = [];
@@ -156,6 +190,10 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
       sorting: out.data.sorting,
       show: new Set(out.data.show),
       groupBy: out.data.groupBy,
+      viewCompleted: out.data.viewCompleted,
+      completedLimit: out.data.completedLimit,
+      completedSince: out.data.completedSince,
+      completedUntil: out.data.completedUntil,
     },
     warnings,
   ];

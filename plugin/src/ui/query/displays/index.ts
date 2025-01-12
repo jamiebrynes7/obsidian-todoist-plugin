@@ -1,3 +1,4 @@
+import { CompletedTaskDisplay } from "@/ui/query/displays/CompletedTaskDisplay";
 import { EmptyDisplay } from "@/ui/query/displays/EmptyDisplay";
 import { ErrorDisplay } from "@/ui/query/displays/ErrorDisplay";
 import { GroupedDisplay } from "@/ui/query/displays/GroupedDisplay";
@@ -10,4 +11,5 @@ export const Displays = {
   List: ListDisplay,
   Grouped: GroupedDisplay,
   NotReady: NotReadyDisplay,
+  Completed: CompletedTaskDisplay,
 };
