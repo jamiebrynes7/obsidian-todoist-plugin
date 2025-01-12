@@ -3,7 +3,6 @@ import { CompletedTask } from "@/ui/query/task/CompletedTask";
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 
-
 type Props = {
   tasks: Task[];
 };

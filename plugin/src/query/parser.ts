@@ -117,29 +117,37 @@ const defaults = {
   completedLimit: 30,
 };
 
-const querySchema = z.object({
-  name: z.string().optional().default(""),
-  filter: z.string(),
-  autorefresh: z.number().nonnegative().optional().default(0),
-  sorting: z
-    .array(sortingSchema)
-    .optional()
-    .transform((val) => val ?? defaults.sorting),
-  show: z
-    .union([z.array(showSchema), z.literal("none").transform(() => [])])
-    .optional()
-    .transform((val) => val ?? defaults.show),
-  groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
-  viewCompleted: z.boolean().optional().default(false),
-  completedLimit: z
-    .number()
-    .optional()
-    .default(defaults.completedLimit)
-    .refine((val) => val >= 1 && val <= 200, {
-      message: "Completed tasks limit must be between 1 and 200", // because of Todoist API limits
-    }),
-    completedSince: z.string().datetime({ local: true }).transform((val) => val ? new Date(val) : undefined).optional(),
-    completedUntil: z.string().datetime({ local: true }).transform((val) => val ? new Date(val) : undefined).optional(),
+const querySchema = z
+  .object({
+    name: z.string().optional().default(""),
+    filter: z.string(),
+    autorefresh: z.number().nonnegative().optional().default(0),
+    sorting: z
+      .array(sortingSchema)
+      .optional()
+      .transform((val) => val ?? defaults.sorting),
+    show: z
+      .union([z.array(showSchema), z.literal("none").transform(() => [])])
+      .optional()
+      .transform((val) => val ?? defaults.show),
+    groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
+    viewCompleted: z.boolean().optional().default(false),
+    completedLimit: z
+      .number()
+      .optional()
+      .refine((val) => !val || (val >= 1 && val <= 200), {
+        message: "Completed tasks limit must be between 1 and 200",
+      }),
+    completedSince: z
+      .string()
+      .datetime({ local: true })
+      .transform((val) => (val ? new Date(val) : undefined))
+      .optional(),
+    completedUntil: z
+      .string()
+      .datetime({ local: true })
+      .transform((val) => (val ? new Date(val) : undefined))
+      .optional(),
   })
   .refine(
     (data) => {
