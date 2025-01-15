@@ -1,4 +1,5 @@
 import { type TodoistApiClient, TodoistApiError } from "@/api";
+import type { CompletedTask, GetCompletedTasksParams } from "@/api/domain/completedTask";
 import type { Label, LabelId } from "@/api/domain/label";
 import type { Project, ProjectId } from "@/api/domain/project";
 import type { Section, SectionId } from "@/api/domain/section";
@@ -6,6 +7,7 @@ import type { Task as ApiTask, CreateTaskParams, TaskId } from "@/api/domain/tas
 import { Repository, type RepositoryReader } from "@/data/repository";
 import { SubscriptionManager, type UnsubscribeCallback } from "@/data/subscriptions";
 import type { Task } from "@/data/task";
+import type { Query } from "@/query/query";
 import { Maybe } from "@/utils/maybe";
 
 export enum QueryErrorKind {
@@ -93,30 +95,41 @@ export class TodoistAdapter {
     };
   }
 
-  public subscribe(query: string, callback: OnSubscriptionChange): [UnsubscribeCallback, Refresh] {
+  public subscribe(query: Query, callback: OnSubscriptionChange): [UnsubscribeCallback, Refresh] {
     const fetcher = this.buildQueryFetcher(query);
     const subscription = new Subscription(callback, fetcher, () => true);
     return [this.subscriptions.subscribe(subscription), subscription.update];
   }
 
-  private buildQueryFetcher(query: string): SubscriptionFetcher {
+  private buildQueryFetcher(query: Query): SubscriptionFetcher {
     return async () => {
       if (!this.api.hasValue()) {
         return undefined;
       }
-      const data = await this.api.withInner((api) => api.getTasks(query));
-      const hydrated = data.map((t) => this.hydrate(t));
-      return hydrated;
+
+      let result: Task[];
+      if (query.viewCompleted) {
+        const params: GetCompletedTasksParams = {
+          limit: query.completedLimit,
+          since: query.completedSince,
+          until: query.completedUntil,
+        };
+
+        const data = await this.api.withInner((api) => api.getCompletedTasks(params));
+        result = data.map((t) => this.hydrateCompletedTask(t));
+      } else {
+        const data = await this.api.withInner((api) => api.getTasks(query.filter));
+        result = data.map((t) => this.hydrate(t));
+      }
+
+      return result;
     };
   }
 
   private hydrate(apiTask: ApiTask): Task {
-    const project = this.projects.byId(apiTask.projectId);
-    const section = apiTask.sectionId
-      ? (this.sections.byId(apiTask.sectionId) ?? makeUnknownSection(apiTask.sectionId))
-      : undefined;
-
-    const labels = apiTask.labels.map((id) => this.labels.byName(id) ?? makeUnknownLabel());
+    const project = this.getProjectById(apiTask.projectId);
+    const section = this.getSectionById(apiTask.sectionId);
+    const labels = this.getLabelsByIds(apiTask.labels);
 
     return {
       id: apiTask.id,
@@ -135,6 +148,37 @@ export class TodoistAdapter {
       due: apiTask.due ?? undefined,
       order: apiTask.order,
     };
+  }
+
+  private hydrateCompletedTask(apiCompletedTask: CompletedTask): Task {
+    const project = this.getProjectById(apiCompletedTask.project_id);
+    const section = this.getSectionById(apiCompletedTask.section_id);
+    const labels = this.getLabelsByIds(apiCompletedTask.item_object.labels);
+
+    return {
+      id: apiCompletedTask.task_id,
+      createdAt: apiCompletedTask.completed_at,
+      content: apiCompletedTask.content,
+      description: apiCompletedTask.item_object.description,
+      priority: apiCompletedTask.item_object.priority,
+      due: apiCompletedTask.item_object.due ?? undefined,
+
+      project: project ?? makeUnknownProject(apiCompletedTask.project_id),
+      section: section,
+      labels: labels,
+    };
+  }
+
+  private getProjectById(projectId: string): Project | undefined {
+    return this.projects.byId(projectId);
+  }
+
+  private getSectionById(sectionId: string | null): Section | undefined {
+    return sectionId ? (this.sections.byId(sectionId) ?? makeUnknownSection(sectionId)) : undefined;
+  }
+
+  private getLabelsByIds(labels: string[]): Label[] {
+    return labels.map((id) => this.labels.byName(id) ?? makeUnknownLabel());
   }
 
   private async closeTask(id: TaskId): Promise<void> {

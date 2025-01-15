@@ -107,6 +107,35 @@ describe("parseQuery - rejections", () => {
         show: "nonee",
       },
     },
+    {
+      description: "completedLimit must be between 1 and 200",
+      input: {
+        viewCompleted: true,
+        completedLimit: 201,
+      },
+    },
+    {
+      description: "completedSince must be valid datetime",
+      input: {
+        viewCompleted: true,
+        completedSince: "invalid-date",
+      },
+    },
+    {
+      description: "completedUntil must be after completedSince",
+      input: {
+        viewCompleted: true,
+        completedSince: "2024-03-01T00:00:00",
+        completedUntil: "2024-02-01T00:00:00",
+      },
+    },
+    {
+      description: "autorefresh must be at least 9 seconds when viewing completed tasks",
+      input: {
+        viewCompleted: true,
+        autorefresh: 5,
+      },
+    },
   ];
 
   for (const tc of testcases) {
@@ -133,6 +162,10 @@ function makeQuery(opts?: Partial<Query>): Query {
         ShowMetadataVariant.Labels,
       ]),
     groupBy: opts?.groupBy ?? GroupVariant.None,
+    viewCompleted: opts?.viewCompleted ?? false,
+    completedLimit: opts?.completedLimit,
+    completedSince: opts?.completedSince,
+    completedUntil: opts?.completedUntil,
   };
 }
 
@@ -217,6 +250,34 @@ describe("parseQuery", () => {
       expectedOutput: makeQuery({
         filter: "bar",
         show: new Set(),
+      }),
+    },
+    {
+      description: "with viewCompleted",
+      input: {
+        filter: "bar",
+        viewCompleted: true,
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        viewCompleted: true,
+      }),
+    },
+    {
+      description: "with completed tasks parameters",
+      input: {
+        filter: "bar",
+        viewCompleted: true,
+        completedLimit: 100,
+        completedSince: "2024-01-01T00:00:00",
+        completedUntil: "2024-03-31T23:59:59",
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        viewCompleted: true,
+        completedLimit: 100,
+        completedSince: new Date("2024-01-01T00:00:00"),
+        completedUntil: new Date("2024-03-31T23:59:59"),
       }),
     },
   ];

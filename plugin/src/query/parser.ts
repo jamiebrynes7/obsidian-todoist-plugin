@@ -4,6 +4,7 @@ import YAML from "yaml";
 import { z } from "zod";
 
 type ErrorTree = string | { msg: string; children: ErrorTree[] };
+const MIN_COMPLETED_TASKS_AUTOREFRESH = 9;
 
 export class ParsingError extends Error {
   messages: ErrorTree[];
@@ -114,11 +115,12 @@ const defaults = {
     ShowMetadataVariant.Project,
   ],
   groupBy: GroupVariant.None,
+  completedLimit: 30,
 };
 
-const querySchema = z.object({
+const baseQuerySchema = z.object({
   name: z.string().optional().default(""),
-  filter: z.string(),
+  filter: z.string().optional(),
   autorefresh: z.number().nonnegative().optional().default(0),
   sorting: z
     .array(sortingSchema)
@@ -129,9 +131,54 @@ const querySchema = z.object({
     .optional()
     .transform((val) => val ?? defaults.show),
   groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
+  viewCompleted: z.boolean().optional().default(false),
+  completedLimit: z
+    .number()
+    .optional()
+    .refine((val) => !val || (val >= 1 && val <= 200), {
+      message: "Completed tasks limit must be between 1 and 200",
+    }),
+  completedSince: z
+    .string()
+    .datetime({ local: true })
+    .transform((val) => (val ? new Date(val) : undefined))
+    .optional(),
+  completedUntil: z
+    .string()
+    .datetime({ local: true })
+    .transform((val) => (val ? new Date(val) : undefined))
+    .optional(),
 });
 
-const validQueryKeys: string[] = querySchema.keyof().options;
+const querySchema = baseQuerySchema
+  .refine((data) => data.viewCompleted || (data.filter && data.filter.trim() !== ""), {
+    message: "filter is required when viewCompleted is false",
+    path: ["filter"],
+  })
+  .refine(
+    (data) => {
+      if (data.completedSince && data.completedUntil) {
+        return data.completedUntil >= data.completedSince;
+      }
+      return true;
+    },
+    {
+      message: "completedUntil must be later than or equal to completedSince",
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.viewCompleted && data.autorefresh > 0) {
+        return data.autorefresh >= MIN_COMPLETED_TASKS_AUTOREFRESH; // because of Todoist sync API limits
+      }
+      return true;
+    },
+    {
+      message: "When viewing completed tasks, autorefresh must be at least 9 seconds",
+    },
+  );
+
+const validQueryKeys: string[] = baseQuerySchema.keyof().options;
 
 function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]] {
   const warnings: QueryWarning[] = [];
@@ -151,11 +198,15 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
   return [
     {
       name: out.data.name,
-      filter: out.data.filter,
+      filter: out.data.filter ?? "",
       autorefresh: out.data.autorefresh,
       sorting: out.data.sorting,
       show: new Set(out.data.show),
       groupBy: out.data.groupBy,
+      viewCompleted: out.data.viewCompleted,
+      completedLimit: out.data.completedLimit,
+      completedSince: out.data.completedSince,
+      completedUntil: out.data.completedUntil,
     },
     warnings,
   ];

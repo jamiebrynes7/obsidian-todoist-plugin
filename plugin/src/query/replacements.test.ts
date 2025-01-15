@@ -61,6 +61,8 @@ describe("applyReplacements", () => {
           groupBy: GroupVariant.None,
           sorting: [],
           show: new Set(),
+          viewCompleted: false,
+          completedLimit: 1,
         };
 
         applyReplacements(query, new FakeContext(tc.filePath ?? ""));
