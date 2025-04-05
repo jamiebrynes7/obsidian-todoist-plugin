@@ -130,19 +130,24 @@ const getFormatter: (style: string) => Intl.DateTimeFormat = (() => {
 const formatDueDate = (due: DueDate): string => {
   const date = formatDate(due.start);
 
-  if (due.start.hasTime) {
-    const i18n = t().dates;
-    const time = getFormatter("time").format(due.start.raw);
+  if (!due.start.hasTime) {
+    return date;
+  }
 
-    if (due.end !== undefined) {
-      const endTime = getFormatter("time").format(due.end.raw);
-      return i18n.dateTimeDuration(date, time, endTime);
-    }
+  const i18n = t().dates;
+  const time = getFormatter("time").format(due.start.raw);
 
+  if (due.end === undefined) {
     return i18n.dateTime(date, time);
   }
 
-  return date;
+  const endTime = getFormatter("time").format(due.end.raw);
+  if (isSameDay(due.start.raw, due.end.raw)) {
+    return i18n.dateTimeDuration(date, time, endTime);
+  }
+
+  const endDate = formatDate(due.end);
+  return i18n.dateTimeDurationDifferentDays(date, time, endDate, endTime);
 };
 
 const formatDate = (info: DateInfo): string => {
@@ -193,3 +198,11 @@ export const DueDate = {
   format: formatDueDate,
   formatHeader: formatDueDateHeader,
 };
+
+function isSameDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
