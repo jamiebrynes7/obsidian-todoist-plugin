@@ -212,7 +212,15 @@ export const en: Translations = {
       return `${date} at ${time}`;
     },
     dateTimeDuration: (date: string, startTime: string, endTime: string) => {
-      return `${date} at ${startTime}-${endTime}`;
+      return `${date} at ${startTime} - ${endTime}`;
+    },
+    dateTimeDurationDifferentDays: (
+      startDate: string,
+      startTime: string,
+      endDate: string,
+      endTime: string,
+    ): string => {
+      return `${startDate} at ${startTime} - ${endDate} at ${endTime}`;
     },
   },
 };

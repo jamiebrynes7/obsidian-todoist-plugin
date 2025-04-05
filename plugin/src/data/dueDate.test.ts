@@ -1,4 +1,5 @@
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
+import type { Duration as ApiDuration } from "@/api/domain/task";
 import { DueDate } from "@/data/dueDate";
 import { CalendarDate, ZonedDateTime } from "@internationalized/date";
 import { describe, expect, it, vi } from "vitest";
@@ -17,8 +18,13 @@ vi.mock("../infra/locale.ts", () => {
   };
 });
 
-const makeDate = (year: number, month: number, day: number, hours?: number): Date =>
-  new Date(Date.UTC(year, month, day, hours ?? 0));
+const makeDate = (
+  year: number,
+  month: number,
+  day: number,
+  hours?: number,
+  minutes?: number,
+): Date => new Date(Date.UTC(year, month, day, hours ?? 0, minutes ?? 0));
 
 describe("parse", () => {
   type TestCase = {
@@ -336,6 +342,117 @@ describe("parse", () => {
   }
 });
 
+describe("parse with duration", () => {
+  type Testcase = {
+    description: string;
+    input: {
+      due: ApiDueDate;
+      duration: ApiDuration;
+    };
+    expected: DueDate;
+  };
+
+  const testcases: Testcase[] = [
+    {
+      description: "should parse a due date with 30 minutes duration",
+      input: {
+        due: {
+          date: "2024-02-01",
+          datetime: "2024-02-01T12:00:00",
+          isRecurring: false,
+        },
+        duration: {
+          amount: 30,
+          unit: "minute",
+        },
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 1, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 1, 1, 12, 30),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+    },
+    {
+      description: "should parse a due date with 2 days duration",
+      input: {
+        due: {
+          date: "2024-02-01",
+          datetime: "2024-02-01T12:00:00",
+          isRecurring: false,
+        },
+        duration: {
+          amount: 2,
+          unit: "day",
+        },
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 1, 1, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 1, 3, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+    },
+    {
+      description: "should parse a due date that crosses to next day with duration",
+      input: {
+        due: {
+          date: "2024-02-01",
+          datetime: "2024-02-01T23:00:00",
+          isRecurring: false,
+        },
+        duration: {
+          amount: 120,
+          unit: "minute",
+        },
+      },
+      expected: {
+        start: {
+          raw: makeDate(2024, 1, 1, 23),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 1, 2, 1),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+    },
+  ];
+
+  for (const tc of testcases) {
+    it(tc.description, () => {
+      const output = DueDate.parse(tc.input.due, tc.input.duration);
+      expect(output).toStrictEqual(tc.expected);
+    });
+  }
+});
+
 describe("format", () => {
   type Testcase = {
     description: string;
@@ -567,6 +684,146 @@ describe("format", () => {
         end: undefined,
       },
       expected: "Jan 30, 2023 at 12:00 PM",
+    },
+    {
+      description: "same day, with time range (today)",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1, 10),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: {
+          raw: makeDate(2024, 0, 1, 11, 30),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+      },
+      expected: "Today at 10:00 AM - 11:30 AM",
+    },
+    {
+      description: "same day, future date with time range",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 1, 15, 9),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 1, 15, 17),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+      expected: "Feb 15 at 9:00 AM - 5:00 PM",
+    },
+    {
+      description: "different days, today to tomorrow",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1, 14),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: {
+          raw: makeDate(2024, 0, 2, 10),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+      },
+      expected: "Today at 2:00 PM - Tomorrow at 10:00 AM",
+    },
+    {
+      description: "different days, tomorrow to next week",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 2, 9),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: {
+          raw: makeDate(2024, 0, 5, 17),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+      },
+      expected: "Tomorrow at 9:00 AM - Friday at 5:00 PM",
+    },
+    {
+      description: "different days, this week to next week",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 3, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 0, 8, 12),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+      expected: "Jan 3 at 12:00 PM - Jan 8 at 12:00 PM",
+    },
+    {
+      description: "different days, last week to today",
+      dueDate: {
+        start: {
+          raw: makeDate(2023, 11, 27, 9),
+          hasTime: true,
+          isOverdue: true,
+          isCurrentYear: false,
+          flag: "lastWeek",
+        },
+        end: {
+          raw: makeDate(2024, 0, 1, 17),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+      },
+      expected: "Last Wednesday at 9:00 AM - Today at 5:00 PM",
+    },
+    {
+      description: "different years",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 11, 30, 9),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2025, 0, 2, 17),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+      },
+      expected: "Dec 30 at 9:00 AM - Jan 2, 2025 at 5:00 PM",
     },
   ];
 
