@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tasks which are marked as recurring in Todoist will now have a icon to indicate this next to the date in the task metadata.
 - The refresh button now has a tooltip indicating when the query was last refreshed.
 - You can now provide `show: none` in your query to hide all task metadata (project, due date, labels, description).
+- Your tasks' durations will now be rendered with the due date.
 
 ### 🔁 Changes
 
