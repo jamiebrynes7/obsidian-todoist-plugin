@@ -142,23 +142,31 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
                 <CalendarGrid>{(date) => <CalendarCell date={date} />}</CalendarGrid>
               </Calendar>
               <hr />
-              <DialogTrigger>
-                <div className="time-picker-container">
-                  <Button className="time-picker-button">
+              <div className="time-picker-container">
+                <DialogTrigger>
+                  <Button className="time-picker-button" aria-label="Set time">
                     <ObsidianIcon size="xs" id="clock" />
                     Time
                   </Button>
-                </div>
-                <Popover defaultPlacement="top">
-                  <TimeDialog
-                    selectedTime={selected?.time}
-                    setTime={(time) => {
-                      close();
-                      setTime(time);
-                    }}
-                  />
-                </Popover>
-              </DialogTrigger>
+                  <Popover defaultPlacement="top">
+                    <TimeDialog
+                      selectedTime={selected?.time}
+                      setTime={(time) => {
+                        setTime(time);
+                      }}
+                    />
+                  </Popover>
+                </DialogTrigger>
+                {selected?.time !== undefined && (
+                  <Button
+                    className="time-picker-clear-button"
+                    onPress={() => setTime(undefined)}
+                    aria-label="Clear time"
+                  >
+                    <ObsidianIcon size="xs" id="cross" />
+                  </Button>
+                )}
+              </div>
             </>
           )}
         </Dialog>
