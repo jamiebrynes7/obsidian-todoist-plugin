@@ -1,12 +1,16 @@
+import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
+import { DueDate as DataDueDate } from "@/data/dueDate";
 import { t } from "@/i18n";
 import { timezone } from "@/infra/time";
+import { ObsidianIcon } from "@/ui/components/obsidian-icon";
+import { Popover } from "@/ui/createTaskModal/Popover";
 import {
   type CalendarDate,
   DateFormatter,
   type Time,
   endOfWeek,
-  isToday,
   toCalendarDateTime,
+  toZoned,
   today,
 } from "@internationalized/date";
 import type React from "react";
@@ -28,18 +32,6 @@ import {
   Section,
   TimeField,
 } from "react-aria-components";
-import { ObsidianIcon } from "../components/obsidian-icon";
-import { Popover } from "./Popover";
-
-const formatter = new DateFormatter("en-US", {
-  month: "short",
-  day: "numeric",
-});
-
-const timeFormatter = new DateFormatter("en-US", {
-  hour: "numeric",
-  minute: "2-digit",
-});
 
 const weekdayFormatter = new DateFormatter("en-US", {
   weekday: "short",
@@ -176,35 +168,22 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
 };
 
 const getLabel = (selected: DueDate | undefined) => {
-  const i18n = t().createTaskModal.dateSelector;
-
   if (selected === undefined) {
-    return i18n.emptyDate;
+    return t().createTaskModal.dateSelector.emptyDate;
   }
 
-  const date = selected.date;
-  const dayPart = (() => {
-    if (isToday(date, timezone())) {
-      return i18n.today;
-    }
+  const apiDueDate: ApiDueDate = {
+    date: selected.date.toString(),
+    datetime:
+      selected.time !== undefined
+        ? toZoned(toCalendarDateTime(selected.date, selected.time), timezone()).toAbsoluteString()
+        : undefined,
+    isRecurring: false,
+  };
 
-    if (today(timezone()).add({ days: 1 }).compare(date) === 0) {
-      return i18n.tomorrow;
-    }
+  const dueDate = DataDueDate.parse(apiDueDate);
 
-    return formatter.format(date.toDate(timezone()));
-  })();
-
-  const time = selected.time;
-  const timePart = (() => {
-    if (time === undefined) {
-      return "";
-    }
-
-    return timeFormatter.format(toCalendarDateTime(today(timezone()), time).toDate(timezone()));
-  })();
-
-  return [dayPart, timePart].join(" ").trimEnd();
+  return DataDueDate.format(dueDate);
 };
 
 type DateSuggestionProps = {
