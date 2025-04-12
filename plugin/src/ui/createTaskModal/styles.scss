@@ -200,23 +200,42 @@
   .time-picker-container {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0 1em 1em 1em;
 
     .time-picker-button {
       flex-grow: 1;
-      margin: 0em 1em 1em 1em;
       color: var(--text-muted);
       box-shadow: none;
       background-color: unset;
       border: 1px solid var(--color-base-25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
 
       &:hover,
       &:focus {
         border: 1px solid var(--interactive-accent);
         box-shadow: var(--box-shadow-hover);
       }
+    }
 
-      .obsidian-icon {
-        margin-right: 0.5em;
+    .time-picker-clear-button {
+      padding: var(--size-4-2);
+      margin: 0;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+
+      &:hover {
+        color: var(--text-normal);
+        background-color: var(--background-modifier-cover);
       }
     }
   }
