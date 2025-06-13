@@ -105,6 +105,18 @@ export const en: Translations = {
         timeLabel: "Time",
         saveButtonLabel: "Save",
         cancelButtonLabel: "Cancel",
+        durationLabel: "Duration",
+        noDuration: "No duration",
+        duration: (minutes: number) => {
+          const hours = Math.floor(minutes / 60);
+          const mins = minutes % 60;
+
+          if (hours === 0) {
+            return `${mins}m`;
+          }
+
+          return `${hours}h ${mins}m`;
+        },
       },
     },
     labelSelector: {

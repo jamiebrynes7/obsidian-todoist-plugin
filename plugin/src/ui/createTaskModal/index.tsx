@@ -111,9 +111,9 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     };
 
     if (dueDate !== undefined) {
-      if (dueDate.time !== undefined) {
+      if (dueDate.timeInfo !== undefined) {
         params.dueDatetime = toZoned(
-          toCalendarDateTime(dueDate.date, dueDate.time),
+          toCalendarDateTime(dueDate.date, dueDate.timeInfo.time),
           timezone(),
         ).toAbsoluteString();
       } else {
