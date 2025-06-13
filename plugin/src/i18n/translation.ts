@@ -100,6 +100,9 @@ export type Translations = {
         timeLabel: string;
         saveButtonLabel: string;
         cancelButtonLabel: string;
+        durationLabel: string;
+        noDuration: string;
+        duration: (minutes: number) => string;
       };
     };
     labelSelector: {

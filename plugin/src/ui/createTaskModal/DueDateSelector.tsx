@@ -1,13 +1,14 @@
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
+import type { Duration as ApiDuration } from "@/api/domain/task";
 import { DueDate as DataDueDate } from "@/data/dueDate";
 import { t } from "@/i18n";
-import { timezone } from "@/infra/time";
+import { now, timezone } from "@/infra/time";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import { Popover } from "@/ui/createTaskModal/Popover";
 import {
   type CalendarDate,
   DateFormatter,
-  type Time,
+  Time,
   endOfWeek,
   toCalendarDateTime,
   toZoned,
@@ -27,9 +28,13 @@ import {
   Heading,
   type Key,
   Label,
+  ListBox,
+  ListBoxItem,
   Menu,
   MenuItem,
   Section,
+  Select,
+  SelectValue,
   TimeField,
 } from "react-aria-components";
 
@@ -39,7 +44,12 @@ const weekdayFormatter = new DateFormatter("en-US", {
 
 export type DueDate = {
   date: CalendarDate;
-  time: Time | undefined;
+  timeInfo:
+    | {
+        time: Time;
+        duration: ApiDuration | undefined;
+      }
+    | undefined;
 };
 
 type Props = {
@@ -53,9 +63,9 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
 
   const selectDate = (date: CalendarDate) => {
     if (selected === undefined) {
-      setSelected({ date, time: undefined });
+      setSelected({ date, timeInfo: undefined });
     } else {
-      setSelected({ date, time: selected.time });
+      setSelected({ date, timeInfo: selected.timeInfo });
     }
   };
 
@@ -68,22 +78,22 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
     if (suggestion.target === undefined) {
       setSelected(undefined);
     } else {
-      setSelected({ date: suggestion.target, time: selected?.time });
+      setSelected({ date: suggestion.target, timeInfo: selected?.timeInfo });
     }
   };
 
-  const setTime = (time: Time | undefined) => {
+  const setTimeInfo = (timeInfo: DueDate["timeInfo"]) => {
     if (selected === undefined) {
-      if (time !== undefined) {
+      if (timeInfo !== undefined) {
         setSelected({
           date: today(timezone()),
-          time,
+          timeInfo,
         });
       }
     } else {
       setSelected({
         date: selected.date,
-        time,
+        timeInfo,
       });
     }
   };
@@ -141,18 +151,13 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
                     Time
                   </Button>
                   <Popover defaultPlacement="top">
-                    <TimeDialog
-                      selectedTime={selected?.time}
-                      setTime={(time) => {
-                        setTime(time);
-                      }}
-                    />
+                    <TimeDialog selectedTimeInfo={selected?.timeInfo} setTimeInfo={setTimeInfo} />
                   </Popover>
                 </DialogTrigger>
-                {selected?.time !== undefined && (
+                {selected?.timeInfo !== undefined && (
                   <Button
                     className="time-picker-clear-button"
-                    onPress={() => setTime(undefined)}
+                    onPress={() => setTimeInfo(undefined)}
                     aria-label="Clear time"
                   >
                     <ObsidianIcon size="xs" id="cross" />
@@ -175,13 +180,16 @@ const getLabel = (selected: DueDate | undefined) => {
   const apiDueDate: ApiDueDate = {
     date: selected.date.toString(),
     datetime:
-      selected.time !== undefined
-        ? toZoned(toCalendarDateTime(selected.date, selected.time), timezone()).toAbsoluteString()
+      selected.timeInfo !== undefined
+        ? toZoned(
+            toCalendarDateTime(selected.date, selected.timeInfo.time),
+            timezone(),
+          ).toAbsoluteString()
         : undefined,
     isRecurring: false,
   };
 
-  const dueDate = DataDueDate.parse(apiDueDate);
+  const dueDate = DataDueDate.parse(apiDueDate, selected?.timeInfo?.duration);
 
   return DataDueDate.format(dueDate);
 };
@@ -244,19 +252,68 @@ const getSuggestions = (): DateSuggestionProps[] => {
 };
 
 type TimeDialogProps = {
-  selectedTime: Time | undefined;
-  setTime: (time: Time | undefined) => void;
+  selectedTimeInfo: DueDate["timeInfo"] | undefined;
+  setTimeInfo: (timeInfo: DueDate["timeInfo"] | undefined) => void;
 };
 
-const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTime, setTime }) => {
-  const [taskTime, setTaskTime] = useState(selectedTime);
+// We want enough options to get to 23h 45m.
+const MAX_DURATION_SEGMENTS = (24 * 60 - 15) / 15;
+
+const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }) => {
   const i18n = t().createTaskModal.dateSelector.timeDialog;
+
+  const durationOptions = [
+    undefined,
+    ...Array.from({ length: MAX_DURATION_SEGMENTS }, (_, i) => ({
+      amount: (i + 1) * 15,
+      unit: "minute" as const,
+    })),
+  ].map((option) => ({
+    label: option === undefined ? i18n.noDuration : i18n.duration(option.amount),
+    value: option,
+  }));
+
+  const initialDurationIndex = durationOptions.findIndex(
+    (o) => o.value?.amount === selectedTimeInfo?.duration?.amount,
+  );
+
+  const [selectedDurationIndex, setSelectedDurationIndex] = useState<number>(
+    initialDurationIndex === -1 ? 0 : initialDurationIndex,
+  );
+  const [taskTimeInfo, setTaskTimeInfo] = useState(selectedTimeInfo);
+
+  const onDurationChange = (key: Key) => {
+    const idx = Number(key);
+    setSelectedDurationIndex(idx);
+
+    const option = durationOptions[idx];
+    if (taskTimeInfo?.time) {
+      setTaskTimeInfo({
+        time: taskTimeInfo.time,
+        duration: option.value,
+      });
+    } else {
+      setTaskTimeInfo({
+        time: new Time(now().hour, now().minute, 0),
+        duration: option.value,
+      });
+    }
+  };
 
   return (
     <Dialog className="task-option-dialog task-time-menu" aria-label="Time selector">
       {({ close }) => (
         <>
-          <TimeField className="task-time-picker" value={taskTime ?? null} onChange={setTaskTime}>
+          <TimeField
+            className="task-time-picker"
+            value={taskTimeInfo?.time ?? null}
+            onChange={(time) => {
+              setTaskTimeInfo({
+                time,
+                duration: taskTimeInfo?.duration,
+              });
+            }}
+          >
             <Label className="task-time-picker-label">{i18n.timeLabel}</Label>
             <DateInput className="task-time-picker-input">
               {(segment) => (
@@ -264,13 +321,40 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTime, setTime }) => {
               )}
             </DateInput>
           </TimeField>
+          <Select
+            className="task-duration-select"
+            selectedKey={selectedDurationIndex}
+            onSelectionChange={onDurationChange}
+          >
+            <Label className="task-duration-picker-label">{i18n.durationLabel}</Label>
+            <Button className="task-duration-button">
+              <SelectValue />
+            </Button>
+            <Popover defaultPlacement="top" maxHeight={150}>
+              <ListBox
+                className="task-option-dialog task-duration-menu"
+                aria-label={i18n.durationLabel}
+              >
+                {durationOptions.map((option, index) => (
+                  <ListBoxItem
+                    key={String(index)}
+                    id={index}
+                    className="duration-option"
+                    textValue={option.label}
+                  >
+                    {option.label}
+                  </ListBoxItem>
+                ))}
+              </ListBox>
+            </Popover>
+          </Select>
           <div className="task-time-controls">
             <Button onPress={close}>{i18n.cancelButtonLabel}</Button>
             <Button
               className="mod-cta"
               onPress={() => {
                 close();
-                setTime(taskTime);
+                setTimeInfo(taskTimeInfo);
               }}
             >
               {i18n.saveButtonLabel}

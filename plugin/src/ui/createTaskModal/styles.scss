@@ -33,7 +33,7 @@
     display: flex;
     align-items: center;
 
-    & > * + * {
+    &>*+* {
       margin-left: 0.5em;
     }
 
@@ -70,7 +70,7 @@
     .is-mobile & {
       flex-direction: column;
 
-      & > * + * {
+      &>*+* {
         margin-top: 0.5em;
       }
     }
@@ -78,7 +78,7 @@
     .task-creation-action {
       display: flex;
 
-      & > * + * {
+      &>*+* {
         margin-left: 1em;
       }
 
@@ -114,6 +114,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: var(--font-smaller);
+
     .date-suggestion-label {
       display: flex;
       align-items: center;
@@ -280,7 +281,7 @@ button.project-selector {
   display: flex;
   align-items: center;
 
-  & > * + * {
+  &>*+* {
     margin-left: 0.5em;
   }
 
@@ -327,17 +328,20 @@ button.project-selector {
     &[data-depth="1"] {
       --project-padding: 32px;
     }
+
     &[data-depth="2"] {
       --project-padding: 56px;
     }
+
     &[data-depth="3"] {
       --project-padding: 80px;
     }
+
     &[data-depth="3"] {
       --project-padding: 104px;
     }
 
-    & > * + * {
+    &>*+* {
       margin-left: 0.5em;
     }
 
@@ -356,7 +360,7 @@ button.project-selector {
   display: flex;
   flex-direction: column;
 
-  & > * + * {
+  &>*+* {
     margin-top: 1em;
   }
 
@@ -389,12 +393,44 @@ button.project-selector {
     }
   }
 
+  .task-duration-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-ui-small);
+
+    .task-duration-picker-label {
+      font-weight: 600;
+    }
+
+    .task-duration-button {
+      justify-content: start;
+      min-width: 100px;
+    }
+  }
+
   .task-time-controls {
     display: flex;
     justify-content: end;
 
-    & > * + * {
+    &>*+* {
       margin-left: 1em;
+    }
+  }
+}
+
+.task-duration-menu {
+  .duration-option {
+    padding: 8px 1em;
+    font-size: var(--font-smaller);
+
+    &:hover {
+      background-color: var(--background-modifier-cover);
+    }
+
+    &.is-selected {
+      background-color: var(--interactive-accent);
+      color: var(--text-on-accent);
     }
   }
 }
