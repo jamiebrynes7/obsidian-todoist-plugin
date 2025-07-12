@@ -10,30 +10,17 @@ let _t: DeepReadonly<Translations> = en as DeepReadonly<Translations>;
 
 export const setLanguage = (lang: string) => {
   language = lang;
-  _t = DeepPartial.merge(en, registry[lang] ?? {}) as DeepReadonly<Translations>;
+  _t = DeepPartial.merge(en, registry[lang]?.translations ?? {}) as DeepReadonly<Translations>;
 };
 
 export const t = () => {
   return _t;
 };
 
-type TranslationStatus = { kind: "complete" | "missing" | "partial" };
-
-export const getTranslationStatus = (): TranslationStatus => {
-  if (language === "en") {
-    return { kind: "complete" };
-  }
-  if (!(language in registry)) {
-    return { kind: "missing" };
-  }
-
-  // Check if all keys are present recursively.
-  const translations = registry[language];
-  if (DeepPartial.isComplete(en, translations)) {
-    return { kind: "complete" };
-  }
-
-  return { kind: "partial" };
+type LanguageDefinition = {
+  name: string;
+  code: string;
+  translations: DeepPartial<Translations>;
 };
 
 /*
@@ -53,11 +40,20 @@ export const getTranslationStatus = (): TranslationStatus => {
         export const $langCode: DeepPartial<Translations> = {};
 
  * 4. Register the language in the registry below. The key should be the lang code.
-      The value should be the exported object from step 3.
+      The value should be the definition object with the name, code, and translations.
  */
 
 // Register new languages here. The key should be the language key as seen
 // in the root of the HTML document (e.g. "fr", "es", etc.).
-const registry: Record<string, DeepPartial<Translations>> = {
-  nl: nl,
+export const registry: Record<string, LanguageDefinition> = {
+  en: {
+    name: "English",
+    code: "en",
+    translations: en,
+  },
+  nl: {
+    name: "Nederlands",
+    code: "nl",
+    translations: nl,
+  },
 };
