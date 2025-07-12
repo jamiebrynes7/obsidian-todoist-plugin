@@ -35,12 +35,6 @@
                 marksman
               ];
               enterShell = enterShellBySystem.${system} or "";
-
-              scripts.patch-vscode-settings.exec = ''
-                # This script patches .vscode/settings.json to point to the musl variant of the biome binary.
-                # This is intended for use on NixOS based systems, where the x64 version of the binary doesn't work.
-                cat <<< $(jq '."biome.lspBin" = env.BIOME_BINARY' .vscode/settings.json) > .vscode/settings.json
-              '';
             }];
           };
         });
