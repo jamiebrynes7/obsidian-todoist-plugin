@@ -1,3 +1,5 @@
+@import "../../styles/colors.scss";
+
 .modal-popover {
   overflow-y: auto;
 }
@@ -353,6 +355,20 @@ button.project-selector {
       display: none;
     }
   }
+}
+
+.todoist-project-icon {
+  @each $name, $color in $todoist-colors {
+    &[data-project-color="#{$name}"] {
+      --todoist-project-color: var(--todoist-#{$name});
+    }
+
+    &[data-label-color="#{$name}"] {
+      --todoist-label-color: var(--todoist-#{$name});
+    }
+  }
+
+  color: var(--todoist-project-color);
 }
 
 .task-time-menu {

@@ -227,7 +227,12 @@ const ProjectLabel: React.FC<{ project: Project }> = ({ project }) => {
 
   return (
     <>
-      <ObsidianIcon size="s" id={projectIcon} />
+      <ObsidianIcon
+        size="s"
+        id={projectIcon}
+        className="todoist-project-icon"
+        data-project-color={project.color}
+      />
       <div>{project.name}</div>
     </>
   );
