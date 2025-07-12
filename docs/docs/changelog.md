@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - You can now provide `show: none` in your query to hide all task metadata (project, due date, labels, description).
 - Your tasks' durations will now be rendered with the due date.
 - You can now set a task duration when creating a new task.
+- Project icons in the task creation modal will now show that project's color.
 
 ### 🔁 Changes
 
