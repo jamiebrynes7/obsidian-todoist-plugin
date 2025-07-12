@@ -1,6 +1,13 @@
+import { TranslationStatus } from "@site/src/components/TranslationStatus";
+import translationData from "../translation-status.json";
+
 # Translations
 
 Before getting started, you should ensure you read the general [contribution guide](./general). This will ensure that you have a working build environment and are ready to go!
+
+## Status
+
+<TranslationStatus data={translationData} />
 
 ## Architecture
 
@@ -46,7 +53,11 @@ There is a guide in `plugin/src/i18n/index.ts` that explains how to add a new la
    // A bunch of things you don't need to worry about...
 
    const registry: Record<string, DeepPartial<Translations>> = {
-     fr: fr,
+     fr: {
+       name: "Français",
+       code: "fr",
+       translations: fr,
+     },
    };
    ```
 
