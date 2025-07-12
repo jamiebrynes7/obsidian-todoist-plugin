@@ -23,6 +23,21 @@ jobs:
         run: npm run check
         working-directory: ./plugin
 
+      - name: Generate files
+        run: npm run gen
+        working-directory: ./plugin
+
+      - name: Check for generated file changes
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "✅ No changes detected in generated files"
+          else
+            echo "❌ Generated files have changed. Please commit these changes:"
+            git diff --staged
+            exit 1
+          fi
+
       - name: Build
         run: npm run build
         working-directory: ./plugin
