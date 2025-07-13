@@ -104,7 +104,7 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
     <DialogTrigger>
       <Button className="due-date-selector" aria-label={i18n.buttonLabel}>
         <ObsidianIcon size="s" id="calendar" />
-        {label}
+        <span>{label}</span>
       </Button>
       <Popover maxHeight={600}>
         <Dialog className="task-option-dialog task-date-menu" aria-label={i18n.dialogLabel}>

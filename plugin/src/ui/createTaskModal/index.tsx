@@ -17,6 +17,7 @@ import { type ProjectIdentifier, ProjectSelector } from "./ProjectSelector";
 import { TaskContentInput } from "./TaskContentInput";
 import "./styles.scss";
 import type { Translations } from "@/i18n/translation";
+import { OptionsSelector } from "@/ui/createTaskModal/OptionsSelector";
 
 export type LinkDestination = "content" | "description";
 
@@ -168,9 +169,14 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         onChange={setDescription}
       />
       <div className="task-creation-selectors">
-        <DueDateSelector selected={dueDate} setSelected={setDueDate} />
-        <PrioritySelector selected={priority} setSelected={setPriority} />
-        <LabelSelector selected={labels} setSelected={setLabels} />
+        <div className="task-creation-selectors-group">
+          <DueDateSelector selected={dueDate} setSelected={setDueDate} />
+          <PrioritySelector selected={priority} setSelected={setPriority} />
+          <LabelSelector selected={labels} setSelected={setLabels} />
+        </div>
+        <div className="task-creation-selectors-group">
+          <OptionsSelector selected={options} setSelected={setOptions} />
+        </div>
       </div>
       <div className="task-creation-notes">
         <ul>{linkDestinationMessage && <li>{linkDestinationMessage}</li>}</ul>
