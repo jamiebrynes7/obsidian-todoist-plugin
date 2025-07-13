@@ -299,7 +299,11 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }
   );
   const [taskTimeInfo, setTaskTimeInfo] = useState(selectedTimeInfo);
 
-  const onDurationChange = (key: Key) => {
+  const onDurationChange = (key: Key | null) => {
+    if (key === null) {
+      return;
+    }
+
     const idx = Number(key);
     setSelectedDurationIndex(idx);
 
@@ -317,6 +321,17 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }
     }
   };
 
+  const onTimeChange = (time: Time | null) => {
+    if (time === null) {
+      return;
+    }
+
+    setTaskTimeInfo((old) => ({
+      time,
+      duration: old?.duration,
+    }));
+  };
+
   return (
     <Dialog className="task-option-dialog task-time-menu" aria-label="Time selector">
       {({ close }) => (
@@ -324,12 +339,7 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }
           <TimeField
             className="task-time-picker"
             value={taskTimeInfo?.time ?? null}
-            onChange={(time) => {
-              setTaskTimeInfo({
-                time,
-                duration: taskTimeInfo?.duration,
-              });
-            }}
+            onChange={onTimeChange}
           >
             <Label className="task-time-picker-label">{i18n.timeLabel}</Label>
             <DateInput className="task-time-picker-input">
