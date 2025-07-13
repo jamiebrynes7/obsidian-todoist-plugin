@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import type { Task } from "@/data/task";
 import { sortTasks } from "@/data/transformations/sorting";
 import { SortingVariant } from "@/query/query";

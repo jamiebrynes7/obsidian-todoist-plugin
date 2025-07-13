@@ -1,6 +1,7 @@
 import type { MarkdownRenderChild } from "obsidian";
 import { createContext, type Provider, useContext } from "react";
 import type { StoreApi, UseBoundStore } from "zustand";
+
 import type TodoistPlugin from "@/index";
 import type { Query } from "@/query/query";
 

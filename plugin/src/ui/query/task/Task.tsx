@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Notice } from "obsidian";
 import React, { type MouseEvent } from "react";
 import { Checkbox } from "react-aria-components";
+
 import { DueDate } from "@/data/dueDate";
 import type { TaskTree } from "@/data/transformations/relationships";
 import { t } from "@/i18n";

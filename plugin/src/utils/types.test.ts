@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { DeepPartial } from "@/utils/types";
 
 type TestObject = {

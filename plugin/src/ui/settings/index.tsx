@@ -1,8 +1,10 @@
 import { type App, PluginSettingTab } from "obsidian";
 import type React from "react";
 import { createRoot, type Root } from "react-dom/client";
+
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
+
 import type TodoistPlugin from "../..";
 import { type Settings, useSettingsStore } from "../../settings";
 import { TokenValidation } from "../../token";
@@ -10,6 +12,7 @@ import { AutoRefreshIntervalControl } from "./AutoRefreshIntervalControl";
 import { Setting } from "./SettingItem";
 import { TokenChecker } from "./TokenChecker";
 import "./styles.scss";
+
 import { BuildStamp } from "@/stamp";
 
 export class SettingsTab extends PluginSettingTab {

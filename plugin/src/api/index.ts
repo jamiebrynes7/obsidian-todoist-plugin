@@ -1,5 +1,6 @@
 import camelize from "camelize-ts";
 import snakify from "snakify-ts";
+
 import type { Label } from "@/api/domain/label";
 import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";

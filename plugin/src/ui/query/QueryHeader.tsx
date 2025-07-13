@@ -2,6 +2,7 @@ import classNames from "classnames";
 import type React from "react";
 import { useRef } from "react";
 import { Button } from "react-aria-components";
+
 import { type CommandId, fireCommand } from "@/commands";
 import { t } from "@/i18n";
 import { type Settings, useSettingsStore } from "@/settings";

@@ -1,4 +1,5 @@
 import type { MarkdownPostProcessorContext } from "obsidian";
+
 import type { Query } from "@/query/query";
 
 export function applyReplacements(query: Query, ctx: MarkdownPostProcessorContext) {

@@ -2,6 +2,7 @@ import { setLanguage } from "@/i18n";
 import "@/styles/main.scss";
 import type { PluginManifest } from "obsidian";
 import { type App, Plugin } from "obsidian";
+
 import { TodoistApiClient } from "@/api";
 import { ObsidianFetcher } from "@/api/fetcher";
 import { registerCommands } from "@/commands";

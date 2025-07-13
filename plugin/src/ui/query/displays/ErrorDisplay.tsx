@@ -1,4 +1,5 @@
 import type React from "react";
+
 import { QueryErrorKind } from "@/data";
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";

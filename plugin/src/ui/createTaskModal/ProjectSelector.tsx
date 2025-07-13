@@ -11,8 +11,10 @@ import {
   ListBoxItem,
   SearchField,
 } from "react-aria-components";
+
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
+
 import type TodoistPlugin from "../..";
 import type { Project, ProjectId } from "../../api/domain/project";
 import type { Section, SectionId } from "../../api/domain/section";

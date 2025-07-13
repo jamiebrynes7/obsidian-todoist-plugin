@@ -3,10 +3,12 @@ import { Notice, type TFile } from "obsidian";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
+
 import { t } from "@/i18n";
 import { timezone } from "@/infra/time";
 import { useSettingsStore } from "@/settings";
 import { ModalContext, PluginContext } from "@/ui/context";
+
 import type TodoistPlugin from "../..";
 import type { Label } from "../../api/domain/label";
 import type { CreateTaskParams, Priority } from "../../api/domain/task";
@@ -16,6 +18,7 @@ import { PrioritySelector } from "./PrioritySelector";
 import { type ProjectIdentifier, ProjectSelector } from "./ProjectSelector";
 import { TaskContentInput } from "./TaskContentInput";
 import "./styles.scss";
+
 import type { Translations } from "@/i18n/translation";
 import { OptionsSelector } from "@/ui/createTaskModal/OptionsSelector";
 
