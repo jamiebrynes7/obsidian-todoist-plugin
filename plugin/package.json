@@ -7,8 +7,8 @@
     "dev": "npm run check && VITE_ENV=dev vite build",
     "build": "vite build",
     "test": "vitest",
-    "lint:check": "biome check ./src --config-path=../",
-    "lint:fix": "biome check --write ./src --config-path=../",
+    "lint:check": "biome check ./src --config-path=../biome.json",
+    "lint:fix": "biome check --write ./src --config-path=../biome.json",
     "gen": "vite-node scripts/gen-lang-status.ts"
   },
   "author": "Jamie Brynes",
@@ -30,7 +30,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "2.1.1",
     "@rollup/plugin-replace": "^5.0.5",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.2.1",
@@ -44,5 +44,8 @@
     "vite-plugin-static-copy": "^1.0.1",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.2.2"
+  },
+  "optionalDependencies": {
+    "@biomejs/cli-linux-x64-musl": "2.1.1"
   }
 }
