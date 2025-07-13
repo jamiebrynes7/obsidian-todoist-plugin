@@ -1,4 +1,5 @@
 import replace from "@rollup/plugin-replace";
+import react from "@vitejs/plugin-react";
 import { loadEnv } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -31,6 +32,7 @@ function getBuildStamp(): string {
 
 export default defineConfig({
   plugins: [
+    react(),
     tsConfigPaths(),
     viteStaticCopy({
       targets: [
