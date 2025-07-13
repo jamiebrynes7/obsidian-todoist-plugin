@@ -1,10 +1,10 @@
+import type React from "react";
 import type { Task } from "@/data/task";
-import { type TaskTree, buildTaskTree } from "@/data/transformations/relationships";
+import { buildTaskTree, type TaskTree } from "@/data/transformations/relationships";
 import { sortTasks } from "@/data/transformations/sorting";
 import type { SortingVariant } from "@/query/query";
 import { QueryContext } from "@/ui/context";
 import { TaskList } from "@/ui/query/task/TaskList";
-import type React from "react";
 
 type Props = {
   tasks: Task[];

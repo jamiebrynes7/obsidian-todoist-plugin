@@ -215,9 +215,14 @@ class Subscription {
     try {
       const data = await this.fetch();
       if (data === undefined) {
-        this.result = { type: "not-ready" };
+        this.result = {
+          type: "not-ready",
+        };
       } else {
-        this.result = { type: "success", tasks: data };
+        this.result = {
+          type: "success",
+          tasks: data,
+        };
       }
     } catch (error: unknown) {
       console.error(`Failed to refresh task query: ${error}`);

@@ -1,6 +1,6 @@
+import type React from "react";
 import { t } from "@/i18n";
 import { Callout } from "@/ui/components/callout";
-import type React from "react";
 
 export const EmptyDisplay: React.FC = () => {
   const i18n = t().query.displays.empty;

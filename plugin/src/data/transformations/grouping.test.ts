@@ -1,3 +1,5 @@
+import { CalendarDate, ZonedDateTime } from "@internationalized/date";
+import { describe, expect, it, vi } from "vitest";
 import type { DueDate } from "@/api/domain/dueDate";
 import type { Label } from "@/api/domain/label";
 import type { Project } from "@/api/domain/project";
@@ -5,8 +7,6 @@ import type { Section } from "@/api/domain/section";
 import type { Task } from "@/data/task";
 import { type GroupedTasks, groupBy } from "@/data/transformations/grouping";
 import { GroupVariant } from "@/query/query";
-import { CalendarDate, ZonedDateTime } from "@internationalized/date";
-import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../../infra/time.ts", () => {
   return {
@@ -86,46 +86,92 @@ describe("group by priority", () => {
     {
       description: "should group tasks by priority",
       input: [
-        makeTask("1", { priority: 1 }),
-        makeTask("2", { priority: 2 }),
-        makeTask("3", { priority: 3 }),
-        makeTask("4", { priority: 4 }),
-        makeTask("5", { priority: 1 }),
+        makeTask("1", {
+          priority: 1,
+        }),
+        makeTask("2", {
+          priority: 2,
+        }),
+        makeTask("3", {
+          priority: 3,
+        }),
+        makeTask("4", {
+          priority: 4,
+        }),
+        makeTask("5", {
+          priority: 1,
+        }),
       ],
       expected: [
         {
           header: "Priority 1",
-          tasks: [makeTask("4", { priority: 4 })],
+          tasks: [
+            makeTask("4", {
+              priority: 4,
+            }),
+          ],
         },
         {
           header: "Priority 2",
-          tasks: [makeTask("3", { priority: 3 })],
+          tasks: [
+            makeTask("3", {
+              priority: 3,
+            }),
+          ],
         },
         {
           header: "Priority 3",
-          tasks: [makeTask("2", { priority: 2 })],
+          tasks: [
+            makeTask("2", {
+              priority: 2,
+            }),
+          ],
         },
         {
           header: "Priority 4",
-          tasks: [makeTask("1", { priority: 1 }), makeTask("5", { priority: 1 })],
+          tasks: [
+            makeTask("1", {
+              priority: 1,
+            }),
+            makeTask("5", {
+              priority: 1,
+            }),
+          ],
         },
       ],
     },
     {
       description: "should only include priorities with tasks",
       input: [
-        makeTask("1", { priority: 1 }),
-        makeTask("4", { priority: 4 }),
-        makeTask("5", { priority: 1 }),
+        makeTask("1", {
+          priority: 1,
+        }),
+        makeTask("4", {
+          priority: 4,
+        }),
+        makeTask("5", {
+          priority: 1,
+        }),
       ],
       expected: [
         {
           header: "Priority 1",
-          tasks: [makeTask("4", { priority: 4 })],
+          tasks: [
+            makeTask("4", {
+              priority: 4,
+            }),
+          ],
         },
         {
           header: "Priority 4",
-          tasks: [makeTask("1", { priority: 1 }), makeTask("5", { priority: 1 })],
+          tasks: [
+            makeTask("1", {
+              priority: 1,
+            }),
+            makeTask("5", {
+              priority: 1,
+            }),
+          ],
         },
       ],
     },
@@ -147,19 +193,41 @@ describe("group by project", () => {
     {
       description: "should group by projects",
       input: [
-        makeTask("a", { project: projectOne }),
-        makeTask("b", { project: projectTwo }),
-        makeTask("c", { project: projectOne }),
-        makeTask("d", { project: projectTwo }),
+        makeTask("a", {
+          project: projectOne,
+        }),
+        makeTask("b", {
+          project: projectTwo,
+        }),
+        makeTask("c", {
+          project: projectOne,
+        }),
+        makeTask("d", {
+          project: projectTwo,
+        }),
       ],
       expected: [
         {
           header: projectOne.name,
-          tasks: [makeTask("a", { project: projectOne }), makeTask("c", { project: projectOne })],
+          tasks: [
+            makeTask("a", {
+              project: projectOne,
+            }),
+            makeTask("c", {
+              project: projectOne,
+            }),
+          ],
         },
         {
           header: projectTwo.name,
-          tasks: [makeTask("b", { project: projectTwo }), makeTask("d", { project: projectTwo })],
+          tasks: [
+            makeTask("b", {
+              project: projectTwo,
+            }),
+            makeTask("d", {
+              project: projectTwo,
+            }),
+          ],
         },
       ],
     },
@@ -179,37 +247,74 @@ describe("group by section", () => {
 
   const sectionOne = makeSection("1", "1", { name: "Section One", order: 1 });
   const sectionTwo = makeSection("1", "2", { name: "Section Two", order: 2 });
-  const sectionThree = makeSection("2", "3", { name: "Section Three", order: 2 });
+  const sectionThree = makeSection("2", "3", {
+    name: "Section Three",
+    order: 2,
+  });
 
   const testcases: TestCase[] = [
     {
       description: "should group tasks by project & section",
       input: [
-        makeTask("a", { project: projectOne }),
-        makeTask("b", { project: projectOne, section: sectionOne }),
-        makeTask("c", { project: projectOne, section: sectionOne }),
-        makeTask("d", { project: projectOne, section: sectionTwo }),
-        makeTask("e", { project: projectTwo, section: sectionThree }),
+        makeTask("a", {
+          project: projectOne,
+        }),
+        makeTask("b", {
+          project: projectOne,
+          section: sectionOne,
+        }),
+        makeTask("c", {
+          project: projectOne,
+          section: sectionOne,
+        }),
+        makeTask("d", {
+          project: projectOne,
+          section: sectionTwo,
+        }),
+        makeTask("e", {
+          project: projectTwo,
+          section: sectionThree,
+        }),
       ],
       expected: [
         {
           header: "Project One",
-          tasks: [makeTask("a", { project: projectOne })],
+          tasks: [
+            makeTask("a", {
+              project: projectOne,
+            }),
+          ],
         },
         {
           header: "Project One / Section One",
           tasks: [
-            makeTask("b", { project: projectOne, section: sectionOne }),
-            makeTask("c", { project: projectOne, section: sectionOne }),
+            makeTask("b", {
+              project: projectOne,
+              section: sectionOne,
+            }),
+            makeTask("c", {
+              project: projectOne,
+              section: sectionOne,
+            }),
           ],
         },
         {
           header: "Project One / Section Two",
-          tasks: [makeTask("d", { project: projectOne, section: sectionTwo })],
+          tasks: [
+            makeTask("d", {
+              project: projectOne,
+              section: sectionTwo,
+            }),
+          ],
         },
         {
           header: "Project Two / Section Three",
-          tasks: [makeTask("e", { project: projectTwo, section: sectionThree })],
+          tasks: [
+            makeTask("e", {
+              project: projectTwo,
+              section: sectionThree,
+            }),
+          ],
         },
       ],
     },
@@ -228,72 +333,130 @@ describe("group by date", () => {
     {
       description: "groups tasks by due date",
       input: [
-        makeTask("a", { due: makeDueDate("2024-01-12") }),
-        makeTask("b", { due: makeDueDate("2024-01-13") }),
-        makeTask("c", { due: makeDueDate("2024-01-14") }),
+        makeTask("a", {
+          due: makeDueDate("2024-01-12"),
+        }),
+        makeTask("b", {
+          due: makeDueDate("2024-01-13"),
+        }),
+        makeTask("c", {
+          due: makeDueDate("2024-01-14"),
+        }),
       ],
       expected: [
         {
           header: "Jan 12 ‧ Friday",
-          tasks: [makeTask("a", { due: makeDueDate("2024-01-12") })],
+          tasks: [
+            makeTask("a", {
+              due: makeDueDate("2024-01-12"),
+            }),
+          ],
         },
         {
           header: "Jan 13 ‧ Saturday",
-          tasks: [makeTask("b", { due: makeDueDate("2024-01-13") })],
+          tasks: [
+            makeTask("b", {
+              due: makeDueDate("2024-01-13"),
+            }),
+          ],
         },
         {
           header: "Jan 14 ‧ Sunday",
-          tasks: [makeTask("c", { due: makeDueDate("2024-01-14") })],
+          tasks: [
+            makeTask("c", {
+              due: makeDueDate("2024-01-14"),
+            }),
+          ],
         },
       ],
     },
     {
       description: "should group all overdue tasks together and put first",
       input: [
-        makeTask("a", { due: makeDueDate("2024-01-12") }),
-        makeTask("b", { due: makeDueDate("2023-12-31") }),
-        makeTask("c", { due: makeDueDate("2023-12-30") }),
-        makeTask("d", { due: makeDueDate("2023-12-29") }),
+        makeTask("a", {
+          due: makeDueDate("2024-01-12"),
+        }),
+        makeTask("b", {
+          due: makeDueDate("2023-12-31"),
+        }),
+        makeTask("c", {
+          due: makeDueDate("2023-12-30"),
+        }),
+        makeTask("d", {
+          due: makeDueDate("2023-12-29"),
+        }),
       ],
       expected: [
         {
           header: "Overdue",
           tasks: [
-            makeTask("b", { due: makeDueDate("2023-12-31") }),
-            makeTask("c", { due: makeDueDate("2023-12-30") }),
-            makeTask("d", { due: makeDueDate("2023-12-29") }),
+            makeTask("b", {
+              due: makeDueDate("2023-12-31"),
+            }),
+            makeTask("c", {
+              due: makeDueDate("2023-12-30"),
+            }),
+            makeTask("d", {
+              due: makeDueDate("2023-12-29"),
+            }),
           ],
         },
         {
           header: "Jan 12 ‧ Friday",
-          tasks: [makeTask("a", { due: makeDueDate("2024-01-12") })],
+          tasks: [
+            makeTask("a", {
+              due: makeDueDate("2024-01-12"),
+            }),
+          ],
         },
       ],
     },
     {
       description: "should have special headers for today/tomorrow",
       input: [
-        makeTask("a", { due: makeDueDate("2024-01-01") }),
-        makeTask("b", { due: makeDueDate("2024-01-02") }),
+        makeTask("a", {
+          due: makeDueDate("2024-01-01"),
+        }),
+        makeTask("b", {
+          due: makeDueDate("2024-01-02"),
+        }),
       ],
       expected: [
         {
           header: "Jan 1 ‧ Monday ‧ Today",
-          tasks: [makeTask("a", { due: makeDueDate("2024-01-01") })],
+          tasks: [
+            makeTask("a", {
+              due: makeDueDate("2024-01-01"),
+            }),
+          ],
         },
         {
           header: "Jan 2 ‧ Tuesday ‧ Tomorrow",
-          tasks: [makeTask("b", { due: makeDueDate("2024-01-02") })],
+          tasks: [
+            makeTask("b", {
+              due: makeDueDate("2024-01-02"),
+            }),
+          ],
         },
       ],
     },
     {
       description: "should group tasks w/o due date and place them at the end",
-      input: [makeTask("a", { due: makeDueDate("2024-01-12") }), makeTask("b"), makeTask("c")],
+      input: [
+        makeTask("a", {
+          due: makeDueDate("2024-01-12"),
+        }),
+        makeTask("b"),
+        makeTask("c"),
+      ],
       expected: [
         {
           header: "Jan 12 ‧ Friday",
-          tasks: [makeTask("a", { due: makeDueDate("2024-01-12") })],
+          tasks: [
+            makeTask("a", {
+              due: makeDueDate("2024-01-12"),
+            }),
+          ],
         },
         {
           header: "No due date",
@@ -318,41 +481,72 @@ describe("group by label", () => {
     {
       description: "should group tasks by labels",
       input: [
-        makeTask("a", { labels: [labelOne] }),
-        makeTask("b", { labels: [labelOne] }),
-        makeTask("c", { labels: [labelTwo] }),
+        makeTask("a", {
+          labels: [labelOne],
+        }),
+        makeTask("b", {
+          labels: [labelOne],
+        }),
+        makeTask("c", {
+          labels: [labelTwo],
+        }),
       ],
       expected: [
         {
           header: "bar",
-          tasks: [makeTask("c", { labels: [labelTwo] })],
+          tasks: [
+            makeTask("c", {
+              labels: [labelTwo],
+            }),
+          ],
         },
         {
           header: "foo",
-          tasks: [makeTask("a", { labels: [labelOne] }), makeTask("b", { labels: [labelOne] })],
+          tasks: [
+            makeTask("a", {
+              labels: [labelOne],
+            }),
+            makeTask("b", {
+              labels: [labelOne],
+            }),
+          ],
         },
       ],
     },
     {
       description: "should place task in multiple groups for multiple labels",
       input: [
-        makeTask("a", { labels: [labelOne] }),
-        makeTask("b", { labels: [labelOne, labelTwo] }),
-        makeTask("c", { labels: [labelTwo] }),
+        makeTask("a", {
+          labels: [labelOne],
+        }),
+        makeTask("b", {
+          labels: [labelOne, labelTwo],
+        }),
+        makeTask("c", {
+          labels: [labelTwo],
+        }),
       ],
       expected: [
         {
           header: "bar",
           tasks: [
-            makeTask("b", { labels: [labelOne, labelTwo] }),
-            makeTask("c", { labels: [labelTwo] }),
+            makeTask("b", {
+              labels: [labelOne, labelTwo],
+            }),
+            makeTask("c", {
+              labels: [labelTwo],
+            }),
           ],
         },
         {
           header: "foo",
           tasks: [
-            makeTask("a", { labels: [labelOne] }),
-            makeTask("b", { labels: [labelOne, labelTwo] }),
+            makeTask("a", {
+              labels: [labelOne],
+            }),
+            makeTask("b", {
+              labels: [labelOne, labelTwo],
+            }),
           ],
         },
       ],
@@ -360,14 +554,25 @@ describe("group by label", () => {
     {
       description: "should group tasks w/ no labels and place at the end",
       input: [
-        makeTask("a", { labels: [labelOne] }),
-        makeTask("b", { labels: [labelOne] }),
+        makeTask("a", {
+          labels: [labelOne],
+        }),
+        makeTask("b", {
+          labels: [labelOne],
+        }),
         makeTask("c"),
       ],
       expected: [
         {
           header: "foo",
-          tasks: [makeTask("a", { labels: [labelOne] }), makeTask("b", { labels: [labelOne] })],
+          tasks: [
+            makeTask("a", {
+              labels: [labelOne],
+            }),
+            makeTask("b", {
+              labels: [labelOne],
+            }),
+          ],
         },
         {
           header: "No label",

@@ -1,8 +1,8 @@
+import type { MarkdownRenderChild } from "obsidian";
+import { createContext, type Provider, useContext } from "react";
+import type { StoreApi, UseBoundStore } from "zustand";
 import type TodoistPlugin from "@/index";
 import type { Query } from "@/query/query";
-import type { MarkdownRenderChild } from "obsidian";
-import { type Provider, createContext, useContext } from "react";
-import type { StoreApi, UseBoundStore } from "zustand";
 
 type Context<T> = {
   Provider: Provider<T | undefined>;

@@ -1,7 +1,7 @@
+import { parseAbsoluteToLocal } from "@internationalized/date";
 import type { Task } from "@/data//task";
 import { DueDate } from "@/data/dueDate";
 import { SortingVariant } from "@/query/query";
-import { parseAbsoluteToLocal } from "@internationalized/date";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
   tasks.sort((first, second) => {

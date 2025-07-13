@@ -1,6 +1,6 @@
-import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import classNames from "classnames";
 import type React from "react";
+import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import "./styles.scss";
 
 export type Contents = string | { msg: string; children: Contents[] };

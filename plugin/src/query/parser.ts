@@ -1,7 +1,7 @@
-import { t } from "@/i18n";
-import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 import YAML from "yaml";
 import { z } from "zod";
+import { t } from "@/i18n";
+import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 
 type ErrorTree = string | { msg: string; children: ErrorTree[] };
 
@@ -33,10 +33,10 @@ export function parseQuery(raw: string): [Query, QueryWarning[]] {
   try {
     obj = tryParseAsJson(raw);
     warnings.push(t().query.warning.jsonQuery);
-  } catch (e) {
+  } catch {
     try {
       obj = tryParseAsYaml(raw);
-    } catch (e) {
+    } catch {
       throw new ParsingError(["Unable to parse as YAML or JSON"]);
     }
   }

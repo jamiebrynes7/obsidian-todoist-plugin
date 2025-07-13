@@ -1,18 +1,11 @@
-import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
-import type { Duration as ApiDuration } from "@/api/domain/task";
-import { DueDate as DataDueDate } from "@/data/dueDate";
-import { t } from "@/i18n";
-import { now, timezone } from "@/infra/time";
-import { ObsidianIcon } from "@/ui/components/obsidian-icon";
-import { Popover } from "@/ui/createTaskModal/Popover";
 import {
   type CalendarDate,
   DateFormatter,
-  Time,
   endOfWeek,
+  Time,
   toCalendarDateTime,
-  toZoned,
   today,
+  toZoned,
 } from "@internationalized/date";
 import type React from "react";
 import { useState } from "react";
@@ -37,6 +30,13 @@ import {
   SelectValue,
   TimeField,
 } from "react-aria-components";
+import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
+import type { Duration as ApiDuration } from "@/api/domain/task";
+import { DueDate as DataDueDate } from "@/data/dueDate";
+import { t } from "@/i18n";
+import { now, timezone } from "@/infra/time";
+import { ObsidianIcon } from "@/ui/components/obsidian-icon";
+import { Popover } from "@/ui/createTaskModal/Popover";
 
 const weekdayFormatter = new DateFormatter("en-US", {
   weekday: "short",
@@ -63,9 +63,15 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
 
   const selectDate = (date: CalendarDate) => {
     if (selected === undefined) {
-      setSelected({ date, timeInfo: undefined });
+      setSelected({
+        date,
+        timeInfo: undefined,
+      });
     } else {
-      setSelected({ date, timeInfo: selected.timeInfo });
+      setSelected({
+        date,
+        timeInfo: selected.timeInfo,
+      });
     }
   };
 
@@ -78,7 +84,10 @@ export const DueDateSelector: React.FC<Props> = ({ selected, setSelected }) => {
     if (suggestion.target === undefined) {
       setSelected(undefined);
     } else {
-      setSelected({ date: suggestion.target, timeInfo: selected?.timeInfo });
+      setSelected({
+        date: suggestion.target,
+        timeInfo: selected?.timeInfo,
+      });
     }
   };
 
@@ -220,7 +229,9 @@ const DateSuggestion: React.FC<DateSuggestionProps> = ({ id, icon, label, target
 const getSuggestions = (): DateSuggestionProps[] => {
   const i18n = t().createTaskModal.dateSelector;
 
-  const startOfNextWeek = endOfWeek(today(timezone()), "en-US").add({ days: 1 });
+  const startOfNextWeek = endOfWeek(today(timezone()), "en-US").add({
+    days: 1,
+  });
   const suggestions = [
     {
       id: "today",
@@ -264,10 +275,15 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }
 
   const durationOptions = [
     undefined,
-    ...Array.from({ length: MAX_DURATION_SEGMENTS }, (_, i) => ({
-      amount: (i + 1) * 15,
-      unit: "minute" as const,
-    })),
+    ...Array.from(
+      {
+        length: MAX_DURATION_SEGMENTS,
+      },
+      (_, i) => ({
+        amount: (i + 1) * 15,
+        unit: "minute" as const,
+      }),
+    ),
   ].map((option) => ({
     label: option === undefined ? i18n.noDuration : i18n.duration(option.amount),
     value: option,

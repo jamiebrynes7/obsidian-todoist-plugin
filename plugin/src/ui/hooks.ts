@@ -1,4 +1,4 @@
-import { type TooltipOptions, setTooltip } from "obsidian";
+import { setTooltip, type TooltipOptions } from "obsidian";
 import { useEffect } from "react";
 
 export const useObsidianTooltip = (

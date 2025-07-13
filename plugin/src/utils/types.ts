@@ -2,7 +2,7 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
+// biome-ignore lint/complexity/noBannedTypes: we are fine with loosely typed Function here
 export type DeepReadonly<T> = T extends Function
   ? T
   : {

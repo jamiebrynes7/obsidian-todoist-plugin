@@ -1,5 +1,5 @@
-import { DeepPartial } from "@/utils/types";
 import { describe, expect, it } from "vitest";
+import { DeepPartial } from "@/utils/types";
 
 type TestObject = {
   a: number;
@@ -61,7 +61,11 @@ describe("DeepPartial.merge", () => {
     },
     {
       description: "should modify nested properties",
-      partial: { nested: { c: 30 } },
+      partial: {
+        nested: {
+          c: 30,
+        },
+      },
       expected: {
         a: 1,
         b: 2,
@@ -75,7 +79,13 @@ describe("DeepPartial.merge", () => {
     },
     {
       description: "should modify deeply nested properties",
-      partial: { nested: { nested: { d: 10 } } },
+      partial: {
+        nested: {
+          nested: {
+            d: 10,
+          },
+        },
+      },
       expected: {
         a: 1,
         b: 2,

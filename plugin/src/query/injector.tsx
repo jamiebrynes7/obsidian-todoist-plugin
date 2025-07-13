@@ -1,3 +1,8 @@
+import type { MarkdownPostProcessorContext } from "obsidian";
+import { MarkdownRenderChild } from "obsidian";
+import type React from "react";
+import { createRoot, type Root } from "react-dom/client";
+import { create, type StoreApi, type UseBoundStore } from "zustand";
 import type TodoistPlugin from "@/index";
 import debug from "@/log";
 import { parseQuery } from "@/query/parser";
@@ -10,11 +15,6 @@ import {
 } from "@/ui/context";
 import { QueryError } from "@/ui/query/QueryError";
 import { QueryRoot } from "@/ui/query/QueryRoot";
-import { MarkdownRenderChild } from "obsidian";
-import type { MarkdownPostProcessorContext } from "obsidian";
-import type React from "react";
-import { type Root, createRoot } from "react-dom/client";
-import { type StoreApi, type UseBoundStore, create } from "zustand";
 
 export class QueryInjector {
   private readonly plugin: TodoistPlugin;
@@ -34,10 +34,27 @@ export class QueryInjector {
         context: query,
       });
 
-      child = new ReactRenderer(el, this.plugin, QueryRoot, { query, warnings }, true);
+      child = new ReactRenderer(
+        el,
+        this.plugin,
+        QueryRoot,
+        {
+          query,
+          warnings,
+        },
+        true,
+      );
     } catch (e) {
       console.error(e);
-      child = new ReactRenderer(el, this.plugin, QueryError, { error: e }, false);
+      child = new ReactRenderer(
+        el,
+        this.plugin,
+        QueryError,
+        {
+          error: e,
+        },
+        false,
+      );
     }
 
     ctx.addChild(child);
@@ -80,7 +97,9 @@ class ReactRenderer<T extends {}> extends MarkdownRenderChild {
           if (addedNode instanceof HTMLElement) {
             if (addedNode.classList.contains("edit-block-button")) {
               addedNode.hide();
-              this.store.setState({ click: () => addedNode.click() });
+              this.store.setState({
+                click: () => addedNode.click(),
+              });
               return;
             }
           }
@@ -91,7 +110,9 @@ class ReactRenderer<T extends {}> extends MarkdownRenderChild {
 
   onload(): void {
     if (this.containerEl.parentElement !== null) {
-      this.observer.observe(this.containerEl.parentElement, { childList: true });
+      this.observer.observe(this.containerEl.parentElement, {
+        childList: true,
+      });
     }
 
     const Component = this.component;

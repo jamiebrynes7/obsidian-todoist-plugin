@@ -1,5 +1,3 @@
-import { t } from "@/i18n";
-import { PluginContext } from "@/ui/context";
 import { Platform } from "obsidian";
 import type React from "react";
 import { useMemo, useState } from "react";
@@ -13,6 +11,8 @@ import {
   ListBoxItem,
   SearchField,
 } from "react-aria-components";
+import { t } from "@/i18n";
+import { PluginContext } from "@/ui/context";
 import type TodoistPlugin from "../..";
 import type { Project, ProjectId } from "../../api/domain/project";
 import type { Section, SectionId } from "../../api/domain/section";
@@ -275,7 +275,11 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
 
   // Go through each project and insert it into the map.
   for (const project of data.projects.iter()) {
-    mapped.set(project.id, { project, sections: [], children: [] });
+    mapped.set(project.id, {
+      project,
+      sections: [],
+      children: [],
+    });
   }
 
   // Now parent them together.

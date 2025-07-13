@@ -1,7 +1,7 @@
-import { t } from "@/i18n";
-import { ModalContext } from "@/ui/context";
 import { Notice } from "obsidian";
 import type React from "react";
+import { t } from "@/i18n";
+import { ModalContext } from "@/ui/context";
 import { TokenValidation } from "../../token";
 import { TokenInputForm } from "./TokenInputForm";
 import "./styles.scss";

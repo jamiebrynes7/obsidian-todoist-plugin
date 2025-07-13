@@ -1,6 +1,6 @@
-import { ParsingError, type QueryWarning, parseQuery } from "@/query/parser";
-import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 import { describe, expect, it } from "vitest";
+import { ParsingError, parseQuery, type QueryWarning } from "@/query/parser";
+import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 
 describe("parseQuery - rejections", () => {
   type Testcase = {

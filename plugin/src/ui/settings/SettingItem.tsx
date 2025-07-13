@@ -1,8 +1,8 @@
-import { t } from "@/i18n";
 import classNames from "classnames";
-import type { OptionHTMLAttributes, PropsWithChildren } from "react";
 import type React from "react";
+import type { OptionHTMLAttributes, PropsWithChildren } from "react";
 import { useState } from "react";
+import { t } from "@/i18n";
 import { ObsidianIcon } from "../components/obsidian-icon";
 
 type RootProps = {
@@ -78,7 +78,9 @@ const ToggleControl: React.FC<ToggleControl> = ({ value, onClick }) => {
     await onClick(val);
   };
 
-  const className = classNames("checkbox-container", { "is-enabled": isToggled });
+  const className = classNames("checkbox-container", {
+    "is-enabled": isToggled,
+  });
   return <div className={className} onClick={onToggle} onKeyDown={onToggle} />;
 };
 

@@ -1,8 +1,8 @@
+import type React from "react";
 import { QueryErrorKind } from "@/data";
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
 import { Callout } from "@/ui/components/callout";
-import type React from "react";
 
 const getErrorMessage = (
   kind: QueryErrorKind,

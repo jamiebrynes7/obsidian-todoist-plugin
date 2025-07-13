@@ -1,16 +1,16 @@
+import {
+  CalendarDate,
+  fromDate,
+  parseAbsolute,
+  parseDate,
+  parseDateTime,
+  ZonedDateTime,
+} from "@internationalized/date";
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
 import type { Duration as ApiDuration } from "@/api/domain/task";
 import { t } from "@/i18n";
 import { locale } from "@/infra/locale";
 import { now, timezone, today } from "@/infra/time";
-import {
-  CalendarDate,
-  ZonedDateTime,
-  fromDate,
-  parseAbsolute,
-  parseDate,
-  parseDateTime,
-} from "@internationalized/date";
 
 export type DateInfo = {
   raw: Date;
@@ -44,10 +44,14 @@ const parseDueDate = (dueDate: ApiDueDate, duration?: ApiDuration): DueDate => {
   if (duration !== undefined && start instanceof ZonedDateTime) {
     switch (duration.unit) {
       case "day":
-        end = start.add({ days: duration.amount });
+        end = start.add({
+          days: duration.amount,
+        });
         break;
       case "minute":
-        end = start.add({ minutes: duration.amount });
+        end = start.add({
+          minutes: duration.amount,
+        });
         break;
       default: {
         const _: never = duration.unit;
@@ -71,7 +75,7 @@ const calculateDateInfo = (datetime: ZonedDateTime | CalendarDate): DateInfo => 
     date = datetime;
   }
 
-  let flag: DateInfo["flag"] = undefined;
+  let flag: DateInfo["flag"];
   if (date.compare(today()) === 0) {
     flag = "today";
   } else if (date.compare(today().add({ days: 1 })) === 0) {

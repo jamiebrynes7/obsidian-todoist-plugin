@@ -1,3 +1,5 @@
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { OnSubscriptionChange, Refresh, SubscriptionResult } from "@/data";
 import { t } from "@/i18n";
 import type TodoistPlugin from "@/index";
@@ -5,11 +7,9 @@ import type { QueryWarning } from "@/query/parser";
 import { GroupVariant, type Query } from "@/query/query";
 import { type Settings, useSettingsStore } from "@/settings";
 import { PluginContext, QueryContext } from "@/ui/context";
+import { Displays } from "@/ui/query/displays";
 import { QueryHeader } from "@/ui/query/QueryHeader";
 import { QueryWarnings } from "@/ui/query/QueryWarnings";
-import { Displays } from "@/ui/query/displays";
-import type React from "react";
-import { useCallback, useEffect, useState } from "react";
 import "./styles.scss";
 
 const useSubscription = (
@@ -59,7 +59,10 @@ type Props = {
 export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
   const plugin = PluginContext.use();
   const settings = useSettingsStore();
-  const [result, setResult] = useState<SubscriptionResult>({ type: "success", tasks: [] });
+  const [result, setResult] = useState<SubscriptionResult>({
+    type: "success",
+    tasks: [],
+  });
   const [refresh, isFetching, hasFetchedOnce, refreshedTimestamp] = useSubscription(
     plugin,
     query,

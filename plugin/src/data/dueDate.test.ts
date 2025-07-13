@@ -1,8 +1,8 @@
+import { CalendarDate, ZonedDateTime } from "@internationalized/date";
+import { describe, expect, it, vi } from "vitest";
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
 import type { Duration as ApiDuration } from "@/api/domain/task";
 import { DueDate } from "@/data/dueDate";
-import { CalendarDate, ZonedDateTime } from "@internationalized/date";
-import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../infra/time.ts", () => {
   return {

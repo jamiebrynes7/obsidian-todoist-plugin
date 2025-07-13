@@ -1,7 +1,7 @@
+import type React from "react";
 import { t } from "@/i18n";
 import type { QueryWarning } from "@/query/parser";
 import { Callout } from "@/ui/components/callout";
-import type React from "react";
 
 type Props = {
   warnings: QueryWarning[];
@@ -9,7 +9,7 @@ type Props = {
 
 export const QueryWarnings: React.FC<Props> = ({ warnings }) => {
   if (warnings.length === 0) {
-    return <></>;
+    return null;
   }
 
   const i18n = t().query.warning;
