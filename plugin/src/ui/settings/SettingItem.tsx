@@ -2,7 +2,9 @@ import classNames from "classnames";
 import type React from "react";
 import type { OptionHTMLAttributes, PropsWithChildren } from "react";
 import { useState } from "react";
+
 import { t } from "@/i18n";
+
 import { ObsidianIcon } from "../components/obsidian-icon";
 
 type RootProps = {

@@ -1,5 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import type React from "react";
+
 import type { TaskTree } from "@/data/transformations/relationships";
 import { Task } from "@/ui/query/task/Task";
 

@@ -1,8 +1,10 @@
 import classNames from "classnames";
 import type React from "react";
 import { Button, type Key, Label, Menu, MenuItem, MenuTrigger } from "react-aria-components";
+
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
+
 import type { Priority } from "../../api/domain/task";
 import { ObsidianIcon } from "../components/obsidian-icon";
 import { Popover } from "./Popover";

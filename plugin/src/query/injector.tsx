@@ -3,6 +3,7 @@ import { MarkdownRenderChild } from "obsidian";
 import type React from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { create, type StoreApi, type UseBoundStore } from "zustand";
+
 import type TodoistPlugin from "@/index";
 import debug from "@/log";
 import { parseQuery } from "@/query/parser";

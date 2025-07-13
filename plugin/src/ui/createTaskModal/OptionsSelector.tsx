@@ -1,6 +1,7 @@
 import cn from "classnames";
 import type React from "react";
 import { Button, type Key, Menu, MenuItem, MenuTrigger } from "react-aria-components";
+
 import { t } from "@/i18n";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import type { TaskCreationOptions } from "@/ui/createTaskModal";

@@ -1,8 +1,10 @@
 import type React from "react";
 import { useMemo } from "react";
 import { Button, DialogTrigger, ListBox, ListBoxItem, type Selection } from "react-aria-components";
+
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
+
 import type { Label } from "../../api/domain/label";
 import { ObsidianIcon } from "../components/obsidian-icon";
 import { Popover } from "./Popover";

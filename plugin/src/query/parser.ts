@@ -1,5 +1,6 @@
 import YAML from "yaml";
 import { z } from "zod";
+
 import { t } from "@/i18n";
 import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
 

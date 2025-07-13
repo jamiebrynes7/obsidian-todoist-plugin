@@ -1,4 +1,5 @@
 import type React from "react";
+
 import { t } from "@/i18n";
 import type { QueryWarning } from "@/query/parser";
 import { Callout } from "@/ui/components/callout";

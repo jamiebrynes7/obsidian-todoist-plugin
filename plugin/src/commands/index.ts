@@ -1,4 +1,5 @@
 import type { Command as ObsidianCommand } from "obsidian";
+
 import {
   addTask,
   addTaskWithPageInContent,

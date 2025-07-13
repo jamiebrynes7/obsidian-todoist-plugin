@@ -1,4 +1,5 @@
 import { MarkdownView, type TFile } from "obsidian";
+
 import type { MakeCommand } from "@/commands";
 import type { Translations } from "@/i18n/translation";
 import type TodoistPlugin from "@/index";

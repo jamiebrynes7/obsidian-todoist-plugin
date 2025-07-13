@@ -1,7 +1,9 @@
 import type React from "react";
 import { useEffect, useState } from "react";
+
 import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
+
 import { TodoistApiClient } from "../../api";
 import { ObsidianFetcher } from "../../api/fetcher";
 import { TokenValidation } from "../../token";

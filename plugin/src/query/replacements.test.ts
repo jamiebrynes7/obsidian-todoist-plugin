@@ -1,5 +1,6 @@
 import type { MarkdownPostProcessorContext, MarkdownSectionInformation } from "obsidian";
 import { describe, expect, it } from "vitest";
+
 import { GroupVariant, type Query } from "@/query/query";
 import { applyReplacements } from "@/query/replacements";
 
