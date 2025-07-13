@@ -1,8 +1,8 @@
+import { MarkdownView, type TFile } from "obsidian";
 import type { MakeCommand } from "@/commands";
 import type { Translations } from "@/i18n/translation";
 import type TodoistPlugin from "@/index";
 import type { TaskCreationOptions } from "@/ui/createTaskModal";
-import { MarkdownView, type TFile } from "obsidian";
 
 export const addTask: MakeCommand = (plugin: TodoistPlugin, i18n: Translations["commands"]) => {
   return {
@@ -18,7 +18,9 @@ export const addTaskWithPageInContent: MakeCommand = (
   return {
     id: "add-task-page-content",
     name: i18n.addTaskPageContent,
-    callback: makeCallback(plugin, { appendLinkTo: "content" }),
+    callback: makeCallback(plugin, {
+      appendLinkTo: "content",
+    }),
   };
 };
 
@@ -29,7 +31,9 @@ export const addTaskWithPageInDescription: MakeCommand = (
   return {
     id: "add-task-page-description",
     name: i18n.addTaskPageDescription,
-    callback: makeCallback(plugin, { appendLinkTo: "description" }),
+    callback: makeCallback(plugin, {
+      appendLinkTo: "description",
+    }),
   };
 };
 

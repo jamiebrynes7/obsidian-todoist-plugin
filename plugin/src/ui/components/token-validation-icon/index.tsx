@@ -3,10 +3,12 @@ import type { TokenValidation } from "../../../token";
 import { ObsidianIcon } from "../obsidian-icon";
 import "./styles.scss";
 
-export const TokenValidationIcon: React.FC<{ status: TokenValidation.Result }> = ({ status }) => {
+export const TokenValidationIcon: React.FC<{
+  status: TokenValidation.Result;
+}> = ({ status }) => {
   switch (status.kind) {
     case "none":
-      return <></>;
+      return null;
     case "in-progress":
       return <ObsidianIcon id="loader-2" className="token-validation-in-progress" size="m" />;
     case "error":

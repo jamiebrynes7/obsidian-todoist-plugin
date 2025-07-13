@@ -1,8 +1,8 @@
+import type React from "react";
 import type { Task } from "@/data/task";
 import { groupBy } from "@/data/transformations/grouping";
 import { QueryContext } from "@/ui/context";
 import { ListDisplay } from "@/ui/query/displays/ListDisplay";
-import type React from "react";
 
 type Props = {
   tasks: Task[];

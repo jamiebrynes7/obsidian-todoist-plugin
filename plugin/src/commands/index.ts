@@ -1,3 +1,4 @@
+import type { Command as ObsidianCommand } from "obsidian";
 import {
   addTask,
   addTaskWithPageInContent,
@@ -7,7 +8,6 @@ import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
 import type TodoistPlugin from "@/index";
 import debug from "@/log";
-import type { Command as ObsidianCommand } from "obsidian";
 
 export type MakeCommand = (
   plugin: TodoistPlugin,

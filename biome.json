@@ -1,5 +1,4 @@
 {
-  "root": false,
   "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
   "formatter": {
     "enabled": true,
@@ -13,6 +12,9 @@
       "recommended": true,
       "correctness": {
         "noUnusedImports": "error"
+      },
+      "a11y": {
+        "noStaticElementInteractions": "off"
       }
     }
   },

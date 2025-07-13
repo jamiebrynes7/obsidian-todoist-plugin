@@ -85,7 +85,10 @@ function groupBySection(tasks: Task[]): GroupedTasks[] {
   };
 
   const sections = partitionBy<string>(tasks, (task: Task) => {
-    const key: SectionPartitionKey = { project: task.project, section: task.section };
+    const key: SectionPartitionKey = {
+      project: task.project,
+      section: task.section,
+    };
     return JSON.stringify(key);
   });
   const groups = Array.from(sections.entries());
@@ -134,7 +137,12 @@ function groupByDate(tasks: Task[]): GroupedTasks[] {
       return i18n.overdue;
     }
 
-    return DueDate.formatHeader(DueDate.parse({ isRecurring: false, date }));
+    return DueDate.formatHeader(
+      DueDate.parse({
+        isRecurring: false,
+        date,
+      }),
+    );
   };
 
   const dates = partitionBy(tasks, (task: Task) => {

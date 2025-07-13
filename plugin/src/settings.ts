@@ -35,6 +35,6 @@ export type Settings = {
   debugLogging: boolean;
 };
 
-export const useSettingsStore = create<Settings>((set) => ({
+export const useSettingsStore = create<Settings>(() => ({
   ...defaultSettings,
 }));

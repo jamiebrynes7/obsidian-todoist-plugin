@@ -42,7 +42,9 @@ describe("TokenInputForm", () => {
 
     const textBox = screen.getByRole("textbox");
     fireEvent.focus(textBox);
-    fireEvent.change(textBox, { target: { value: "abcdef" } });
+    fireEvent.change(textBox, {
+      target: { value: "abcdef" },
+    });
     fireEvent.blur(textBox);
 
     await waitFor(() => {
@@ -57,7 +59,9 @@ describe("TokenInputForm", () => {
 
     const textBox = screen.getByRole("textbox");
     fireEvent.focus(textBox);
-    fireEvent.change(textBox, { target: { value: "abcdef" } });
+    fireEvent.change(textBox, {
+      target: { value: "abcdef" },
+    });
     fireEvent.blur(textBox);
 
     await waitFor(() => {
@@ -83,7 +87,9 @@ describe("TokenInputForm", () => {
     const button = screen.getByRole("button");
 
     fireEvent.focus(textBox);
-    fireEvent.change(textBox, { target: { value: "abcdef" } });
+    fireEvent.change(textBox, {
+      target: { value: "abcdef" },
+    });
     fireEvent.blur(textBox);
 
     await waitFor(() => {
@@ -98,7 +104,7 @@ describe("TokenInputForm", () => {
 const makeFakeTokenTest: (
   result: boolean,
 ) => [() => string | undefined, (token: string) => Promise<boolean>] = (result) => {
-  let called: string | undefined = undefined;
+  let called: string | undefined;
 
   return [
     () => called,

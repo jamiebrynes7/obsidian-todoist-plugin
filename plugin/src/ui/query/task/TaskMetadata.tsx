@@ -1,9 +1,9 @@
+import type React from "react";
 import { DueDate } from "@/data/dueDate";
 import type { Task } from "@/data/task";
 import { type Query, ShowMetadataVariant } from "@/query/query";
 import type { Settings } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
-import type React from "react";
 
 type MetadataContent = {
   content: string;
@@ -28,7 +28,7 @@ type MetadataDefinition = {
 
 const projectMeta: MetadataDefinition = {
   name: "project",
-  isShown: (query, task) => query.show.has(ShowMetadataVariant.Project),
+  isShown: (query) => query.show.has(ShowMetadataVariant.Project),
   content: (task) => [
     {
       content:
@@ -43,7 +43,7 @@ const projectMeta: MetadataDefinition = {
   icons: {
     after: {
       id: "hash",
-      shouldRender: (settings, task) => settings.renderProjectIcon,
+      shouldRender: (settings) => settings.renderProjectIcon,
     },
   },
   side: "right",
@@ -56,7 +56,7 @@ const dueDateMeta: MetadataDefinition = {
   icons: {
     before: {
       id: "calendar",
-      shouldRender: (settings, task) => settings.renderDateIcon,
+      shouldRender: (settings) => settings.renderDateIcon,
     },
     after: {
       id: "refresh-cw",
@@ -73,12 +73,14 @@ const labelsMeta: MetadataDefinition = {
   content: (task) =>
     task.labels.map((label) => ({
       content: label.name,
-      attr: { "data-label-color": label.color.replace("_", "-") },
+      attr: {
+        "data-label-color": label.color.replace("_", "-"),
+      },
     })),
   icons: {
     before: {
       id: "tag",
-      shouldRender: (settings, task) => settings.renderLabelsIcon,
+      shouldRender: (settings) => settings.renderLabelsIcon,
     },
   },
   side: "left",

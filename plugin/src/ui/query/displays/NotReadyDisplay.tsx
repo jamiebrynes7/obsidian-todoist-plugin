@@ -1,3 +1,3 @@
 export const NotReadyDisplay: React.FC = () => {
-  return <></>;
+  return null;
 };

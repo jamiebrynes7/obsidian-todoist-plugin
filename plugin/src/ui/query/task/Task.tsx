@@ -1,3 +1,7 @@
+import { motion } from "framer-motion";
+import { Notice } from "obsidian";
+import React, { type MouseEvent } from "react";
+import { Checkbox } from "react-aria-components";
 import { DueDate } from "@/data/dueDate";
 import type { TaskTree } from "@/data/transformations/relationships";
 import { t } from "@/i18n";
@@ -5,13 +9,9 @@ import { ShowMetadataVariant } from "@/query/query";
 import { useSettingsStore } from "@/settings";
 import Markdown from "@/ui/components/markdown";
 import { PluginContext, QueryContext } from "@/ui/context";
+import { showTaskContext } from "@/ui/query/task/contextMenu";
 import { TaskList } from "@/ui/query/task/TaskList";
 import { TaskMetadata } from "@/ui/query/task/TaskMetadata";
-import { showTaskContext } from "@/ui/query/task/contextMenu";
-import { motion } from "framer-motion";
-import { Notice } from "obsidian";
-import React, { type MouseEvent } from "react";
-import { Checkbox } from "react-aria-components";
 
 type Props = {
   tree: TaskTree;
@@ -25,7 +25,13 @@ export const Task: React.FC<Props> = ({ tree }) => {
   const onContextMenu = (ev: MouseEvent) => {
     ev.preventDefault();
     ev.stopPropagation();
-    showTaskContext({ task: tree, plugin }, { x: ev.pageX, y: ev.pageY });
+    showTaskContext(
+      { task: tree, plugin },
+      {
+        x: ev.pageX,
+        y: ev.pageY,
+      },
+    );
   };
 
   const onClickTask = async () => {
@@ -52,10 +58,18 @@ export const Task: React.FC<Props> = ({ tree }) => {
         data-priority={tree.priority}
         data-due-metadata={getDueMetadataInfo(tree)}
         data-has-time={getTimeMetadataInfo(tree)}
-        initial={{ opacity: transitionOpacity }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: transitionOpacity }}
-        transition={{ duration: 0.4 }}
+        initial={{
+          opacity: transitionOpacity,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: transitionOpacity,
+        }}
+        transition={{
+          duration: 0.4,
+        }}
       >
         <Checkbox
           className="todoist-task-checkbox"
@@ -141,7 +155,10 @@ const DescriptionRenderer: React.FC<DescriptionRendererProps> = ({ content }) =>
       {renderFullMarkdown ? (
         <Markdown content={content} />
       ) : (
-        <span>{content.split("\n")[0]}...</span>
+        <span>
+          {content.split("\n")[0]}
+          ...
+        </span>
       )}
     </div>
   );

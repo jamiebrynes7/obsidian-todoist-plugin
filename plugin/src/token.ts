@@ -13,7 +13,10 @@ export namespace TokenValidation {
     const i18n = t().tokenValidation;
 
     if (token.length === 0) {
-      return { kind: "error", message: i18n.emptyTokenError };
+      return {
+        kind: "error",
+        message: i18n.emptyTokenError,
+      };
     }
 
     const isValid = await tester(token);
@@ -36,7 +39,7 @@ export namespace TokenValidation {
     try {
       await api.getProjects();
       return true;
-    } catch (e) {
+    } catch {
       return false;
     }
   };

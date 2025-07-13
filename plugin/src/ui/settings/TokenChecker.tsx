@@ -1,7 +1,7 @@
-import { t } from "@/i18n";
-import { PluginContext } from "@/ui/context";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { t } from "@/i18n";
+import { PluginContext } from "@/ui/context";
 import { TodoistApiClient } from "../../api";
 import { ObsidianFetcher } from "../../api/fetcher";
 import { TokenValidation } from "../../token";
@@ -16,7 +16,9 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
   const plugin = PluginContext.use();
   const { token: tokenAccessor, todoist, modals } = plugin.services;
 
-  const [tokenState, setTokenState] = useState<TokenValidation.Result>({ kind: "in-progress" });
+  const [tokenState, setTokenState] = useState<TokenValidation.Result>({
+    kind: "in-progress",
+  });
   const [tokenValidationCount, setTokenValidationCount] = useState(0);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: we are using tokenValidationCount to force a refresh when the modal is closed.
@@ -24,7 +26,10 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
     setTokenState({ kind: "in-progress" });
     (async () => {
       if (!(await tokenAccessor.exists())) {
-        setTokenState({ kind: "error", message: "API token not found" });
+        setTokenState({
+          kind: "error",
+          message: "API token not found",
+        });
         return;
       }
 

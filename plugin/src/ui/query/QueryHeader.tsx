@@ -1,13 +1,13 @@
+import classNames from "classnames";
+import type React from "react";
+import { useRef } from "react";
+import { Button } from "react-aria-components";
 import { type CommandId, fireCommand } from "@/commands";
 import { t } from "@/i18n";
 import { type Settings, useSettingsStore } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import { MarkdownEditButtonContext, PluginContext } from "@/ui/context";
 import { useObsidianTooltip } from "@/ui/hooks";
-import classNames from "classnames";
-import type React from "react";
-import { useRef } from "react";
-import { Button } from "react-aria-components";
 
 const getAddTaskCommandId = (settings: Settings): CommandId => {
   switch (settings.addTaskButtonAddsPageLink) {
@@ -54,7 +54,9 @@ export const QueryHeader: React.FC<Props> = ({
           action={() => fireCommand(getAddTaskCommandId(settings), plugin)}
         />
         <HeaderButton
-          className={classNames("refresh-query", { "is-refreshing": isFetching })}
+          className={classNames("refresh-query", {
+            "is-refreshing": isFetching,
+          })}
           iconId="refresh-ccw"
           action={async () => {
             await refresh();

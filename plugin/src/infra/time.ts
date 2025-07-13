@@ -1,9 +1,9 @@
 import {
   type CalendarDate,
-  type ZonedDateTime,
   getLocalTimeZone,
   now as realNow,
   today as realToday,
+  type ZonedDateTime,
 } from "@internationalized/date";
 
 export const today = (): CalendarDate => {

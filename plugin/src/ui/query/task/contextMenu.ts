@@ -1,8 +1,8 @@
+import type { Point } from "obsidian";
+import { Menu } from "obsidian";
 import type { Task } from "@/data/task";
 import { t } from "@/i18n";
 import type TodoistPlugin from "@/index";
-import { Menu } from "obsidian";
-import type { Point } from "obsidian";
 
 type TaskContext = {
   task: Task;

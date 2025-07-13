@@ -7,8 +7,8 @@
     "dev": "npm run check && VITE_ENV=dev vite build",
     "build": "vite build",
     "test": "vitest",
-    "lint:check": "biome check ./src --config-path=../biome.json",
-    "lint:fix": "biome check --write ./src --config-path=../biome.json",
+    "lint:check": "biome check ./src",
+    "lint:fix": "biome check --write ./src",
     "gen": "vite-node scripts/gen-lang-status.ts"
   },
   "author": "Jamie Brynes",

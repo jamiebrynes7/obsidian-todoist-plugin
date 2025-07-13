@@ -1,11 +1,7 @@
+import type { MarkdownPostProcessorContext, MarkdownSectionInformation } from "obsidian";
+import { describe, expect, it } from "vitest";
 import { GroupVariant, type Query } from "@/query/query";
 import { applyReplacements } from "@/query/replacements";
-import type {
-  MarkdownPostProcessorContext,
-  MarkdownRenderChild,
-  MarkdownSectionInformation,
-} from "obsidian";
-import { describe, expect, it } from "vitest";
 
 class FakeContext implements MarkdownPostProcessorContext {
   docId = "";
@@ -17,8 +13,8 @@ class FakeContext implements MarkdownPostProcessorContext {
     this.sourcePath = sourcePath;
   }
 
-  addChild(child: MarkdownRenderChild): void {}
-  getSectionInfo(el: HTMLElement): MarkdownSectionInformation | null {
+  addChild(): void {}
+  getSectionInfo(): MarkdownSectionInformation | null {
     return null;
   }
 }

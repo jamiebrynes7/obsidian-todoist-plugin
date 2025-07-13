@@ -1,10 +1,10 @@
+import cn from "classnames";
+import type React from "react";
+import { Button, type Key, Menu, MenuItem, MenuTrigger } from "react-aria-components";
 import { t } from "@/i18n";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 import type { TaskCreationOptions } from "@/ui/createTaskModal";
 import { Popover } from "@/ui/createTaskModal/Popover";
-import cn from "classnames";
-import type React from "react";
-import { Button, type Key, Menu, MenuItem, MenuTrigger } from "react-aria-components";
 
 type Props = {
   selected: TaskCreationOptions;
@@ -16,11 +16,20 @@ export const OptionsSelector: React.FC<Props> = ({ selected, setSelected }) => {
 
   const onAction = (key: Key) => {
     if (key === "add-link-to-content") {
-      setSelected({ ...selected, appendLinkTo: "content" });
+      setSelected({
+        ...selected,
+        appendLinkTo: "content",
+      });
     } else if (key === "add-link-to-description") {
-      setSelected({ ...selected, appendLinkTo: "description" });
+      setSelected({
+        ...selected,
+        appendLinkTo: "description",
+      });
     } else if (key === "do-not-add-link") {
-      setSelected({ ...selected, appendLinkTo: undefined });
+      setSelected({
+        ...selected,
+        appendLinkTo: undefined,
+      });
     }
   };
 

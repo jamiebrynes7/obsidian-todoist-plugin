@@ -1,6 +1,6 @@
-import type { Task } from "@/data/task";
-import { type TaskTree, buildTaskTree } from "@/data/transformations/relationships";
 import { describe, expect, it } from "vitest";
+import type { Task } from "@/data/task";
+import { buildTaskTree, type TaskTree } from "@/data/transformations/relationships";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
@@ -39,20 +39,37 @@ describe("buildTaskTree", () => {
       description: "tasks without children should have no children",
       input: [makeTask("a"), makeTask("b"), makeTask("c")],
       output: [
-        { children: [], ...makeTask("a") },
-        { children: [], ...makeTask("b") },
-        { children: [], ...makeTask("c") },
+        {
+          children: [],
+          ...makeTask("a"),
+        },
+        {
+          children: [],
+          ...makeTask("b"),
+        },
+        {
+          children: [],
+          ...makeTask("c"),
+        },
       ],
     },
     {
       description: "tasks with children should be parented",
-      input: [makeTask("a"), makeTask("b", { parentId: "a" }), makeTask("c")],
+      input: [
+        makeTask("a"),
+        makeTask("b", {
+          parentId: "a",
+        }),
+        makeTask("c"),
+      ],
       output: [
         {
           ...makeTask("a"),
           children: [
             {
-              ...makeTask("b", { parentId: "a" }),
+              ...makeTask("b", {
+                parentId: "a",
+              }),
               children: [],
             },
           ],
@@ -65,30 +82,49 @@ describe("buildTaskTree", () => {
     },
     {
       description: "tasks with unknown parent ID are part of root",
-      input: [makeTask("b"), makeTask("a", { parentId: "c" })],
+      input: [
+        makeTask("b"),
+        makeTask("a", {
+          parentId: "c",
+        }),
+      ],
       output: [
         {
           ...makeTask("b"),
           children: [],
         },
         {
-          ...makeTask("a", { parentId: "c" }),
+          ...makeTask("a", {
+            parentId: "c",
+          }),
           children: [],
         },
       ],
     },
     {
       description: "tasks will be nested deeply",
-      input: [makeTask("a", { parentId: "c" }), makeTask("b", { parentId: "a" }), makeTask("c")],
+      input: [
+        makeTask("a", {
+          parentId: "c",
+        }),
+        makeTask("b", {
+          parentId: "a",
+        }),
+        makeTask("c"),
+      ],
       output: [
         {
           ...makeTask("c"),
           children: [
             {
-              ...makeTask("a", { parentId: "c" }),
+              ...makeTask("a", {
+                parentId: "c",
+              }),
               children: [
                 {
-                  ...makeTask("b", { parentId: "a" }),
+                  ...makeTask("b", {
+                    parentId: "a",
+                  }),
                   children: [],
                 },
               ],
