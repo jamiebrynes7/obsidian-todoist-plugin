@@ -127,6 +127,13 @@ export type Translations = {
         placeholder: string;
       };
     };
+    optionsSelector: {
+      buttonLabel: string;
+      optionsLabel: string;
+      addLinkToContent: string;
+      addLinkToDescription: string;
+      doNotAddLink: string;
+    };
   };
   onboardingModal: {
     failureNoticeMessage: string;

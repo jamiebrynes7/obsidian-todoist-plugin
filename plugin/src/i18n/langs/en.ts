@@ -143,6 +143,13 @@ export const en: Translations = {
         placeholder: "Type a project name",
       },
     },
+    optionsSelector: {
+      buttonLabel: "Set options",
+      optionsLabel: "Task options",
+      addLinkToContent: "Add link to content",
+      addLinkToDescription: "Add link to description",
+      doNotAddLink: "Do not add link",
+    },
   },
   onboardingModal: {
     failureNoticeMessage: "Failed to save API token",
