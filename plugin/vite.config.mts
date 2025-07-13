@@ -1,10 +1,11 @@
-import { execSync } from "node:child_process";
-import path, { resolve } from "node:path";
 import replace from "@rollup/plugin-replace";
 import { loadEnv } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { configDefaults, defineConfig } from "vitest/config";
+
+import { execSync } from "node:child_process";
+import path, { resolve } from "node:path";
 
 const { version } = require("./package.json");
 
