@@ -18,7 +18,7 @@ export const addTaskWithPageInContent: MakeCommand = (
   return {
     id: "add-task-page-content",
     name: i18n.addTaskPageContent,
-    callback: makeCallback(plugin, { appendLinkToContent: true }),
+    callback: makeCallback(plugin, { appendLinkTo: "content" }),
   };
 };
 
@@ -29,7 +29,7 @@ export const addTaskWithPageInDescription: MakeCommand = (
   return {
     id: "add-task-page-description",
     name: i18n.addTaskPageDescription,
-    callback: makeCallback(plugin, { appendLinkToDescription: true }),
+    callback: makeCallback(plugin, { appendLinkTo: "description" }),
   };
 };
 
@@ -39,8 +39,6 @@ const makeCallback = (plugin: TodoistPlugin, opts?: Partial<TaskCreationOptions>
       initialContent: grabSelection(plugin),
       fileContext: getFileContext(plugin),
       options: {
-        appendLinkToContent: false,
-        appendLinkToDescription: false,
         ...(opts ?? {}),
       },
     });

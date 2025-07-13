@@ -16,16 +16,32 @@ import { PrioritySelector } from "./PrioritySelector";
 import { type ProjectIdentifier, ProjectSelector } from "./ProjectSelector";
 import { TaskContentInput } from "./TaskContentInput";
 import "./styles.scss";
+import type { Translations } from "@/i18n/translation";
+
+export type LinkDestination = "content" | "description";
 
 export type TaskCreationOptions = {
-  appendLinkToContent: boolean;
-  appendLinkToDescription: boolean;
+  appendLinkTo?: LinkDestination;
 };
 
 type CreateTaskProps = {
   initialContent: string;
   fileContext: TFile | undefined;
   options: TaskCreationOptions;
+};
+
+const getLinkDestinationMessage = (
+  destination: LinkDestination | undefined,
+  i18n: Translations["createTaskModal"],
+): string | undefined => {
+  switch (destination) {
+    case "content":
+      return i18n.appendedLinkToContentMessage;
+    case "description":
+      return i18n.appendedLinkToDescriptionMessage;
+    default:
+      return undefined;
+  }
 };
 
 export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
@@ -75,7 +91,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
   const [options, setOptions] = useState<TaskCreationOptions>(initialOptions);
 
-  const isSubmitButtonDisabled = content === "" && !options.appendLinkToContent;
+  const isSubmitButtonDisabled = content === "" && options.appendLinkTo !== "content";
 
   const i18n = t().createTaskModal;
 
@@ -103,7 +119,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     modal.close();
 
     const params: CreateTaskParams = {
-      description: buildWithLink(description, options.appendLinkToDescription),
+      description: buildWithLink(description, options.appendLinkTo === "description"),
       priority: priority,
       labels: labels.map((l) => l.name),
       projectId: project.projectId,
@@ -123,7 +139,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
     try {
       await plugin.services.todoist.actions.createTask(
-        buildWithLink(content, options.appendLinkToContent),
+        buildWithLink(content, options.appendLinkTo === "content"),
         params,
       );
       new Notice(i18n.successNotice);
@@ -132,6 +148,8 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       console.error("Failed to create task", err);
     }
   };
+
+  const linkDestinationMessage = getLinkDestinationMessage(options.appendLinkTo, i18n);
 
   return (
     <div className="task-creation-modal-root">
@@ -155,10 +173,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         <LabelSelector selected={labels} setSelected={setLabels} />
       </div>
       <div className="task-creation-notes">
-        <ul>
-          {options.appendLinkToContent && <li>{i18n.appendedLinkToContentMessage}</li>}
-          {options.appendLinkToDescription && <li>{i18n.appendedLinkToDescriptionMessage}</li>}
-        </ul>
+        <ul>{linkDestinationMessage && <li>{linkDestinationMessage}</li>}</ul>
       </div>
       <hr />
       <div className="task-creation-controls">
