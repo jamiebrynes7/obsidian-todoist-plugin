@@ -32,7 +32,7 @@ export const PrioritySelector: React.FC<Props> = ({ selected, setSelected }) => 
     <MenuTrigger>
       <Button className="priority-selector" aria-label={i18n.buttonLabel}>
         <ObsidianIcon size="m" id="flag" />
-        {label}
+        <span>{label}</span>
       </Button>
       <Popover>
         <Menu

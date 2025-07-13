@@ -34,9 +34,15 @@
     margin-top: 0.5em;
     display: flex;
     align-items: center;
+    justify-content: space-between;
 
-    &>*+* {
-      margin-left: 0.5em;
+    .task-creation-selectors-group {
+      display: flex;
+      align-items: center;
+
+      &>*+* {
+        margin-left: 0.5em;
+      }
     }
 
     button {
@@ -45,8 +51,8 @@
       border: 1px solid var(--color-base-25);
       color: var(--text-muted);
 
-      .obsidian-icon {
-        margin-right: 0.5em;
+      &>*+* {
+        margin-left: 0.5em;
       }
 
       &:hover,
@@ -271,6 +277,23 @@
 
     &:hover {
       background-color: var(--background-modifier-cover);
+    }
+  }
+}
+
+
+.task-options-menu {
+  .task-option-dialog-item {
+    padding: 8px 1em;
+    font-size: var(--font-smaller);
+
+    &:hover {
+      background-color: var(--background-modifier-cover);
+    }
+
+    &.is-selected {
+      background-color: var(--interactive-accent);
+      color: var(--text-on-accent);
     }
   }
 }
