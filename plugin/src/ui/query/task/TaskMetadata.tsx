@@ -118,7 +118,7 @@ export const TaskMetadata: React.FC<TaskMetadataProps> = (props) => {
 const getMetadataElems = (
   props: TaskMetadataProps,
   side: MetadataDefinition["side"],
-): JSX.Element[] => {
+): React.ReactElement[] => {
   const { query, task, settings } = props;
 
   return metadata
