@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Your tasks' durations will now be rendered with the due date.
 - You can now set a task duration when creating a new task.
 - Project icons in the task creation modal will now show that project's color.
+- You can now select whether to include a link to the current page in the task creation modal.
 
 ### 🔁 Changes
 
