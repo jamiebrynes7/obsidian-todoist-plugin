@@ -27,6 +27,10 @@ There are a few unsupported filters, these are tracked in [this GitHub issue](ht
 - Wildcard filters do not work as expected. E.g. - `@*ball`
 - You cannot combine multiple filters with commas. E.g. - `today | overdue, p1`
 
+This field also supports replacements:
+
+- `{{filename}}` will be replaced with the current note's name, without the `.md` extension.
+
 ### `name`
 
 If you want to have an embedded header rendered with your query, you can use the `name` option. This will render a `<h4>` element above your tasks.
