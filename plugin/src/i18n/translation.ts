@@ -59,6 +59,15 @@ export type Translations = {
           content: string;
         };
       };
+      defaultDueDate: {
+        label: string;
+        description: string;
+        options: {
+          none: string;
+          today: string;
+          tomorrow: string;
+        };
+      };
     };
     advanced: {
       header: string;

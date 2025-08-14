@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 
 import { t } from "@/i18n";
-import { timezone } from "@/infra/time";
-import { useSettingsStore } from "@/settings";
+import { timezone, today } from "@/infra/time";
+import { type DueDateDefaultSetting, useSettingsStore } from "@/settings";
 import { ModalContext, PluginContext } from "@/ui/context";
 
 import type TodoistPlugin from "../..";
@@ -45,6 +45,23 @@ const getLinkDestinationMessage = (
       return i18n.appendedLinkToDescriptionMessage;
     default:
       return undefined;
+  }
+};
+
+const calculateDefaultDueDate = (setting: DueDateDefaultSetting): DueDate | undefined => {
+  switch (setting) {
+    case "none":
+      return undefined;
+    case "today":
+      return {
+        date: today(),
+        timeInfo: undefined,
+      };
+    case "tomorrow":
+      return {
+        date: today().add({ days: 1 }),
+        timeInfo: undefined,
+      };
   }
 };
 
@@ -87,7 +104,9 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
   const [content, setContent] = useState(initialContent);
   const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<DueDate | undefined>(undefined);
+  const [dueDate, setDueDate] = useState<DueDate | undefined>(() =>
+    calculateDefaultDueDate(settings.taskCreationDefaultDueDate),
+  );
   const [priority, setPriority] = useState<Priority>(1);
   const [labels, setLabels] = useState<Label[]>([]);
   const [project, setProject] = useState<ProjectIdentifier>(getDefaultProject(plugin));
