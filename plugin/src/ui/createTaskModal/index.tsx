@@ -211,7 +211,7 @@ const getDefaultProject = (plugin: TodoistPlugin): ProjectIdentifier => {
   const projects = Array.from(todoist.data().projects.iter());
 
   for (const project of projects) {
-    if (project.isInboxProject) {
+    if (project.inboxProject) {
       return {
         projectId: project.id,
       };

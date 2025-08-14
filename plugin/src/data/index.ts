@@ -170,7 +170,7 @@ const makeUnknownProject = (id: string): Project => {
     parentId: null,
     name: "Unknown Project",
     order: Number.MAX_SAFE_INTEGER,
-    isInboxProject: false,
+    inboxProject: false,
     color: "grey",
   };
 };

@@ -20,7 +20,7 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
       name: "Foobar",
       order: 1,
       parentId: null,
-      isInboxProject: false,
+      inboxProject: false,
       color: "grey",
     },
     section: opts?.section,

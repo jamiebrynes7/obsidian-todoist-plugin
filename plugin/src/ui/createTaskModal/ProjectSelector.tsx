@@ -225,7 +225,7 @@ const SectionLabel: React.FC<{ section: Section }> = ({ section }) => {
 };
 
 const ProjectLabel: React.FC<{ project: Project }> = ({ project }) => {
-  const projectIcon = project.isInboxProject ? "inbox" : "hash";
+  const projectIcon = project.inboxProject ? "inbox" : "hash";
 
   return (
     <>
@@ -337,11 +337,11 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
 
   // Sort roots, forcing the inbox to be first.
   roots.sort((a, b) => {
-    if (a.project.isInboxProject) {
+    if (a.project.inboxProject) {
       return -1;
     }
 
-    if (b.project.isInboxProject) {
+    if (b.project.inboxProject) {
       return 1;
     }
 
