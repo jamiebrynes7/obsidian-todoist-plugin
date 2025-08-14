@@ -184,6 +184,33 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
           }}
         />
       </Setting.Root>
+      <Setting.Root
+        name={i18n.taskCreation.defaultDueDate.label}
+        description={i18n.taskCreation.defaultDueDate.description}
+      >
+        <Setting.DropdownControl
+          value={settings.taskCreationDefaultDueDate}
+          options={[
+            {
+              label: i18n.taskCreation.defaultDueDate.options.none,
+              value: "none",
+            },
+            {
+              label: i18n.taskCreation.defaultDueDate.options.today,
+              value: "today",
+            },
+            {
+              label: i18n.taskCreation.defaultDueDate.options.tomorrow,
+              value: "tomorrow",
+            },
+          ]}
+          onClick={async (val) => {
+            await plugin.writeOptions({
+              taskCreationDefaultDueDate: val,
+            });
+          }}
+        />
+      </Setting.Root>
 
       <h2>{i18n.advanced.header}</h2>
       <Setting.Root

@@ -63,6 +63,15 @@ export const en: Translations = {
           content: "Task name",
         },
       },
+      defaultDueDate: {
+        label: "Default due date",
+        description: "The default due date to set when creating new tasks",
+        options: {
+          none: "No default",
+          today: "Today",
+          tomorrow: "Tomorrow",
+        },
+      },
     },
     advanced: {
       header: "Advanced",

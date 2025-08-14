@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 export type AddPageLinkSetting = "off" | "description" | "content";
 
+export type DueDateDefaultSetting = "none" | "today" | "tomorrow";
+
 const defaultSettings: Settings = {
   fadeToggle: true,
 
@@ -14,6 +16,8 @@ const defaultSettings: Settings = {
 
   shouldWrapLinksInParens: false,
   addTaskButtonAddsPageLink: "content",
+
+  taskCreationDefaultDueDate: "none",
 
   debugLogging: false,
 };
@@ -31,6 +35,8 @@ export type Settings = {
 
   shouldWrapLinksInParens: boolean;
   addTaskButtonAddsPageLink: AddPageLinkSetting;
+
+  taskCreationDefaultDueDate: DueDateDefaultSetting;
 
   debugLogging: boolean;
 };
