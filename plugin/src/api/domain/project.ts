@@ -5,6 +5,6 @@ export type Project = {
   parentId: ProjectId | null;
   name: string;
   order: number;
-  isInboxProject: boolean;
+  inboxProject: boolean;
   color: string;
 };
