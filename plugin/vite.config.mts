@@ -59,7 +59,7 @@ export default defineConfig({
       external: ["obsidian"],
       output: {
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") {
+          if (assetInfo.name === "main.css") {
             return "styles.css";
           }
 
