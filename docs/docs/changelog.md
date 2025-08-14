@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- You can now configure a default due date for new tasks in the plugin settings. Options include no default, today, or tomorrow.
+
 ### ⚙ Internal
 
 - Migrated from Todoist REST API v2 to the new Todoist API v1.
