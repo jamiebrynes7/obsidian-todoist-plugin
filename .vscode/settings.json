@@ -1,6 +1,7 @@
 {
   "biome.lsp.bin": {
-    "linux-x64": "./plugin/node_modules/@biomejs/cli-linux-x64-musl/biome"
+    "linux-x64": "./plugin/node_modules/@biomejs/cli-linux-x64-musl/biome",
+    "darwin-arm64": "./plugin/node_modules/@biomejs/cli-darwin-arm64/biome"
   },
   "[typescript]": {
     "editor.defaultFormatter": "biomejs.biome"
