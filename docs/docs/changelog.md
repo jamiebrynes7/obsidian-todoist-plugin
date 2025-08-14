@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ⚙ Internal
+
+- Migrated from Todoist REST API v2 to the new Todoist API v1.
+
 ## v2.1.0 (2025-07-13)
 
 ### ✨ Features
