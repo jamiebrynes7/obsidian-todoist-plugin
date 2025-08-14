@@ -8,6 +8,11 @@ import type { CreateTaskParams, Task, TaskId } from "@/api/domain/task";
 import type { RequestParams, WebFetcher, WebResponse } from "@/api/fetcher";
 import debug from "@/log";
 
+type PaginatedResponse<T> = {
+  results: T[];
+  nextCursor: string | null;
+};
+
 export class TodoistApiClient {
   private token: string;
   private fetcher: WebFetcher;
@@ -18,15 +23,11 @@ export class TodoistApiClient {
   }
 
   public async getTasks(filter?: string): Promise<Task[]> {
-    let path = "/tasks";
-
     if (filter !== undefined) {
-      path += `?filter=${encodeURIComponent(filter)}`;
+      return await this.doPaginated<Task>("/tasks/filter", { query: filter });
+    } else {
+      return await this.doPaginated<Task>("/tasks");
     }
-
-    const response = await this.do(path, "GET");
-
-    return camelize(JSON.parse(response.body)) as Task[];
   }
 
   public async createTask(content: string, options?: CreateTaskParams): Promise<void> {
@@ -42,23 +43,43 @@ export class TodoistApiClient {
   }
 
   public async getProjects(): Promise<Project[]> {
-    const response = await this.do("/projects", "GET");
-    return camelize(JSON.parse(response.body)) as Project[];
+    return await this.doPaginated<Project>("/projects");
   }
 
   public async getSections(): Promise<Section[]> {
-    const response = await this.do("/sections", "GET");
-    return camelize(JSON.parse(response.body)) as Section[];
+    return await this.doPaginated<Section>("/sections");
   }
 
   public async getLabels(): Promise<Label[]> {
-    const response = await this.do("/labels", "GET");
-    return camelize(JSON.parse(response.body)) as Label[];
+    return await this.doPaginated<Label>("/labels");
+  }
+
+  private async doPaginated<T>(path: string, params?: Record<string, string>): Promise<T[]> {
+    const allResults: T[] = [];
+    let cursor: string | null = null;
+
+    do {
+      const queryParams = new URLSearchParams(params);
+      if (cursor) {
+        queryParams.set("cursor", cursor);
+      }
+
+      const queryString = queryParams.toString();
+      const fullPath = queryString ? `${path}?${queryString}` : path;
+
+      const response = await this.do(fullPath, "GET");
+      const paginatedResponse = camelize(JSON.parse(response.body)) as PaginatedResponse<T>;
+
+      allResults.push(...paginatedResponse.results);
+      cursor = paginatedResponse.nextCursor;
+    } while (cursor);
+
+    return allResults;
   }
 
   private async do(path: string, method: string, json?: object): Promise<WebResponse> {
     const params: RequestParams = {
-      url: `https://api.todoist.com/rest/v2${path}`,
+      url: `https://api.todoist.com/api/v1${path}`,
       method: method,
       headers: {
         Authorization: `Bearer ${this.token}`,
