@@ -9,6 +9,7 @@ import type TodoistPlugin from "../..";
 import { type Settings, useSettingsStore } from "../../settings";
 import { TokenValidation } from "../../token";
 import { AutoRefreshIntervalControl } from "./AutoRefreshIntervalControl";
+import { ProjectDropdownControl } from "./ProjectDropdownControl";
 import { Setting } from "./SettingItem";
 import { TokenChecker } from "./TokenChecker";
 import "./styles.scss";
@@ -46,25 +47,22 @@ type SettingsKeys<V> = {
 const SettingsRoot: React.FC<Props> = ({ plugin }) => {
   const settings = useSettingsStore();
 
-  const toggleProps = (key: SettingsKeys<boolean>) => {
-    const onClick = async (val: boolean) => {
+  const mkOptionUpdate = <K extends keyof Settings>(key: K) => {
+    return async (val: Settings[K]) => {
       await plugin.writeOptions({
         [key]: val,
       });
     };
+  };
 
+  const toggleProps = (key: SettingsKeys<boolean>) => {
+    const onClick = mkOptionUpdate(key);
     const value = settings[key];
 
     return {
       value,
       onClick,
     };
-  };
-
-  const updateAutoRefreshInterval = async (val: number) => {
-    await plugin.writeOptions({
-      autoRefreshInterval: val,
-    });
   };
 
   const i18n = t().settings;
@@ -119,7 +117,7 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
       >
         <AutoRefreshIntervalControl
           initialValue={settings.autoRefreshInterval}
-          onChange={updateAutoRefreshInterval}
+          onChange={mkOptionUpdate("autoRefreshInterval")}
         />
       </Setting.Root>
 
@@ -209,6 +207,15 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
               taskCreationDefaultDueDate: val,
             });
           }}
+        />
+      </Setting.Root>
+      <Setting.Root
+        name={i18n.taskCreation.defaultProject.label}
+        description={i18n.taskCreation.defaultProject.description}
+      >
+        <ProjectDropdownControl
+          value={settings.taskCreationDefaultProject}
+          onChange={mkOptionUpdate("taskCreationDefaultProject")}
         />
       </Setting.Root>
 

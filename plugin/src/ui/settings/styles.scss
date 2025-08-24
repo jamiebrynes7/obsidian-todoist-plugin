@@ -39,3 +39,16 @@
 .setting-item-build-stamp {
   font-size: var(--font-smaller);
 }
+
+.project-dropdown-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+
+  .project-dropdown-warning-icon {
+    display: flex;
+    align-items: center;
+    color: var(--text-warning);
+  }
+}

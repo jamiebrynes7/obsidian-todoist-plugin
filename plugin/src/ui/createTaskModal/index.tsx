@@ -6,7 +6,11 @@ import { Button } from "react-aria-components";
 
 import { t } from "@/i18n";
 import { timezone, today } from "@/infra/time";
-import { type DueDateDefaultSetting, useSettingsStore } from "@/settings";
+import {
+  type DueDateDefaultSetting,
+  type ProjectDefaultSetting,
+  useSettingsStore,
+} from "@/settings";
 import { ModalContext, PluginContext } from "@/ui/context";
 
 import type TodoistPlugin from "../..";
@@ -65,6 +69,26 @@ const calculateDefaultDueDate = (setting: DueDateDefaultSetting): DueDate | unde
   }
 };
 
+const calculateDefaultProject = (
+  plugin: TodoistPlugin,
+  projectSetting: ProjectDefaultSetting,
+): ProjectIdentifier => {
+  if (projectSetting === null) {
+    return getInboxProject(plugin);
+  }
+
+  const project = plugin.services.todoist.data().projects.byId(projectSetting.projectId);
+  if (project === undefined) {
+    const noticeMsg = t().createTaskModal.defaultProjectDeletedNotice(projectSetting.projectName);
+    new Notice(noticeMsg);
+    return getInboxProject(plugin);
+  }
+
+  return {
+    projectId: projectSetting.projectId,
+  };
+};
+
 export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
   const plugin = PluginContext.use();
 
@@ -109,7 +133,9 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   );
   const [priority, setPriority] = useState<Priority>(1);
   const [labels, setLabels] = useState<Label[]>([]);
-  const [project, setProject] = useState<ProjectIdentifier>(getDefaultProject(plugin));
+  const [project, setProject] = useState<ProjectIdentifier>(
+    calculateDefaultProject(plugin, settings.taskCreationDefaultProject),
+  );
 
   const [options, setOptions] = useState<TaskCreationOptions>(initialOptions);
 
@@ -225,7 +251,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   );
 };
 
-const getDefaultProject = (plugin: TodoistPlugin): ProjectIdentifier => {
+const getInboxProject = (plugin: TodoistPlugin): ProjectIdentifier => {
   const { todoist } = plugin.services;
   const projects = Array.from(todoist.data().projects.iter());
 

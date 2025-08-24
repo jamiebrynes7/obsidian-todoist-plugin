@@ -72,6 +72,14 @@ export const en: Translations = {
           tomorrow: "Tomorrow",
         },
       },
+      defaultProject: {
+        label: "Default project",
+        description: "The default project to set when creating new tasks",
+        placeholder: "Select a project",
+        noDefault: "Inbox",
+        deletedWarning: "This project no longer exists",
+        deleted: "deleted",
+      },
     },
     advanced: {
       header: "Advanced",
@@ -100,6 +108,8 @@ export const en: Translations = {
     cancelButtonLabel: "Cancel",
     addTaskButtonLabel: "Add task",
     failedToFindInboxNotice: "Error: could not find inbox project",
+    defaultProjectDeletedNotice: (projectName: string) =>
+      `Default project "${projectName}" no longer exists. Using Inbox instead.`,
     dateSelector: {
       buttonLabel: "Set due date",
       dialogLabel: "Due date selector",
