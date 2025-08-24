@@ -53,6 +53,16 @@ When enabled, page links added to tasks created via the [command](./commands/add
 
 When enabled, the embedded add task button in queries will add a link to the page to the task in the specified place. This behaviour can also be disabled completely.
 
+### Default due date
+
+This defines the default due date assigned to tasks created via [commands](./commands/add-task). This can be one of: none, today, or tomorrow.
+
+### Default project
+
+This defines the default project assigned to tasks created via [commands](./commands/add-task). This can be configured to any of your projects, or the Inbox.
+
+If the project referenced here no longer exists, you will get a warning when opening the task creation modal and the Inbox will be used instead.
+
 ## Advanced
 
 ### Debug logging
