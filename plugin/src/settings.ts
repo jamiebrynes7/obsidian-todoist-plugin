@@ -4,6 +4,11 @@ export type AddPageLinkSetting = "off" | "description" | "content";
 
 export type DueDateDefaultSetting = "none" | "today" | "tomorrow";
 
+export type ProjectDefaultSetting = {
+  projectId: string;
+  projectName: string;
+} | null;
+
 const defaultSettings: Settings = {
   fadeToggle: true,
 
@@ -18,6 +23,8 @@ const defaultSettings: Settings = {
   addTaskButtonAddsPageLink: "content",
 
   taskCreationDefaultDueDate: "none",
+
+  taskCreationDefaultProject: null,
 
   debugLogging: false,
 };
@@ -37,6 +44,8 @@ export type Settings = {
   addTaskButtonAddsPageLink: AddPageLinkSetting;
 
   taskCreationDefaultDueDate: DueDateDefaultSetting;
+
+  taskCreationDefaultProject: ProjectDefaultSetting;
 
   debugLogging: boolean;
 };
