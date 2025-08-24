@@ -2,7 +2,7 @@
   {
     "name": "English",
     "code": "en",
-    "completed": 170,
+    "completed": 178,
     "missing": 0,
     "percent": 100
   },
@@ -10,7 +10,7 @@
     "name": "Nederlands",
     "code": "nl",
     "completed": 148,
-    "missing": 22,
-    "percent": 87
+    "missing": 30,
+    "percent": 83
   }
 ]
