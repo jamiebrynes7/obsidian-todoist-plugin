@@ -25,6 +25,7 @@ import "./styles.scss";
 
 import type { Translations } from "@/i18n/translation";
 import { OptionsSelector } from "@/ui/createTaskModal/OptionsSelector";
+import { Setting } from "@/ui/settings/SettingItem";
 
 export type LinkDestination = "content" | "description";
 
@@ -138,6 +139,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   );
 
   const [options, setOptions] = useState<TaskCreationOptions>(initialOptions);
+  const [useQuickAdd, setUseQuickAdd] = useState(settings.useQuickAddEndpoint);
 
   const isSubmitButtonDisabled = content === "" && options.appendLinkTo !== "content";
 
@@ -186,6 +188,10 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     }
 
     try {
+      // Persist the last used preference so user choice is remembered
+      if (useQuickAdd !== settings.useQuickAddEndpoint) {
+        await plugin.writeOptions({ useQuickAddEndpoint: useQuickAdd });
+      }
       await plugin.services.todoist.actions.createTask(
         buildWithLink(content, options.appendLinkTo === "content"),
         params,
@@ -227,6 +233,16 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       </div>
       <div className="task-creation-notes">
         <ul>{linkDestinationMessage && <li>{linkDestinationMessage}</li>}</ul>
+      </div>
+      <div className="task-creation-quick-add-toggle">
+        <label className="quick-add-toggle-label">
+          <input
+            type="checkbox"
+            checked={useQuickAdd}
+            onChange={(e) => setUseQuickAdd(e.currentTarget.checked)}
+          />
+          <span>Use natural language (quick add)</span>
+        </label>
       </div>
       <hr />
       <div className="task-creation-controls">

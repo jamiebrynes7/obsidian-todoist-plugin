@@ -27,6 +27,8 @@ const defaultSettings: Settings = {
   taskCreationDefaultProject: null,
 
   debugLogging: false,
+
+  useQuickAddEndpoint: false,
 };
 
 export type Settings = {
@@ -48,6 +50,8 @@ export type Settings = {
   taskCreationDefaultProject: ProjectDefaultSetting;
 
   debugLogging: boolean;
+
+  useQuickAddEndpoint: boolean;
 };
 
 export const useSettingsStore = create<Settings>(() => ({

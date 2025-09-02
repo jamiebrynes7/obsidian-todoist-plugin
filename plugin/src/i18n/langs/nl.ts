@@ -71,7 +71,7 @@ export const nl: DeepPartial<Translations> = {
         label: "Debug-logboek inschakelen",
         description: "Of debug-logboeken moeten worden ingeschakeld",
       },
-    },
+      },
     deprecation: {
       warningMessage:
         "Deze instelling is verouderd en wordt in een toekomstige release verwijderd.",
