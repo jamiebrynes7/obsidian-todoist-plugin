@@ -63,6 +63,12 @@ This defines the default project assigned to tasks created via [commands](./comm
 
 If the project referenced here no longer exists, you will get a warning when opening the task creation modal and the Inbox will be used instead.
 
+### Default labels
+
+This defines the default labels assigned to tasks created via [commands](./commands/add-task). You can select zero, one, or multiple labels to be automatically applied to new tasks.
+
+If any of the selected labels no longer exist in Todoist, you will get a warning when opening the task creation modal and they will be skipped.
+
 ## Advanced
 
 ### Debug logging

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - You can now configure default values for due date & project when creating tasks from inside Obsidian.
   - For due date, you can select none, today, or tomorrow.
   - For project, you can select any project or the Inbox.
+  - For labels, you can select one or more of the available labels.
 
 ### ⚙ Internal
 
