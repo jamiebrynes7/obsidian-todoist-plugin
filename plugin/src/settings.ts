@@ -9,6 +9,11 @@ export type ProjectDefaultSetting = {
   projectName: string;
 } | null;
 
+export type LabelsDefaultSetting = Array<{
+  labelId: string;
+  labelName: string;
+}>;
+
 const defaultSettings: Settings = {
   fadeToggle: true,
 
@@ -25,6 +30,8 @@ const defaultSettings: Settings = {
   taskCreationDefaultDueDate: "none",
 
   taskCreationDefaultProject: null,
+
+  taskCreationDefaultLabels: [],
 
   debugLogging: false,
 };
@@ -46,6 +53,8 @@ export type Settings = {
   taskCreationDefaultDueDate: DueDateDefaultSetting;
 
   taskCreationDefaultProject: ProjectDefaultSetting;
+
+  taskCreationDefaultLabels: LabelsDefaultSetting;
 
   debugLogging: boolean;
 };

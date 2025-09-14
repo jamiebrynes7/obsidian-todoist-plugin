@@ -9,6 +9,7 @@ import type TodoistPlugin from "../..";
 import { type Settings, useSettingsStore } from "../../settings";
 import { TokenValidation } from "../../token";
 import { AutoRefreshIntervalControl } from "./AutoRefreshIntervalControl";
+import { LabelsControl } from "./LabelsControl";
 import { ProjectDropdownControl } from "./ProjectDropdownControl";
 import { Setting } from "./SettingItem";
 import { TokenChecker } from "./TokenChecker";
@@ -216,6 +217,15 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
         <ProjectDropdownControl
           value={settings.taskCreationDefaultProject}
           onChange={mkOptionUpdate("taskCreationDefaultProject")}
+        />
+      </Setting.Root>
+      <Setting.Root
+        name={i18n.taskCreation.defaultLabels.label}
+        description={i18n.taskCreation.defaultLabels.description}
+      >
+        <LabelsControl
+          value={settings.taskCreationDefaultLabels}
+          onChange={mkOptionUpdate("taskCreationDefaultLabels")}
         />
       </Setting.Root>
 

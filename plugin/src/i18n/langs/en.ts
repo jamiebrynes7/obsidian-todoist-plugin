@@ -80,6 +80,15 @@ export const en: Translations = {
         deletedWarning: "This project no longer exists",
         deleted: "deleted",
       },
+      defaultLabels: {
+        label: "Default labels",
+        description: "The default labels to apply when creating new tasks",
+        buttonAddLabel: "Add label",
+        buttonNoAvailableLabels: "No labels available",
+        noLabels: "No labels configured",
+        deletedWarning: "This label no longer exists",
+        deleted: "deleted",
+      },
     },
     advanced: {
       header: "Advanced",
@@ -110,6 +119,8 @@ export const en: Translations = {
     failedToFindInboxNotice: "Error: could not find inbox project",
     defaultProjectDeletedNotice: (projectName: string) =>
       `Default project "${projectName}" no longer exists. Using Inbox instead.`,
+    defaultLabelsDeletedNotice: (labelNames: string) =>
+      `Default labels no longer exist: ${labelNames}. Skipping deleted labels.`,
     dateSelector: {
       buttonLabel: "Set due date",
       dialogLabel: "Due date selector",
