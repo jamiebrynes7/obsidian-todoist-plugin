@@ -1,3 +1,5 @@
+@import "../../styles/colors.scss";
+
 .mod-cta .setting-button-icon {
   margin-right: 0.5em;
 }
@@ -50,5 +52,94 @@
     display: flex;
     align-items: center;
     color: var(--text-warning);
+  }
+}
+
+.labels-control-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  .labels-control-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    font-size: var(--font-ui-small);
+  }
+
+  .labels-control-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .labels-control-item-details {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+
+      .labels-control-item-name {
+        flex: 1;
+      }
+
+      .label-icon {
+        @each $name, $color in $todoist-colors {
+          &[data-label-color="#{$name}"] {
+            color: var(--todoist-#{$name});
+          }
+        }
+      }
+
+      .label-deleted-warning-icon {
+        color: var(--text-warning);
+        display: none;
+      }
+    }
+
+    .labels-control-remove-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-left: 1em;
+
+      &:hover {
+        background-color: var(--background-modifier-hover);
+        color: var(--text-normal);
+      }
+    }
+
+    &.is-deleted {
+      .label-icon {
+        display: none;
+      }
+
+      .label-deleted-warning-icon {
+        display: block;
+      }
+
+      .labels-control-item-name {
+        color: var(--text-muted);
+      }
+    }
+  }
+
+  .labels-control-empty-state {
+    text-align: right;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+}
+
+// Top align setting items that contain the labels control
+.setting-item:has(.labels-control-container) {
+  align-items: flex-start;
+
+  .setting-item-info {
+    padding-top: 0.25em;
   }
 }

@@ -76,6 +76,15 @@ export type Translations = {
         deletedWarning: string;
         deleted: string;
       };
+      defaultLabels: {
+        label: string;
+        description: string;
+        buttonAddLabel: string;
+        buttonNoAvailableLabels: string;
+        noLabels: string;
+        deletedWarning: string;
+        deleted: string;
+      };
     };
     advanced: {
       header: string;
@@ -104,6 +113,7 @@ export type Translations = {
     addTaskButtonLabel: string;
     failedToFindInboxNotice: string;
     defaultProjectDeletedNotice: (projectName: string) => string;
+    defaultLabelsDeletedNotice: (labelNames: string) => string;
     dateSelector: {
       buttonLabel: string;
       dialogLabel: string;

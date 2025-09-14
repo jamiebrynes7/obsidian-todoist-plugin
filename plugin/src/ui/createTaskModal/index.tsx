@@ -8,6 +8,7 @@ import { t } from "@/i18n";
 import { timezone, today } from "@/infra/time";
 import {
   type DueDateDefaultSetting,
+  type LabelsDefaultSetting,
   type ProjectDefaultSetting,
   useSettingsStore,
 } from "@/settings";
@@ -89,6 +90,35 @@ const calculateDefaultProject = (
   };
 };
 
+const calculateDefaultLabels = (
+  plugin: TodoistPlugin,
+  labelsSetting: LabelsDefaultSetting,
+): Label[] => {
+  if (labelsSetting.length === 0) {
+    return [];
+  }
+
+  const allLabels = Array.from(plugin.services.todoist.data().labels.iter());
+  const validLabels: Label[] = [];
+  const deletedLabelNames: string[] = [];
+
+  for (const defaultLabel of labelsSetting) {
+    const label = allLabels.find((l) => l.id === defaultLabel.labelId);
+    if (label !== undefined) {
+      validLabels.push(label);
+    } else {
+      deletedLabelNames.push(defaultLabel.labelName);
+    }
+  }
+
+  if (deletedLabelNames.length > 0) {
+    const noticeMsg = t().createTaskModal.defaultLabelsDeletedNotice(deletedLabelNames.join(", "));
+    new Notice(noticeMsg);
+  }
+
+  return validLabels;
+};
+
 export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
   const plugin = PluginContext.use();
 
@@ -132,7 +162,9 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     calculateDefaultDueDate(settings.taskCreationDefaultDueDate),
   );
   const [priority, setPriority] = useState<Priority>(1);
-  const [labels, setLabels] = useState<Label[]>([]);
+  const [labels, setLabels] = useState<Label[]>(() =>
+    calculateDefaultLabels(plugin, settings.taskCreationDefaultLabels),
+  );
   const [project, setProject] = useState<ProjectIdentifier>(
     calculateDefaultProject(plugin, settings.taskCreationDefaultProject),
   );
