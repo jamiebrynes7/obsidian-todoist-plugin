@@ -1,5 +1,14 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
+  "files": {
+    "experimentalScannerIgnores": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.devenv/**",
+      "**/.direnv/**"
+    ]
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
