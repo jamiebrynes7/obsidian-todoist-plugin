@@ -2,3 +2,5 @@
 .devenv/
 .DS_Store
 node_modules
+
+TASK.md
