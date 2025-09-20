@@ -70,6 +70,12 @@ The site supports versioned documentation with past versions stored in:
 2. Update `sidebars.ts` to include new pages in navigation
 3. Use MDX format for pages requiring React components
 
+### Changelog Guidelines
+- Focus on user benefits rather than implementation details
+- Keep feature entries concise - typically a single line without subpoints
+- Emphasize what the user can now do or how their experience improves
+- Avoid technical specifics like state management, CSS classes, or internal architecture
+
 ### Managing Versions
 - Only cut new documentation versions for minor/major releases
 - Patch releases typically don't need new doc versions
