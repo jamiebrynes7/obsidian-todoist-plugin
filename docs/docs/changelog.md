@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - For due date, you can select none, today, or tomorrow.
   - For project, you can select any project or the Inbox.
   - For labels, you can select one or more of the available labels.
+- Group headers in grouped task views are now collapsible, allowing you to hide sections you don't need to see.
 
 ### ⚙ Internal
 
