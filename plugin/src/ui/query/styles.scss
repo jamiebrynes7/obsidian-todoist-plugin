@@ -188,6 +188,34 @@
 .todoist-group-title {
   margin: 1em 0;
   font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  outline: none;
+
+  &.collapsed {
+    border-bottom: 1px solid var(--todoist-task-separator-color);
+    margin-bottom: 0;
+    padding-bottom: 0.5em;
+  }
+
+  .todoist-group-collapse-icon {
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    border-radius: 3px;
+    padding: 2px;
+  }
+
+  &:focus .todoist-group-collapse-icon {
+    background-color: var(--interactive-hover);
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 1px;
+  }
+
+  &:hover .todoist-group-collapse-icon {
+    background-color: var(--interactive-hover);
+  }
 }
 
 .todoist-no-tasks {
