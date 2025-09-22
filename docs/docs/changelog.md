@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.2.1 (2025-09-22)
+
+### 🐛 Bug Fixes
+
+- Fixed an issue where task with times would cause the plugin to fail to load tasks.
+
 ## v2.2.0 (2025-09-21)
 
 ### ✨ Features
