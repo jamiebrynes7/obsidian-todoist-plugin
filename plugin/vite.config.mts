@@ -30,6 +30,11 @@ function getBuildStamp(): string {
   return `v${version}-${commitSha}-${timestamp}`;
 }
 
+function getShouldMinify(): boolean {
+  const env = loadEnv("prod", process.cwd());
+  return env?.VITE_ENV !== "dev";
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -50,6 +55,7 @@ export default defineConfig({
   build: {
     // We aren't building a website, so we build in library mode
     // and bundle the output using our index.ts as the entrypoint.
+    minify: getShouldMinify(),
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
       fileName: "main",
