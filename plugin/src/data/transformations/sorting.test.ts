@@ -141,15 +141,13 @@ describe("sortTasks", () => {
         makeTask("d", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T15:00:00",
+            date: "2020-03-15T15:00:00",
           },
         }),
         makeTask("e", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T13:00:00",
+            date: "2020-03-15T13:00:00",
           },
         }),
       ],
@@ -158,15 +156,13 @@ describe("sortTasks", () => {
         makeTask("e", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T13:00:00",
+            date: "2020-03-15T13:00:00",
           },
         }),
         makeTask("d", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T15:00:00",
+            date: "2020-03-15T15:00:00",
           },
         }),
         makeTask("c", {
@@ -190,15 +186,13 @@ describe("sortTasks", () => {
         makeTask("e", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T13:00:00",
+            date: "2020-03-15T13:00:00",
           },
         }),
         makeTask("d", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T15:00:00",
+            date: "2020-03-15T15:00:00",
           },
         }),
         makeTask("c", {
@@ -233,15 +227,13 @@ describe("sortTasks", () => {
         makeTask("d", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T15:00:00",
+            date: "2020-03-15T15:00:00",
           },
         }),
         makeTask("e", {
           due: {
             isRecurring: false,
-            date: "2020-03-15",
-            datetime: "2020-03-15T13:00:00",
+            date: "2020-03-15T13:00:00",
           },
         }),
       ],

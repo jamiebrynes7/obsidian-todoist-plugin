@@ -55,8 +55,7 @@ describe("parse", () => {
     {
       description: "should parse a due date with time",
       input: {
-        date: "2024-02-01",
-        datetime: "2024-02-01T12:00:00",
+        date: "2024-02-01T12:00:00",
         isRecurring: false,
       },
       expected: {
@@ -73,8 +72,7 @@ describe("parse", () => {
     {
       description: "should parse a due date with time and timezone",
       input: {
-        date: "2024-02-01",
-        datetime: "2024-02-01T12:00:00Z",
+        date: "2024-02-01T12:00:00Z",
         isRecurring: false,
       },
       expected: {
@@ -108,8 +106,7 @@ describe("parse", () => {
     {
       description: "should parse a due date for today with time",
       input: {
-        date: "2024-01-01",
-        datetime: "2024-01-01T12:00:00",
+        date: "2024-01-01T12:00:00",
         isRecurring: false,
       },
       expected: {
@@ -143,9 +140,8 @@ describe("parse", () => {
     {
       description: "should parse a due date for tomorrow with time",
       input: {
-        date: "2024-01-02",
+        date: "2024-01-02T12:00:00",
         isRecurring: false,
-        datetime: "2024-01-02T12:00:00",
       },
       expected: {
         start: {
@@ -178,9 +174,8 @@ describe("parse", () => {
     {
       description: "should parse a due date for yesterday with time",
       input: {
-        date: "2023-12-31",
+        date: "2023-12-31T12:00:00",
         isRecurring: false,
-        datetime: "2023-12-31T12:00:00",
       },
       expected: {
         start: {
@@ -213,9 +208,8 @@ describe("parse", () => {
     {
       description: "should parse a due date for next week with time",
       input: {
-        date: "2024-01-06",
+        date: "2024-01-06T12:00:00",
         isRecurring: false,
-        datetime: "2024-01-06T12:00:00",
       },
       expected: {
         start: {
@@ -248,9 +242,8 @@ describe("parse", () => {
     {
       description: "should parse a due date for last week with time",
       input: {
-        date: "2023-12-29",
+        date: "2023-12-29T12:00:00",
         isRecurring: false,
-        datetime: "2023-12-29T12:00:00",
       },
       expected: {
         start: {
@@ -283,9 +276,8 @@ describe("parse", () => {
     {
       description: "should parse a date not this year with time",
       input: {
-        date: "2025-01-01",
+        date: "2025-01-01T12:00:00",
         isRecurring: false,
-        datetime: "2025-01-01T12:00:00",
       },
       expected: {
         start: {
@@ -318,9 +310,8 @@ describe("parse", () => {
     {
       description: "should parse a date that's overdue with time",
       input: {
-        date: "2023-06-01",
+        date: "2023-06-01T12:00:00",
         isRecurring: false,
-        datetime: "2023-06-01T12:00:00",
       },
       expected: {
         start: {
@@ -358,8 +349,7 @@ describe("parse with duration", () => {
       description: "should parse a due date with 30 minutes duration",
       input: {
         due: {
-          date: "2024-02-01",
-          datetime: "2024-02-01T12:00:00",
+          date: "2024-02-01T12:00:00",
           isRecurring: false,
         },
         duration: {
@@ -388,8 +378,7 @@ describe("parse with duration", () => {
       description: "should parse a due date with 2 days duration",
       input: {
         due: {
-          date: "2024-02-01",
-          datetime: "2024-02-01T12:00:00",
+          date: "2024-02-01T12:00:00",
           isRecurring: false,
         },
         duration: {
@@ -418,8 +407,7 @@ describe("parse with duration", () => {
       description: "should parse a due date that crosses to next day with duration",
       input: {
         due: {
-          date: "2024-02-01",
-          datetime: "2024-02-01T23:00:00",
+          date: "2024-02-01T23:00:00",
           isRecurring: false,
         },
         duration: {

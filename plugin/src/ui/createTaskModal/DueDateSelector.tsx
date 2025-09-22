@@ -187,15 +187,18 @@ const getLabel = (selected: DueDate | undefined) => {
     return t().createTaskModal.dateSelector.emptyDate;
   }
 
+  let dateString: string;
+  if (selected.timeInfo !== undefined) {
+    dateString = toZoned(
+      toCalendarDateTime(selected.date, selected.timeInfo.time),
+      timezone(),
+    ).toAbsoluteString();
+  } else {
+    dateString = selected.date.toString();
+  }
+
   const apiDueDate: ApiDueDate = {
-    date: selected.date.toString(),
-    datetime:
-      selected.timeInfo !== undefined
-        ? toZoned(
-            toCalendarDateTime(selected.date, selected.timeInfo.time),
-            timezone(),
-          ).toAbsoluteString()
-        : undefined,
+    date: dateString,
     isRecurring: false,
   };
 

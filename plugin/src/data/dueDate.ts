@@ -28,14 +28,15 @@ export type DueDate = {
 
 const parseDueDate = (dueDate: ApiDueDate, duration?: ApiDuration): DueDate => {
   let start: ZonedDateTime | CalendarDate;
-  if (dueDate.datetime !== undefined) {
-    // If the datetime comes with a trailing Z, then the task has a fixed timezone. We repsect
+  const hasTime = dueDate.date.includes("T");
+  if (hasTime) {
+    // If the datetime comes with a trailing Z, then the task has a fixed timezone. We respect
     // this and convert it into their local timezone. Otherwise, it is a floating timezone and we
     // simply parse it as a local datetime.
-    if (dueDate.datetime.endsWith("Z")) {
-      start = parseAbsolute(dueDate.datetime, timezone());
+    if (dueDate.date.endsWith("Z")) {
+      start = parseAbsolute(dueDate.date, timezone());
     } else {
-      start = fromDate(parseDateTime(dueDate.datetime).toDate(timezone()), timezone());
+      start = fromDate(parseDateTime(dueDate.date).toDate(timezone()), timezone());
     }
   } else {
     start = parseDate(dueDate.date);
