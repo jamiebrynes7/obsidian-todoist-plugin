@@ -34,6 +34,8 @@ const defaultSettings: Settings = {
   taskCreationDefaultLabels: [],
 
   debugLogging: false,
+
+  useQuickAddEndpoint: false,
 };
 
 export type Settings = {
@@ -57,6 +59,8 @@ export type Settings = {
   taskCreationDefaultLabels: LabelsDefaultSetting;
 
   debugLogging: boolean;
+
+  useQuickAddEndpoint: boolean;
 };
 
 export const useSettingsStore = create<Settings>(() => ({

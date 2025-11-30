@@ -8,6 +8,7 @@ import { Repository, type RepositoryReader } from "@/data/repository";
 import { SubscriptionManager, type UnsubscribeCallback } from "@/data/subscriptions";
 import type { Task } from "@/data/task";
 import { Maybe } from "@/utils/maybe";
+import { useSettingsStore } from "@/settings";
 
 export enum QueryErrorKind {
   BadRequest = 0,
@@ -39,8 +40,10 @@ class LabelsRepository extends Repository<LabelId, Label> {
 export class TodoistAdapter {
   public actions = {
     closeTask: async (id: TaskId) => await this.closeTask(id),
-    createTask: async (content: string, params: CreateTaskParams) =>
-      await this.api.withInner((api) => api.createTask(content, params)),
+    createTask: async (content: string, params: CreateTaskParams) => {
+      const { useQuickAddEndpoint } = useSettingsStore.getState();
+      await this.api.withInner((api) => api.createTask(content, params, useQuickAddEndpoint));
+    },
   };
 
   private readonly api: Maybe<TodoistApiClient> = Maybe.Empty();

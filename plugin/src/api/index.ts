@@ -31,12 +31,57 @@ export class TodoistApiClient {
     }
   }
 
-  public async createTask(content: string, options?: CreateTaskParams): Promise<void> {
-    const body = snakify({
-      content: content,
-      ...(options ?? {}),
+  public async createTask(content: string, options?: CreateTaskParams, useQuickAddEndpoint?: boolean): Promise<void> {
+    if (useQuickAddEndpoint) {
+      // Quick add endpoint expects a different payload
+      const body = new URLSearchParams({
+        text: content,
+        ...((options?.description ? { description: options.description } : {})),
+        ...((options?.projectId ? { project_id: options.projectId } : {})),
+        ...((options?.sectionId ? { section_id: options.sectionId } : {})),
+        ...((options?.dueDate ? { due_date: options.dueDate } : {})),
+        ...((options?.dueDatetime ? { due_datetime: options.dueDatetime } : {})),
+        ...((options?.labels ? { labels: options.labels.join(",") } : {})),
+        ...((options?.priority ? { priority: String(options.priority) } : {})),
+      });
+      await this.doQuickAdd("https://api.todoist.com/sync/v9/quick/add", body);
+    } else {
+      const body = snakify({
+        content: content,
+        ...(options ?? {}),
+      });
+      await this.do("/tasks", "POST", body);
+    }
+  }
+
+  private async doQuickAdd(url: string, body: URLSearchParams): Promise<WebResponse> {
+    const params: RequestParams = {
+      url,
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: body.toString(),
+    };
+
+    debug({
+      msg: "Sending Todoist Quick Add API request",
+      context: params,
     });
-    await this.do("/tasks", "POST", body);
+
+    const response = await this.fetcher.fetch(params);
+
+    debug({
+      msg: "Received Todoist Quick Add API response",
+      context: response,
+    });
+
+    if (response.statusCode >= 400) {
+      throw new TodoistApiError(params, response);
+    }
+
+    return response;
   }
 
   public async closeTask(id: TaskId): Promise<void> {
