@@ -133,6 +133,17 @@ export type Translations = {
         duration: (minutes: number) => string;
       };
     };
+    deadlineSelector: {
+      buttonLabel: string;
+      dialogLabel: string;
+      suggestionsLabel: string;
+      datePickerLabel: string;
+      placeholder: string;
+      today: string;
+      tomorrow: string;
+      nextWeek: string;
+      noDeadline: string;
+    };
     labelSelector: {
       buttonLabel: string;
       buttonText: (num: number) => string;

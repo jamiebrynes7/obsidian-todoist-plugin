@@ -17,6 +17,7 @@ import { ModalContext, PluginContext } from "@/ui/context";
 import type TodoistPlugin from "../..";
 import type { Label } from "../../api/domain/label";
 import type { CreateTaskParams, Priority } from "../../api/domain/task";
+import { type Deadline, DeadlineSelector } from "./DeadlineSelector";
 import { type DueDate, DueDateSelector } from "./DueDateSelector";
 import { LabelSelector } from "./LabelSelector";
 import { PrioritySelector } from "./PrioritySelector";
@@ -165,6 +166,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
   const [labels, setLabels] = useState<Label[]>(() =>
     calculateDefaultLabels(plugin, settings.taskCreationDefaultLabels),
   );
+  const [deadline, setDeadline] = useState<Deadline | undefined>();
   const [project, setProject] = useState<ProjectIdentifier>(
     calculateDefaultProject(plugin, settings.taskCreationDefaultProject),
   );
@@ -217,6 +219,10 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       }
     }
 
+    if (deadline !== undefined) {
+      params.deadlineDate = deadline.date.toString();
+    }
+
     try {
       await plugin.services.todoist.actions.createTask(
         buildWithLink(content, options.appendLinkTo === "content"),
@@ -252,6 +258,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
           <DueDateSelector selected={dueDate} setSelected={setDueDate} />
           <PrioritySelector selected={priority} setSelected={setPriority} />
           <LabelSelector selected={labels} setSelected={setLabels} />
+          <DeadlineSelector selected={deadline} setSelected={setDeadline} />
         </div>
         <div className="task-creation-selectors-group">
           <OptionsSelector selected={options} setSelected={setOptions} />
