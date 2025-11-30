@@ -5,6 +5,7 @@ import type { Label } from "@/api/domain/label";
 import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";
 import type { CreateTaskParams, Task, TaskId } from "@/api/domain/task";
+import type { UserInfo } from "@/api/domain/user";
 import type { RequestParams, WebFetcher, WebResponse } from "@/api/fetcher";
 import debug from "@/log";
 
@@ -52,6 +53,11 @@ export class TodoistApiClient {
 
   public async getLabels(): Promise<Label[]> {
     return await this.doPaginated<Label>("/labels");
+  }
+
+  public async getUser(): Promise<UserInfo> {
+    const response = await this.do("/user", "GET");
+    return camelize(JSON.parse(response.body)) as UserInfo;
   }
 
   private async doPaginated<T>(path: string, params?: Record<string, string>): Promise<T[]> {
