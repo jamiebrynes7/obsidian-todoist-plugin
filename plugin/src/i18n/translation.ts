@@ -64,8 +64,6 @@ export type Translations = {
         description: string;
         options: {
           none: string;
-          today: string;
-          tomorrow: string;
         };
       };
       defaultProject: {
@@ -120,9 +118,6 @@ export type Translations = {
       suggestionsLabel: string;
       datePickerLabel: string;
       emptyDate: string;
-      today: string;
-      tomorrow: string;
-      nextWeek: string;
       noDate: string;
       timeDialog: {
         timeLabel: string;
@@ -139,9 +134,6 @@ export type Translations = {
       suggestionsLabel: string;
       datePickerLabel: string;
       placeholder: string;
-      today: string;
-      tomorrow: string;
-      nextWeek: string;
       noDeadline: string;
     };
     labelSelector: {
@@ -239,6 +231,7 @@ export type Translations = {
     today: string;
     tomorrow: string;
     yesterday: string;
+    nextWeek: string;
     lastWeekday: (weekday: string) => string;
     dateTime: (date: string, time: string) => string;
     dateTimeDuration: (date: string, startTime: string, endTime: string) => string;

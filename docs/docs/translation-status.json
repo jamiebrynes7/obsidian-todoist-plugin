@@ -2,15 +2,15 @@
   {
     "name": "English",
     "code": "en",
-    "completed": 197,
+    "completed": 190,
     "missing": 0,
     "percent": 100
   },
   {
     "name": "Nederlands",
     "code": "nl",
-    "completed": 148,
-    "missing": 49,
-    "percent": 75
+    "completed": 146,
+    "missing": 44,
+    "percent": 77
   }
 ]
