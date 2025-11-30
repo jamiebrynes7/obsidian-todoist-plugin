@@ -173,6 +173,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
   const [options, setOptions] = useState<TaskCreationOptions>(initialOptions);
 
+  const isPremium = plugin.services.todoist.isPremium();
   const isSubmitButtonDisabled = content === "" && options.appendLinkTo !== "content";
 
   const i18n = t().createTaskModal;
@@ -258,7 +259,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
           <DueDateSelector selected={dueDate} setSelected={setDueDate} />
           <PrioritySelector selected={priority} setSelected={setPriority} />
           <LabelSelector selected={labels} setSelected={setLabels} />
-          <DeadlineSelector selected={deadline} setSelected={setDeadline} />
+          {isPremium && <DeadlineSelector selected={deadline} setSelected={setDeadline} />}
         </div>
         <div className="task-creation-selectors-group">
           <OptionsSelector selected={options} setSelected={setOptions} />

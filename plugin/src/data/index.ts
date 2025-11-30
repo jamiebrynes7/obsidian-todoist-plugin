@@ -3,6 +3,7 @@ import type { Label, LabelId } from "@/api/domain/label";
 import type { Project, ProjectId } from "@/api/domain/project";
 import type { Section, SectionId } from "@/api/domain/section";
 import type { Task as ApiTask, CreateTaskParams, TaskId } from "@/api/domain/task";
+import type { UserInfo } from "@/api/domain/user";
 import { Repository, type RepositoryReader } from "@/data/repository";
 import { SubscriptionManager, type UnsubscribeCallback } from "@/data/subscriptions";
 import type { Task } from "@/data/task";
@@ -49,6 +50,7 @@ export class TodoistAdapter {
   private readonly subscriptions: SubscriptionManager<Subscription>;
 
   private readonly tasksPendingClose: TaskId[];
+  private userInfo: UserInfo | undefined;
 
   private hasSynced = false;
 
@@ -64,6 +66,10 @@ export class TodoistAdapter {
     return this.api.hasValue() && this.hasSynced;
   }
 
+  public isPremium(): boolean {
+    return this.userInfo?.isPremium ?? true;
+  }
+
   public async initialize(api: TodoistApiClient) {
     this.api.insert(api);
     await this.sync();
@@ -74,15 +80,29 @@ export class TodoistAdapter {
       return;
     }
 
-    await this.projects.sync();
-    await this.sections.sync();
-    await this.labels.sync();
+    await Promise.all([
+      this.syncUserInfo(),
+      this.projects.sync(),
+      this.sections.sync(),
+      this.labels.sync(),
+    ]);
 
     for (const subscription of this.subscriptions.list()) {
       await subscription.update();
     }
 
     this.hasSynced = true;
+  }
+
+  private async syncUserInfo(): Promise<void> {
+    try {
+      if (!this.api.hasValue()) {
+        return;
+      }
+      this.userInfo = await this.api.withInner((api) => api.getUser());
+    } catch (error) {
+      console.error("Failed to fetch user info:", error);
+    }
   }
 
   public data(): DataAccessor {
