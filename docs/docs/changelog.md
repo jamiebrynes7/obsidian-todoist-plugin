@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - Task deadlines are now displayed in the task metadata with a target icon, and can be toggled using `deadline` in the `show` query property.
+- You can now set a deadline when creating tasks from the task creation modal.
 
 ## v2.2.1 (2025-09-22)
 
