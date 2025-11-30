@@ -149,6 +149,17 @@ export const en: Translations = {
         },
       },
     },
+    deadlineSelector: {
+      buttonLabel: "Set deadline",
+      dialogLabel: "Deadline selector",
+      suggestionsLabel: "Deadline suggestions",
+      datePickerLabel: "Deadline date",
+      placeholder: "Deadline",
+      today: "Today",
+      tomorrow: "Tomorrow",
+      nextWeek: "Next week",
+      noDeadline: "No deadline",
+    },
     labelSelector: {
       buttonLabel: "Set labels",
       buttonText: (num: number) => {

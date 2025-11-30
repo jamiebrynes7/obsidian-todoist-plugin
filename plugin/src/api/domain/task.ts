@@ -39,6 +39,7 @@ export type CreateTaskParams = {
   dueDate?: string;
   dueDatetime?: string;
   labels?: string[];
+  deadlineDate?: string;
 };
 
 export type Duration = {
