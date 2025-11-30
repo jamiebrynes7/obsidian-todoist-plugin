@@ -4,6 +4,10 @@ import type { SectionId } from "@/api/domain/section";
 
 export type TaskId = string;
 
+export type Deadline = {
+  date: string;
+};
+
 export type Task = {
   id: TaskId;
   createdAt: string;
@@ -20,6 +24,7 @@ export type Task = {
 
   due: DueDate | null;
   duration: Duration | null;
+  deadline: Deadline | null;
 
   order: number;
 };

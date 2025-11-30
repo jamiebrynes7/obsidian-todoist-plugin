@@ -134,6 +134,7 @@ export class TodoistAdapter {
 
       due: apiTask.due ?? undefined,
       duration: apiTask.duration ?? undefined,
+      deadline: apiTask.deadline ?? undefined,
       order: apiTask.order,
     };
   }

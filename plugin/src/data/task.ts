@@ -2,7 +2,7 @@ import type { DueDate } from "@/api/domain/dueDate";
 import type { Label } from "@/api/domain/label";
 import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";
-import type { Duration, Priority, TaskId } from "@/api/domain/task";
+import type { Deadline, Duration, Priority, TaskId } from "@/api/domain/task";
 
 export type Task = {
   id: TaskId;
@@ -20,5 +20,6 @@ export type Task = {
 
   due?: DueDate;
   duration?: Duration;
+  deadline?: Deadline;
   order: number;
 };

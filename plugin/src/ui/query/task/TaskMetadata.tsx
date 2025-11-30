@@ -1,5 +1,6 @@
 import type React from "react";
 
+import { Deadline } from "@/data/deadline";
 import { DueDate } from "@/data/dueDate";
 import type { Task } from "@/data/task";
 import { type Query, ShowMetadataVariant } from "@/query/query";
@@ -68,6 +69,20 @@ const dueDateMeta: MetadataDefinition = {
   side: "left",
 };
 
+const deadlineMeta: MetadataDefinition = {
+  name: "deadline",
+  isShown: (query, task) =>
+    query.show.has(ShowMetadataVariant.Deadline) && task.deadline !== undefined,
+  content: (task) => [{ content: deadlineLabel(task) }],
+  icons: {
+    before: {
+      id: "target",
+      shouldRender: (settings) => settings.renderDateIcon,
+    },
+  },
+  side: "left",
+};
+
 const labelsMeta: MetadataDefinition = {
   name: "labels",
   isShown: (query, task) => query.show.has(ShowMetadataVariant.Labels) && task.labels.length > 0,
@@ -87,7 +102,7 @@ const labelsMeta: MetadataDefinition = {
   side: "left",
 };
 
-const metadata: MetadataDefinition[] = [projectMeta, dueDateMeta, labelsMeta];
+const metadata: MetadataDefinition[] = [projectMeta, dueDateMeta, deadlineMeta, labelsMeta];
 
 const dateLabel = (task: Task): string => {
   if (task.due === undefined) {
@@ -95,6 +110,14 @@ const dateLabel = (task: Task): string => {
   }
 
   return DueDate.format(DueDate.parse(task.due, task.duration));
+};
+
+const deadlineLabel = (task: Task): string => {
+  if (task.deadline === undefined) {
+    return "";
+  }
+
+  return Deadline.format(Deadline.parse(task.deadline));
 };
 
 type TaskMetadataProps = {
