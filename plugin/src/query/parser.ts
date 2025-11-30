@@ -93,6 +93,7 @@ const showSchema = lookupToEnum({
   description: ShowMetadataVariant.Description,
   labels: ShowMetadataVariant.Labels,
   project: ShowMetadataVariant.Project,
+  deadline: ShowMetadataVariant.Deadline,
 });
 
 const groupBySchema = lookupToEnum({
@@ -113,6 +114,7 @@ const defaults = {
     ShowMetadataVariant.Description,
     ShowMetadataVariant.Labels,
     ShowMetadataVariant.Project,
+    ShowMetadataVariant.Deadline,
   ],
   groupBy: GroupVariant.None,
 };

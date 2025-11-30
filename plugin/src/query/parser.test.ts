@@ -132,6 +132,7 @@ function makeQuery(opts?: Partial<Query>): Query {
         ShowMetadataVariant.Description,
         ShowMetadataVariant.Project,
         ShowMetadataVariant.Labels,
+        ShowMetadataVariant.Deadline,
       ]),
     groupBy: opts?.groupBy ?? GroupVariant.None,
   };
@@ -207,6 +208,21 @@ describe("parseQuery", () => {
       expectedOutput: makeQuery({
         filter: "bar",
         show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Project]),
+      }),
+    },
+    {
+      description: "with show including deadline",
+      input: {
+        filter: "bar",
+        show: ["due", "deadline", "project"],
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set([
+          ShowMetadataVariant.Due,
+          ShowMetadataVariant.Deadline,
+          ShowMetadataVariant.Project,
+        ]),
       }),
     },
     {

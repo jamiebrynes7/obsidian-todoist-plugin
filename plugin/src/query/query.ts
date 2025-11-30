@@ -13,6 +13,7 @@ export enum ShowMetadataVariant {
   Project = 1,
   Labels = 2,
   Description = 3,
+  Deadline = 4,
 }
 
 export enum GroupVariant {
