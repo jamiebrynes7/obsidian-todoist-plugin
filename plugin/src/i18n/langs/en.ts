@@ -68,8 +68,6 @@ export const en: Translations = {
         description: "The default due date to set when creating new tasks",
         options: {
           none: "No default",
-          today: "Today",
-          tomorrow: "Tomorrow",
         },
       },
       defaultProject: {
@@ -127,9 +125,6 @@ export const en: Translations = {
       suggestionsLabel: "Due date suggestions",
       datePickerLabel: "Task date",
       emptyDate: "Due date",
-      today: "Today",
-      tomorrow: "Tomorrow",
-      nextWeek: "Next week",
       noDate: "No date",
       timeDialog: {
         timeLabel: "Time",
@@ -155,9 +150,6 @@ export const en: Translations = {
       suggestionsLabel: "Deadline suggestions",
       datePickerLabel: "Deadline date",
       placeholder: "Deadline",
-      today: "Today",
-      tomorrow: "Tomorrow",
-      nextWeek: "Next week",
       noDeadline: "No deadline",
     },
     labelSelector: {
@@ -265,6 +257,7 @@ export const en: Translations = {
     today: "Today",
     tomorrow: "Tomorrow",
     yesterday: "Yesterday",
+    nextWeek: "Next week",
     lastWeekday: (weekday: string) => {
       return `Last ${weekday}`;
     },

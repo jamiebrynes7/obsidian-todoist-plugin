@@ -95,9 +95,6 @@ export const nl: DeepPartial<Translations> = {
       suggestionsLabel: "Suggesties voor vervaldatum",
       datePickerLabel: "Taakdatum",
       emptyDate: "Vervaldatum",
-      today: "Vandaag",
-      tomorrow: "Morgen",
-      nextWeek: "Volgende week",
       noDate: "Geen datum",
       timeDialog: {
         timeLabel: "Tijd",
@@ -202,6 +199,7 @@ export const nl: DeepPartial<Translations> = {
     today: "Vandaag",
     tomorrow: "Morgen",
     yesterday: "Gisteren",
+    nextWeek: "Volgende week",
     lastWeekday: (weekday: string) => {
       return `Last ${weekday}`;
     },

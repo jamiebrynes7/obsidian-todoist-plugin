@@ -195,11 +195,11 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
               value: "none",
             },
             {
-              label: i18n.taskCreation.defaultDueDate.options.today,
+              label: t().dates.today,
               value: "today",
             },
             {
-              label: i18n.taskCreation.defaultDueDate.options.tomorrow,
+              label: t().dates.tomorrow,
               value: "tomorrow",
             },
           ]}

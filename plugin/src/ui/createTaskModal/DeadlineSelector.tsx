@@ -150,7 +150,8 @@ const DateSuggestion: React.FC<DateSuggestionProps> = ({ id, icon, label, target
 };
 
 const getSuggestions = (): DateSuggestionProps[] => {
-  const i18n = t().createTaskModal.deadlineSelector;
+  const dateI18n = t().dates;
+  const selectorI18n = t().createTaskModal.deadlineSelector;
 
   const startOfNextWeek = endOfWeek(today(timezone()), "en-US").add({
     days: 1,
@@ -159,25 +160,25 @@ const getSuggestions = (): DateSuggestionProps[] => {
     {
       id: "today",
       icon: "calendar",
-      label: i18n.today,
+      label: dateI18n.today,
       target: today(timezone()),
     },
     {
       id: "tomorrow",
       icon: "sun",
-      label: i18n.tomorrow,
+      label: dateI18n.tomorrow,
       target: today(timezone()).add({ days: 1 }),
     },
     {
       id: "next-week",
       icon: "calendar-clock",
-      label: i18n.nextWeek,
+      label: dateI18n.nextWeek,
       target: startOfNextWeek,
     },
     {
       id: "no-deadline",
       icon: "ban",
-      label: i18n.noDeadline,
+      label: selectorI18n.noDeadline,
       target: undefined,
     },
   ];
