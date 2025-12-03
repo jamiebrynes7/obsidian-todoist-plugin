@@ -83,6 +83,15 @@ export type Translations = {
         deletedWarning: string;
         deleted: string;
       };
+      defaultAddTaskAction: {
+        label: string;
+        description: string;
+        options: {
+          add: string;
+          addCopyApp: string;
+          addCopyWeb: string;
+        };
+      };
     };
     advanced: {
       header: string;
