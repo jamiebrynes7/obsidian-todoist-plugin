@@ -190,6 +190,7 @@ export type Translations = {
     };
     tokenInputLabel: string;
     submitButtonLabel: string;
+    pasteButtonLabel: string;
   };
   query: {
     displays: {

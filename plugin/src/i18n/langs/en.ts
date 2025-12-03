@@ -209,6 +209,7 @@ export const en: Translations = {
     },
     tokenInputLabel: "API Token",
     submitButtonLabel: "Save",
+    pasteButtonLabel: "Paste from clipboard",
   },
   query: {
     displays: {

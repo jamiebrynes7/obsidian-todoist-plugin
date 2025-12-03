@@ -31,8 +31,10 @@
     }
   }
 
-  .react-aria-Button {
-    float: right;
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
     margin-top: 1em;
   }
 

@@ -23,6 +23,15 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
     setToken(newToken.trim());
   };
 
+  const pasteFromClipboard = async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText();
+      onTokenChange(clipboardText);
+    } catch (e) {
+      console.error("Failed to read from clipboard", e);
+    }
+  };
+
   // The epoch ensures that only the latest validation request is processed.
   // The debounce ensures that we don't fire off too many requests.
   const validationEpoch = useRef(0);
@@ -75,9 +84,20 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
         </Group>
         <FieldError>{validationStatus.kind === "error" ? validationStatus.message : ""}</FieldError>
       </TextField>
-      <Button type="submit" isDisabled={!canSubmit} onPress={() => onTokenSubmit(token)}>
-        {i18n.submitButtonLabel}
-      </Button>
+      <div className="controls">
+        <Button type="button" onPress={pasteFromClipboard}>
+          {i18n.pasteButtonLabel}
+        </Button>
+        <Button
+          type="submit"
+          isDisabled={!canSubmit}
+          onPress={() => onTokenSubmit(token)}
+          className="mod-cta"
+          data-testid="submit-button"
+        >
+          {i18n.submitButtonLabel}
+        </Button>
+      </div>
     </div>
   );
 };
