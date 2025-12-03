@@ -69,6 +69,16 @@ This defines the default labels assigned to tasks created via [commands](./comma
 
 If any of the selected labels no longer exist in Todoist, you will get a warning when opening the task creation modal and they will be skipped.
 
+### Default add task action
+
+This setting controls the default action for the 'Add task' button in the task creation modal. You can choose between:
+
+- **Add task** - Creates the task without copying a link
+- **Add task and copy link (app)** - Creates the task and copies a markdown-formatted link using the Todoist app URI
+- **Add task and copy link (web)** - Creates the task and copies a markdown-formatted link using the Todoist web URL
+
+This sets the initial button action when opening the modal, but you can change it per-task using the split button dropdown. See the [Add task command documentation](./commands/add-task#copy-markdown-link-after-creating-task) for more details.
+
 ## Advanced
 
 ### Debug logging
