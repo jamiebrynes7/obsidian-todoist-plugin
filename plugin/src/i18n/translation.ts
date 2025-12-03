@@ -118,6 +118,11 @@ export type Translations = {
     appendedLinkToDescriptionMessage: string;
     cancelButtonLabel: string;
     addTaskButtonLabel: string;
+    addTaskAndCopyAppLabel: string;
+    addTaskAndCopyWebLabel: string;
+    actionMenuLabel: string;
+    linkCopiedNotice: string;
+    linkCopyFailedNotice: string;
     failedToFindInboxNotice: string;
     defaultProjectDeletedNotice: (projectName: string) => string;
     defaultLabelsDeletedNotice: (labelNames: string) => string;
