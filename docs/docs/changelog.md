@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Task deadlines are now displayed in the task metadata with a target icon, and can be toggled using `deadline` in the `show` query property.
 - You can now set a deadline when creating tasks from the task creation modal. This option only appears for premium Todoist users.
+- You can now automatically copy a markdown link to newly created tasks, with options for either app URI or web URL format.
 
 ## v2.2.1 (2025-09-22)
 
