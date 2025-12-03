@@ -14,7 +14,7 @@ describe("TokenInputForm", () => {
       />,
     );
 
-    const button = screen.getByRole("button");
+    const button = screen.getByTestId("submit-button");
     expect(button).toHaveAttribute("disabled");
   });
 
@@ -66,7 +66,7 @@ describe("TokenInputForm", () => {
     fireEvent.blur(textBox);
 
     await waitFor(() => {
-      const button = screen.getByRole("button");
+      const button = screen.getByTestId("submit-button");
       expect(button).not.toHaveAttribute("disabled");
     });
     expect(getArgs()).toBe("abcdef");
@@ -85,7 +85,7 @@ describe("TokenInputForm", () => {
     );
 
     const textBox = screen.getByRole("textbox");
-    const button = screen.getByRole("button");
+    const button = screen.getByTestId("submit-button");
 
     fireEvent.focus(textBox);
     fireEvent.change(textBox, {
