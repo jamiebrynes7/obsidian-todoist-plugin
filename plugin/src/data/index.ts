@@ -39,7 +39,7 @@ class LabelsRepository extends Repository<LabelId, Label> {
 export class TodoistAdapter {
   public actions = {
     closeTask: async (id: TaskId) => await this.closeTask(id),
-    createTask: async (content: string, params: CreateTaskParams) =>
+    createTask: async (content: string, params: CreateTaskParams): Promise<ApiTask> =>
       await this.api.withInner((api) => api.createTask(content, params)),
   };
 
