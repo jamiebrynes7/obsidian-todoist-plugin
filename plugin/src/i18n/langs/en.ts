@@ -123,6 +123,11 @@ export const en: Translations = {
       "A link to this page will be appended to the task description",
     cancelButtonLabel: "Cancel",
     addTaskButtonLabel: "Add task",
+    addTaskAndCopyAppLabel: "Add task and copy link (app)",
+    addTaskAndCopyWebLabel: "Add task and copy link (web)",
+    actionMenuLabel: "Add task action menu",
+    linkCopiedNotice: "Task created and link copied to clipboard",
+    linkCopyFailedNotice: "Task created, but failed to copy link to clipboard",
     failedToFindInboxNotice: "Error: could not find inbox project",
     defaultProjectDeletedNotice: (projectName: string) =>
       `Default project "${projectName}" no longer exists. Using Inbox instead.`,
