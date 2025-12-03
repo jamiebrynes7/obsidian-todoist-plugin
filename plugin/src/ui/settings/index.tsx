@@ -228,6 +228,33 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
           onChange={mkOptionUpdate("taskCreationDefaultLabels")}
         />
       </Setting.Root>
+      <Setting.Root
+        name={i18n.taskCreation.defaultAddTaskAction.label}
+        description={i18n.taskCreation.defaultAddTaskAction.description}
+      >
+        <Setting.DropdownControl
+          value={settings.defaultAddTaskAction}
+          options={[
+            {
+              label: i18n.taskCreation.defaultAddTaskAction.options.add,
+              value: "add",
+            },
+            {
+              label: i18n.taskCreation.defaultAddTaskAction.options.addCopyApp,
+              value: "add-copy-app",
+            },
+            {
+              label: i18n.taskCreation.defaultAddTaskAction.options.addCopyWeb,
+              value: "add-copy-web",
+            },
+          ]}
+          onClick={async (val) => {
+            await plugin.writeOptions({
+              defaultAddTaskAction: val,
+            });
+          }}
+        />
+      </Setting.Root>
 
       <h2>{i18n.advanced.header}</h2>
       <Setting.Root

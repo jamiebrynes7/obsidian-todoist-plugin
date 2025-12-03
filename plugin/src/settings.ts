@@ -2,6 +2,8 @@ import { create } from "zustand";
 
 export type AddPageLinkSetting = "off" | "description" | "content";
 
+export type AddTaskAction = "add" | "add-copy-app" | "add-copy-web";
+
 export type DueDateDefaultSetting = "none" | "today" | "tomorrow";
 
 export type ProjectDefaultSetting = {
@@ -33,6 +35,8 @@ const defaultSettings: Settings = {
 
   taskCreationDefaultLabels: [],
 
+  defaultAddTaskAction: "add",
+
   debugLogging: false,
 };
 
@@ -55,6 +59,8 @@ export type Settings = {
   taskCreationDefaultProject: ProjectDefaultSetting;
 
   taskCreationDefaultLabels: LabelsDefaultSetting;
+
+  defaultAddTaskAction: AddTaskAction;
 
   debugLogging: boolean;
 };

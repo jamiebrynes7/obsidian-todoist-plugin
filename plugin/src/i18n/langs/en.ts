@@ -87,6 +87,15 @@ export const en: Translations = {
         deletedWarning: "This label no longer exists",
         deleted: "deleted",
       },
+      defaultAddTaskAction: {
+        label: "Default add task action",
+        description: "The default action when clicking the Add task button",
+        options: {
+          add: "Add task",
+          addCopyApp: "Add task and copy link (app)",
+          addCopyWeb: "Add task and copy link (web)",
+        },
+      },
     },
     advanced: {
       header: "Advanced",
