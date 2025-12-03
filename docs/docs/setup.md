@@ -24,9 +24,9 @@ Once the plugin is installed, you'll need to enable and do some initial setup.
 
 1. Enable the plugin from Obsidian's setting page
 2. You should get a popup asking you to provide your [API token](https://todoist.com/help/articles/find-your-api-token-Jpzx9IIlB).
-3. Paste your API token into the prompt
+3. Enter your API token into the prompt. You can type it directly or use the "Paste from clipboard" button for convenience.
 4. The prompt will verify that the token provided is valid and will present you with a checkmark if it is
-5. Select 'Submit' to complete the setup
+5. Select 'Save' to complete the setup
 
 > Note that this token is stored in its own file inside your vault. It can be found at `.obsidian/todoist-token`. If you synchronize your vault, you may choose to explicit ignore this file to avoid the API token leaving your machine. If you choose to do this, you must perform this setup on each device you access your vault on.
 
