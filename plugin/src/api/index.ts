@@ -31,12 +31,13 @@ export class TodoistApiClient {
     }
   }
 
-  public async createTask(content: string, options?: CreateTaskParams): Promise<void> {
+  public async createTask(content: string, options?: CreateTaskParams): Promise<Task> {
     const body = snakify({
       content: content,
       ...(options ?? {}),
     });
-    await this.do("/tasks", "POST", body);
+    const response = await this.do("/tasks", "POST", body);
+    return camelize(JSON.parse(response.body)) as Task;
   }
 
   public async closeTask(id: TaskId): Promise<void> {
