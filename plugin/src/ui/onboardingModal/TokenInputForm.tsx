@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, FieldError, Group, Input, Label, TextField } from "react-aria-components";
 
 import { t } from "@/i18n";
+import debug from "@/log";
 import { TokenValidation } from "@/token";
 import { TokenValidationIcon } from "@/ui/components/token-validation-icon";
 
@@ -18,12 +19,17 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
     kind: "none",
   });
 
+  const onTokenChange = (newToken: string) => {
+    setToken(newToken.trim());
+  };
+
   // The epoch ensures that only the latest validation request is processed.
   // The debounce ensures that we don't fire off too many requests.
   const validationEpoch = useRef(0);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   // When the token changes, queue up a debounced validation attempt.
   useEffect(() => {
+    validationEpoch.current += 1;
     setValidationStatus({ kind: "in-progress" });
 
     if (debounceTimeout.current) {
@@ -32,7 +38,13 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
 
     const timeoutId = setTimeout(() => {
       const epoch = ++validationEpoch.current;
+
+      debug({ msg: "Validating token", context: { token, epoch } });
       TokenValidation.validate(token, tester).then((result) => {
+        debug({
+          msg: "Token validation result",
+          context: { token, epochBefore: epoch, epochAfter: validationEpoch.current, result },
+        });
         if (epoch === validationEpoch.current) {
           setValidationStatus(result);
         }
@@ -51,7 +63,11 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
 
   return (
     <div className="todoist-onboarding-token-form">
-      <TextField value={token} onChange={setToken} isInvalid={validationStatus.kind === "error"}>
+      <TextField
+        value={token}
+        onChange={onTokenChange}
+        isInvalid={validationStatus.kind === "error"}
+      >
         <Label>{i18n.tokenInputLabel}</Label>
         <Group>
           <Input />
