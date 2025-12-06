@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🐛 Bug Fixes
 
 - Token validation now removes erroneous whitespace automatically
+- The task creation modal no longer intercepts key presses when in an IME
 
 ## v2.2.1 (2025-09-22)
 
