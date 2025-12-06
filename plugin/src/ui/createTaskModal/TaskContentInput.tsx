@@ -29,6 +29,10 @@ export const TaskContentInput: React.FC<Props> = ({
       return;
     }
 
+    if (ev.nativeEvent.isComposing) {
+      return;
+    }
+
     if (ev.key === "Enter") {
       ev.preventDefault();
       await onEnterKey();
