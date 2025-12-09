@@ -6,12 +6,23 @@ import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@
 
 type ErrorTree = string | { msg: string; children: ErrorTree[] };
 
+function formatErrorTree(tree: ErrorTree, indent = ""): string {
+  if (typeof tree === "string") {
+    return `${indent}${tree}`;
+  }
+  const lines = [`${indent}${tree.msg}`];
+  for (const child of tree.children) {
+    lines.push(formatErrorTree(child, `${indent}  `));
+  }
+  return lines.join("\n");
+}
+
 export class ParsingError extends Error {
   messages: ErrorTree[];
   inner: unknown | undefined;
 
   constructor(msgs: ErrorTree[], inner: unknown | undefined = undefined) {
-    super(msgs.join("\n"));
+    super(msgs.map((tree) => formatErrorTree(tree)).join("\n"));
     this.inner = inner;
     this.messages = msgs;
   }
