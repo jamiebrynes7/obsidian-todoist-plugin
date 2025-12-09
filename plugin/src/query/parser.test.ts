@@ -284,3 +284,95 @@ describe("parseQuery - warnings", () => {
     });
   }
 });
+
+describe("parseQuery - error message snapshots", () => {
+  type ErrorTestCase = {
+    description: string;
+    input: string;
+  };
+
+  const testcases: ErrorTestCase[] = [
+    {
+      description: "invalid JSON - missing quotes",
+      input: "{name: foo}",
+    },
+    {
+      description: "invalid JSON - unclosed brace",
+      input: '{"filter": "bar"',
+    },
+    {
+      description: "invalid YAML - incorrect indentation",
+      input: "filter: bar\n  name: foo\n name: baz",
+    },
+    {
+      description: "neither valid JSON nor YAML",
+      input: "this is not valid at all {{",
+    },
+    {
+      description: "missing required filter field",
+      input: '{"name": "foo"}',
+    },
+    {
+      description: "name must be a string",
+      input: '{"name": 123, "filter": "bar"}',
+    },
+    {
+      description: "filter must be a string",
+      input: '{"filter": 123}',
+    },
+    {
+      description: "autorefresh must be a number",
+      input: '{"filter": "bar", "autorefresh": "not a number"}',
+    },
+    {
+      description: "autorefresh must be non-negative",
+      input: '{"filter": "bar", "autorefresh": -5}',
+    },
+    {
+      description: "sorting must be an array",
+      input: '{"filter": "bar", "sorting": "not an array"}',
+    },
+    {
+      description: "sorting array must contain strings",
+      input: '{"filter": "bar", "sorting": [1, 2, 3]}',
+    },
+    {
+      description: "sorting must have valid enum values",
+      input: '{"filter": "bar", "sorting": ["invalid", "values"]}',
+    },
+    {
+      description: "groupBy must be a string",
+      input: '{"filter": "bar", "groupBy": 123}',
+    },
+    {
+      description: "groupBy must have valid enum value",
+      input: '{"filter": "bar", "groupBy": "invalid"}',
+    },
+    {
+      description: "show array must contain strings",
+      input: '{"filter": "bar", "show": [1, 2, 3]}',
+    },
+    {
+      description: "show must have valid enum values",
+      input: '{"filter": "bar", "show": ["invalid", "values"]}',
+    },
+    {
+      description: "show field - invalid literal (not 'none')",
+      input: '{"filter": "bar", "show": "nonee"}',
+    },
+    {
+      description: "multiple validation errors",
+      input: '{"name": 123, "autorefresh": -1, "sorting": "invalid"}',
+    },
+    {
+      description: "array with mixed valid and invalid enum values",
+      input: '{"filter": "bar", "sorting": ["date", "invalid", "priority"]}',
+    },
+  ];
+
+  for (const tc of testcases) {
+    it(tc.description, () => {
+      expect(() => parseQuery(tc.input)).toThrowErrorMatchingSnapshot();
+    });
+  }
+});
