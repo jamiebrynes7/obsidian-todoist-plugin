@@ -1,4 +1,4 @@
-@import "../../styles/colors.scss";
+@use "../../styles/colors.scss";
 
 .mod-cta .setting-button-icon {
   margin-right: 0.5em;
@@ -82,7 +82,7 @@
       }
 
       .label-icon {
-        @each $name, $color in $todoist-colors {
+        @each $name, $color in colors.$todoist-colors {
           &[data-label-color="#{$name}"] {
             color: var(--todoist-#{$name});
           }
