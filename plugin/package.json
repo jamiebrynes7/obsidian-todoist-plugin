@@ -31,24 +31,24 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.8",
-    "@rollup/plugin-replace": "6.0.2",
-    "@testing-library/jest-dom": "^6.4.2",
+    "@rollup/plugin-replace": "6.0.3",
+    "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",
     "@types/node": "24.0.13",
     "@types/react-dom": "19.2.1",
     "@typescript/native-preview": "^7.0.0-dev.20251130.1",
-    "@vitejs/plugin-react": "4.6.0",
-    "jsdom": "^24.0.0",
-    "sass": "^1.71.1",
-    "typescript": "^5.3.3",
-    "vite": "7.0.4",
-    "vite-node": "^3.2.4",
-    "vite-plugin-static-copy": "3.1.1",
+    "@vitejs/plugin-react": "5.1.2",
+    "jsdom": "27.3.0",
+    "sass": "1.96.0",
+    "typescript": "5.9.3",
+    "vite": "7.2.7",
+    "vite-node": "5.2.0",
+    "vite-plugin-static-copy": "3.1.4",
     "vite-tsconfig-paths": "5.1.4",
-    "vitest": "3.2.4"
+    "vitest": "4.0.15"
   },
   "optionalDependencies": {
-    "@biomejs/cli-linux-x64-musl": "2.1.1"
+    "@biomejs/cli-linux-x64-musl": "2.3.8"
   },
   "overrides": {
     "rollup": "4.44.2"
