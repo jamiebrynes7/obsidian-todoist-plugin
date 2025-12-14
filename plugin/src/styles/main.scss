@@ -1,7 +1,7 @@
-@import "colors";
+@use "colors";
 
 body {
-  @each $name, $color in $todoist-colors {
+  @each $name, $color in colors.$todoist-colors {
     --todoist-#{$name}: #{$color};
   }
 }

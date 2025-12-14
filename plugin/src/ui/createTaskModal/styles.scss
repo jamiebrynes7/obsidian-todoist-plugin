@@ -1,4 +1,4 @@
-@import "../../styles/colors.scss";
+@use "../../styles/colors.scss";
 
 .modal-popover {
   overflow-y: auto;
@@ -40,7 +40,7 @@
       display: flex;
       align-items: center;
 
-      &>*+* {
+      & > * + * {
         margin-left: 0.5em;
       }
     }
@@ -51,7 +51,7 @@
       border: 1px solid var(--color-base-25);
       color: var(--text-muted);
 
-      &>*+* {
+      & > * + * {
         margin-left: 0.5em;
       }
 
@@ -78,7 +78,7 @@
     .is-mobile & {
       flex-direction: column;
 
-      &>*+* {
+      & > * + * {
         margin-top: 0.5em;
       }
     }
@@ -86,7 +86,7 @@
     .task-creation-action {
       display: flex;
 
-      &>*+* {
+      & > * + * {
         margin-left: 1em;
       }
 
@@ -335,7 +335,7 @@ button.project-selector {
   display: flex;
   align-items: center;
 
-  &>*+* {
+  & > * + * {
     margin-left: 0.5em;
   }
 
@@ -395,7 +395,7 @@ button.project-selector {
       --project-padding: 104px;
     }
 
-    &>*+* {
+    & > * + * {
       margin-left: 0.5em;
     }
 
@@ -410,7 +410,7 @@ button.project-selector {
 }
 
 .todoist-project-icon {
-  @each $name, $color in $todoist-colors {
+  @each $name, $color in colors.$todoist-colors {
     &[data-project-color="#{$name}"] {
       --todoist-project-color: var(--todoist-#{$name});
     }
@@ -428,7 +428,7 @@ button.project-selector {
   display: flex;
   flex-direction: column;
 
-  &>*+* {
+  & > * + * {
     margin-top: 1em;
   }
 
@@ -481,7 +481,7 @@ button.project-selector {
     display: flex;
     justify-content: end;
 
-    &>*+* {
+    & > * + * {
       margin-left: 1em;
     }
   }

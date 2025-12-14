@@ -1,4 +1,4 @@
-@import "../../styles/colors.scss";
+@use "../../styles/colors.scss";
 
 .todoist-query-header {
   display: flex;
@@ -161,7 +161,7 @@
           color: var(--todoist-label-color);
         }
 
-        @each $name, $color in $todoist-colors {
+        @each $name, $color in colors.$todoist-colors {
           &[data-project-color="#{$name}"] {
             --todoist-project-color: var(--todoist-#{$name});
           }
