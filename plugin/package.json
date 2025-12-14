@@ -30,7 +30,7 @@
     "zustand": "5.0.9"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.1",
+    "@biomejs/biome": "2.3.8",
     "@rollup/plugin-replace": "6.0.2",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "16.3.0",

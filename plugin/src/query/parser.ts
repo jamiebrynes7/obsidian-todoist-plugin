@@ -81,7 +81,6 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
 
 const lookupToEnum = <T>(lookup: Record<string, T>) => {
   const keys = Object.keys(lookup);
-  //@ts-expect-error: There is at least one element for these.
   return z.enum(keys).transform((key) => lookup[key]);
 };
 

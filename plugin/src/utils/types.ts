@@ -19,7 +19,6 @@ export namespace DeepPartial {
         typeof base[key] === "object" &&
         base[key] !== null
       ) {
-        // @ts-ignore: we know that the types make sense here
         merged[key] = merge(base[key], partial[key]);
       } else if (partial[key] !== undefined) {
         merged[key] = partial[key] as T[typeof key];
