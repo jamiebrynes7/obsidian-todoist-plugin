@@ -81,7 +81,7 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
 
 const lookupToEnum = <T>(lookup: Record<string, T>) => {
   const keys = Object.keys(lookup);
-  //@ts-ignore: There is at least one element for these.
+  //@ts-expect-error: There is at least one element for these.
   return z.enum(keys).transform((key) => lookup[key]);
 };
 
@@ -175,27 +175,34 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
   ];
 }
 
-function formatZodError(error: z.ZodError): ErrorTree[] {
-  return error.errors.map((err) => {
-    const field = formatPath(err.path);
-    switch (err.code) {
-      case "invalid_type":
-        return `Field '${field}' is ${err.received === "undefined" ? "required" : `must be a ${err.expected}`}`;
-      case "invalid_enum_value":
-        return `Field '${field}' has invalid value '${err.received}'. Valid options are: ${err.options?.join(", ")}`;
-      case "invalid_union":
-        return {
-          msg: "One of the following rules must be met:",
-          children: err.unionErrors.flatMap(formatZodError),
-        };
-      case "invalid_literal":
-        return `Field '${field}' has invalid value '${err.received}', must be exactly '${err.expected}'`;
-      default:
-        return `Field '${field}': ${err.message}`;
-    }
-  });
-}
+type QuerySchema = z.infer<typeof querySchema>;
 
-function formatPath(path: (string | number)[]): string {
-  return path.map((p) => (typeof p === "number" ? `[${p}]` : p)).join(".");
+function formatZodError(error: z.ZodError<QuerySchema>): ErrorTree[] {
+  const tree = z.treeifyError(error);
+
+  const errors: ErrorTree[] = [...tree.errors];
+  if (tree.properties === undefined) {
+    return errors;
+  }
+
+  for (const [key, child] of Object.entries(tree.properties)) {
+    if (child.errors.length > 0) {
+      errors.push({
+        msg: `Field '${key}' has the following issues:`,
+        children: child.errors,
+      });
+    }
+
+    if ("items" in child && child.items !== undefined) {
+      const root: ErrorTree = {
+        msg: `Field '${key}' elements have the following issues:`,
+        children: child.items.flatMap((item, idx) =>
+          item.errors.map((msg) => `Item '${key}[${idx}]': ${msg}`),
+        ),
+      };
+      errors.push(root);
+    }
+  }
+
+  return errors;
 }

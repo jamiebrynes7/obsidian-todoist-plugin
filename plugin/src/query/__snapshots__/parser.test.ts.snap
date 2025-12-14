@@ -1,66 +1,104 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`parseQuery - error message snapshots > array with mixed valid and invalid enum values 1`] = `[Error: Field 'sorting.[1]' has invalid value 'invalid'. Valid options are: priority, priorityAscending, priorityDescending, date, dateAscending, dateDescending, order, dateAdded, dateAddedAscending, dateAddedDescending]`;
+exports[`parseQuery - error message snapshots > array with mixed valid and invalid enum values 1`] = `
+[Error: Field 'sorting' elements have the following issues:
+  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"]
+`;
 
-exports[`parseQuery - error message snapshots > autorefresh must be a number 1`] = `[Error: Field 'autorefresh' is must be a number]`;
+exports[`parseQuery - error message snapshots > autorefresh must be a number 1`] = `
+[Error: Field 'autorefresh' has the following issues:
+  Invalid input: expected number, received string]
+`;
 
-exports[`parseQuery - error message snapshots > autorefresh must be non-negative 1`] = `[Error: Field 'autorefresh': Number must be greater than or equal to 0]`;
+exports[`parseQuery - error message snapshots > autorefresh must be non-negative 1`] = `
+[Error: Field 'autorefresh' has the following issues:
+  Too small: expected number to be >=0]
+`;
 
-exports[`parseQuery - error message snapshots > filter must be a string 1`] = `[Error: Field 'filter' is must be a string]`;
+exports[`parseQuery - error message snapshots > filter must be a string 1`] = `
+[Error: Field 'filter' has the following issues:
+  Invalid input: expected string, received number]
+`;
 
-exports[`parseQuery - error message snapshots > groupBy must be a string 1`] = `[Error: Field 'groupBy' is must be a 'project' | 'section' | 'priority' | 'due' | 'date' | 'labels']`;
+exports[`parseQuery - error message snapshots > groupBy must be a string 1`] = `
+[Error: Field 'groupBy' has the following issues:
+  Invalid option: expected one of "project"|"section"|"priority"|"due"|"date"|"labels"]
+`;
 
-exports[`parseQuery - error message snapshots > groupBy must have valid enum value 1`] = `[Error: Field 'groupBy' has invalid value 'invalid'. Valid options are: project, section, priority, due, date, labels]`;
+exports[`parseQuery - error message snapshots > groupBy must have valid enum value 1`] = `
+[Error: Field 'groupBy' has the following issues:
+  Invalid option: expected one of "project"|"section"|"priority"|"due"|"date"|"labels"]
+`;
 
-exports[`parseQuery - error message snapshots > invalid JSON - missing quotes 1`] = `[Error: Field 'filter' is required]`;
+exports[`parseQuery - error message snapshots > invalid JSON - missing quotes 1`] = `
+[Error: Field 'filter' has the following issues:
+  Invalid input: expected string, received undefined]
+`;
 
 exports[`parseQuery - error message snapshots > invalid JSON - unclosed brace 1`] = `[Error: Unable to parse as YAML or JSON]`;
 
 exports[`parseQuery - error message snapshots > invalid YAML - incorrect indentation 1`] = `[Error: Unable to parse as YAML or JSON]`;
 
-exports[`parseQuery - error message snapshots > missing required filter field 1`] = `[Error: Field 'filter' is required]`;
-
-exports[`parseQuery - error message snapshots > multiple validation errors 1`] = `
-[Error: Field 'name' is must be a string
-Field 'filter' is required
-Field 'autorefresh': Number must be greater than or equal to 0
-Field 'sorting' is must be a array]
+exports[`parseQuery - error message snapshots > missing required filter field 1`] = `
+[Error: Field 'filter' has the following issues:
+  Invalid input: expected string, received undefined]
 `;
 
-exports[`parseQuery - error message snapshots > name must be a string 1`] = `[Error: Field 'name' is must be a string]`;
+exports[`parseQuery - error message snapshots > multiple validation errors 1`] = `
+[Error: Field 'name' has the following issues:
+  Invalid input: expected string, received number
+Field 'filter' has the following issues:
+  Invalid input: expected string, received undefined
+Field 'autorefresh' has the following issues:
+  Too small: expected number to be >=0
+Field 'sorting' has the following issues:
+  Invalid input: expected array, received string]
+`;
 
-exports[`parseQuery - error message snapshots > neither valid JSON nor YAML 1`] = `[Error: Field '' is must be a object]`;
+exports[`parseQuery - error message snapshots > name must be a string 1`] = `
+[Error: Field 'name' has the following issues:
+  Invalid input: expected string, received number]
+`;
+
+exports[`parseQuery - error message snapshots > neither valid JSON nor YAML 1`] = `[Error: Invalid input: expected object, received string]`;
 
 exports[`parseQuery - error message snapshots > show array must contain strings 1`] = `
-[Error: One of the following rules must be met:
-  Field 'show.[0]' is must be a 'due' | 'date' | 'description' | 'labels' | 'project' | 'deadline'
-  Field 'show.[1]' is must be a 'due' | 'date' | 'description' | 'labels' | 'project' | 'deadline'
-  Field 'show.[2]' is must be a 'due' | 'date' | 'description' | 'labels' | 'project' | 'deadline'
-  Field 'show' has invalid value '1,2,3', must be exactly 'none']
+[Error: Field 'show' has the following issues:
+  Invalid input: expected "none"
+Field 'show' elements have the following issues:
+  Item 'show[0]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"
+  Item 'show[1]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"
+  Item 'show[2]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"]
 `;
 
 exports[`parseQuery - error message snapshots > show field - invalid literal (not 'none') 1`] = `
-[Error: One of the following rules must be met:
-  Field 'show' is must be a array
-  Field 'show' has invalid value 'nonee', must be exactly 'none']
+[Error: Field 'show' has the following issues:
+  Invalid input: expected array, received string
+  Invalid input: expected "none"]
 `;
 
 exports[`parseQuery - error message snapshots > show must have valid enum values 1`] = `
-[Error: One of the following rules must be met:
-  Field 'show.[0]' has invalid value 'invalid'. Valid options are: due, date, description, labels, project, deadline
-  Field 'show.[1]' has invalid value 'values'. Valid options are: due, date, description, labels, project, deadline
-  Field 'show' has invalid value 'invalid,values', must be exactly 'none']
+[Error: Field 'show' has the following issues:
+  Invalid input: expected "none"
+Field 'show' elements have the following issues:
+  Item 'show[0]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"
+  Item 'show[1]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"]
 `;
 
 exports[`parseQuery - error message snapshots > sorting array must contain strings 1`] = `
-[Error: Field 'sorting.[0]' is must be a 'priority' | 'priorityAscending' | 'priorityDescending' | 'date' | 'dateAscending' | 'dateDescending' | 'order' | 'dateAdded' | 'dateAddedAscending' | 'dateAddedDescending'
-Field 'sorting.[1]' is must be a 'priority' | 'priorityAscending' | 'priorityDescending' | 'date' | 'dateAscending' | 'dateDescending' | 'order' | 'dateAdded' | 'dateAddedAscending' | 'dateAddedDescending'
-Field 'sorting.[2]' is must be a 'priority' | 'priorityAscending' | 'priorityDescending' | 'date' | 'dateAscending' | 'dateDescending' | 'order' | 'dateAdded' | 'dateAddedAscending' | 'dateAddedDescending']
+[Error: Field 'sorting' elements have the following issues:
+  Item 'sorting[0]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"
+  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"
+  Item 'sorting[2]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"]
 `;
 
-exports[`parseQuery - error message snapshots > sorting must be an array 1`] = `[Error: Field 'sorting' is must be a array]`;
+exports[`parseQuery - error message snapshots > sorting must be an array 1`] = `
+[Error: Field 'sorting' has the following issues:
+  Invalid input: expected array, received string]
+`;
 
 exports[`parseQuery - error message snapshots > sorting must have valid enum values 1`] = `
-[Error: Field 'sorting.[0]' has invalid value 'invalid'. Valid options are: priority, priorityAscending, priorityDescending, date, dateAscending, dateDescending, order, dateAdded, dateAddedAscending, dateAddedDescending
-Field 'sorting.[1]' has invalid value 'values'. Valid options are: priority, priorityAscending, priorityDescending, date, dateAscending, dateDescending, order, dateAdded, dateAddedAscending, dateAddedDescending]
+[Error: Field 'sorting' elements have the following issues:
+  Item 'sorting[0]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"
+  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"]
 `;
