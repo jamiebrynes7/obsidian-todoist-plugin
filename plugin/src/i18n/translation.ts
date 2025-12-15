@@ -226,6 +226,7 @@ export type Translations = {
       header: string;
       jsonQuery: string;
       unknownKey: (key: string) => string;
+      dueAndTime: string;
     };
     groupedHeaders: {
       noDueDate: string;
@@ -256,5 +257,7 @@ export type Translations = {
       endDate: string,
       endTime: string,
     ) => string;
+    timeDuration: (startTime: string, endTime: string) => string;
+    timeDurationDifferentDays: (startTime: string, endDate: string, endTime: string) => string;
   };
 };

@@ -104,6 +104,7 @@ const showSchema = lookupToEnum({
   labels: ShowMetadataVariant.Labels,
   project: ShowMetadataVariant.Project,
   deadline: ShowMetadataVariant.Deadline,
+  time: ShowMetadataVariant.Time,
 });
 
 const groupBySchema = lookupToEnum({
@@ -161,13 +162,19 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
     throw new ParsingError(formatZodError(out.error));
   }
 
+  const show = new Set(out.data.show);
+
+  if (show.has(ShowMetadataVariant.Due) && show.has(ShowMetadataVariant.Time)) {
+    warnings.push(t().query.warning.dueAndTime);
+  }
+
   return [
     {
       name: out.data.name,
       filter: out.data.filter,
       autorefresh: out.data.autorefresh,
       sorting: out.data.sorting,
-      show: new Set(out.data.show),
+      show,
       groupBy: out.data.groupBy,
     },
     warnings,

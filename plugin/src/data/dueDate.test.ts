@@ -883,3 +883,169 @@ describe("formatAsHeader", () => {
     });
   }
 });
+
+describe("formatTimeOnly", () => {
+  type Testcase = {
+    description: string;
+    dueDate: DueDate;
+    expected: string;
+  };
+
+  const testcases: Testcase[] = [
+    {
+      description: "no time component",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1),
+          hasTime: false,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+      expected: "",
+    },
+    {
+      description: "single time",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1, 14, 30),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: undefined,
+      },
+      expected: "2:30 PM",
+    },
+    {
+      description: "same-day duration",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1, 14, 30),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: {
+          raw: makeDate(2024, 0, 1, 15, 30),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+      },
+      expected: "2:30 PM - 3:30 PM",
+    },
+    {
+      description: "same-day duration (different times)",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 1, 15, 9, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 1, 15, 17, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+      expected: "9:00 AM - 5:00 PM",
+    },
+    {
+      description: "multi-day duration (today to tomorrow)",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 1, 14, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "today",
+        },
+        end: {
+          raw: makeDate(2024, 0, 2, 10, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+      },
+      expected: "2:00 PM - Tomorrow at 10:00 AM",
+    },
+    {
+      description: "multi-day duration (tomorrow to next week)",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 2, 9, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "tomorrow",
+        },
+        end: {
+          raw: makeDate(2024, 0, 5, 17, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: "nextWeek",
+        },
+      },
+      expected: "9:00 AM - Friday at 5:00 PM",
+    },
+    {
+      description: "multi-day duration (specific dates)",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 0, 3, 12, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2024, 0, 8, 12, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+      },
+      expected: "12:00 PM - Jan 8 at 12:00 PM",
+    },
+    {
+      description: "multi-day duration (different years)",
+      dueDate: {
+        start: {
+          raw: makeDate(2024, 11, 30, 9, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: true,
+          flag: undefined,
+        },
+        end: {
+          raw: makeDate(2025, 0, 2, 17, 0),
+          hasTime: true,
+          isOverdue: false,
+          isCurrentYear: false,
+          flag: undefined,
+        },
+      },
+      expected: "9:00 AM - Jan 2, 2025 at 5:00 PM",
+    },
+  ];
+
+  for (const tc of testcases) {
+    it(tc.description, () => {
+      const actual = DueDate.formatTimeOnly(tc.dueDate);
+      expect(actual).toBe(tc.expected);
+    });
+  }
+});

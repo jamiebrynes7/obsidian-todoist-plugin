@@ -236,6 +236,39 @@ describe("parseQuery", () => {
         show: new Set(),
       }),
     },
+    {
+      description: "with show including time only",
+      input: {
+        filter: "bar",
+        show: ["time"],
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set([ShowMetadataVariant.Time]),
+      }),
+    },
+    {
+      description: "with show including time and project",
+      input: {
+        filter: "bar",
+        show: ["time", "project"],
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set([ShowMetadataVariant.Time, ShowMetadataVariant.Project]),
+      }),
+    },
+    {
+      description: "with show including both due and time",
+      input: {
+        filter: "bar",
+        show: ["due", "time"],
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Time]),
+      }),
+    },
   ];
 
   for (const tc of testcases) {
@@ -273,6 +306,17 @@ describe("parseQuery - warnings", () => {
       expectedWarnings: [
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
         "Found unexpected query key 'namee'. Is this a typo?",
+      ],
+    },
+    {
+      description: "Both due and time in show options",
+      input: {
+        filter: "bar",
+        show: ["due", "time"],
+      },
+      expectedWarnings: [
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+        "Both 'due' and 'time' show options are set. The 'time' option will be ignored when 'due' is present.",
       ],
     },
   ];

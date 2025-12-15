@@ -251,6 +251,8 @@ export const en: Translations = {
       jsonQuery:
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
       unknownKey: (key: string) => `Found unexpected query key '${key}'. Is this a typo?`,
+      dueAndTime:
+        "Both 'due' and 'time' show options are set. The 'time' option will be ignored when 'due' is present.",
     },
     groupedHeaders: {
       noDueDate: "No due date",
@@ -289,6 +291,12 @@ export const en: Translations = {
       endTime: string,
     ): string => {
       return `${startDate} at ${startTime} - ${endDate} at ${endTime}`;
+    },
+    timeDuration: (startTime: string, endTime: string) => {
+      return `${startTime} - ${endTime}`;
+    },
+    timeDurationDifferentDays: (startTime: string, endDate: string, endTime: string) => {
+      return `${startTime} - ${endDate} at ${endTime}`;
     },
   },
 };

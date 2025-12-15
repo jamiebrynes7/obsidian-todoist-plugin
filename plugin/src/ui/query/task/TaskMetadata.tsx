@@ -102,7 +102,37 @@ const labelsMeta: MetadataDefinition = {
   side: "left",
 };
 
-const metadata: MetadataDefinition[] = [projectMeta, dueDateMeta, deadlineMeta, labelsMeta];
+const timeOnlyMeta: MetadataDefinition = {
+  name: "time",
+  isShown: (query, task) => {
+    if (query.show.has(ShowMetadataVariant.Due)) {
+      return false;
+    }
+
+    if (!query.show.has(ShowMetadataVariant.Time) || task.due === undefined) {
+      return false;
+    }
+
+    const parsedDue = DueDate.parse(task.due, task.duration);
+    return parsedDue.start.hasTime;
+  },
+  content: (task) => [{ content: timeOnlyLabel(task) }],
+  icons: {
+    before: {
+      id: "calendar",
+      shouldRender: (settings) => settings.renderDateIcon,
+    },
+  },
+  side: "left",
+};
+
+const metadata: MetadataDefinition[] = [
+  projectMeta,
+  dueDateMeta,
+  deadlineMeta,
+  labelsMeta,
+  timeOnlyMeta,
+];
 
 const dateLabel = (task: Task): string => {
   if (task.due === undefined) {
@@ -118,6 +148,14 @@ const deadlineLabel = (task: Task): string => {
   }
 
   return Deadline.format(Deadline.parse(task.deadline));
+};
+
+const timeOnlyLabel = (task: Task): string => {
+  if (task.due === undefined) {
+    return "";
+  }
+
+  return DueDate.formatTimeOnly(DueDate.parse(task.due, task.duration)) ?? "";
 };
 
 type TaskMetadataProps = {

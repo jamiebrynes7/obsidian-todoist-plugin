@@ -66,9 +66,9 @@ exports[`parseQuery - error message snapshots > show array must contain strings 
 [Error: Field 'show' has the following issues:
   Invalid input: expected "none"
 Field 'show' elements have the following issues:
-  Item 'show[0]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"
-  Item 'show[1]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"
-  Item 'show[2]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"]
+  Item 'show[0]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"|"time"
+  Item 'show[1]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"|"time"
+  Item 'show[2]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"|"time"]
 `;
 
 exports[`parseQuery - error message snapshots > show field - invalid literal (not 'none') 1`] = `
@@ -81,8 +81,8 @@ exports[`parseQuery - error message snapshots > show must have valid enum values
 [Error: Field 'show' has the following issues:
   Invalid input: expected "none"
 Field 'show' elements have the following issues:
-  Item 'show[0]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"
-  Item 'show[1]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"]
+  Item 'show[0]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"|"time"
+  Item 'show[1]': Invalid option: expected one of "due"|"date"|"description"|"labels"|"project"|"deadline"|"time"]
 `;
 
 exports[`parseQuery - error message snapshots > sorting array must contain strings 1`] = `
