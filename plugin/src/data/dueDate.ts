@@ -203,10 +203,33 @@ const formatDueDateHeader = (due: DueDate): string => {
   return parts.join(" ‧ ");
 };
 
+const formatDueDateTimeOnly = (dueDate: DueDate): string => {
+  if (!dueDate.start.hasTime) {
+    return "";
+  }
+
+  const i18n = t().dates;
+  const startTime = getFormatter("time").format(dueDate.start.raw);
+
+  if (dueDate.end === undefined) {
+    return startTime;
+  }
+
+  const endTime = getFormatter("time").format(dueDate.end.raw);
+
+  if (isSameDay(dueDate.start.raw, dueDate.end.raw)) {
+    return i18n.timeDuration(startTime, endTime);
+  }
+
+  const endDate = formatDate(dueDate.end);
+  return i18n.timeDurationDifferentDays(startTime, endDate, endTime);
+};
+
 export const DueDate = {
   parse: parseDueDate,
   format: formatDueDate,
   formatHeader: formatDueDateHeader,
+  formatTimeOnly: formatDueDateTimeOnly,
 };
 
 function isSameDay(a: Date, b: Date): boolean {
