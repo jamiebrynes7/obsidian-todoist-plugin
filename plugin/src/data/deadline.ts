@@ -84,6 +84,8 @@ const formatDeadline = (info: DeadlineInfo): string => {
       return i18n.lastWeekday(getFormatter("weekday").format(info.raw));
     case "nextWeek":
       return getFormatter("weekday").format(info.raw);
+    default:
+      break;
   }
 
   if (!info.isCurrentYear) {

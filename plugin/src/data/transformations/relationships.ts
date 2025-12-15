@@ -22,7 +22,7 @@ export function buildTaskTree(tasks: Task[]): TaskTree[] {
     if (parent !== undefined) {
       const child = mapping.get(task.id);
       if (child === undefined) {
-        throw Error("Expected to find task in map");
+        throw new Error("Expected to find task in map");
       }
       parent.children.push(child);
     }
@@ -31,7 +31,7 @@ export function buildTaskTree(tasks: Task[]): TaskTree[] {
   return roots.map((id) => {
     const tree = mapping.get(id);
     if (tree === undefined) {
-      throw Error("Expected to find task in map");
+      throw new Error("Expected to find task in map");
     }
     return tree;
   });

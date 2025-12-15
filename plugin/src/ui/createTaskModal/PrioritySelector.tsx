@@ -5,7 +5,7 @@ import { Button, type Key, Label, Menu, MenuItem, MenuTrigger } from "react-aria
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
 
-import type { Priority } from "../../api/domain/task";
+import { Priorities, type Priority } from "../../api/domain/task";
 import { ObsidianIcon } from "../components/obsidian-icon";
 import { Popover } from "./Popover";
 
@@ -14,12 +14,12 @@ type Props = {
   setSelected: (selected: Priority) => void;
 };
 
-const options: Priority[] = [4, 3, 2, 1];
+const options: Priority[] = [Priorities.P1, Priorities.P2, Priorities.P3, Priorities.P4];
 
 export const PrioritySelector: React.FC<Props> = ({ selected, setSelected }) => {
   const onSelected = (key: Key) => {
     if (typeof key === "string") {
-      throw Error("unexpected key type");
+      throw new Error("unexpected key type");
     }
 
     // Should be a safe cast since we only use valid priorities
@@ -66,13 +66,17 @@ const getLabel = (
   i18n: Translations["createTaskModal"]["prioritySelector"],
 ): string => {
   switch (priority) {
-    case 1:
+    case Priorities.P4:
       return i18n.p4;
-    case 2:
+    case Priorities.P3:
       return i18n.p3;
-    case 3:
+    case Priorities.P2:
       return i18n.p2;
-    case 4:
+    case Priorities.P1:
       return i18n.p1;
+    default: {
+      const _: never = priority;
+      throw new Error("Unknown priority");
+    }
   }
 };

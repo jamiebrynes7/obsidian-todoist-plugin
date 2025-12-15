@@ -16,5 +16,9 @@ export const TokenValidationIcon: React.FC<{
       return <ObsidianIcon id="x-circle" className="token-validation-error" size="m" />;
     case "success":
       return <ObsidianIcon id="check-circle-2" className="token-validation-success" size="m" />;
+    default: {
+      const _: never = status;
+      throw new Error("Unknown token validation status");
+    }
   }
 };

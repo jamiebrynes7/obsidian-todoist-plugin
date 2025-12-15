@@ -9,7 +9,7 @@ interface MarkdownProps {
   className?: string;
 }
 
-const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
+export const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
   const renderChild = RenderChildContext.use();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -38,5 +38,3 @@ const Markdown: React.FC<MarkdownProps> = ({ content, className }) => {
 
   return <div ref={ref} className={className} />;
 };
-
-export default Markdown;

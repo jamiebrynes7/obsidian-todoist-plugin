@@ -29,7 +29,7 @@ class ReactModal<T extends {}> extends Modal {
 
     const modal: ModalInfo = {
       close: () => this.close(),
-      popoverContainerEl: popoverContainerEl,
+      popoverContainerEl,
     };
 
     if (opts.dontCloseOnExternalClick ?? false) {

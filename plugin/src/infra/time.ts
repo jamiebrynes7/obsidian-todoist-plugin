@@ -17,3 +17,8 @@ export const now = (): ZonedDateTime => {
 export const timezone = (): string => {
   return getLocalTimeZone();
 };
+
+const millisInSecond = 1000;
+export const secondsToMillis = (seconds: number): number => {
+  return seconds * millisInSecond;
+};

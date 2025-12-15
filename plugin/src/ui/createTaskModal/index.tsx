@@ -31,6 +31,8 @@ import "./styles.scss";
 import type { Translations } from "@/i18n/translation";
 import { OptionsSelector } from "@/ui/createTaskModal/OptionsSelector";
 
+const readyCheckIntervalMs = 500;
+
 export type LinkDestination = "content" | "description";
 
 export type TaskCreationOptions = {
@@ -71,6 +73,10 @@ const calculateDefaultDueDate = (setting: DueDateDefaultSetting): DueDate | unde
         date: today().add({ days: 1 }),
         timeInfo: undefined,
       };
+    default: {
+      const _: never = setting;
+      throw new Error("Unknown due date default setting");
+    }
   }
 };
 
@@ -138,7 +144,7 @@ export const CreateTaskModal: React.FC<CreateTaskProps> = (props) => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: we don't want to reset this when isReady changes.
   useEffect(() => {
-    const id = window.setInterval(refreshIsReady, 500);
+    const id = window.setInterval(refreshIsReady, readyCheckIntervalMs);
     return () => window.clearInterval(id);
   }, []);
 
@@ -207,7 +213,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
     const params: CreateTaskParams = {
       description: buildWithLink(description, options.appendLinkTo === "description"),
-      priority: priority,
+      priority,
       labels: labels.map((l) => l.name),
       projectId: project.projectId,
       sectionId: project.sectionId,
@@ -242,6 +248,8 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         case "add-copy-web":
           url = `https://todoist.com/app/project/${task.projectId}/task/${task.id}`;
           break;
+        default:
+          break;
       }
 
       if (url !== undefined) {
@@ -270,6 +278,10 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
         return i18n.addTaskAndCopyAppLabel;
       case "add-copy-web":
         return i18n.addTaskAndCopyWebLabel;
+      default: {
+        const _: never = action;
+        throw new Error("Unknown add task action");
+      }
     }
   };
 
@@ -371,7 +383,7 @@ const getInboxProject = (plugin: TodoistPlugin): ProjectIdentifier => {
   const i18n = t().createTaskModal;
 
   new Notice(i18n.failedToFindInboxNotice);
-  throw Error("Could not find inbox project");
+  throw new Error("Could not find inbox project");
 };
 
 const getLinkForFile = (file: TFile): string => {

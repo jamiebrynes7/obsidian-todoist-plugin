@@ -5,6 +5,8 @@ import { Popover as AriaPopover, type PopoverProps } from "react-aria-components
 
 import { ModalContext } from "@/ui/context";
 
+const defaultMaxHeight = 500;
+
 type Props = {
   maxHeight?: number;
   defaultPlacement?: PlacementDetails["placement"];
@@ -19,7 +21,7 @@ export const Popover: React.FC<PropsWithChildren<Props>> = ({
 
   return (
     <AriaPopover
-      maxHeight={maxHeight ?? 500}
+      maxHeight={maxHeight ?? defaultMaxHeight}
       offset={5}
       UNSTABLE_portalContainer={modal.popoverContainerEl}
       className="modal-popover"

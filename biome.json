@@ -1,14 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
-  "files": {
-    "experimentalScannerIgnores": [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/.devenv/**",
-      "**/.direnv/**"
-    ]
-  },
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -24,9 +15,75 @@
       },
       "a11y": {
         "noStaticElementInteractions": "off"
+      },
+      "style": {
+        "noDefaultExport": "error",
+        "noExportedImports": "error",
+        "noInferrableTypes": "error",
+        "noMagicNumbers": "error",
+        "noNegationElse": "error",
+        "noNestedTernary": "error",
+        "noNonNullAssertion": "error",
+        "noParameterAssign": "error",
+        "noParameterProperties": "error",
+        "noShoutyConstants": "error",
+        "noUselessElse": "error",
+        "noYodaExpression": "error",
+        "useArrayLiterals": "error",
+        "useAsConstAssertion": "error",
+        "useBlockStatements": "error",
+        "useCollapsedElseIf": "error",
+        "useCollapsedIf": "error",
+        "useConsistentArrayType": {
+          "level": "error",
+          "options": {
+            "syntax": "shorthand"
+          }
+        },
+        "useConsistentCurlyBraces": "error",
+        "useConsistentObjectDefinitions": {
+          "level": "error",
+          "options": {
+            "syntax": "shorthand"
+          }
+        },
+        "useConst": "error",
+        "useDefaultParameterLast": "error",
+        "useDefaultSwitchClause": "error",
+        "useEnumInitializers": "error",
+        "useExplicitLengthCheck": "error",
+        "useForOf": "error",
+        "useFragmentSyntax": "error",
+        "useImportType": "error",
+        "useLiteralEnumMembers": "error",
+        "useNumberNamespace": "error",
+        "useNumericSeparators": "error",
+        "useObjectSpread": "error",
+        "useReactFunctionComponents": "error",
+        "useReadonlyClassProperties": "error",
+        "useSelfClosingElements": "error",
+        "useShorthandFunctionType": "error",
+        "useSingleVarDeclarator": "error",
+        "useTemplate": "error",
+        "useThrowNewError": "error",
+        "useThrowOnlyError": "error"
       }
     }
   },
+  "overrides": [
+    {
+      "includes": [
+        "**/*.test.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noMagicNumbers": "off"
+          }
+        }
+      }
+    }
+  ],
   "assist": {
     "actions": {
       "source": {

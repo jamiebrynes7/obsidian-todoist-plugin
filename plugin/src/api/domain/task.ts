@@ -29,10 +29,17 @@ export type Task = {
   order: number;
 };
 
-export type Priority = 1 | 2 | 3 | 4;
+export const Priorities = {
+  P4: 1,
+  P3: 2,
+  P2: 3,
+  P1: 4,
+} as const;
+
+export type Priority = (typeof Priorities)[keyof typeof Priorities];
 
 export type CreateTaskParams = {
-  priority: number;
+  priority: Priority;
   projectId: ProjectId;
   description?: string;
   sectionId?: SectionId;

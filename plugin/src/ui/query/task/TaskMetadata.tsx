@@ -164,6 +164,8 @@ const getMetadataElems = (
               case "after":
                 children.push(icon);
                 break;
+              default:
+                throw new Error(`Unknown icon orientation: ${orientation}`);
             }
           }
         }

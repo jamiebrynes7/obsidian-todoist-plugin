@@ -24,7 +24,7 @@ export function groupBy(tasks: Task[], groupBy: GroupVariant): GroupedTasks[] {
     case GroupVariant.Label:
       return groupByLabel(tasks);
     default:
-      throw Error(`Cannot group by ${groupBy}`);
+      throw new Error(`Cannot group by ${groupBy}`);
   }
 }
 

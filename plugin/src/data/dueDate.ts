@@ -170,6 +170,8 @@ const formatDate = (info: DateInfo): string => {
       return i18n.lastWeekday(getFormatter("weekday").format(info.raw));
     case "nextWeek":
       return getFormatter("weekday").format(info.raw);
+    default:
+      break;
   }
 
   if (!info.isCurrentYear) {
@@ -193,6 +195,8 @@ const formatDueDateHeader = (due: DueDate): string => {
       break;
     case "tomorrow":
       parts.push(i18n.tomorrow);
+      break;
+    default:
       break;
   }
 

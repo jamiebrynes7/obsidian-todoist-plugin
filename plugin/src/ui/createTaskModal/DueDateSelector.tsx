@@ -272,8 +272,9 @@ type TimeDialogProps = {
   setTimeInfo: (timeInfo: DueDate["timeInfo"] | undefined) => void;
 };
 
+const segmentDurationMins = 15;
 // We want enough options to get to 23h 45m.
-const MAX_DURATION_SEGMENTS = (24 * 60 - 15) / 15;
+const numDurationSegments = (24 * 60 - segmentDurationMins) / segmentDurationMins;
 
 const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }) => {
   const i18n = t().createTaskModal.dateSelector.timeDialog;
@@ -282,10 +283,10 @@ const TimeDialog: React.FC<TimeDialogProps> = ({ selectedTimeInfo, setTimeInfo }
     undefined,
     ...Array.from(
       {
-        length: MAX_DURATION_SEGMENTS,
+        length: numDurationSegments,
       },
       (_, i) => ({
-        amount: (i + 1) * 15,
+        amount: (i + 1) * segmentDurationMins,
         unit: "minute" as const,
       }),
     ),
