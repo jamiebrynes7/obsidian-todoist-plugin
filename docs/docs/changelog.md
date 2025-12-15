@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### ✨ Features
+
+- You can now provide 'time' to the show field on a query. This will only render the time of the task (unless the end of the task is on a different day than the start).
+
 ## v2.3.0 (2025-12-06)
 
 ### ✨ Features
