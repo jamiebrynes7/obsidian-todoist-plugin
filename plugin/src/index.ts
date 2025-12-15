@@ -11,6 +11,7 @@ import { makeServices, type Services } from "@/services";
 import { type Settings, useSettingsStore } from "@/settings";
 import { SettingsTab } from "@/ui/settings";
 
+// biome-ignore lint/style/noDefaultExport: We must use default export for Obsidian plugins
 export default class TodoistPlugin extends Plugin {
   public readonly services: Services;
 

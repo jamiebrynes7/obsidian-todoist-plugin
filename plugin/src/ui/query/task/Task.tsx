@@ -8,11 +8,13 @@ import type { TaskTree } from "@/data/transformations/relationships";
 import { t } from "@/i18n";
 import { ShowMetadataVariant } from "@/query/query";
 import { useSettingsStore } from "@/settings";
-import Markdown from "@/ui/components/markdown";
+import { Markdown } from "@/ui/components/markdown";
 import { PluginContext, QueryContext } from "@/ui/context";
 import { showTaskContext } from "@/ui/query/task/contextMenu";
 import { TaskList } from "@/ui/query/task/TaskList";
 import { TaskMetadata } from "@/ui/query/task/TaskMetadata";
+
+const noticeDurationMs = 2000;
 
 type Props = {
   tree: TaskTree;
@@ -40,7 +42,7 @@ export const Task: React.FC<Props> = ({ tree }) => {
       await plugin.services.todoist.actions.closeTask(tree.id);
     } catch (error: unknown) {
       console.error("Failed to close task", error);
-      new Notice(t().query.failedCloseMessage, 2000);
+      new Notice(t().query.failedCloseMessage, noticeDurationMs);
     }
   };
 

@@ -119,8 +119,8 @@ const DropdownControl = <T extends DropdownOptionValue>({
 };
 
 export const Setting = {
-  Root: Root,
-  ButtonControl: ButtonControl,
-  ToggleControl: ToggleControl,
-  DropdownControl: DropdownControl,
+  Root,
+  ButtonControl,
+  ToggleControl,
+  DropdownControl,
 };

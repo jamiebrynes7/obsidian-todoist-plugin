@@ -1,6 +1,6 @@
 import { useSettingsStore } from "@/settings";
 
-export default function debug(log: string | LogMessage) {
+export function debug(log: string | LogMessage) {
   if (!useSettingsStore.getState().debugLogging) {
     return;
   }

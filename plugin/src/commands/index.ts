@@ -8,7 +8,7 @@ import {
 import { t } from "@/i18n";
 import type { Translations } from "@/i18n/translation";
 import type TodoistPlugin from "@/index";
-import debug from "@/log";
+import { debug } from "@/log";
 
 export type MakeCommand = (
   plugin: TodoistPlugin,

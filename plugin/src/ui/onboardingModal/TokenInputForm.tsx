@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { Button, FieldError, Group, Input, Label, TextField } from "react-aria-components";
 
 import { t } from "@/i18n";
-import debug from "@/log";
+import { debug } from "@/log";
 import { TokenValidation } from "@/token";
 import { TokenValidationIcon } from "@/ui/components/token-validation-icon";
+
+const debouncingDelayMs = 500;
 
 type Props = {
   onTokenSubmit: (token: string) => void;
@@ -58,7 +60,7 @@ export const TokenInputForm: React.FC<Props> = ({ onTokenSubmit, tester }) => {
           setValidationStatus(result);
         }
       });
-    }, 500);
+    }, debouncingDelayMs);
 
     debounceTimeout.current = timeoutId;
     return () => {

@@ -40,7 +40,7 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
 
   const onSelect = (key: Key) => {
     if (typeof key === "number") {
-      throw Error("Unexpected key type: number");
+      throw new Error("Unexpected key type: number");
     }
 
     const [id, isSection] = ItemKey.parse(key);
@@ -48,7 +48,7 @@ export const ProjectSelector: React.FC<Props> = ({ selected, setSelected }) => {
     if (isSection) {
       const section = todoistData.sections.byId(id);
       if (section === undefined) {
-        throw Error("Could not find selected section");
+        throw new Error("Could not find selected section");
       }
 
       setSelected({
@@ -245,7 +245,7 @@ const ButtonLabel: React.FC<ProjectIdentifier> = ({ projectId, sectionId }) => {
 
   const selectedProject = projects.byId(projectId);
   if (selectedProject === undefined) {
-    throw Error("Could not find selected project");
+    throw new Error("Could not find selected project");
   }
 
   const selectedSection = sectionId !== undefined ? sections.byId(sectionId) : undefined;
@@ -294,7 +294,7 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
     const parent = mapped.get(project.parentId);
 
     if (child === undefined) {
-      throw Error("Failed to find project in map");
+      throw new Error("Failed to find project in map");
     }
 
     // In this scenario, we could be in a weird half-way sync state.
@@ -329,7 +329,7 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
     .map((project) => {
       const nested = mapped.get(project.id);
       if (nested === undefined) {
-        throw Error("Failed to find root project in map");
+        throw new Error("Failed to find root project in map");
       }
 
       return nested;

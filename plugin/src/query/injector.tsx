@@ -5,7 +5,7 @@ import { createRoot, type Root } from "react-dom/client";
 import { create, type StoreApi, type UseBoundStore } from "zustand";
 
 import type TodoistPlugin from "@/index";
-import debug from "@/log";
+import { debug } from "@/log";
 import { parseQuery } from "@/query/parser";
 import { applyReplacements } from "@/query/replacements";
 import {
@@ -95,15 +95,19 @@ class ReactRenderer<T extends {}> extends MarkdownRenderChild {
 
       for (const mutation of mutations) {
         for (const addedNode of mutation.addedNodes) {
-          if (addedNode instanceof HTMLElement) {
-            if (addedNode.classList.contains("edit-block-button")) {
-              addedNode.hide();
-              this.store.setState({
-                click: () => addedNode.click(),
-              });
-              return;
-            }
+          if (!(addedNode instanceof HTMLElement)) {
+            continue;
           }
+
+          if (!addedNode.classList.contains("edit-block-button")) {
+            continue;
+          }
+
+          addedNode.hide();
+          this.store.setState({
+            click: () => addedNode.click(),
+          });
+          return;
         }
       }
     });

@@ -4,6 +4,25 @@ export interface WebFetcher {
   fetch(params: RequestParams): Promise<WebResponse>;
 }
 
+export type StatusCode = number;
+
+export const StatusCode = {
+  isError(code: StatusCode): boolean {
+    return code >= StatusCodes.BadRequest;
+  },
+  isServerError(code: StatusCode): boolean {
+    return code >= StatusCodes.InternalServerError;
+  },
+} as const;
+
+export const StatusCodes = {
+  OK: 200,
+  BadRequest: 400,
+  Unauthorized: 401,
+  Forbidden: 403,
+  InternalServerError: 500,
+} as const;
+
 export type RequestParams = {
   url: string;
   method: string;
@@ -12,7 +31,7 @@ export type RequestParams = {
 };
 
 export type WebResponse = {
-  statusCode: number;
+  statusCode: StatusCode;
   body: string;
 };
 

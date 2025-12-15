@@ -18,6 +18,10 @@ const getAddTaskCommandId = (settings: Settings): CommandId => {
       return "add-task-page-description";
     case "off":
       return "add-task";
+    default: {
+      const _: never = settings.addTaskButtonAddsPageLink;
+      throw new Error("Unknown add task button setting");
+    }
   }
 };
 

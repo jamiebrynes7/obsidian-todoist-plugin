@@ -13,6 +13,8 @@ import { QueryHeader } from "@/ui/query/QueryHeader";
 import { QueryWarnings } from "@/ui/query/QueryWarnings";
 import "./styles.scss";
 
+import { secondsToMillis } from "@/infra/time";
+
 const useSubscription = (
   plugin: TodoistPlugin,
   query: Query,
@@ -79,7 +81,7 @@ export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
 
     const id = window.setInterval(async () => {
       await refresh();
-    }, interval * 1000);
+    }, secondsToMillis(interval));
 
     return () => window.clearInterval(id);
   }, [query, settings, refresh]);
@@ -128,6 +130,10 @@ const getTitle = (query: Query, result: SubscriptionResult): string => {
       return query.name.replace("{task_count}", result.tasks.length.toString());
     case "not-ready":
       return "";
+    default: {
+      const _: never = result;
+      throw new Error("Unknown result type");
+    }
   }
 };
 

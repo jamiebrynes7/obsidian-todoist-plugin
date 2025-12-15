@@ -6,8 +6,8 @@ import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";
 import type { CreateTaskParams, Task, TaskId } from "@/api/domain/task";
 import type { UserInfo } from "@/api/domain/user";
-import type { RequestParams, WebFetcher, WebResponse } from "@/api/fetcher";
-import debug from "@/log";
+import { type RequestParams, StatusCode, type WebFetcher, type WebResponse } from "@/api/fetcher";
+import { debug } from "@/log";
 
 type PaginatedResponse<T> = {
   results: T[];
@@ -15,8 +15,8 @@ type PaginatedResponse<T> = {
 };
 
 export class TodoistApiClient {
-  private token: string;
-  private fetcher: WebFetcher;
+  private readonly token: string;
+  private readonly fetcher: WebFetcher;
 
   constructor(token: string, fetcher: WebFetcher) {
     this.token = token;
@@ -26,14 +26,14 @@ export class TodoistApiClient {
   public async getTasks(filter?: string): Promise<Task[]> {
     if (filter !== undefined) {
       return await this.doPaginated<Task>("/tasks/filter", { query: filter });
-    } else {
-      return await this.doPaginated<Task>("/tasks");
     }
+
+    return await this.doPaginated<Task>("/tasks");
   }
 
   public async createTask(content: string, options?: CreateTaskParams): Promise<Task> {
     const body = snakify({
-      content: content,
+      content,
       ...(options ?? {}),
     });
     const response = await this.do("/tasks", "POST", body);
@@ -87,7 +87,7 @@ export class TodoistApiClient {
   private async do(path: string, method: string, json?: object): Promise<WebResponse> {
     const params: RequestParams = {
       url: `https://api.todoist.com/api/v1${path}`,
-      method: method,
+      method,
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
@@ -110,7 +110,7 @@ export class TodoistApiClient {
       context: response,
     });
 
-    if (response.statusCode >= 400) {
+    if (StatusCode.isError(response.statusCode)) {
       throw new TodoistApiError(params, response);
     }
 
@@ -119,7 +119,7 @@ export class TodoistApiClient {
 }
 
 export class TodoistApiError extends Error {
-  public statusCode: number;
+  public statusCode: StatusCode;
 
   constructor(request: RequestParams, response: WebResponse) {
     const message = `[${request.method}] ${request.url} returned '${response.statusCode}: ${response.body}`;

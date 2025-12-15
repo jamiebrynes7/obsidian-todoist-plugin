@@ -4,6 +4,7 @@ import type { Project, ProjectId } from "@/api/domain/project";
 import type { Section, SectionId } from "@/api/domain/section";
 import type { Task as ApiTask, CreateTaskParams, TaskId } from "@/api/domain/task";
 import type { UserInfo } from "@/api/domain/user";
+import { StatusCode, StatusCodes } from "@/api/fetcher";
 import { Repository, type RepositoryReader } from "@/data/repository";
 import { SubscriptionManager, type UnsubscribeCallback } from "@/data/subscriptions";
 import type { Task } from "@/data/task";
@@ -146,10 +147,10 @@ export class TodoistAdapter {
       description: apiTask.description,
 
       project: project ?? makeUnknownProject(apiTask.projectId),
-      section: section,
+      section,
       parentId: apiTask.parentId ?? undefined,
 
-      labels: labels,
+      labels,
       priority: apiTask.priority,
 
       due: apiTask.due ?? undefined,
@@ -253,13 +254,13 @@ class Subscription {
         kind: QueryErrorKind.Unknown,
       };
       if (error instanceof TodoistApiError) {
-        if (error.statusCode === 400) {
+        if (error.statusCode === StatusCodes.BadRequest) {
           result.kind = QueryErrorKind.BadRequest;
-        } else if (error.statusCode === 401) {
+        } else if (error.statusCode === StatusCodes.Unauthorized) {
           result.kind = QueryErrorKind.Unauthorized;
-        } else if (error.statusCode === 403) {
+        } else if (error.statusCode === StatusCodes.Forbidden) {
           result.kind = QueryErrorKind.Forbidden;
-        } else if (error.statusCode > 500) {
+        } else if (StatusCode.isServerError(error.statusCode)) {
           result.kind = QueryErrorKind.ServerError;
         }
       }
