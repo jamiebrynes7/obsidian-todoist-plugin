@@ -108,6 +108,7 @@ The `show` property controls which elements of the task metadata to render. If o
 The possible values are:
 
 - `due` or `date`: render the due date of the task
+- `time`: render only the time component of the due date of the task (the end date will be shown if the task duration spans days)
 - `deadline`: render the deadline of the task
 - `description`: render the description of the task
 - `project`: render the project (and section, if applicable) of the task
