@@ -154,7 +154,8 @@ function groupByDate(tasks: Task[]): GroupedTasks[] {
       return "Overdue";
     }
 
-    return task.due.date;
+    // Discard any time component for grouping purposes
+    return task.due.date.split("T")[0];
   });
   const groups = Array.from(dates.entries());
   groups.sort((a, b) => {

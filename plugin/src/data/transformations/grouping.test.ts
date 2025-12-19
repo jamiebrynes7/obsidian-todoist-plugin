@@ -465,6 +465,30 @@ describe("group by date", () => {
         },
       ],
     },
+    {
+      description: "should group tasks on same due date but different times together",
+      input: [
+        makeTask("a", {
+          due: makeDueDate("2024-01-12"),
+        }),
+        makeTask("b", {
+          due: makeDueDate("2024-01-12T09:00:00"),
+        }),
+      ],
+      expected: [
+        {
+          header: "Jan 12 ‧ Friday",
+          tasks: [
+            makeTask("a", {
+              due: makeDueDate("2024-01-12"),
+            }),
+            makeTask("b", {
+              due: makeDueDate("2024-01-12T09:00:00"),
+            }),
+          ],
+        },
+      ],
+    },
   ];
 
   for (const tc of testcases) {
