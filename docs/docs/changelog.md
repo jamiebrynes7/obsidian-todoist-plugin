@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now provide 'time' to the show field on a query. This will only render the time of the task (unless the end of the task is on a different day than the start).
 
+### 🐛 Bug Fixes
+
+- Date grouping now correctly groups tasks on the same day together regardless of whether they have times
+
 ## v2.3.0 (2025-12-06)
 
 ### ✨ Features
