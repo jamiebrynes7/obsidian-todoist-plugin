@@ -108,6 +108,7 @@ const showSchema = lookupToEnum({
   project: ShowMetadataVariant.Project,
   deadline: ShowMetadataVariant.Deadline,
   time: ShowMetadataVariant.Time,
+  section: ShowMetadataVariant.Section,
 });
 
 const groupBySchema = lookupToEnum({
@@ -169,6 +170,10 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
 
   if (show.has(ShowMetadataVariant.Due) && show.has(ShowMetadataVariant.Time)) {
     warnings.push(t().query.warning.dueAndTime);
+  }
+
+  if (show.has(ShowMetadataVariant.Project) && show.has(ShowMetadataVariant.Section)) {
+    warnings.push(t().query.warning.projectAndSection);
   }
 
   return [

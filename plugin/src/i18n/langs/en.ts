@@ -253,6 +253,8 @@ export const en: Translations = {
       unknownKey: (key: string) => `Found unexpected query key '${key}'. Is this a typo?`,
       dueAndTime:
         "Both 'due' and 'time' show options are set. The 'time' option will be ignored when 'due' is present.",
+      projectAndSection:
+        "Both 'project' and 'section' show options are set. The 'section' option will be ignored when 'project' is present.",
     },
     groupedHeaders: {
       noDueDate: "No due date",
