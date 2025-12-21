@@ -227,6 +227,7 @@ export type Translations = {
       jsonQuery: string;
       unknownKey: (key: string) => string;
       dueAndTime: string;
+      projectAndSection: string;
     };
     groupedHeaders: {
       noDueDate: string;

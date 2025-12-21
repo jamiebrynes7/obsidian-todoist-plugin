@@ -17,6 +17,7 @@ export enum ShowMetadataVariant {
   Description = 3,
   Deadline = 4,
   Time = 5,
+  Section = 6,
 }
 
 export enum GroupVariant {

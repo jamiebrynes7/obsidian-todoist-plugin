@@ -51,6 +51,27 @@ const projectMeta: MetadataDefinition = {
   side: "right",
 };
 
+const sectionMeta: MetadataDefinition = {
+  name: "section",
+  isShown: (query, task) =>
+    query.show.has(ShowMetadataVariant.Section) &&
+    !query.show.has(ShowMetadataVariant.Project) &&
+    task.section !== undefined,
+  content: (task) => [
+    {
+      // biome-ignore lint/style/noNonNullAssertion: We enforce this above in 'isShown'.
+      content: task.section!.name,
+    },
+  ],
+  icons: {
+    after: {
+      id: "gallery-vertical",
+      shouldRender: (settings) => settings.renderProjectIcon,
+    },
+  },
+  side: "right",
+};
+
 const dueDateMeta: MetadataDefinition = {
   name: "due",
   isShown: (query, task) => query.show.has(ShowMetadataVariant.Due) && task.due !== undefined,
@@ -128,6 +149,7 @@ const timeOnlyMeta: MetadataDefinition = {
 
 const metadata: MetadataDefinition[] = [
   projectMeta,
+  sectionMeta,
   dueDateMeta,
   deadlineMeta,
   labelsMeta,

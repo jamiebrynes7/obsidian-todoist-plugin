@@ -269,6 +269,28 @@ describe("parseQuery", () => {
         show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Time]),
       }),
     },
+    {
+      description: "with show including section",
+      input: {
+        filter: "bar",
+        show: ["section"],
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set([ShowMetadataVariant.Section]),
+      }),
+    },
+    {
+      description: "with show including section and project",
+      input: {
+        filter: "bar",
+        show: ["section", "project"],
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        show: new Set([ShowMetadataVariant.Section, ShowMetadataVariant.Project]),
+      }),
+    },
   ];
 
   for (const tc of testcases) {
@@ -317,6 +339,17 @@ describe("parseQuery - warnings", () => {
       expectedWarnings: [
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
         "Both 'due' and 'time' show options are set. The 'time' option will be ignored when 'due' is present.",
+      ],
+    },
+    {
+      description: "Both project and section in show options",
+      input: {
+        filter: "bar",
+        show: ["project", "section"],
+      },
+      expectedWarnings: [
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+        "Both 'project' and 'section' show options are set. The 'section' option will be ignored when 'project' is present.",
       ],
     },
   ];
