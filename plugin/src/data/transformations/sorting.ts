@@ -39,6 +39,10 @@ function compareTask<T extends Task>(self: T, other: T, sorting: SortingVariant)
       return compareTaskDateAdded(self, other);
     case SortingVariant.DateAddedDescending:
       return -compareTaskDateAdded(self, other);
+    case SortingVariant.Alphabetical:
+      return compareTaskAlphabetical(self, other);
+    case SortingVariant.AlphabeticalDescending:
+      return -compareTaskAlphabetical(self, other);
     default:
       throw new Error(`Unexpected sorting type: '${sorting}'`);
   }
@@ -92,6 +96,10 @@ function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
   const otherDate = parseAbsoluteToLocal(other.createdAt);
 
   return selfDate.compare(otherDate) < 0 ? -1 : 1;
+}
+
+function compareTaskAlphabetical<T extends Task>(self: T, other: T): number {
+  return self.content.localeCompare(other.content, undefined, { sensitivity: "base" });
 }
 
 function isSameDay(a: Date, b: Date): boolean {

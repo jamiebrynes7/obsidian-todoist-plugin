@@ -9,7 +9,7 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
     id,
     createdAt: opts?.createdAt ?? "1970-01-01",
     parentId: opts?.parentId,
-    content: "",
+    content: opts?.content ?? "",
     description: "",
     labels: [],
     priority: opts?.priority ?? 1,
@@ -338,6 +338,96 @@ describe("sortTasks", () => {
             date: "2020-03-20",
           },
         }),
+      ],
+    },
+    {
+      description: "can sort alphabetically (ascending)",
+      input: [
+        makeTask("a", { content: "zebra" }),
+        makeTask("b", { content: "apple" }),
+        makeTask("c", { content: "Banana" }),
+        makeTask("d", { content: "cherry" }),
+      ],
+      sortingOpts: [SortingVariant.Alphabetical],
+      expectedOutput: [
+        makeTask("b", { content: "apple" }),
+        makeTask("c", { content: "Banana" }),
+        makeTask("d", { content: "cherry" }),
+        makeTask("a", { content: "zebra" }),
+      ],
+    },
+    {
+      description: "can sort alphabetically descending",
+      input: [
+        makeTask("a", { content: "apple" }),
+        makeTask("b", { content: "Banana" }),
+        makeTask("c", { content: "zebra" }),
+      ],
+      sortingOpts: [SortingVariant.AlphabeticalDescending],
+      expectedOutput: [
+        makeTask("c", { content: "zebra" }),
+        makeTask("b", { content: "Banana" }),
+        makeTask("a", { content: "apple" }),
+      ],
+    },
+    {
+      description: "alphabetical sort is case-insensitive",
+      input: [
+        makeTask("a", { content: "APPLE" }),
+        makeTask("b", { content: "banana" }),
+        makeTask("c", { content: "Apple" }),
+        makeTask("d", { content: "BANANA" }),
+      ],
+      sortingOpts: [SortingVariant.Alphabetical],
+      expectedOutput: [
+        makeTask("a", { content: "APPLE" }),
+        makeTask("c", { content: "Apple" }),
+        makeTask("b", { content: "banana" }),
+        makeTask("d", { content: "BANANA" }),
+      ],
+    },
+    {
+      description: "alphabetical sort handles special characters",
+      input: [
+        makeTask("a", { content: "2. Second task" }),
+        makeTask("b", { content: "1. First task" }),
+        makeTask("c", { content: "@mention task" }),
+        makeTask("d", { content: "#hashtag task" }),
+      ],
+      sortingOpts: [SortingVariant.Alphabetical],
+      expectedOutput: [
+        makeTask("c", { content: "@mention task" }),
+        makeTask("d", { content: "#hashtag task" }),
+        makeTask("b", { content: "1. First task" }),
+        makeTask("a", { content: "2. Second task" }),
+      ],
+    },
+    {
+      description: "alphabetical sort handles empty strings",
+      input: [
+        makeTask("a", { content: "" }),
+        makeTask("b", { content: "apple" }),
+        makeTask("c", { content: "" }),
+      ],
+      sortingOpts: [SortingVariant.Alphabetical],
+      expectedOutput: [
+        makeTask("a", { content: "" }),
+        makeTask("c", { content: "" }),
+        makeTask("b", { content: "apple" }),
+      ],
+    },
+    {
+      description: "can combine alphabetical sort with priority sorting",
+      input: [
+        makeTask("a", { content: "Task B", priority: 2 }),
+        makeTask("b", { content: "Task A", priority: 2 }),
+        makeTask("c", { content: "Task C", priority: 3 }),
+      ],
+      sortingOpts: [SortingVariant.Priority, SortingVariant.Alphabetical],
+      expectedOutput: [
+        makeTask("c", { content: "Task C", priority: 3 }),
+        makeTask("b", { content: "Task A", priority: 2 }),
+        makeTask("a", { content: "Task B", priority: 2 }),
       ],
     },
   ];
