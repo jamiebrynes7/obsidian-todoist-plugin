@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🐛 Bug Fixes
 
 - Date grouping now correctly groups tasks on the same day together regardless of whether they have times
+- Fixed an issue where the task content would be rendered incorrectly the task was edited and the query refreshed
 
 ## v2.3.0 (2025-12-06)
 
