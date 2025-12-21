@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now sort tasks alphabetically by name using `alphabetical` or `alphabeticalDescending` in the sorting field
 - You can now provide 'time' to the show field on a query. This will only render the time of the task (unless the end of the task is on a different day than the start).
+- You can now provide 'section' to the show field on a query to display only the section name for tasks in sections.
 
 ### 🐛 Bug Fixes
 

@@ -125,7 +125,14 @@ The possible values are:
 - `deadline`: render the deadline of the task
 - `description`: render the description of the task
 - `project`: render the project (and section, if applicable) of the task
+- `section`: render only the section name of the task (if the task has a section)
 - `labels`: render the labels of the task
+
+:::note
+
+If both `project` and `section` are specified, only `project` will be shown to avoid redundancy. The `project` option already includes section information when available.
+
+:::
 
 For example:
 
