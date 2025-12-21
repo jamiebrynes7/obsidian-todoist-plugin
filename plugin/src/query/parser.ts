@@ -95,6 +95,9 @@ const sortingSchema = lookupToEnum({
   dateAdded: SortingVariant.DateAdded,
   dateAddedAscending: SortingVariant.DateAdded,
   dateAddedDescending: SortingVariant.DateAddedDescending,
+  alphabetical: SortingVariant.Alphabetical,
+  alphabeticalAscending: SortingVariant.Alphabetical,
+  alphabeticalDescending: SortingVariant.AlphabeticalDescending,
 });
 
 const showSchema = lookupToEnum({

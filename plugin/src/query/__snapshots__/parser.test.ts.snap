@@ -2,7 +2,7 @@
 
 exports[`parseQuery - error message snapshots > array with mixed valid and invalid enum values 1`] = `
 [Error: Field 'sorting' elements have the following issues:
-  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"]
+  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"|"alphabetical"|"alphabeticalAscending"|"alphabeticalDescending"]
 `;
 
 exports[`parseQuery - error message snapshots > autorefresh must be a number 1`] = `
@@ -87,9 +87,9 @@ Field 'show' elements have the following issues:
 
 exports[`parseQuery - error message snapshots > sorting array must contain strings 1`] = `
 [Error: Field 'sorting' elements have the following issues:
-  Item 'sorting[0]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"
-  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"
-  Item 'sorting[2]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"]
+  Item 'sorting[0]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"|"alphabetical"|"alphabeticalAscending"|"alphabeticalDescending"
+  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"|"alphabetical"|"alphabeticalAscending"|"alphabeticalDescending"
+  Item 'sorting[2]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"|"alphabetical"|"alphabeticalAscending"|"alphabeticalDescending"]
 `;
 
 exports[`parseQuery - error message snapshots > sorting must be an array 1`] = `
@@ -99,6 +99,6 @@ exports[`parseQuery - error message snapshots > sorting must be an array 1`] = `
 
 exports[`parseQuery - error message snapshots > sorting must have valid enum values 1`] = `
 [Error: Field 'sorting' elements have the following issues:
-  Item 'sorting[0]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"
-  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"]
+  Item 'sorting[0]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"|"alphabetical"|"alphabeticalAscending"|"alphabeticalDescending"
+  Item 'sorting[1]': Invalid option: expected one of "priority"|"priorityAscending"|"priorityDescending"|"date"|"dateAscending"|"dateDescending"|"order"|"dateAdded"|"dateAddedAscending"|"dateAddedDescending"|"alphabetical"|"alphabeticalAscending"|"alphabeticalDescending"]
 `;

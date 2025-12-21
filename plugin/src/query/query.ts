@@ -6,6 +6,8 @@ export enum SortingVariant {
   Order = 4,
   DateAdded = 5,
   DateAddedDescending = 6,
+  Alphabetical = 7,
+  AlphabeticalDescending = 8,
 }
 
 export enum ShowMetadataVariant {
