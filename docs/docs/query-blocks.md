@@ -61,6 +61,8 @@ autorefresh: 120
 
 The `sorting` property allows you to specify the ordering for how your tasks are rendered. This is specified as a list, where we sort in the order of the properties in the list. The possible values are:
 
+- `alphabetical` or `alphabeticalAscending`: sorts tasks alphabetically by name (A→Z, case-insensitive)
+- `alphabeticalDescending`: sorts tasks alphabetically by name (Z→A, case-insensitive)
 - `date` or `dateAscending`: sorts tasks in ascending order based on due date
 - `dateDescending`: sorts tasks in descending order based on due date
 - `priority` or `priorityAscending`: sorting tasks in ascending order based on priority
@@ -79,6 +81,17 @@ filter: "today | overdue"
 sorting:
     - date
     - priority
+```
+````
+
+You can also sort tasks alphabetically:
+
+````
+```todoist
+filter: "#work"
+sorting:
+    - priority
+    - alphabetical
 ```
 ````
 
