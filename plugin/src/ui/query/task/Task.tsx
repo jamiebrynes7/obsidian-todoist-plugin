@@ -83,7 +83,11 @@ export const Task: React.FC<Props> = ({ tree }) => {
           <div />
         </Checkbox>
         <div className="todoist-task">
-          <Markdown className="todoist-task-content" content={sanitizeContent(tree.content)} />
+          <Markdown
+            className="todoist-task-content"
+            content={sanitizeContent(tree.content)}
+            key={tree.content}
+          />
           {shouldRenderDescription && <DescriptionRenderer content={tree.description} />}
           <TaskMetadata query={query} task={tree} settings={settings} />
         </div>
@@ -156,7 +160,7 @@ const DescriptionRenderer: React.FC<DescriptionRendererProps> = ({ content }) =>
   return (
     <div onDoubleClick={toggleExpanded} className="todoist-task-description">
       {renderFullMarkdown ? (
-        <Markdown content={content} />
+        <Markdown content={content} key={content} />
       ) : (
         <span>
           {content.split("\n")[0]}
