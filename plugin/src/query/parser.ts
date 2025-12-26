@@ -120,6 +120,13 @@ const groupBySchema = lookupToEnum({
   labels: GroupVariant.Label,
 });
 
+const viewSchema = z
+  .object({
+    noTasksMessage: z.string().optional(),
+  })
+  .optional()
+  .default({});
+
 const defaults = {
   name: "",
   autorefresh: 0,
@@ -132,6 +139,7 @@ const defaults = {
     ShowMetadataVariant.Deadline,
   ],
   groupBy: GroupVariant.None,
+  view: {},
 };
 
 const querySchema = z.object({
@@ -147,9 +155,13 @@ const querySchema = z.object({
     .optional()
     .transform((val) => val ?? defaults.show),
   groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
+  view: viewSchema,
 });
 
 const validQueryKeys: string[] = querySchema.keyof().options;
+const validNestedKeys: Record<string, string[]> = {
+  view: ["noTasksMessage"],
+};
 
 function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]] {
   const warnings: QueryWarning[] = [];
@@ -157,6 +169,16 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
   for (const key of Object.keys(query)) {
     if (!validQueryKeys.includes(key)) {
       warnings.push(t().query.warning.unknownKey(key));
+    } else if (validNestedKeys[key]) {
+      // Validate nested keys
+      const nestedObj = query[key];
+      if (typeof nestedObj === "object" && nestedObj !== null) {
+        for (const nestedKey of Object.keys(nestedObj)) {
+          if (!validNestedKeys[key].includes(nestedKey)) {
+            warnings.push(t().query.warning.unknownKey(`${key}.${nestedKey}`));
+          }
+        }
+      }
     }
   }
 
@@ -184,6 +206,7 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
       sorting: out.data.sorting,
       show,
       groupBy: out.data.groupBy,
+      view: out.data.view,
     },
     warnings,
   ];

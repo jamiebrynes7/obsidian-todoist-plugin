@@ -108,6 +108,13 @@ describe("parseQuery - rejections", () => {
         show: "nonee",
       },
     },
+    {
+      description: "view.noTasksMessage must be string",
+      input: {
+        filter: "bar",
+        view: { noTasksMessage: 123 },
+      },
+    },
   ];
 
   for (const tc of testcases) {
@@ -135,6 +142,7 @@ function makeQuery(opts?: Partial<Query>): Query {
         ShowMetadataVariant.Deadline,
       ]),
     groupBy: opts?.groupBy ?? GroupVariant.None,
+    view: opts?.view ?? {},
   };
 }
 
@@ -291,6 +299,27 @@ describe("parseQuery", () => {
         show: new Set([ShowMetadataVariant.Section, ShowMetadataVariant.Project]),
       }),
     },
+    {
+      description: "with custom view.noTasksMessage",
+      input: {
+        filter: "bar",
+        view: { noTasksMessage: "All caught up!" },
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        view: { noTasksMessage: "All caught up!" },
+      }),
+    },
+    {
+      description: "without view defaults to empty object",
+      input: {
+        filter: "bar",
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        view: {},
+      }),
+    },
   ];
 
   for (const tc of testcases) {
@@ -350,6 +379,17 @@ describe("parseQuery - warnings", () => {
       expectedWarnings: [
         "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
         "Both 'project' and 'section' show options are set. The 'section' option will be ignored when 'project' is present.",
+      ],
+    },
+    {
+      description: "Unknown nested key in view",
+      input: {
+        filter: "bar",
+        view: { unknownProp: "value" },
+      },
+      expectedWarnings: [
+        "This query is written using JSON. This is deprecated and will be removed in a future version. Please use YAML instead.",
+        "Found unexpected query key 'view.unknownProp'. Is this a typo?",
       ],
     },
   ];
