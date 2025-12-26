@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+toc_max_heading_level: 4
 ---
 
 # Query Blocks
@@ -153,5 +154,23 @@ For example:
 ```todoist
 filter: "today | overdue"
 show: none
+```
+````
+
+### `view`
+
+The `view` objects allows you to configure how the query results are displayed.
+
+#### `noTasksMessage`
+
+The `noTasksMessage` property allows you to customize the message displayed when a query returns no tasks. If not specified, the default message will be shown.
+
+For example:
+
+````
+```todoist
+filter: "today"
+view:
+  noTasksMessage: "Nothing due today! Take a break."
 ```
 ````
