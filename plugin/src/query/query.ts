@@ -29,6 +29,10 @@ export enum GroupVariant {
   Label = 5,
 }
 
+export type ViewOptions = {
+  noTasksMessage?: string;
+};
+
 export type Query = {
   name: string;
   filter: string;
@@ -36,4 +40,5 @@ export type Query = {
   sorting: SortingVariant[];
   show: Set<ShowMetadataVariant>;
   groupBy: GroupVariant;
+  view: ViewOptions;
 };

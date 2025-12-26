@@ -151,7 +151,7 @@ const QueryResponseHandler: React.FC<{
 
   const tasks = result.tasks;
   if (tasks.length === 0) {
-    return <Displays.Empty />;
+    return <Displays.Empty message={query.view.noTasksMessage} />;
   }
 
   if (query.groupBy !== GroupVariant.None) {
