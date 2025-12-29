@@ -6,23 +6,12 @@ import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@
 
 type ErrorTree = string | { msg: string; children: ErrorTree[] };
 
-function formatErrorTree(tree: ErrorTree, indent = ""): string {
-  if (typeof tree === "string") {
-    return `${indent}${tree}`;
-  }
-  const lines = [`${indent}${tree.msg}`];
-  for (const child of tree.children) {
-    lines.push(formatErrorTree(child, `${indent}  `));
-  }
-  return lines.join("\n");
-}
-
 export class ParsingError extends Error {
   messages: ErrorTree[];
   inner: unknown | undefined;
 
   constructor(msgs: ErrorTree[], inner: unknown | undefined = undefined) {
-    super(msgs.map((tree) => formatErrorTree(tree)).join("\n"));
+    super(msgs.map((tree) => ParsingError.formatErrorTree(tree)).join("\n"));
     this.inner = inner;
     this.messages = msgs;
   }
@@ -33,6 +22,17 @@ export class ParsingError extends Error {
     }
 
     return super.toString();
+  }
+
+  private static formatErrorTree(tree: ErrorTree, indent = ""): string {
+    if (typeof tree === "string") {
+      return `${indent}${tree}`;
+    }
+    const lines = [`${indent}${tree.msg}`];
+    for (const child of tree.children) {
+      lines.push(ParsingError.formatErrorTree(child, `${indent}  `));
+    }
+    return lines.join("\n");
   }
 }
 
@@ -120,66 +120,86 @@ const groupBySchema = lookupToEnum({
   labels: GroupVariant.Label,
 });
 
-const viewSchema = z
-  .object({
-    noTasksMessage: z.string().optional(),
-  })
-  .optional()
-  .default({});
+const viewSchema = z.object({
+  noTasksMessage: z.string().optional(),
+});
 
-const defaults = {
+const defaultQuery = (): Omit<Query, "filter"> => ({
   name: "",
   autorefresh: 0,
   sorting: [SortingVariant.Order],
-  show: [
+  show: new Set([
     ShowMetadataVariant.Due,
     ShowMetadataVariant.Description,
     ShowMetadataVariant.Labels,
     ShowMetadataVariant.Project,
     ShowMetadataVariant.Deadline,
-  ],
+  ]),
   groupBy: GroupVariant.None,
   view: {},
-};
-
-const querySchema = z.object({
-  name: z.string().optional().default(""),
-  filter: z.string(),
-  autorefresh: z.number().nonnegative().optional().default(0),
-  sorting: z
-    .array(sortingSchema)
-    .optional()
-    .transform((val) => val ?? defaults.sorting),
-  show: z
-    .union([z.array(showSchema), z.literal("none").transform(() => [])])
-    .optional()
-    .transform((val) => val ?? defaults.show),
-  groupBy: groupBySchema.optional().transform((val) => val ?? defaults.groupBy),
-  view: viewSchema,
 });
 
-const validQueryKeys: string[] = querySchema.keyof().options;
-const validNestedKeys: Record<string, string[]> = {
-  view: ["noTasksMessage"],
-};
+const querySchema = z.object({
+  name: z.string().optional(),
+  filter: z.string(),
+  autorefresh: z.number().nonnegative().optional(),
+  sorting: z.array(sortingSchema).optional(),
+  show: z
+    .union([
+      z.array(showSchema).transform((arr) => new Set(arr)),
+      z.literal("none").transform(() => new Set([])),
+    ])
+    .optional(),
+  groupBy: groupBySchema.optional(),
+  view: viewSchema.optional(),
+});
+
+function findUnknownKeys(obj: Record<string, unknown>, schema: z.ZodObject): string[] {
+  const keys: string[] = [];
+
+  const validKeys = schema.keyof().options;
+
+  for (const key of Object.keys(obj)) {
+    if (!validKeys.includes(key)) {
+      keys.push(key);
+      continue;
+    }
+
+    const value = obj[key];
+    if (typeof value !== "object" || value === null) {
+      continue;
+    }
+
+    let childSchema: z.ZodObject | undefined;
+    const schemaField = schema.shape[key];
+
+    // If the subobject is directly a ZodObject, use that.
+    if (schemaField instanceof z.ZodObject) {
+      childSchema = schemaField;
+    }
+
+    // If the subobject is optional, unwrap it and use the type.
+    if (schemaField instanceof z.ZodOptional) {
+      const unwrapped = schemaField.unwrap();
+      if (unwrapped instanceof z.ZodObject) {
+        childSchema = unwrapped;
+      }
+    }
+
+    if (childSchema !== undefined) {
+      const nestedKeys = findUnknownKeys(value as Record<string, unknown>, childSchema);
+      keys.push(...nestedKeys.map((w) => `${key}.${w}`));
+    }
+  }
+
+  return keys;
+}
 
 function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]] {
   const warnings: QueryWarning[] = [];
 
-  for (const key of Object.keys(query)) {
-    if (!validQueryKeys.includes(key)) {
-      warnings.push(t().query.warning.unknownKey(key));
-    } else if (validNestedKeys[key]) {
-      // Validate nested keys
-      const nestedObj = query[key];
-      if (typeof nestedObj === "object" && nestedObj !== null) {
-        for (const nestedKey of Object.keys(nestedObj)) {
-          if (!validNestedKeys[key].includes(nestedKey)) {
-            warnings.push(t().query.warning.unknownKey(`${key}.${nestedKey}`));
-          }
-        }
-      }
-    }
+  for (const key of findUnknownKeys(query, querySchema)) {
+    warnings.push(t().query.warning.unknownKey(key));
   }
 
   const out = querySchema.safeParse(query);
@@ -200,13 +220,8 @@ function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]]
 
   return [
     {
-      name: out.data.name,
-      filter: out.data.filter,
-      autorefresh: out.data.autorefresh,
-      sorting: out.data.sorting,
-      show,
-      groupBy: out.data.groupBy,
-      view: out.data.view,
+      ...defaultQuery(),
+      ...out.data,
     },
     warnings,
   ];
