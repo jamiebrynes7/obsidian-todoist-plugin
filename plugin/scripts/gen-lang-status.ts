@@ -1,6 +1,6 @@
+import { registry } from "../src/i18n";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { registry } from "../src/i18n";
 
 const countKeys = (obj: Record<string, unknown>): number => {
   let count = 0;
@@ -16,24 +16,44 @@ const countKeys = (obj: Record<string, unknown>): number => {
   return count;
 };
 
-const totalKeys = countKeys(registry.en.translations);
+type TranslationStatus = {
+  name: string;
+  code: string;
+  completed: number;
+};
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-const result: any[] = [];
+const tabulateTranslations = (reg: typeof registry): TranslationStatus[] => {
+  const result: TranslationStatus[] = [];
 
-for (const definition of Object.values(registry)) {
-  const keys = countKeys(definition.translations);
-  const missing = totalKeys - keys;
-  const percent = Math.round((keys / totalKeys) * 100);
+  for (const definition of Object.values(reg)) {
+    const completed = countKeys(definition.translations);
 
-  result.push({
-    name: definition.name,
-    code: definition.code,
-    completed: keys,
-    missing,
-    percent,
-  });
-}
+    result.push({
+      name: definition.name,
+      code: definition.code,
+      completed,
+    });
+  }
 
-const outputFilePath = join(__dirname, "..", "..", "docs", "docs", "translation-status.json");
-writeFileSync(outputFilePath, JSON.stringify(result, null, 2));
+  return result;
+};
+
+type Output = {
+  total: number;
+  statuses: TranslationStatus[];
+};
+
+const generateOutput = () => {
+  const total = countKeys(registry.en.translations);
+  const statuses = tabulateTranslations(registry);
+
+  const result: Output = {
+    total,
+    statuses,
+  };
+
+  const outputFilePath = join(__dirname, "..", "..", "docs", "docs", "translation-status.json");
+  writeFileSync(outputFilePath, JSON.stringify(result, null, 2));
+};
+
+generateOutput();

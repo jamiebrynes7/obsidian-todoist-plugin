@@ -1,16 +1,15 @@
-[
-  {
-    "name": "English",
-    "code": "en",
-    "completed": 207,
-    "missing": 0,
-    "percent": 100
-  },
-  {
-    "name": "Nederlands",
-    "code": "nl",
-    "completed": 146,
-    "missing": 61,
-    "percent": 71
-  }
-]
+{
+  "total": 207,
+  "statuses": [
+    {
+      "name": "English",
+      "code": "en",
+      "completed": 207
+    },
+    {
+      "name": "Nederlands",
+      "code": "nl",
+      "completed": 146
+    }
+  ]
+}
