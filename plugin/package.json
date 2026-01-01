@@ -1,5 +1,5 @@
 {
-  "name": "obsidian-todoist-plugin",
+  "name": "@obsidian-todoist/plugin",
   "version": "2.4.0",
   "description": "A Todoist plugin for Obsidian",
   "scripts": {
@@ -8,8 +8,7 @@
     "build": "vite build",
     "test": "vitest",
     "lint:check": "biome check ./src",
-    "lint:fix": "biome check --write ./src",
-    "gen": "vite-node scripts/gen-lang-status.ts"
+    "lint:fix": "biome check --write ./src"
   },
   "author": "Jamie Brynes",
   "license": "ISC",
@@ -30,21 +29,15 @@
     "zustand": "5.0.9"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.8",
     "@rollup/plugin-replace": "6.0.3",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",
-    "@types/node": "24.0.13",
     "@types/react-dom": "19.2.1",
-    "@typescript/native-preview": "^7.0.0-dev.20251130.1",
     "@vitejs/plugin-react": "5.1.2",
     "jsdom": "27.3.0",
     "sass": "1.96.0",
-    "typescript": "5.9.3",
-    "vite": "7.2.7",
-    "vite-node": "5.2.0",
     "vite-plugin-static-copy": "3.1.4",
-    "vite-tsconfig-paths": "5.1.4",
+    "vite-tsconfig-paths": "*",
     "vitest": "4.0.15"
   },
   "optionalDependencies": {

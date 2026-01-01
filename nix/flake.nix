@@ -18,7 +18,7 @@
     # to install biome through Nix, but then we must synchronize the versions of the binaries which is icky.
     enterShellBySystem = {
       x86_64-linux = ''
-        export BIOME_BINARY=$(pwd)/plugin/node_modules/@biomejs/cli-linux-x64-musl/biome
+        export BIOME_BINARY=$(pwd)/node_modules/@biomejs/cli-linux-x64-musl/biome
       '';
     };
     in {

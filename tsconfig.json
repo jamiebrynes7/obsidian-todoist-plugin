@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./plugin" },
+    { "path": "./scripts" },
+    { "path": "./docs" }
+  ]
+}

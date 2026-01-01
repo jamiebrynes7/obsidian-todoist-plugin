@@ -1,0 +1,19 @@
+{
+  "name": "@obsidian-todoist/scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "vite-node src/gen-lang-status.ts",
+    "check": "tsgo --noEmit",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write ."
+  },
+  "dependencies": {
+    "@obsidian-todoist/plugin": "*"
+  },
+  "devDependencies": {
+    "vite-node": "5.2.0",
+    "vite-tsconfig-paths": "*"
+  }
+}

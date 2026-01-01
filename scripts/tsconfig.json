@@ -1,0 +1,14 @@
+{
+  "include": ["*.ts"],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "types": ["node"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2017",
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "references": [{ "path": "../plugin" }]
+}

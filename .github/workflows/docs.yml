@@ -29,10 +29,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./docs
-
       - name: Build
         run: npm run build
         working-directory: ./docs

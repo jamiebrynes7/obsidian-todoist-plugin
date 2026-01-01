@@ -23,10 +23,6 @@ All commands should be run from this `plugin/` directory:
 - `npm run lint:check` - Check code formatting and linting with BiomeJS
 - `npm run lint:fix` - Auto-fix formatting and linting issues
 
-### Other
-
-- `npm run gen` - Generate language status file
-
 ## Architecture Overview
 
 ### Plugin Structure
