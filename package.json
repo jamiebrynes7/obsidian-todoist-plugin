@@ -1,0 +1,21 @@
+{
+  "name": "obsidian-todoist-plugin-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "plugin",
+    "scripts",
+    "docs"
+  ],
+  "scripts": {
+    "gen": "npm run gen --workspace=scripts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@types/node": "24.0.13",
+    "@typescript/native-preview": "^7.0.0-dev.20251130.1",
+    "typescript": "5.9.3",
+    "vite": "7.2.7",
+    "vite-tsconfig-paths": "5.1.4"
+  }
+}

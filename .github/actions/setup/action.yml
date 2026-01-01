@@ -9,3 +9,6 @@ runs:
       uses: nicknovitski/nix-develop@v1.1.0
       with:
         arguments: ./nix --impure
+    - name: Install dependencies
+      run: npm install
+      shell: bash

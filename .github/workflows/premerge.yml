@@ -11,10 +11,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./plugin
-
       - name: Lint
         run: npm run lint:check
         working-directory: ./plugin
@@ -25,7 +21,7 @@ jobs:
 
       - name: Generate files
         run: npm run gen
-        working-directory: ./plugin
+        working-directory: ./scripts
 
       - name: Check for generated file changes
         run: |
@@ -53,10 +49,6 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./docs
 
       - name: Build
         run: npm run build

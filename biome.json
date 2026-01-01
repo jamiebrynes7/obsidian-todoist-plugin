@@ -82,6 +82,18 @@
           }
         }
       }
+    },
+    {
+      "includes": [
+        "**/vite.config.*"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
     }
   ],
   "assist": {
