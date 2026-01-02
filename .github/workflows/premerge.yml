@@ -35,12 +35,18 @@ jobs:
           fi
 
       - name: Build
-        run: npm run build
+        run: VITE_BUNDLE_ANALYZER_MODE=static npm run build
         working-directory: ./plugin
 
       - name: Test
         run: npm run test
         working-directory: ./plugin
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: Bundle analysis
+          path: ./plugin/dist/stats.html
   docs:
     runs-on: ubuntu-latest
     steps:
