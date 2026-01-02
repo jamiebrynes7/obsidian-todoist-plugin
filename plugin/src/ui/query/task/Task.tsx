@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import * as motion from "motion/react-m";
 import { Notice } from "obsidian";
 import React, { type MouseEvent } from "react";
 import { Checkbox } from "react-aria-components";

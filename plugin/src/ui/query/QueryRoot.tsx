@@ -1,3 +1,4 @@
+import { domAnimation, LazyMotion } from "motion/react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -87,7 +88,7 @@ export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
   }, [query, settings, refresh]);
 
   return (
-    <>
+    <LazyMotion features={domAnimation}>
       <QueryHeader
         title={getTitle(query, result)}
         isFetching={isFetching}
@@ -96,7 +97,7 @@ export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
       />
       <QueryWarnings warnings={warnings} />
       {hasFetchedOnce && <QueryResponseHandler result={result} query={query} />}
-    </>
+    </LazyMotion>
   );
 };
 

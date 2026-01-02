@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import type React from "react";
 
 import type { TaskTree } from "@/data/transformations/relationships";
