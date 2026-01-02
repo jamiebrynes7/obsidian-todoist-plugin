@@ -1,4 +1,4 @@
-import YAML from "yaml";
+import { load as loadYaml } from "js-yaml";
 import { z } from "zod";
 
 import { t } from "@/i18n";
@@ -73,7 +73,7 @@ function tryParseAsJson(raw: string): Record<string, unknown> {
 
 function tryParseAsYaml(raw: string): Record<string, unknown> {
   try {
-    return YAML.parse(raw);
+    return loadYaml(raw) as Record<string, unknown>;
   } catch (e) {
     throw new ParsingError(["Invalid YAML"], e);
   }
