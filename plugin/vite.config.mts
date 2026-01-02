@@ -1,6 +1,7 @@
 import replace from "@rollup/plugin-replace";
 import react from "@vitejs/plugin-react";
-import { loadEnv } from "vite";
+import { loadEnv, type PluginOption } from "vite";
+import { analyzer } from "vite-bundle-analyzer";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { configDefaults, defineConfig } from "vitest/config";
@@ -35,6 +36,19 @@ function getShouldMinify(): boolean {
   return env?.VITE_ENV !== "dev";
 }
 
+function bundleAnalyzerPlugin(): PluginOption {
+  const mode = process.env.VITE_BUNDLE_ANALYZER_MODE;
+  if (mode === "server" || mode === "static" || mode === "json") {
+    return analyzer({ analyzerMode: mode });
+  }
+
+  if (mode !== undefined) {
+    throw new Error(`Invalid VITE_BUNDLE_ANALYZER_MODE: ${mode}`);
+  }
+
+  return undefined;
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -51,6 +65,7 @@ export default defineConfig({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
       SYNC_WITH_TODOIST_BUILD_STAMP: getBuildStamp(),
     }),
+    bundleAnalyzerPlugin(),
   ],
   build: {
     // We aren't building a website, so we build in library mode
