@@ -18,7 +18,7 @@ export const LabelSelector: React.FC<Props> = ({ selected, setSelected }) => {
   const plugin = PluginContext.use();
 
   const options = useMemo(() => {
-    return Array.from(plugin.services.todoist.data().labels.iter());
+    return Array.from(plugin.services.todoist.data().labels.iterActive());
   }, [plugin]);
 
   const selectedKeys = selected.map((l) => l.id);

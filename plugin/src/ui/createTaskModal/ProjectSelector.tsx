@@ -276,7 +276,7 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
   const mapped = new Map<ProjectId, NestedProject>();
 
   // Go through each project and insert it into the map.
-  for (const project of data.projects.iter()) {
+  for (const project of data.projects.iterActive()) {
     mapped.set(project.id, {
       project,
       sections: [],
@@ -285,7 +285,7 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
   }
 
   // Now parent them together.
-  for (const project of data.projects.iter()) {
+  for (const project of data.projects.iterActive()) {
     if (project.parentId === null) {
       continue;
     }
@@ -306,7 +306,7 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
   }
 
   // Now attach sections
-  for (const section of data.sections.iter()) {
+  for (const section of data.sections.iterActive()) {
     const parent = mapped.get(section.projectId);
 
     // We could be in a weird half-way sync state, so ignore this.
@@ -319,12 +319,12 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
 
   // Sort each element in the map
   for (const [_, nested] of mapped) {
-    nested.sections.sort((a, b) => a.order - b.order);
-    nested.children.sort((a, b) => a.project.order - b.project.order);
+    nested.sections.sort((a, b) => a.sectionOrder - b.sectionOrder);
+    nested.children.sort((a, b) => a.project.childOrder - b.project.childOrder);
   }
 
   // Find top-level projects, i.e. - have no parents
-  const roots = Array.from(data.projects.iter())
+  const roots = Array.from(data.projects.iterActive())
     .filter((project) => project.parentId === null)
     .map((project) => {
       const nested = mapped.get(project.id);
@@ -345,7 +345,7 @@ function buildProjectHierarchy(plugin: TodoistPlugin): ProjectHeirarchy {
       return 1;
     }
 
-    return a.project.order - b.project.order;
+    return a.project.childOrder - b.project.childOrder;
   });
 
   return roots;

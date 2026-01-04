@@ -56,7 +56,7 @@ function groupByProject(tasks: Task[]): GroupedTasks[] {
   groups.sort((a, b) => {
     const aProject = a[0];
     const bProject = b[0];
-    return aProject.order - bProject.order;
+    return aProject.childOrder - bProject.childOrder;
   });
 
   return groups.map(([project, tasks]) => {
@@ -97,7 +97,7 @@ function groupBySection(tasks: Task[]): GroupedTasks[] {
     const bKey: SectionPartitionKey = JSON.parse(b[0]);
 
     // First compare by project
-    const projectOrderDiff = aKey.project.order - bKey.project.order;
+    const projectOrderDiff = aKey.project.childOrder - bKey.project.childOrder;
     if (projectOrderDiff !== 0) {
       return projectOrderDiff;
     }
@@ -115,7 +115,7 @@ function groupBySection(tasks: Task[]): GroupedTasks[] {
       return 1;
     }
 
-    return aKey.section.order - bKey.section.order;
+    return aKey.section.sectionOrder - bKey.section.sectionOrder;
   });
 
   return groups.map(([key, tasks]) => {

@@ -1,9 +1,7 @@
 import camelize from "camelize-ts";
 import snakify from "snakify-ts";
 
-import type { Label } from "@/api/domain/label";
-import type { Project } from "@/api/domain/project";
-import type { Section } from "@/api/domain/section";
+import type { SyncResponse, SyncToken } from "@/api/domain/sync";
 import type { CreateTaskParams, Task, TaskId } from "@/api/domain/task";
 import type { UserInfo } from "@/api/domain/user";
 import { type RequestParams, StatusCode, type WebFetcher, type WebResponse } from "@/api/fetcher";
@@ -44,21 +42,18 @@ export class TodoistApiClient {
     await this.do(`/tasks/${id}/close`, "POST", {});
   }
 
-  public async getProjects(): Promise<Project[]> {
-    return await this.doPaginated<Project>("/projects");
-  }
-
-  public async getSections(): Promise<Section[]> {
-    return await this.doPaginated<Section>("/sections");
-  }
-
-  public async getLabels(): Promise<Label[]> {
-    return await this.doPaginated<Label>("/labels");
-  }
-
   public async getUser(): Promise<UserInfo> {
     const response = await this.do("/user", "GET", {});
     return camelize(JSON.parse(response.body)) as UserInfo;
+  }
+
+  public async sync(token: SyncToken): Promise<SyncResponse> {
+    const queryParams = snakify({
+      syncToken: token,
+      resourceTypes: JSON.stringify(["projects", "labels", "sections"]),
+    });
+    const response = await this.do("/sync", "POST", { queryParams });
+    return camelize(JSON.parse(response.body)) as SyncResponse;
   }
 
   private async doPaginated<T>(path: string, params?: Record<string, string>): Promise<T[]> {

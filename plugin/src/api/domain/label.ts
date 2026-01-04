@@ -4,4 +4,5 @@ export type Label = {
   id: LabelId;
   name: string;
   color: string;
+  isDeleted: boolean;
 };

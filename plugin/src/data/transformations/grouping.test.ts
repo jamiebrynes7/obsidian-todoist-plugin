@@ -46,9 +46,11 @@ function makeProject(id: string, opts?: Partial<Project>): Project {
     id,
     parentId: opts?.parentId ?? null,
     name: opts?.name ?? "Project",
-    order: opts?.order ?? 1,
+    childOrder: opts?.childOrder ?? 1,
     inboxProject: false,
     color: "grey",
+    isDeleted: false,
+    isArchived: false,
   };
 }
 
@@ -57,7 +59,9 @@ function makeSection(id: string, projectId: string, opts?: Partial<Section>): Se
     id,
     projectId,
     name: opts?.name ?? "Section",
-    order: opts?.order ?? 1,
+    sectionOrder: opts?.sectionOrder ?? 1,
+    isDeleted: false,
+    isArchived: false,
   };
 }
 
@@ -73,6 +77,7 @@ function makeLabel(name: string): Label {
     id: name,
     name,
     color: "grey",
+    isDeleted: false,
   };
 }
 
@@ -187,8 +192,8 @@ describe("group by priority", () => {
 });
 
 describe("group by project", () => {
-  const projectOne = makeProject("1", { name: "Project One", order: 1 });
-  const projectTwo = makeProject("2", { name: "Project Two", order: 2 });
+  const projectOne = makeProject("1", { name: "Project One", childOrder: 1 });
+  const projectTwo = makeProject("2", { name: "Project Two", childOrder: 2 });
 
   const testcases: TestCase[] = [
     {
@@ -243,14 +248,14 @@ describe("group by project", () => {
 });
 
 describe("group by section", () => {
-  const projectOne = makeProject("1", { name: "Project One", order: 1 });
-  const projectTwo = makeProject("2", { name: "Project Two", order: 2 });
+  const projectOne = makeProject("1", { name: "Project One", childOrder: 1 });
+  const projectTwo = makeProject("2", { name: "Project Two", childOrder: 2 });
 
-  const sectionOne = makeSection("1", "1", { name: "Section One", order: 1 });
-  const sectionTwo = makeSection("1", "2", { name: "Section Two", order: 2 });
+  const sectionOne = makeSection("1", "1", { name: "Section One", sectionOrder: 1 });
+  const sectionTwo = makeSection("1", "2", { name: "Section Two", sectionOrder: 2 });
   const sectionThree = makeSection("2", "3", {
     name: "Section Three",
-    order: 2,
+    sectionOrder: 2,
   });
 
   const testcases: TestCase[] = [

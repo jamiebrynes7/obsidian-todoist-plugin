@@ -22,7 +22,7 @@ export const ProjectDropdownControl: React.FC<Props> = ({ value, onChange }) => 
       return [];
     }
 
-    const allProjects = Array.from(todoist.data().projects.iter());
+    const allProjects = Array.from(todoist.data().projects.iterActive());
     return allProjects
       .filter((project) => !project.inboxProject)
       .sort((a, b) => a.name.localeCompare(b.name));

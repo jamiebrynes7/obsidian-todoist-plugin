@@ -108,7 +108,7 @@ const calculateDefaultLabels = (
     return [];
   }
 
-  const allLabels = Array.from(plugin.services.todoist.data().labels.iter());
+  const allLabels = Array.from(plugin.services.todoist.data().labels.iterActive());
   const validLabels: TodoistLabel[] = [];
   const deletedLabelNames: string[] = [];
 
@@ -370,7 +370,7 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
 const getInboxProject = (plugin: TodoistPlugin): ProjectIdentifier => {
   const { todoist } = plugin.services;
-  const projects = Array.from(todoist.data().projects.iter());
+  const projects = Array.from(todoist.data().projects.iterActive());
 
   for (const project of projects) {
     if (project.inboxProject) {

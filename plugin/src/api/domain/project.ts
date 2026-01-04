@@ -4,7 +4,9 @@ export type Project = {
   id: ProjectId;
   parentId: ProjectId | null;
   name: string;
-  order: number;
+  childOrder: number;
   inboxProject: boolean;
   color: string;
+  isDeleted: boolean;
+  isArchived: boolean;
 };

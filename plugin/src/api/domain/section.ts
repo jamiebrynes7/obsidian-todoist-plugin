@@ -6,5 +6,7 @@ export type Section = {
   id: SectionId;
   projectId: ProjectId;
   name: string;
-  order: number;
+  sectionOrder: number;
+  isDeleted: boolean;
+  isArchived: boolean;
 };
