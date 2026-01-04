@@ -2,7 +2,7 @@ name: "premerge"
 on: [push]
 
 jobs:
-  build:
+  plugin:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,21 +18,6 @@ jobs:
       - name: Check
         run: npm run check
         working-directory: ./plugin
-
-      - name: Generate files
-        run: npm run gen
-        working-directory: ./scripts
-
-      - name: Check for generated file changes
-        run: |
-          git add -A
-          if git diff --staged --quiet; then
-            echo "✅ No changes detected in generated files"
-          else
-            echo "❌ Generated files have changed. Please commit these changes:"
-            git diff --staged
-            exit 1
-          fi
 
       - name: Build
         run: VITE_BUNDLE_ANALYZER_MODE=static npm run build
@@ -59,3 +44,34 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: ./docs
+  scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Typecheck
+        run: npm run check
+        working-directory: ./scripts
+
+      - name: Lint
+        run: npm run lint:check
+        working-directory: ./scripts
+
+      - name: Generate files
+        run: npm run gen
+        working-directory: ./scripts
+
+      - name: Check for generated file changes
+        run: |
+          git add -A
+          if git diff --staged --quiet; then
+            echo "✅ No changes detected in generated files"
+          else
+            echo "❌ Generated files have changed. Please commit these changes:"
+            git diff --staged
+            exit 1
+          fi
