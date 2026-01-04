@@ -6,10 +6,14 @@ import { type App, Plugin } from "obsidian";
 import { TodoistApiClient } from "@/api";
 import { ObsidianFetcher } from "@/api/fetcher";
 import { registerCommands } from "@/commands";
+import { secondsToMillis } from "@/infra/time";
 import { QueryInjector } from "@/query/injector";
 import { makeServices, type Services } from "@/services";
 import { type Settings, useSettingsStore } from "@/settings";
 import { SettingsTab } from "@/ui/settings";
+
+// biome-ignore lint/style/noMagicNumbers: 600 seconds is easily recognizable as 10 minutes
+const metadataSyncIntervalMs = secondsToMillis(600);
 
 // biome-ignore lint/style/noDefaultExport: We must use default export for Obsidian plugins
 export default class TodoistPlugin extends Plugin {
@@ -36,6 +40,12 @@ export default class TodoistPlugin extends Plugin {
     this.app.workspace.onLayoutReady(async () => {
       await this.loadApiClient();
     });
+
+    this.registerInterval(
+      window.setInterval(async () => {
+        await this.services.todoist.sync();
+      }, metadataSyncIntervalMs),
+    );
   }
 
   private async loadApiClient(): Promise<void> {
