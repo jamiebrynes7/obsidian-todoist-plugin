@@ -37,7 +37,7 @@ export namespace TokenValidation {
     const api = new TodoistApiClient(token, new ObsidianFetcher());
 
     try {
-      await api.getProjects();
+      await api.getUser();
       return true;
     } catch {
       return false;

@@ -1,26 +1,34 @@
-export interface RepositoryReader<T, U extends { id: T }> {
-  byId(id: T): U | undefined;
-  iter(): IterableIterator<U>;
+interface RepositoryItem<Id> {
+  id: Id;
+  name: string;
+  isDeleted: boolean;
+  isArchived?: boolean;
 }
 
-export class Repository<T, U extends { id: T }> implements RepositoryReader<T, U> {
+export interface RepositoryReader<T, U> {
+  byId(id: T): U | undefined;
+  byName(name: string): U | undefined;
+  iter(): IterableIterator<U>;
+
+  iterActive(): IterableIterator<U>;
+}
+
+export interface RepositoryWriter<U> {
+  applyDiff(changed: U[]): void;
+}
+
+export class Repository<T, U extends RepositoryItem<T>>
+  implements RepositoryReader<T, U>, RepositoryWriter<U>
+{
   private readonly data: Map<T, U> = new Map();
-  private readonly fetchData: () => Promise<U[]>;
 
-  constructor(refreshData: () => Promise<U[]>) {
-    this.fetchData = refreshData;
-  }
-
-  public async sync(): Promise<void> {
-    try {
-      const items = await this.fetchData();
-
-      this.data.clear();
-      for (const elem of items) {
-        this.data.set(elem.id, elem);
+  public applyDiff(changed: U[]): void {
+    for (const item of changed) {
+      if (item.isDeleted) {
+        this.data.delete(item.id);
+        continue;
       }
-    } catch (error: unknown) {
-      console.error(`Failed to update repository: ${error}`);
+      this.data.set(item.id, item);
     }
   }
 
@@ -28,7 +36,31 @@ export class Repository<T, U extends { id: T }> implements RepositoryReader<T, U
     return this.data.get(id);
   }
 
+  public byName(name: string): U | undefined {
+    for (const item of this.iter()) {
+      if (item.name === name) {
+        return item;
+      }
+    }
+
+    return undefined;
+  }
+
   public iter(): IterableIterator<U> {
     return this.data.values();
+  }
+
+  public *iterActive(): IterableIterator<U> {
+    for (const item of this.iter()) {
+      if (item.isDeleted) {
+        continue;
+      }
+
+      if (item.isArchived ?? false) {
+        continue;
+      }
+
+      yield item;
+    }
   }
 }

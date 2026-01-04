@@ -23,7 +23,9 @@ export const LabelsControl: React.FC<Props> = ({ value, onChange }) => {
     if (!todoist.isReady()) {
       return new Map();
     }
-    return new Map(Array.from(todoist.data().labels.iter()).map((label) => [label.id, label]));
+    return new Map(
+      Array.from(todoist.data().labels.iterActive()).map((label) => [label.id, label]),
+    );
   }, [todoist]);
 
   const availableLabels = useMemo(() => {

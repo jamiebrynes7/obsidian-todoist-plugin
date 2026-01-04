@@ -2,6 +2,7 @@ import { type TodoistApiClient, TodoistApiError } from "@/api";
 import type { Label, LabelId } from "@/api/domain/label";
 import type { Project, ProjectId } from "@/api/domain/project";
 import type { Section, SectionId } from "@/api/domain/section";
+import type { SyncToken } from "@/api/domain/sync";
 import type { Task as ApiTask, CreateTaskParams, TaskId } from "@/api/domain/task";
 import type { UserInfo } from "@/api/domain/user";
 import { StatusCode, StatusCodes } from "@/api/fetcher";
@@ -31,12 +32,6 @@ type DataAccessor = {
   labels: RepositoryReader<LabelId, Label>;
 };
 
-class LabelsRepository extends Repository<LabelId, Label> {
-  byName(name: string): Label | undefined {
-    return [...this.iter()].find((label) => label.name === name);
-  }
-}
-
 export class TodoistAdapter {
   public actions = {
     closeTask: async (id: TaskId) => await this.closeTask(id),
@@ -47,18 +42,19 @@ export class TodoistAdapter {
   private readonly api: Maybe<TodoistApiClient> = Maybe.Empty();
   private readonly projects: Repository<ProjectId, Project>;
   private readonly sections: Repository<SectionId, Section>;
-  private readonly labels: LabelsRepository;
+  private readonly labels: Repository<LabelId, Label>;
   private readonly subscriptions: SubscriptionManager<Subscription>;
 
   private readonly tasksPendingClose: TaskId[];
   private userInfo: UserInfo | undefined;
 
   private hasSynced = false;
+  private syncToken: SyncToken = "*";
 
   constructor() {
-    this.projects = new Repository(() => this.api.withInner((api) => api.getProjects()));
-    this.sections = new Repository(() => this.api.withInner((api) => api.getSections()));
-    this.labels = new LabelsRepository(() => this.api.withInner((api) => api.getLabels()));
+    this.projects = new Repository<ProjectId, Project>();
+    this.sections = new Repository<SectionId, Section>();
+    this.labels = new Repository<LabelId, Label>();
     this.subscriptions = new SubscriptionManager<Subscription>();
     this.tasksPendingClose = [];
   }
@@ -81,12 +77,7 @@ export class TodoistAdapter {
       return;
     }
 
-    await Promise.all([
-      this.syncUserInfo(),
-      this.projects.sync(),
-      this.sections.sync(),
-      this.labels.sync(),
-    ]);
+    await Promise.all([this.syncUserInfo(), this.syncMetadata()]);
 
     for (const subscription of this.subscriptions.list()) {
       await subscription.update();
@@ -103,6 +94,23 @@ export class TodoistAdapter {
       this.userInfo = await this.api.withInner((api) => api.getUser());
     } catch (error) {
       console.error("Failed to fetch user info:", error);
+    }
+  }
+
+  private async syncMetadata(): Promise<void> {
+    try {
+      if (!this.api.hasValue()) {
+        return;
+      }
+
+      const response = await this.api.withInner((api) => api.sync(this.syncToken));
+
+      this.projects.applyDiff(response.projects);
+      this.sections.applyDiff(response.sections);
+      this.labels.applyDiff(response.labels);
+      this.syncToken = response.syncToken;
+    } catch (error) {
+      console.error("Failed to sync metadata:", error);
     }
   }
 
@@ -191,9 +199,11 @@ const makeUnknownProject = (id: string): Project => {
     id,
     parentId: null,
     name: "Unknown Project",
-    order: Number.MAX_SAFE_INTEGER,
+    childOrder: Number.MAX_SAFE_INTEGER,
     inboxProject: false,
     color: "grey",
+    isDeleted: false,
+    isArchived: false,
   };
 };
 
@@ -202,7 +212,9 @@ const makeUnknownSection = (id: string): Section => {
     id,
     projectId: "unknown-project",
     name: "Unknown Section",
-    order: Number.MAX_SAFE_INTEGER,
+    sectionOrder: Number.MAX_SAFE_INTEGER,
+    isDeleted: false,
+    isArchived: false,
   };
 };
 
@@ -211,6 +223,7 @@ const makeUnknownLabel = (): Label => {
     id: "unknown-label",
     name: "Unknown Label",
     color: "grey",
+    isDeleted: false,
   };
 };
 

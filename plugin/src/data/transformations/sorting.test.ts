@@ -18,10 +18,12 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
     project: opts?.project ?? {
       id: "foobar",
       name: "Foobar",
-      order: 1,
+      childOrder: 1,
       parentId: null,
       inboxProject: false,
       color: "grey",
+      isDeleted: false,
+      isArchived: false,
     },
     section: opts?.section,
 
