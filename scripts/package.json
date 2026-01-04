@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "gen": "vite-node src/gen-lang-status.ts",
+    "release": "vite-node src/release.ts",
     "check": "tsgo --noEmit",
     "lint:check": "biome check .",
     "lint:fix": "biome check --write ."
   },
   "dependencies": {
-    "@obsidian-todoist/plugin": "*"
+    "@obsidian-todoist/plugin": "*",
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
     "vite-node": "5.2.0",
