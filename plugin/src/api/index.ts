@@ -36,12 +36,12 @@ export class TodoistApiClient {
       content,
       ...(options ?? {}),
     });
-    const response = await this.do("/tasks", "POST", body);
+    const response = await this.do("/tasks", "POST", { json: body });
     return camelize(JSON.parse(response.body)) as Task;
   }
 
   public async closeTask(id: TaskId): Promise<void> {
-    await this.do(`/tasks/${id}/close`, "POST");
+    await this.do(`/tasks/${id}/close`, "POST", {});
   }
 
   public async getProjects(): Promise<Project[]> {
@@ -57,7 +57,7 @@ export class TodoistApiClient {
   }
 
   public async getUser(): Promise<UserInfo> {
-    const response = await this.do("/user", "GET");
+    const response = await this.do("/user", "GET", {});
     return camelize(JSON.parse(response.body)) as UserInfo;
   }
 
@@ -66,15 +66,15 @@ export class TodoistApiClient {
     let cursor: string | null = null;
 
     do {
-      const queryParams = new URLSearchParams(params);
+      const queryParams: Record<string, string> = {
+        ...(params ?? {}),
+      };
+
       if (cursor) {
-        queryParams.set("cursor", cursor);
+        queryParams.cursor = cursor;
       }
 
-      const queryString = queryParams.toString();
-      const fullPath = queryString ? `${path}?${queryString}` : path;
-
-      const response = await this.do(fullPath, "GET");
+      const response = await this.do(path, "GET", { queryParams });
       const paginatedResponse = camelize(JSON.parse(response.body)) as PaginatedResponse<T>;
 
       allResults.push(...paginatedResponse.results);
@@ -84,17 +84,27 @@ export class TodoistApiClient {
     return allResults;
   }
 
-  private async do(path: string, method: string, json?: object): Promise<WebResponse> {
+  private async do(
+    path: string,
+    method: string,
+    opts: { json?: object; queryParams?: Record<string, string> },
+  ): Promise<WebResponse> {
+    let queryString = "";
+    if (opts.queryParams) {
+      const urlParams = new URLSearchParams(opts.queryParams);
+      queryString = `?${urlParams.toString()}`;
+    }
+
     const params: RequestParams = {
-      url: `https://api.todoist.com/api/v1${path}`,
+      url: `https://api.todoist.com/api/v1${path}${queryString}`,
       method,
       headers: {
         Authorization: `Bearer ${this.token}`,
       },
     };
 
-    if (json !== undefined) {
-      params.body = JSON.stringify(json);
+    if (opts.json !== undefined) {
+      params.body = JSON.stringify(opts.json);
       params.headers["Content-Type"] = "application/json";
     }
 
