@@ -37,7 +37,7 @@ export type Priority = z.infer<typeof prioritySchema>;
 
 export const taskSchema = z.object({
   id: taskIdSchema,
-  createdAt: z.string(),
+  addedAt: z.string(),
   content: z.string(),
   description: z.string(),
   projectId: projectIdSchema,
@@ -48,7 +48,7 @@ export const taskSchema = z.object({
   due: dueDateSchema.nullable(),
   duration: durationSchema.nullable(),
   deadline: deadlineSchema.nullable(),
-  order: z.number(),
+  childOrder: z.number(),
 });
 export type Task = z.infer<typeof taskSchema>;
 
