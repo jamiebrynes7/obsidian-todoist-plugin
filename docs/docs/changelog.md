@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The plugin will now automatically refresh your Todoist projects, sections, and labels in the background. This happens every 10 minutes. This should reduce the incidence of "unknown" metadata labels.
 
+### 🐛 Bug Fixes
+
+- Queries sorted by `dateAdded` and `dateAddedAscending` should now work as expected
+- Queries should now respect the natural order of tasks properly if no sorting parameter is provided
+
 ## v2.4.0 (2025-12-28)
 
 ### ✨ Features
