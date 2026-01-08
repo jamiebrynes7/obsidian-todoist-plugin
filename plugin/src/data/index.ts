@@ -149,7 +149,7 @@ export class TodoistAdapter {
 
     return {
       id: apiTask.id,
-      createdAt: apiTask.createdAt,
+      createdAt: apiTask.addedAt,
 
       content: apiTask.content,
       description: apiTask.description,
@@ -164,7 +164,7 @@ export class TodoistAdapter {
       due: apiTask.due ?? undefined,
       duration: apiTask.duration ?? undefined,
       deadline: apiTask.deadline ?? undefined,
-      order: apiTask.order,
+      order: apiTask.childOrder,
     };
   }
 
