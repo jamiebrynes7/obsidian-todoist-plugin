@@ -1,16 +1,15 @@
-import camelize from "camelize-ts";
 import snakify from "snakify-ts";
+import { z } from "zod";
 
 import type { SyncResponse, SyncToken } from "@/api/domain/sync";
+import { syncResponseSchema } from "@/api/domain/sync";
 import type { CreateTaskParams, Task, TaskId } from "@/api/domain/task";
+import { taskSchema } from "@/api/domain/task";
 import type { UserInfo } from "@/api/domain/user";
+import { userInfoSchema } from "@/api/domain/user";
 import { type RequestParams, StatusCode, type WebFetcher, type WebResponse } from "@/api/fetcher";
+import { parseApiResponse } from "@/api/validation";
 import { debug } from "@/log";
-
-type PaginatedResponse<T> = {
-  results: T[];
-  nextCursor: string | null;
-};
 
 export class TodoistApiClient {
   private readonly token: string;
@@ -23,10 +22,10 @@ export class TodoistApiClient {
 
   public async getTasks(filter?: string): Promise<Task[]> {
     if (filter !== undefined) {
-      return await this.doPaginated<Task>("/tasks/filter", { query: filter });
+      return await this.doPaginated("/tasks/filter", taskSchema, { query: filter });
     }
 
-    return await this.doPaginated<Task>("/tasks");
+    return await this.doPaginated("/tasks", taskSchema);
   }
 
   public async createTask(content: string, options?: CreateTaskParams): Promise<Task> {
@@ -35,7 +34,7 @@ export class TodoistApiClient {
       ...(options ?? {}),
     });
     const response = await this.do("/tasks", "POST", { json: body });
-    return camelize(JSON.parse(response.body)) as Task;
+    return parseApiResponse(taskSchema, response.body);
   }
 
   public async closeTask(id: TaskId): Promise<void> {
@@ -44,7 +43,7 @@ export class TodoistApiClient {
 
   public async getUser(): Promise<UserInfo> {
     const response = await this.do("/user", "GET", {});
-    return camelize(JSON.parse(response.body)) as UserInfo;
+    return parseApiResponse(userInfoSchema, response.body);
   }
 
   public async sync(token: SyncToken): Promise<SyncResponse> {
@@ -53,12 +52,21 @@ export class TodoistApiClient {
       resourceTypes: JSON.stringify(["projects", "labels", "sections"]),
     });
     const response = await this.do("/sync", "POST", { queryParams });
-    return camelize(JSON.parse(response.body)) as SyncResponse;
+    return parseApiResponse(syncResponseSchema, response.body);
   }
 
-  private async doPaginated<T>(path: string, params?: Record<string, string>): Promise<T[]> {
+  private async doPaginated<T>(
+    path: string,
+    schema: z.ZodType<T>,
+    params?: Record<string, string>,
+  ): Promise<T[]> {
     const allResults: T[] = [];
     let cursor: string | null = null;
+
+    const paginatedSchema = z.object({
+      results: z.array(schema),
+      nextCursor: z.string().nullable(),
+    });
 
     do {
       const queryParams: Record<string, string> = {
@@ -70,7 +78,7 @@ export class TodoistApiClient {
       }
 
       const response = await this.do(path, "GET", { queryParams });
-      const paginatedResponse = camelize(JSON.parse(response.body)) as PaginatedResponse<T>;
+      const paginatedResponse = parseApiResponse(paginatedSchema, response.body);
 
       allResults.push(...paginatedResponse.results);
       cursor = paginatedResponse.nextCursor;

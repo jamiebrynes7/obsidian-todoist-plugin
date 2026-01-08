@@ -1,12 +1,17 @@
-import type { ProjectId } from "@/api/domain/project";
+import { z } from "zod";
 
-export type SectionId = string;
+import { projectIdSchema } from "@/api/domain/project";
 
-export type Section = {
-  id: SectionId;
-  projectId: ProjectId;
-  name: string;
-  sectionOrder: number;
-  isDeleted: boolean;
-  isArchived: boolean;
-};
+export const sectionIdSchema = z.string();
+export type SectionId = z.infer<typeof sectionIdSchema>;
+
+export const sectionSchema = z.object({
+  id: sectionIdSchema,
+  projectId: projectIdSchema,
+  name: z.string(),
+  sectionOrder: z.number(),
+  isDeleted: z.boolean(),
+  isArchived: z.boolean(),
+});
+
+export type Section = z.infer<typeof sectionSchema>;

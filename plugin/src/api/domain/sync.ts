@@ -1,12 +1,17 @@
-import type { Label } from "@/api/domain/label";
-import type { Project } from "@/api/domain/project";
-import type { Section } from "@/api/domain/section";
+import { z } from "zod";
 
-export type SyncResponse = {
-  syncToken: SyncToken;
-  labels: Label[];
-  projects: Project[];
-  sections: Section[];
-};
+import { labelSchema } from "@/api/domain/label";
+import { projectSchema } from "@/api/domain/project";
+import { sectionSchema } from "@/api/domain/section";
 
-export type SyncToken = string;
+export const syncTokenSchema = z.string();
+export type SyncToken = z.infer<typeof syncTokenSchema>;
+
+export const syncResponseSchema = z.object({
+  syncToken: syncTokenSchema,
+  labels: z.array(labelSchema),
+  projects: z.array(projectSchema),
+  sections: z.array(sectionSchema),
+});
+
+export type SyncResponse = z.infer<typeof syncResponseSchema>;
