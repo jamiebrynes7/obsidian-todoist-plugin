@@ -1,8 +1,13 @@
-export type LabelId = string;
+import { z } from "zod";
 
-export type Label = {
-  id: LabelId;
-  name: string;
-  color: string;
-  isDeleted: boolean;
-};
+export const labelIdSchema = z.string();
+export type LabelId = z.infer<typeof labelIdSchema>;
+
+export const labelSchema = z.object({
+  id: labelIdSchema,
+  name: z.string(),
+  color: z.string(),
+  isDeleted: z.boolean(),
+});
+
+export type Label = z.infer<typeof labelSchema>;
