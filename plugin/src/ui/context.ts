@@ -3,7 +3,7 @@ import { createContext, type Provider, useContext } from "react";
 import type { StoreApi, UseBoundStore } from "zustand";
 
 import type TodoistPlugin from "@/index";
-import type { Query } from "@/query/query";
+import type { TaskQuery } from "@/query/schema/tasks";
 
 type Context<T> = {
   Provider: Provider<T | undefined>;
@@ -24,7 +24,7 @@ const makeContext = <T>(): Context<T> => {
   return { Provider: context.Provider, use };
 };
 
-export const QueryContext = makeContext<Query>();
+export const QueryContext = makeContext<TaskQuery>();
 
 export const PluginContext = makeContext<TodoistPlugin>();
 

@@ -2,9 +2,9 @@ import { parseAbsoluteToLocal } from "@internationalized/date";
 
 import type { Task } from "@/data//task";
 import { DueDate } from "@/data/dueDate";
-import { SortingVariant } from "@/query/query";
+import type { SortingKey } from "@/query/schema/sorting";
 
-export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
+export function sortTasks<T extends Task>(tasks: T[], sort: SortingKey[]) {
   tasks.sort((first, second) => {
     for (const sorting of sort) {
       const cmp = compareTask(first, second, sorting);
@@ -22,26 +22,26 @@ export function sortTasks<T extends Task>(tasks: T[], sort: SortingVariant[]) {
 // Result of "LT zero" means that self is before other,
 // Result of '0' means that they are equal
 // Result of "GT zero" means that self is after other
-function compareTask<T extends Task>(self: T, other: T, sorting: SortingVariant): number {
+function compareTask<T extends Task>(self: T, other: T, sorting: SortingKey): number {
   switch (sorting) {
-    case SortingVariant.Priority:
+    case "priority":
       // Note that priority in the API is reversed to that of in the app.
       return other.priority - self.priority;
-    case SortingVariant.PriorityAscending:
+    case "priorityAscending":
       return self.priority - other.priority;
-    case SortingVariant.Date:
+    case "dateAscending":
       return compareTaskDate(self, other);
-    case SortingVariant.DateDescending:
+    case "dateDescending":
       return -compareTaskDate(self, other);
-    case SortingVariant.Order:
+    case "order":
       return self.order - other.order;
-    case SortingVariant.DateAdded:
+    case "dateAddedAscending":
       return compareTaskDateAdded(self, other);
-    case SortingVariant.DateAddedDescending:
+    case "dateAddedDescending":
       return -compareTaskDateAdded(self, other);
-    case SortingVariant.Alphabetical:
+    case "alphabeticalAscending":
       return compareTaskAlphabetical(self, other);
-    case SortingVariant.AlphabeticalDescending:
+    case "alphabeticalDescending":
       return -compareTaskAlphabetical(self, other);
     default:
       throw new Error(`Unexpected sorting type: '${sorting}'`);

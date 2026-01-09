@@ -3,7 +3,8 @@ import type React from "react";
 import { Deadline } from "@/data/deadline";
 import { DueDate } from "@/data/dueDate";
 import type { Task } from "@/data/task";
-import { type Query, ShowMetadataVariant } from "@/query/query";
+import type { ShowMetadataKey } from "@/query/schema/show";
+import type { TaskQuery } from "@/query/schema/tasks";
 import type { Settings } from "@/settings";
 import { ObsidianIcon } from "@/ui/components/obsidian-icon";
 
@@ -22,7 +23,7 @@ type IconOrientation = "before" | "after";
 
 type MetadataDefinition = {
   name: string;
-  isShown: (query: Query, task: Task) => boolean;
+  isShown: (show: Set<ShowMetadataKey>, task: Task) => boolean;
   content: (task: Task) => MetadataContent[];
   icons: Partial<Record<IconOrientation, IconDefinition>>;
   side: "left" | "right";
@@ -30,7 +31,7 @@ type MetadataDefinition = {
 
 const projectMeta: MetadataDefinition = {
   name: "project",
-  isShown: (query) => query.show.has(ShowMetadataVariant.Project),
+  isShown: (show) => show.has("project"),
   content: (task) => [
     {
       content:
@@ -53,10 +54,8 @@ const projectMeta: MetadataDefinition = {
 
 const sectionMeta: MetadataDefinition = {
   name: "section",
-  isShown: (query, task) =>
-    query.show.has(ShowMetadataVariant.Section) &&
-    !query.show.has(ShowMetadataVariant.Project) &&
-    task.section !== undefined,
+  isShown: (show, task) =>
+    show.has("section") && !show.has("project") && task.section !== undefined,
   content: (task) => [
     {
       // biome-ignore lint/style/noNonNullAssertion: We enforce this above in 'isShown'.
@@ -74,7 +73,7 @@ const sectionMeta: MetadataDefinition = {
 
 const dueDateMeta: MetadataDefinition = {
   name: "due",
-  isShown: (query, task) => query.show.has(ShowMetadataVariant.Due) && task.due !== undefined,
+  isShown: (show, task) => (show.has("due") ?? false) && task.due !== undefined,
   content: (task) => [{ content: dateLabel(task) }],
   icons: {
     before: {
@@ -92,8 +91,7 @@ const dueDateMeta: MetadataDefinition = {
 
 const deadlineMeta: MetadataDefinition = {
   name: "deadline",
-  isShown: (query, task) =>
-    query.show.has(ShowMetadataVariant.Deadline) && task.deadline !== undefined,
+  isShown: (show, task) => (show.has("deadline") ?? false) && task.deadline !== undefined,
   content: (task) => [{ content: deadlineLabel(task) }],
   icons: {
     before: {
@@ -106,7 +104,7 @@ const deadlineMeta: MetadataDefinition = {
 
 const labelsMeta: MetadataDefinition = {
   name: "labels",
-  isShown: (query, task) => query.show.has(ShowMetadataVariant.Labels) && task.labels.length > 0,
+  isShown: (show, task) => (show.has("labels") ?? false) && task.labels.length > 0,
   content: (task) =>
     task.labels.map((label) => ({
       content: label.name,
@@ -125,12 +123,12 @@ const labelsMeta: MetadataDefinition = {
 
 const timeOnlyMeta: MetadataDefinition = {
   name: "time",
-  isShown: (query, task) => {
-    if (query.show.has(ShowMetadataVariant.Due)) {
+  isShown: (show, task) => {
+    if (show.has("due")) {
       return false;
     }
 
-    if (!query.show.has(ShowMetadataVariant.Time) || task.due === undefined) {
+    if (!show.has("time") || task.due === undefined) {
       return false;
     }
 
@@ -181,7 +179,7 @@ const timeOnlyLabel = (task: Task): string => {
 };
 
 type TaskMetadataProps = {
-  query: Query;
+  query: TaskQuery;
   settings: Settings;
   task: Task;
 };
@@ -204,9 +202,12 @@ const getMetadataElems = (
 ): React.ReactElement[] => {
   const { query, task, settings } = props;
 
+  const show =
+    query.show ?? new Set<ShowMetadataKey>(["project", "due", "description", "labels", "deadline"]);
+
   return metadata
     .filter((meta) => meta.side === side)
-    .filter((meta) => meta.isShown(query, task))
+    .filter((meta) => meta.isShown(show, task))
     .flatMap((meta) => {
       return meta.content(task).map((content) => {
         const children = [<span key="content">{content.content}</span>];

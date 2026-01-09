@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ParsingError, parseQuery, type QueryWarning } from "@/query/parser";
-import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
+import { type TaskQuery, taskQueryDefinition } from "@/query/schema/tasks";
 
 describe("parseQuery - rejections", () => {
   type Testcase = {
@@ -120,29 +120,21 @@ describe("parseQuery - rejections", () => {
   for (const tc of testcases) {
     it(tc.description, () => {
       expect(() => {
-        parseQuery(JSON.stringify(tc.input));
+        parseQuery(JSON.stringify(tc.input), taskQueryDefinition);
       }).toThrowError(ParsingError);
     });
   }
 });
 
-function makeQuery(opts?: Partial<Query>): Query {
+function makeQuery(opts?: Partial<TaskQuery>): TaskQuery {
   return {
-    name: opts?.name ?? "",
+    name: opts?.name,
     filter: opts?.filter ?? "",
-    autorefresh: opts?.autorefresh ?? 0,
-    sorting: opts?.sorting ?? [SortingVariant.Order],
-    show:
-      opts?.show ??
-      new Set([
-        ShowMetadataVariant.Due,
-        ShowMetadataVariant.Description,
-        ShowMetadataVariant.Project,
-        ShowMetadataVariant.Labels,
-        ShowMetadataVariant.Deadline,
-      ]),
-    groupBy: opts?.groupBy ?? GroupVariant.None,
-    view: opts?.view ?? {},
+    autorefresh: opts?.autorefresh,
+    sorting: opts?.sorting,
+    show: opts?.show,
+    groupBy: opts?.groupBy,
+    view: opts?.view,
   };
 }
 
@@ -150,7 +142,7 @@ describe("parseQuery", () => {
   type Testcase = {
     description: string;
     input: unknown;
-    expectedOutput: Query;
+    expectedOutput: TaskQuery;
   };
 
   const testcases: Testcase[] = [
@@ -193,7 +185,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        groupBy: GroupVariant.Section,
+        groupBy: "section",
       }),
     },
     {
@@ -204,7 +196,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        sorting: [SortingVariant.Date],
+        sorting: ["dateAscending"],
       }),
     },
     {
@@ -215,7 +207,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Project]),
+        show: new Set(["due", "project"]),
       }),
     },
     {
@@ -226,11 +218,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([
-          ShowMetadataVariant.Due,
-          ShowMetadataVariant.Deadline,
-          ShowMetadataVariant.Project,
-        ]),
+        show: new Set(["due", "deadline", "project"]),
       }),
     },
     {
@@ -252,7 +240,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([ShowMetadataVariant.Time]),
+        show: new Set(["time"]),
       }),
     },
     {
@@ -263,7 +251,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([ShowMetadataVariant.Time, ShowMetadataVariant.Project]),
+        show: new Set(["time", "project"]),
       }),
     },
     {
@@ -274,7 +262,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([ShowMetadataVariant.Due, ShowMetadataVariant.Time]),
+        show: new Set(["due", "time"]),
       }),
     },
     {
@@ -285,7 +273,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([ShowMetadataVariant.Section]),
+        show: new Set(["section"]),
       }),
     },
     {
@@ -296,7 +284,7 @@ describe("parseQuery", () => {
       },
       expectedOutput: makeQuery({
         filter: "bar",
-        show: new Set([ShowMetadataVariant.Section, ShowMetadataVariant.Project]),
+        show: new Set(["section", "project"]),
       }),
     },
     {
@@ -310,22 +298,12 @@ describe("parseQuery", () => {
         view: { noTasksMessage: "All caught up!" },
       }),
     },
-    {
-      description: "without view defaults to empty object",
-      input: {
-        filter: "bar",
-      },
-      expectedOutput: makeQuery({
-        filter: "bar",
-        view: {},
-      }),
-    },
   ];
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const [output, _] = parseQuery(JSON.stringify(tc.input));
-      expect(output).toStrictEqual(tc.expectedOutput);
+      const [output, _] = parseQuery(JSON.stringify(tc.input), taskQueryDefinition);
+      expect(output).toEqual(tc.expectedOutput);
     });
   }
 });
@@ -396,7 +374,7 @@ describe("parseQuery - warnings", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const [_, warnings] = parseQuery(JSON.stringify(tc.input));
+      const [_, warnings] = parseQuery(JSON.stringify(tc.input), taskQueryDefinition);
       expect(warnings).toStrictEqual(tc.expectedWarnings);
     });
   }
@@ -489,7 +467,7 @@ describe("parseQuery - error message snapshots", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      expect(() => parseQuery(tc.input)).toThrowErrorMatchingSnapshot();
+      expect(() => parseQuery(tc.input, taskQueryDefinition)).toThrowErrorMatchingSnapshot();
     });
   }
 });
