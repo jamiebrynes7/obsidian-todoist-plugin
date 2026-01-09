@@ -7,7 +7,6 @@ import type { Project } from "@/api/domain/project";
 import type { Section } from "@/api/domain/section";
 import type { Task } from "@/data/task";
 import { type GroupedTasks, groupBy } from "@/data/transformations/grouping";
-import { GroupVariant } from "@/query/query";
 
 vi.mock("../../infra/time.ts", () => {
   return {
@@ -185,7 +184,7 @@ describe("group by priority", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const groups = groupBy(tc.input, GroupVariant.Priority);
+      const groups = groupBy(tc.input, "priority");
       expect(groups).toStrictEqual(tc.expected);
     });
   }
@@ -241,7 +240,7 @@ describe("group by project", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const groups = groupBy(tc.input, GroupVariant.Project);
+      const groups = groupBy(tc.input, "project");
       expect(groups).toStrictEqual(tc.expected);
     });
   }
@@ -328,7 +327,7 @@ describe("group by section", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const groups = groupBy(tc.input, GroupVariant.Section);
+      const groups = groupBy(tc.input, "section");
       expect(groups).toStrictEqual(tc.expected);
     });
   }
@@ -498,7 +497,7 @@ describe("group by date", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const groups = groupBy(tc.input, GroupVariant.Date);
+      const groups = groupBy(tc.input, "due");
       expect(groups).toStrictEqual(tc.expected);
     });
   }
@@ -614,7 +613,7 @@ describe("group by label", () => {
 
   for (const tc of testcases) {
     it(tc.description, () => {
-      const groups = groupBy(tc.input, GroupVariant.Label);
+      const groups = groupBy(tc.input, "label");
       expect(groups).toStrictEqual(tc.expected);
     });
   }

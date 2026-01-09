@@ -1,8 +1,8 @@
 import type { MarkdownPostProcessorContext, MarkdownSectionInformation } from "obsidian";
 import { describe, expect, it } from "vitest";
 
-import { GroupVariant, type Query } from "@/query/query";
 import { applyReplacements } from "@/query/replacements";
+import type { TaskQuery } from "@/query/schema/tasks";
 
 class FakeContext implements MarkdownPostProcessorContext {
   docId = "";
@@ -51,14 +51,8 @@ describe("applyReplacements", () => {
 
     for (const tc of testcases) {
       it(tc.description, () => {
-        const query: Query = {
-          name: "",
+        const query: TaskQuery = {
           filter: tc.filter,
-          autorefresh: 0,
-          groupBy: GroupVariant.None,
-          sorting: [],
-          show: new Set(),
-          view: {},
         };
 
         applyReplacements(query, new FakeContext(tc.filePath ?? ""));

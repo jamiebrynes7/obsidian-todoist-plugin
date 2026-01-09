@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Task } from "@/data/task";
 import { sortTasks } from "@/data/transformations/sorting";
-import { SortingVariant } from "@/query/query";
+import type { SortingKey } from "@/query/schema/sorting";
 
 function makeTask(id: string, opts?: Partial<Task>): Task {
   return {
@@ -35,7 +35,7 @@ describe("sortTasks", () => {
   type Testcase = {
     description: string;
     input: Task[];
-    sortingOpts: SortingVariant[];
+    sortingOpts: SortingKey[];
     expectedOutput: Task[];
   };
 
@@ -43,7 +43,7 @@ describe("sortTasks", () => {
     {
       description: "should not error for empty input",
       input: [],
-      sortingOpts: [SortingVariant.Priority],
+      sortingOpts: ["priority"],
       expectedOutput: [],
     },
     {
@@ -59,7 +59,7 @@ describe("sortTasks", () => {
           priority: 4,
         }),
       ],
-      sortingOpts: [SortingVariant.Priority],
+      sortingOpts: ["priority"],
       expectedOutput: [
         makeTask("c", {
           priority: 4,
@@ -85,7 +85,7 @@ describe("sortTasks", () => {
           priority: 4,
         }),
       ],
-      sortingOpts: [SortingVariant.PriorityAscending],
+      sortingOpts: ["priorityAscending"],
       expectedOutput: [
         makeTask("b", {
           priority: 1,
@@ -111,7 +111,7 @@ describe("sortTasks", () => {
           order: 1,
         }),
       ],
-      sortingOpts: [SortingVariant.Order],
+      sortingOpts: ["order"],
       expectedOutput: [
         makeTask("c", {
           order: 1,
@@ -153,7 +153,7 @@ describe("sortTasks", () => {
           },
         }),
       ],
-      sortingOpts: [SortingVariant.Date],
+      sortingOpts: ["dateAscending"],
       expectedOutput: [
         makeTask("e", {
           due: {
@@ -211,7 +211,7 @@ describe("sortTasks", () => {
         }),
         makeTask("a"),
       ],
-      sortingOpts: [SortingVariant.DateDescending],
+      sortingOpts: ["dateDescending"],
       expectedOutput: [
         makeTask("a"),
         makeTask("b", {
@@ -253,7 +253,7 @@ describe("sortTasks", () => {
           createdAt: "2020-03-02T12:00:00Z",
         }),
       ],
-      sortingOpts: [SortingVariant.DateAdded],
+      sortingOpts: ["dateAddedAscending"],
       expectedOutput: [
         makeTask("b", {
           createdAt: "2020-03-02T11:00:00Z",
@@ -279,7 +279,7 @@ describe("sortTasks", () => {
           createdAt: "2020-03-02T12:00:00Z",
         }),
       ],
-      sortingOpts: [SortingVariant.DateAddedDescending],
+      sortingOpts: ["dateAddedDescending"],
       expectedOutput: [
         makeTask("b", {
           createdAt: "2020-03-03T13:00:00Z",
@@ -317,7 +317,7 @@ describe("sortTasks", () => {
           },
         }),
       ],
-      sortingOpts: [SortingVariant.Priority, SortingVariant.Date],
+      sortingOpts: ["priority", "dateAscending"],
       expectedOutput: [
         makeTask("c", {
           priority: 3,
@@ -350,7 +350,7 @@ describe("sortTasks", () => {
         makeTask("c", { content: "Banana" }),
         makeTask("d", { content: "cherry" }),
       ],
-      sortingOpts: [SortingVariant.Alphabetical],
+      sortingOpts: ["alphabeticalAscending"],
       expectedOutput: [
         makeTask("b", { content: "apple" }),
         makeTask("c", { content: "Banana" }),
@@ -365,7 +365,7 @@ describe("sortTasks", () => {
         makeTask("b", { content: "Banana" }),
         makeTask("c", { content: "zebra" }),
       ],
-      sortingOpts: [SortingVariant.AlphabeticalDescending],
+      sortingOpts: ["alphabeticalDescending"],
       expectedOutput: [
         makeTask("c", { content: "zebra" }),
         makeTask("b", { content: "Banana" }),
@@ -380,7 +380,7 @@ describe("sortTasks", () => {
         makeTask("c", { content: "Apple" }),
         makeTask("d", { content: "BANANA" }),
       ],
-      sortingOpts: [SortingVariant.Alphabetical],
+      sortingOpts: ["alphabeticalAscending"],
       expectedOutput: [
         makeTask("a", { content: "APPLE" }),
         makeTask("c", { content: "Apple" }),
@@ -396,7 +396,7 @@ describe("sortTasks", () => {
         makeTask("c", { content: "@mention task" }),
         makeTask("d", { content: "#hashtag task" }),
       ],
-      sortingOpts: [SortingVariant.Alphabetical],
+      sortingOpts: ["alphabeticalAscending"],
       expectedOutput: [
         makeTask("c", { content: "@mention task" }),
         makeTask("d", { content: "#hashtag task" }),
@@ -411,7 +411,7 @@ describe("sortTasks", () => {
         makeTask("b", { content: "apple" }),
         makeTask("c", { content: "" }),
       ],
-      sortingOpts: [SortingVariant.Alphabetical],
+      sortingOpts: ["alphabeticalAscending"],
       expectedOutput: [
         makeTask("a", { content: "" }),
         makeTask("c", { content: "" }),
@@ -425,7 +425,7 @@ describe("sortTasks", () => {
         makeTask("b", { content: "Task A", priority: 2 }),
         makeTask("c", { content: "Task C", priority: 3 }),
       ],
-      sortingOpts: [SortingVariant.Priority, SortingVariant.Alphabetical],
+      sortingOpts: ["priority", "alphabeticalAscending"],
       expectedOutput: [
         makeTask("c", { content: "Task C", priority: 3 }),
         makeTask("b", { content: "Task A", priority: 2 }),

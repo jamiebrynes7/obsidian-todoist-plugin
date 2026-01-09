@@ -13,8 +13,15 @@ type Props = {
 
 export const GroupedDisplay: React.FC<Props> = ({ tasks }) => {
   const query = QueryContext.use();
-  const groups = groupBy(tasks, query.groupBy);
+
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  // GroupedDisplay should only be rendered when groupBy is defined
+  if (!query.groupBy) {
+    return null;
+  }
+
+  const groups = groupBy(tasks, query.groupBy);
 
   const toggleGroup = (groupHeader: string) => {
     setCollapsedGroups((prev) => {

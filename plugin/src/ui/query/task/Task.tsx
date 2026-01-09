@@ -6,7 +6,6 @@ import { Checkbox } from "react-aria-components";
 import { DueDate } from "@/data/dueDate";
 import type { TaskTree } from "@/data/transformations/relationships";
 import { t } from "@/i18n";
-import { ShowMetadataVariant } from "@/query/query";
 import { useSettingsStore } from "@/settings";
 import { Markdown } from "@/ui/components/markdown";
 import { PluginContext, QueryContext } from "@/ui/context";
@@ -49,7 +48,7 @@ export const Task: React.FC<Props> = ({ tree }) => {
   const isDisabled = tree.content.startsWith("*");
 
   const shouldRenderDescription =
-    query.show.has(ShowMetadataVariant.Description) && tree.description !== "";
+    (query.show?.has("description") ?? false) && tree.description !== "";
 
   const transitionOpacity = settings.fadeToggle ? 0 : 1;
 

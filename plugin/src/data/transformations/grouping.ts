@@ -4,24 +4,24 @@ import type { Priority } from "@/api/domain/task";
 import { DueDate } from "@/data/dueDate";
 import type { Task } from "@/data/task";
 import { t } from "@/i18n";
-import { GroupVariant } from "@/query/query";
+import type { GroupingKey } from "@/query/schema/grouping";
 
 export type GroupedTasks = {
   header: string;
   tasks: Task[];
 };
 
-export function groupBy(tasks: Task[], groupBy: GroupVariant): GroupedTasks[] {
+export function groupBy(tasks: Task[], groupBy: GroupingKey): GroupedTasks[] {
   switch (groupBy) {
-    case GroupVariant.Priority:
+    case "priority":
       return groupByPriority(tasks);
-    case GroupVariant.Project:
+    case "project":
       return groupByProject(tasks);
-    case GroupVariant.Section:
+    case "section":
       return groupBySection(tasks);
-    case GroupVariant.Date:
+    case "due":
       return groupByDate(tasks);
-    case GroupVariant.Label:
+    case "label":
       return groupByLabel(tasks);
     default:
       throw new Error(`Cannot group by ${groupBy}`);

@@ -6,7 +6,7 @@ import type { OnSubscriptionChange, Refresh, SubscriptionResult } from "@/data";
 import { t } from "@/i18n";
 import type TodoistPlugin from "@/index";
 import type { QueryWarning } from "@/query/parser";
-import { GroupVariant, type Query } from "@/query/query";
+import type { TaskQuery } from "@/query/schema/tasks";
 import { type Settings, useSettingsStore } from "@/settings";
 import { PluginContext, QueryContext } from "@/ui/context";
 import { Displays } from "@/ui/query/displays";
@@ -18,7 +18,7 @@ import { secondsToMillis } from "@/infra/time";
 
 const useSubscription = (
   plugin: TodoistPlugin,
-  query: Query,
+  query: TaskQuery,
   callback: OnSubscriptionChange,
 ): [Refresh, boolean, boolean, Date | undefined] => {
   const [refresher, setRefresher] = useState<Refresh | undefined>(undefined);
@@ -56,7 +56,7 @@ const useSubscription = (
 };
 
 type Props = {
-  query: Query;
+  query: TaskQuery;
   warnings: QueryWarning[];
 };
 
@@ -101,8 +101,8 @@ export const QueryRoot: React.FC<Props> = ({ query, warnings }) => {
   );
 };
 
-const getAutorefreshInterval = (query: Query, settings: Settings): number | undefined => {
-  if (query.autorefresh !== 0) {
+const getAutorefreshInterval = (query: TaskQuery, settings: Settings): number | undefined => {
+  if (query.autorefresh !== undefined && query.autorefresh !== 0) {
     return query.autorefresh;
   }
 
@@ -117,8 +117,9 @@ const getAutorefreshInterval = (query: Query, settings: Settings): number | unde
   return undefined;
 };
 
-const getTitle = (query: Query, result: SubscriptionResult): string => {
-  if (query.name.length === 0) {
+const getTitle = (query: TaskQuery, result: SubscriptionResult): string => {
+  const name = query.name ?? "";
+  if (name.length === 0) {
     return "";
   }
 
@@ -128,7 +129,7 @@ const getTitle = (query: Query, result: SubscriptionResult): string => {
       return `${query.name} ${postfix}`;
     }
     case "success":
-      return query.name.replace("{task_count}", result.tasks.length.toString());
+      return name.replace("{task_count}", result.tasks.length.toString());
     case "not-ready":
       return "";
     default: {
@@ -140,7 +141,7 @@ const getTitle = (query: Query, result: SubscriptionResult): string => {
 
 const QueryResponseHandler: React.FC<{
   result: SubscriptionResult;
-  query: Query;
+  query: TaskQuery;
 }> = ({ result, query }) => {
   if (result.type === "error") {
     return <Displays.Error kind={result.kind} />;
@@ -152,10 +153,10 @@ const QueryResponseHandler: React.FC<{
 
   const tasks = result.tasks;
   if (tasks.length === 0) {
-    return <Displays.Empty message={query.view.noTasksMessage} />;
+    return <Displays.Empty message={query.view?.noTasksMessage} />;
   }
 
-  if (query.groupBy !== GroupVariant.None) {
+  if (query.groupBy !== undefined) {
     return (
       <QueryContext.Provider value={query}>
         <Displays.Grouped tasks={tasks} />

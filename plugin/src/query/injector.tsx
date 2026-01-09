@@ -8,6 +8,7 @@ import type TodoistPlugin from "@/index";
 import { debug } from "@/log";
 import { parseQuery } from "@/query/parser";
 import { applyReplacements } from "@/query/replacements";
+import { taskQueryDefinition } from "@/query/schema/tasks";
 import {
   type MarkdownEditButton,
   MarkdownEditButtonContext,
@@ -27,7 +28,7 @@ export class QueryInjector {
     let child: MarkdownRenderChild;
 
     try {
-      const [query, warnings] = parseQuery(source);
+      const [query, warnings] = parseQuery(source, taskQueryDefinition);
       applyReplacements(query, ctx);
 
       debug({

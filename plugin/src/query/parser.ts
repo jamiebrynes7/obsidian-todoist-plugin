@@ -2,7 +2,7 @@ import { load as loadYaml } from "js-yaml";
 import { z } from "zod";
 
 import { t } from "@/i18n";
-import { GroupVariant, type Query, ShowMetadataVariant, SortingVariant } from "@/query/query";
+import type { QueryDefinition } from "@/query/schema/query";
 
 type ErrorTree = string | { msg: string; children: ErrorTree[] };
 
@@ -38,7 +38,10 @@ export class ParsingError extends Error {
 
 export type QueryWarning = string;
 
-export function parseQuery(raw: string): [Query, QueryWarning[]] {
+export function parseQuery<T extends z.ZodObject>(
+  raw: string,
+  definition: QueryDefinition<T>,
+): [z.infer<T>, QueryWarning[]] {
   let obj: Record<string, unknown> | null = null;
   const warnings: QueryWarning[] = [];
 
@@ -57,7 +60,7 @@ export function parseQuery(raw: string): [Query, QueryWarning[]] {
     obj = {};
   }
 
-  const [query, parsingWarnings] = parseObjectZod(obj);
+  const [query, parsingWarnings] = parseObjectZod(obj, definition);
   warnings.push(...parsingWarnings);
 
   return [query, warnings];
@@ -78,81 +81,6 @@ function tryParseAsYaml(raw: string): Record<string, unknown> {
     throw new ParsingError(["Invalid YAML"], e);
   }
 }
-
-const lookupToEnum = <T>(lookup: Record<string, T>) => {
-  const keys = Object.keys(lookup);
-  return z.enum(keys).transform((key) => lookup[key]);
-};
-
-const sortingSchema = lookupToEnum({
-  priority: SortingVariant.Priority,
-  priorityAscending: SortingVariant.PriorityAscending,
-  priorityDescending: SortingVariant.Priority,
-  date: SortingVariant.Date,
-  dateAscending: SortingVariant.Date,
-  dateDescending: SortingVariant.DateDescending,
-  order: SortingVariant.Order,
-  dateAdded: SortingVariant.DateAdded,
-  dateAddedAscending: SortingVariant.DateAdded,
-  dateAddedDescending: SortingVariant.DateAddedDescending,
-  alphabetical: SortingVariant.Alphabetical,
-  alphabeticalAscending: SortingVariant.Alphabetical,
-  alphabeticalDescending: SortingVariant.AlphabeticalDescending,
-});
-
-const showSchema = lookupToEnum({
-  due: ShowMetadataVariant.Due,
-  date: ShowMetadataVariant.Due,
-  description: ShowMetadataVariant.Description,
-  labels: ShowMetadataVariant.Labels,
-  project: ShowMetadataVariant.Project,
-  deadline: ShowMetadataVariant.Deadline,
-  time: ShowMetadataVariant.Time,
-  section: ShowMetadataVariant.Section,
-});
-
-const groupBySchema = lookupToEnum({
-  project: GroupVariant.Project,
-  section: GroupVariant.Section,
-  priority: GroupVariant.Priority,
-  due: GroupVariant.Date,
-  date: GroupVariant.Date,
-  labels: GroupVariant.Label,
-});
-
-const viewSchema = z.object({
-  noTasksMessage: z.string().optional(),
-});
-
-const defaultQuery = (): Omit<Query, "filter"> => ({
-  name: "",
-  autorefresh: 0,
-  sorting: [SortingVariant.Order],
-  show: new Set([
-    ShowMetadataVariant.Due,
-    ShowMetadataVariant.Description,
-    ShowMetadataVariant.Labels,
-    ShowMetadataVariant.Project,
-    ShowMetadataVariant.Deadline,
-  ]),
-  groupBy: GroupVariant.None,
-  view: {},
-});
-
-const querySchema = z.object({
-  name: z.string().optional(),
-  filter: z.string(),
-  autorefresh: z.number().nonnegative().optional(),
-  sorting: z.array(sortingSchema).optional(),
-  show: z
-    .union([
-      z.array(showSchema).transform((arr) => new Set(arr)),
-      z.literal("none").transform(() => new Set([])),
-    ])
-    .optional(),
-  groupBy: groupBySchema.optional(),
-  view: viewSchema.optional(),
-});
 
 function findUnknownKeys(obj: Record<string, unknown>, schema: z.ZodObject): string[] {
   const keys: string[] = [];
@@ -195,41 +123,25 @@ function findUnknownKeys(obj: Record<string, unknown>, schema: z.ZodObject): str
   return keys;
 }
 
-function parseObjectZod(query: Record<string, unknown>): [Query, QueryWarning[]] {
+function parseObjectZod<T extends z.ZodObject>(
+  query: Record<string, unknown>,
+  definition: QueryDefinition<T>,
+): [z.infer<T>, QueryWarning[]] {
   const warnings: QueryWarning[] = [];
-
-  for (const key of findUnknownKeys(query, querySchema)) {
+  for (const key of findUnknownKeys(query, definition.schema)) {
     warnings.push(t().query.warning.unknownKey(key));
   }
 
-  const out = querySchema.safeParse(query);
-
+  const out = definition.schema.safeParse(query);
   if (!out.success) {
     throw new ParsingError(formatZodError(out.error));
   }
 
-  const show = new Set(out.data.show);
-
-  if (show.has(ShowMetadataVariant.Due) && show.has(ShowMetadataVariant.Time)) {
-    warnings.push(t().query.warning.dueAndTime);
-  }
-
-  if (show.has(ShowMetadataVariant.Project) && show.has(ShowMetadataVariant.Section)) {
-    warnings.push(t().query.warning.projectAndSection);
-  }
-
-  return [
-    {
-      ...defaultQuery(),
-      ...out.data,
-    },
-    warnings,
-  ];
+  warnings.push(...definition.generateWarnings(out.data));
+  return [out.data, warnings];
 }
 
-type QuerySchema = z.infer<typeof querySchema>;
-
-function formatZodError(error: z.ZodError<QuerySchema>): ErrorTree[] {
+function formatZodError<T extends z.ZodObject>(error: z.ZodError<z.infer<T>>): ErrorTree[] {
   const tree = z.treeifyError(error);
 
   const errors: ErrorTree[] = [...tree.errors];
@@ -238,6 +150,10 @@ function formatZodError(error: z.ZodError<QuerySchema>): ErrorTree[] {
   }
 
   for (const [key, child] of Object.entries(tree.properties)) {
+    if (child === undefined) {
+      continue;
+    }
+
     if (child.errors.length > 0) {
       errors.push({
         msg: `Field '${key}' has the following issues:`,
@@ -245,10 +161,17 @@ function formatZodError(error: z.ZodError<QuerySchema>): ErrorTree[] {
       });
     }
 
-    if ("items" in child && child.items !== undefined) {
+    if (
+      "items" in child &&
+      child.items !== undefined &&
+      child.items !== null &&
+      Array.isArray(child.items)
+    ) {
+      const items = child.items as Array<{ errors: string[] }>;
+
       const root: ErrorTree = {
         msg: `Field '${key}' elements have the following issues:`,
-        children: child.items.flatMap((item, idx) =>
+        children: items.flatMap((item, idx) =>
           item.errors.map((msg) => `Item '${key}[${idx}]': ${msg}`),
         ),
       };
