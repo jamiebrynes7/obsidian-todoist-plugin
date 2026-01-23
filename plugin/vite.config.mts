@@ -67,9 +67,6 @@ export default defineConfig({
     }),
     bundleAnalyzerPlugin(),
   ],
-  resolve: {
-    dedupe: ["react", "react-dom"],
-  },
   build: {
     // We aren't building a website, so we build in library mode
     // and bundle the output using our index.ts as the entrypoint.
