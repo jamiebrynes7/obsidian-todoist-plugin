@@ -174,3 +174,17 @@ view:
   noTasksMessage: "Nothing due today! Take a break."
 ```
 ````
+
+#### `hideNoTasks`
+
+The `hideNoTasks` property allows you to completely hide the query output when no tasks are returned. When set to `true`, nothing will be rendered if the query returns no tasks, rather than showing a message.
+
+For example:
+
+````
+```todoist
+filter: "#work & today"
+view:
+  hideNoTasks: true
+```
+````
