@@ -4,7 +4,9 @@ runs:
   using: "composite"
   steps:
     - name: Install Nix
-      uses: DeterminateSystems/nix-installer-action@main
+      uses: DeterminateSystems/nix-installer-action@58e64ed13a4f3f90ba0cba819752b6df4b548da8
+      with:
+        summarize: false
     - name: Use nix-develop shell
       uses: nicknovitski/nix-develop@v1.1.0
       with:
