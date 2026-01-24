@@ -8,9 +8,9 @@ import type TodoistPlugin from "@/index";
 import type { QueryWarning } from "@/query/parser";
 import type { TaskQuery } from "@/query/schema/tasks";
 import { type Settings, useSettingsStore } from "@/settings";
-import { PluginContext, QueryContext } from "@/ui/context";
-import { Displays } from "@/ui/query/displays";
+import { PluginContext } from "@/ui/context";
 import { QueryHeader } from "@/ui/query/QueryHeader";
+import { QueryResponseHandler } from "@/ui/query/QueryResponseHandler";
 import { QueryWarnings } from "@/ui/query/QueryWarnings";
 import "./styles.scss";
 
@@ -137,36 +137,4 @@ const getTitle = (query: TaskQuery, result: SubscriptionResult): string => {
       throw new Error("Unknown result type");
     }
   }
-};
-
-const QueryResponseHandler: React.FC<{
-  result: SubscriptionResult;
-  query: TaskQuery;
-}> = ({ result, query }) => {
-  if (result.type === "error") {
-    return <Displays.Error kind={result.kind} />;
-  }
-
-  if (result.type === "not-ready") {
-    return <Displays.NotReady />;
-  }
-
-  const tasks = result.tasks;
-  if (tasks.length === 0) {
-    return <Displays.Empty message={query.view?.noTasksMessage} />;
-  }
-
-  if (query.groupBy !== undefined) {
-    return (
-      <QueryContext.Provider value={query}>
-        <Displays.Grouped tasks={tasks} />
-      </QueryContext.Provider>
-    );
-  }
-
-  return (
-    <QueryContext.Provider value={query}>
-      <Displays.List tasks={tasks} />
-    </QueryContext.Provider>
-  );
 };
