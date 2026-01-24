@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ✨ Features
 
 - The plugin will now automatically refresh your Todoist projects, sections, and labels in the background. This happens every 10 minutes. This should reduce the incidence of "unknown" metadata labels.
+- You can now use `view.hideNoTasks` in your query to completely hide the query output when no tasks are returned.
 
 ### 🐛 Bug Fixes
 
@@ -379,7 +380,6 @@ Check it out at [jamiebrynes7/moonlight-obsidian-theme](https://github.com/jamie
 
 - Tasks now render labels under them by default. This can be toggled in the settings (along with the accompanying icon).
 - Tasks now render projects & section under them by default. This can be toggled in the settings (along with the accompanying icon).
-
   - The layout of the project, date, and label combo can be configured in CSS. For example:
 
     ```css
