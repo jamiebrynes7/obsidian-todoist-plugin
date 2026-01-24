@@ -115,6 +115,13 @@ describe("parseQuery - rejections", () => {
         view: { noTasksMessage: 123 },
       },
     },
+    {
+      description: "view.hideNoTasks must be boolean",
+      input: {
+        filter: "bar",
+        view: { hideNoTasks: "true" },
+      },
+    },
   ];
 
   for (const tc of testcases) {
@@ -296,6 +303,17 @@ describe("parseQuery", () => {
       expectedOutput: makeQuery({
         filter: "bar",
         view: { noTasksMessage: "All caught up!" },
+      }),
+    },
+    {
+      description: "with view.hideNoTasks",
+      input: {
+        filter: "bar",
+        view: { hideNoTasks: true },
+      },
+      expectedOutput: makeQuery({
+        filter: "bar",
+        view: { hideNoTasks: true },
       }),
     },
   ];
