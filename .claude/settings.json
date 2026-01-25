@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run test *)",
+      "Bash(npm run build)",
+      "Bash(npm run lint:*)",
+
+      "Bash(git add *)",
+
+      "WebFetch(domain:developer.todoist.com)",
+
+      "mcp__ide__getDiagnostics"
+    ]
+  }
+}
