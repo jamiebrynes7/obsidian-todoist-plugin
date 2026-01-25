@@ -206,6 +206,8 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       return;
     }
 
+    const fileInfo = toFileInfo(fileContext);
+
     modal.close();
 
     const params: CreateTaskParams = {
@@ -243,9 +245,19 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
       const task = await plugin.services.todoist.actions.createTask(taskContent, params);
 
       if (action === "add-copy-app" || action === "add-copy-web") {
+        const taskRef = {
+          id: task.id,
+          projectId: task.projectId,
+        };
+
         const markdownLink = buildClipboardMarkdown(
-          { id: task.id, projectId: task.projectId, content: task.content },
-          action,
+          content,
+          taskRef,
+          {
+            appendLink: options.appendLinkTo === "content",
+            variant: action,
+          },
+          fileInfo,
         );
         try {
           await navigator.clipboard.writeText(markdownLink);

@@ -13,12 +13,16 @@ const FileInfo = {
 
     return `[${file.name}](obsidian://open?vault=${vault}&file=${filepath})`;
   },
+  obsidianBacklink: (file: FileInfo): string => {
+    // Strip the final trailing extension (often .md) before creating the backlink
+    const withoutExtension = file.name.replace(/\.[^.]+$/, "");
+    return `[[${file.path}|${withoutExtension}]]`;
+  },
 } as const;
 
 export type TaskInfo = {
   id: string;
   projectId: string;
-  content: string;
 };
 
 export type BuildTaskContentOptions = {
@@ -45,15 +49,22 @@ export const buildTaskContent = (
   return `${content} ${link}`;
 };
 
+export type BuildClipboardMarkdownOptions = {
+  appendLink: boolean;
+  variant: Exclude<AddTaskAction, "add">;
+};
+
 /**
  * Builds a markdown link for copying a task to the clipboard.
  */
 export const buildClipboardMarkdown = (
+  content: string,
   task: TaskInfo,
-  variant: Exclude<AddTaskAction, "add">,
+  options: BuildClipboardMarkdownOptions,
+  fileInfo: FileInfo | undefined,
 ): string => {
   let url: string;
-  switch (variant) {
+  switch (options.variant) {
     case "add-copy-app":
       url = `todoist://task?id=${task.id}`;
       break;
@@ -61,9 +72,17 @@ export const buildClipboardMarkdown = (
       url = `https://todoist.com/app/project/${task.projectId}/task/${task.id}`;
       break;
     default: {
-      const _: never = variant;
-      throw new Error(`Unknown variant: ${variant}`);
+      const _: never = options.variant;
+      throw new Error(`Unknown variant: ${options.variant}`);
     }
   }
-  return `[${task.content}](${url})`;
+
+  const taskParts = [content];
+  if (options.appendLink && fileInfo) {
+    const fileIn = FileInfo.obsidianBacklink(fileInfo);
+    taskParts.push(fileIn);
+  }
+
+  taskParts.push(`[Todoist](${url})`);
+  return taskParts.join(" ");
 };

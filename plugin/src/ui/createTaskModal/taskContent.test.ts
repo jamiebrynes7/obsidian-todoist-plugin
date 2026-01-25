@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import type { AddTaskAction } from "@/settings";
-
 import {
+  type BuildClipboardMarkdownOptions,
   type BuildTaskContentOptions,
   buildClipboardMarkdown,
   buildTaskContent,
@@ -87,42 +86,80 @@ describe("buildClipboardMarkdown", () => {
   const defaultTask: TaskInfo = {
     id: "12345",
     projectId: "67890",
-    content: "Buy groceries",
+  };
+
+  const defaultFile: FileInfo = {
+    name: "My Note.md",
+    path: "folder/My Note.md",
+    vaultName: "Test Vault",
   };
 
   const testCases: {
     name: string;
+    content: string;
     task: TaskInfo;
-    variant: Exclude<AddTaskAction, "add">;
+    options: BuildClipboardMarkdownOptions;
+    fileInfo: FileInfo | undefined;
     expected: string;
   }[] = [
     {
-      name: "builds app URL variant",
+      name: "builds app URL variant without file link",
+      content: "Buy groceries",
       task: defaultTask,
-      variant: "add-copy-app",
-      expected: "[Buy groceries](todoist://task?id=12345)",
+      options: { appendLink: false, variant: "add-copy-app" },
+      fileInfo: undefined,
+      expected: "Buy groceries [Todoist](todoist://task?id=12345)",
     },
     {
-      name: "builds web URL variant",
+      name: "builds web URL variant without file link",
+      content: "Buy groceries",
       task: defaultTask,
-      variant: "add-copy-web",
-      expected: "[Buy groceries](https://todoist.com/app/project/67890/task/12345)",
+      options: { appendLink: false, variant: "add-copy-web" },
+      fileInfo: undefined,
+      expected: "Buy groceries [Todoist](https://todoist.com/app/project/67890/task/12345)",
+    },
+    {
+      name: "appends obsidian backlink when appendLink is true",
+      content: "Buy groceries",
+      task: defaultTask,
+      options: { appendLink: true, variant: "add-copy-app" },
+      fileInfo: defaultFile,
+      expected: "Buy groceries [[folder/My Note.md|My Note]] [Todoist](todoist://task?id=12345)",
+    },
+    {
+      name: "should only strip the final extension in backlink",
+      content: "Buy groceries",
+      task: defaultTask,
+      options: { appendLink: true, variant: "add-copy-app" },
+      fileInfo: {
+        name: "Archive.tar.gz.md",
+        path: "folder/Archive.tar.gz.md",
+        vaultName: "Test Vault",
+      },
+      expected:
+        "Buy groceries [[folder/Archive.tar.gz.md|Archive.tar.gz]] [Todoist](todoist://task?id=12345)",
+    },
+    {
+      name: "does not append backlink when fileInfo is undefined",
+      content: "Buy groceries",
+      task: defaultTask,
+      options: { appendLink: true, variant: "add-copy-app" },
+      fileInfo: undefined,
+      expected: "Buy groceries [Todoist](todoist://task?id=12345)",
     },
     {
       name: "handles task content with special markdown characters",
-      task: {
-        id: "111",
-        projectId: "222",
-        content: "Review [draft] document",
-      },
-      variant: "add-copy-app",
-      expected: "[Review [draft] document](todoist://task?id=111)",
+      content: "Review [draft] document",
+      task: { id: "111", projectId: "222" },
+      options: { appendLink: false, variant: "add-copy-app" },
+      fileInfo: undefined,
+      expected: "Review [draft] document [Todoist](todoist://task?id=111)",
     },
   ];
 
   for (const tc of testCases) {
     it(tc.name, () => {
-      const result = buildClipboardMarkdown(tc.task, tc.variant);
+      const result = buildClipboardMarkdown(tc.content, tc.task, tc.options, tc.fileInfo);
       expect(result).toBe(tc.expected);
     });
   }
