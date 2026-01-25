@@ -22,6 +22,6 @@ The 'Add task' button in the modal is a split button with a dropdown menu. You c
 - **Add task and copy link (app)** - Creates the task and copies a markdown link with an app URI (`todoist://task?id=...`)
 - **Add task and copy link (web)** - Creates the task and copies a markdown link with a web URL (`https://todoist.com/app/project/...`)
 
-The markdown link format is `[task content](url)`, which you can paste directly into your Obsidian notes. The link will open the task in Todoist when clicked.
+The copied text format is `task content [Todoist](url)`, which you can paste directly into your Obsidian notes. If you have "append link to content" enabled, an Obsidian backlink to the current page will also be included. The link will open the task in Todoist when clicked.
 
 You can set your preferred default action in the plugin settings under "Task creation" → "Default add task action".
