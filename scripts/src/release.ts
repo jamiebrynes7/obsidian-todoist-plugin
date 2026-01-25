@@ -171,6 +171,13 @@ function updateVersionFiles(version: string): void {
   packageJson.version = version;
   writeFileSync(packagePath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
+  // Update manifest.minAppVersion with the obsidian version from plugin/package.json
+  const obsidianVersion = packageJson.dependencies?.obsidian;
+  if (obsidianVersion) {
+    manifest.minAppVersion = obsidianVersion;
+    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  }
+
   // Update versions.json
   const versionsPath = join(REPO_ROOT, "versions.json");
   const versions = JSON.parse(readFileSync(versionsPath, "utf-8"));
