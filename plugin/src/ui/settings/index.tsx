@@ -24,6 +24,7 @@ export class SettingsTab extends PluginSettingTab {
   constructor(app: App, plugin: TodoistPlugin) {
     super(app, plugin);
     this.plugin = plugin;
+    this.icon = "list-todo";
   }
 
   display() {
