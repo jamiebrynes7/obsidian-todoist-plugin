@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The plugin will now automatically refresh your Todoist projects, sections, and labels in the background. This happens every 10 minutes. This should reduce the incidence of "unknown" metadata labels.
 - You can now use `view.hideNoTasks` in your query to completely hide the query output when no tasks are returned.
 
+### 🔁 Changes
+
+- Copied task links now use a cleaner format for pasting back into Obsidian
+  - `Task content [[file link]] [Todoist](url)` instead of `[Task content [file name](obsidian://...)](url)`
+
 ### 🐛 Bug Fixes
 
 - Queries sorted by `dateAdded` and `dateAddedAscending` should now work as expected
