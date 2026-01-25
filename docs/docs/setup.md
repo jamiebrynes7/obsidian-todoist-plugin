@@ -28,7 +28,7 @@ Once the plugin is installed, you'll need to enable and do some initial setup.
 4. The prompt will verify that the token provided is valid and will present you with a checkmark if it is
 5. Select 'Save' to complete the setup
 
-> Note that this token is stored in its own file inside your vault. It can be found at `.obsidian/todoist-token`. If you synchronize your vault, you may choose to explicit ignore this file to avoid the API token leaving your machine. If you choose to do this, you must perform this setup on each device you access your vault on.
+> Your API token is stored securely using Obsidian's built-in secret storage under the ID `swt-todoist-api-token`.
 
 ## What's next?
 
