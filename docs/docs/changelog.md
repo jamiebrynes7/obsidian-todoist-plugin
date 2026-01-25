@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `Task content [[file link]] [Todoist](url)` instead of `[Task content [file name](obsidian://...)](url)`
 - Your Todoist API token is now stored in Obsidian's built-in secret storage instead of a plain file
   - Existing tokens will be automatically migrated after updating
+- There is now a fancy icon next to the plugin settings menu item
 
 ### 🐛 Bug Fixes
 
