@@ -355,24 +355,29 @@ function extractChangelogContent(version: string): string {
   return match[1].trim();
 }
 
-function updateAndPublishRelease(version: string): void {
-  logStarted("Updating draft release...");
-
+async function updateAndPublishRelease(version: string): Promise<void> {
   const changelogContent = extractChangelogContent(version);
 
-  // Get the draft release
-  const releases = exec(`gh release list --json tagName,isDraft,name -L 10`, { silent: true });
-  const releaseList = JSON.parse(releases) as Array<{
-    tagName: string;
-    isDraft: boolean;
-    name: string;
-  }>;
+  logStarted("Waiting for draft release to appear...");
+  const timeoutMinutes = 5;
 
-  const draftRelease = releaseList.find((r) => r.isDraft && r.tagName === version);
+  await pollUntil(
+    () => {
+      const releases = exec(`gh release list --json tagName,isDraft,name -L 10`, { silent: true });
+      const releaseList = JSON.parse(releases) as Array<{
+        tagName: string;
+        isDraft: boolean;
+        name: string;
+      }>;
 
-  if (!draftRelease) {
-    error(`Could not find draft release for tag ${version}. Please check GitHub releases.`);
-  }
+      const draftRelease = releaseList.find((r) => r.isDraft && r.tagName === version);
+      return draftRelease !== undefined;
+    },
+    {
+      timeoutMs: timeoutMinutes * 60 * MS_PER_SECOND,
+      intervalMs: POLL_INTERVAL_MS,
+    },
+  );
 
   logCompleted("Draft release found");
 
@@ -411,7 +416,7 @@ async function main(): Promise<void> {
   pullLatestMaster();
   createAndPushTag(version);
   await waitForReleaseBuild(version);
-  updateAndPublishRelease(version);
+  await updateAndPublishRelease(version);
 
   logCompleted(`Release process for version ${version} completed successfully!`);
 }
