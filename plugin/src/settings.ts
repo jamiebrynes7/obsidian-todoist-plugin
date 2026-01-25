@@ -40,6 +40,8 @@ const defaultSettings: Settings = {
   defaultAddTaskAction: "add",
 
   debugLogging: false,
+
+  version: 0,
 };
 
 export type Settings = {
@@ -67,6 +69,8 @@ export type Settings = {
   defaultAddTaskAction: AddTaskAction;
 
   debugLogging: boolean;
+
+  version: number;
 };
 
 export const useSettingsStore = create<Settings>(() => ({
