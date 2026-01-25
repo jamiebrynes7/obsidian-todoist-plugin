@@ -26,10 +26,23 @@ import { Popover } from "./Popover";
 import { PrioritySelector } from "./PrioritySelector";
 import { type ProjectIdentifier, ProjectSelector } from "./ProjectSelector";
 import { TaskContentInput } from "./TaskContentInput";
+import { buildClipboardMarkdown, buildTaskContent, type FileInfo } from "./taskContent";
 import "./styles.scss";
 
 import type { Translations } from "@/i18n/translation";
 import { OptionsSelector } from "@/ui/createTaskModal/OptionsSelector";
+
+const toFileInfo = (file: TFile | undefined): FileInfo | undefined => {
+  if (file === undefined) {
+    return undefined;
+  }
+
+  return {
+    name: file.name,
+    path: file.path,
+    vaultName: file.vault.getName(),
+  };
+};
 
 const readyCheckIntervalMs = 500;
 
@@ -188,22 +201,6 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
 
   const i18n = t().createTaskModal;
 
-  const buildWithLink = (initial: string, withLink: boolean) => {
-    const builder = [initial];
-    if (withLink && fileContext !== undefined) {
-      builder.push(" ");
-      if (settings.shouldWrapLinksInParens) {
-        builder.push("(");
-      }
-      builder.push(getLinkForFile(fileContext));
-      if (settings.shouldWrapLinksInParens) {
-        builder.push(")");
-      }
-    }
-
-    return builder.join("");
-  };
-
   const createTask = async (action: AddTaskAction) => {
     if (isSubmitButtonDisabled) {
       return;
@@ -212,7 +209,10 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     modal.close();
 
     const params: CreateTaskParams = {
-      description: buildWithLink(description, options.appendLinkTo === "description"),
+      description: buildTaskContent(description, toFileInfo(fileContext), {
+        appendLink: options.appendLinkTo === "description",
+        wrapInParens: settings.shouldWrapLinksInParens,
+      }),
       priority,
       labels: labels.map((l) => l.name),
       projectId: project.projectId,
@@ -235,25 +235,18 @@ const CreateTaskModalContent: React.FC<CreateTaskProps> = ({
     }
 
     try {
-      const task = await plugin.services.todoist.actions.createTask(
-        buildWithLink(content, options.appendLinkTo === "content"),
-        params,
-      );
+      const taskContent = buildTaskContent(content, toFileInfo(fileContext), {
+        appendLink: options.appendLinkTo === "content",
+        wrapInParens: settings.shouldWrapLinksInParens,
+      });
 
-      let url: string | undefined;
-      switch (action) {
-        case "add-copy-app":
-          url = `todoist://task?id=${task.id}`;
-          break;
-        case "add-copy-web":
-          url = `https://todoist.com/app/project/${task.projectId}/task/${task.id}`;
-          break;
-        default:
-          break;
-      }
+      const task = await plugin.services.todoist.actions.createTask(taskContent, params);
 
-      if (url !== undefined) {
-        const markdownLink = `[${task.content}](${url})`;
+      if (action === "add-copy-app" || action === "add-copy-web") {
+        const markdownLink = buildClipboardMarkdown(
+          { id: task.id, projectId: task.projectId, content: task.content },
+          action,
+        );
         try {
           await navigator.clipboard.writeText(markdownLink);
           new Notice(i18n.linkCopiedNotice);
@@ -384,11 +377,4 @@ const getInboxProject = (plugin: TodoistPlugin): ProjectIdentifier => {
 
   new Notice(i18n.failedToFindInboxNotice);
   throw new Error("Could not find inbox project");
-};
-
-const getLinkForFile = (file: TFile): string => {
-  const vault = encodeURIComponent(file.vault.getName());
-  const filepath = encodeURIComponent(file.path);
-
-  return `[${file.name}](obsidian://open?vault=${vault}&file=${filepath})`;
 };
