@@ -217,6 +217,10 @@ function updateVersionFiles(version: string): void {
 
   writeFileSync(versionsPath, `${JSON.stringify(sortedVersions, null, 2)}\n`);
   logCompleted("Updated version files");
+
+  logStarted("Running npm install to update package-lock.json...");
+  exec("npm install", { cwd: REPO_ROOT });
+  logCompleted("Updated package-lock.json");
 }
 
 function createAndPushPR(version: string): string {
