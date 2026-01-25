@@ -3,6 +3,7 @@ import pc from "picocolors";
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import * as readline from "node:readline";
 
 const REPO_ROOT = join(import.meta.dirname, "..", "..");
 
@@ -53,6 +54,20 @@ function logCompleted(message: string): void {
 function error(message: string): never {
   console.error(pc.red(`✗ ${message}`));
   process.exit(1);
+}
+
+async function confirm(message: string): Promise<boolean> {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  return new Promise((resolve) => {
+    rl.question(pc.yellow(`? ${message} (y/N) `), (answer) => {
+      rl.close();
+      resolve(answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
+    });
+  });
 }
 
 async function pollUntil(
@@ -225,6 +240,16 @@ function createAndPushPR(version: string): string {
 
 async function waitForChecksAndMerge(prUrl: string): Promise<void> {
   const prNumber = prUrl.split("/").pop();
+
+  console.log();
+  console.log(pc.bold("Please review the pull request before proceeding:"));
+  console.log(pc.cyan(`  ${prUrl}`));
+  console.log();
+
+  const confirmed = await confirm("Enable auto-merge and continue with the release?");
+  if (!confirmed) {
+    error("Release cancelled by user");
+  }
 
   logStarted("Enabling auto-merge...");
   exec(`gh pr merge ${prNumber} --rebase --auto --delete-branch`);
