@@ -1,4 +1,7 @@
 export type Translations = {
+  notices: {
+    migrationFailed: string;
+  };
   settings: {
     general: {
       header: string;

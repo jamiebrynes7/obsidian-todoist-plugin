@@ -1,23 +1,38 @@
-import type { Vault } from "obsidian";
+import type { SecretStorage, Vault } from "obsidian";
+
+import { useSettingsStore } from "@/settings";
 
 export class VaultTokenAccessor {
+  private readonly secrets: SecretStorage;
   private readonly vault: Vault;
   private readonly path: string;
 
-  constructor(vault: Vault) {
+  constructor(vault: Vault, secrets: SecretStorage) {
+    this.secrets = secrets;
     this.vault = vault;
     this.path = `${vault.configDir}/todoist-token`;
   }
 
-  exists(): Promise<boolean> {
-    return this.vault.adapter.exists(this.path);
+  read(): string | null {
+    const secretId = useSettingsStore.getState().apiTokenSecretId;
+    return this.secrets.getSecret(secretId);
   }
 
-  read(): Promise<string> {
-    return this.vault.adapter.read(this.path);
+  write(token: string) {
+    const secretId = useSettingsStore.getState().apiTokenSecretId;
+    this.secrets.setSecret(secretId, token);
   }
 
-  write(token: string): Promise<void> {
-    return this.vault.adapter.write(this.path, token);
+  async migrateToSecrets(): Promise<void> {
+    const tokenExists = await this.vault.adapter.exists(this.path);
+    if (!tokenExists) {
+      return;
+    }
+
+    const token = await this.vault.adapter.read(this.path);
+    const secretId = useSettingsStore.getState().apiTokenSecretId;
+
+    this.secrets.setSecret(secretId, token);
+    await this.vault.adapter.remove(this.path);
   }
 }
