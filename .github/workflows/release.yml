@@ -25,7 +25,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          name: Obsidian x Todoist - v${{ github.ref }}
+          name: Sync with Todoist Plugin - v${{ github.ref }}
           draft: true
           files: |
             plugin/dist/main.js
