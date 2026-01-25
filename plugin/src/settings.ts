@@ -17,6 +17,8 @@ export type LabelsDefaultSetting = Array<{
 }>;
 
 const defaultSettings: Settings = {
+  apiTokenSecretId: "swt-todoist-api-token",
+
   fadeToggle: true,
 
   autoRefreshToggle: false,
@@ -41,6 +43,8 @@ const defaultSettings: Settings = {
 };
 
 export type Settings = {
+  apiTokenSecretId: string;
+
   fadeToggle: boolean;
   autoRefreshToggle: boolean;
   autoRefreshInterval: number;
