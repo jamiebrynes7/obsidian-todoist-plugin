@@ -1,7 +1,7 @@
-import { setLanguage } from "@/i18n";
+import { setLanguage, t } from "@/i18n";
 import "@/styles/main.scss";
 import type { PluginManifest } from "obsidian";
-import { type App, Plugin } from "obsidian";
+import { type App, Notice, Plugin } from "obsidian";
 
 import { TodoistApiClient } from "@/api";
 import { ObsidianFetcher } from "@/api/fetcher";
@@ -38,6 +38,12 @@ export default class TodoistPlugin extends Plugin {
     await this.loadOptions();
 
     this.app.workspace.onLayoutReady(async () => {
+      try {
+        await this.applyMigrations();
+      } catch (error: unknown) {
+        console.error("Failed to apply migrations:", error);
+        new Notice(t().notices.migrationFailed);
+      }
       await this.loadApiClient();
     });
 
@@ -50,16 +56,16 @@ export default class TodoistPlugin extends Plugin {
 
   private async loadApiClient(): Promise<void> {
     const accessor = this.services.token;
+    const token = accessor.read();
 
-    if (await accessor.exists()) {
-      const token = await accessor.read();
+    if (token !== null) {
       await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       return;
     }
 
     this.services.modals.onboarding({
       onTokenSubmit: async (token) => {
-        await accessor.write(token);
+        accessor.write(token);
         await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       },
     });
@@ -81,5 +87,32 @@ export default class TodoistPlugin extends Plugin {
   async writeOptions(update: Partial<Settings>): Promise<void> {
     useSettingsStore.setState(update);
     await this.saveData(useSettingsStore.getState());
+  }
+
+  private static readonly settingsVersion = 1;
+
+  private async applyMigrations(): Promise<void> {
+    const migrations: Record<number, () => Promise<void>> = {
+      1: async () => {
+        // Migration from 0 -> 1: migrate token to secrets
+        await this.services.token.migrateToSecrets();
+      },
+    };
+
+    for (
+      let version = useSettingsStore.getState().version;
+      version < TodoistPlugin.settingsVersion;
+      version++
+    ) {
+      const nextVersion = version + 1;
+      const migration = migrations[nextVersion];
+      if (!migration) {
+        throw new Error(`No migration defined for version ${version} -> ${nextVersion}`);
+      }
+
+      await migration();
+
+      await this.writeOptions({ version: nextVersion });
+    }
   }
 }

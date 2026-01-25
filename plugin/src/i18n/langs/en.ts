@@ -1,6 +1,9 @@
 import type { Translations } from "@/i18n/translation";
 
 export const en: Translations = {
+  notices: {
+    migrationFailed: "Failed to apply migrations. Check the console for details.",
+  },
   settings: {
     general: {
       header: "General",

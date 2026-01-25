@@ -27,7 +27,8 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
   useEffect(() => {
     setTokenState({ kind: "in-progress" });
     (async () => {
-      if (!(await tokenAccessor.exists())) {
+      const token = tokenAccessor.read();
+      if (token === null) {
         setTokenState({
           kind: "error",
           message: "API token not found",
@@ -35,7 +36,6 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
         return;
       }
 
-      const token = await tokenAccessor.read();
       setTokenState(await TokenValidation.validate(token, tester));
     })();
   }, [plugin, tester, tokenValidationCount]);
@@ -45,7 +45,7 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
       onTokenSubmit: async (token) => {
         setTokenValidationCount((old) => old + 1);
 
-        await tokenAccessor.write(token);
+        tokenAccessor.write(token);
         await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       },
     });
