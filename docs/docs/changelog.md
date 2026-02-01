@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### ✨ Features
+
+- You can now select where the plugin should store your API token.
+  - By default, this is Obsidian's secret storage as this is the most secure option.
+  - You may select the old file-based approach that was used prior to v2.5.0
+
 ### 🐛 Bug Fixes
 
 - Task descriptions will now correctly be rendered if the `show` parameter of the query is omitted entirely.

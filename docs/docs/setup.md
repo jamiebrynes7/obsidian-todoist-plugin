@@ -28,7 +28,7 @@ Once the plugin is installed, you'll need to enable and do some initial setup.
 4. The prompt will verify that the token provided is valid and will present you with a checkmark if it is
 5. Select 'Save' to complete the setup
 
-> Your API token is stored securely using Obsidian's built-in secret storage under the ID `swt-todoist-api-token`.
+> By default, your API token is stored securely using Obsidian's built-in secret storage. You can change this to file-based storage in the [plugin configuration](./configuration#token-storage).
 
 ## What's next?
 

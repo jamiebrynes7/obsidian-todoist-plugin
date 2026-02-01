@@ -8,9 +8,14 @@ There are a number of options that allow you to configure the behaviour of the p
 
 ## General
 
-### Todoist API token
+### Token storage
 
-The API token used to connect to Todoist. This is stored in your vault at `.obsidian/todoist-token`. If you synchronize your vault, I recommend that you do _not_ sync this file for security reasons.
+Controls where the plugin stores your Todoist API token. There are two options:
+
+- **Obsidian secrets** - Uses Obsidian's built-in secret storage. This is the recommended option as it keeps your token out of your vault files.
+- **File-based** - Stores the token in a file at `.obsidian/todoist-token` inside your vault. If you synchronize your vault, you should consider _not_ syncing this file for security reasons. You may want to use this option if you have issues with Obsidian secrets.
+
+Changing this setting will automatically migrate your token to the new storage location.
 
 ## Auto-refresh
 
