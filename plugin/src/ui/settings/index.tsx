@@ -6,7 +6,7 @@ import { t } from "@/i18n";
 import { PluginContext } from "@/ui/context";
 
 import type TodoistPlugin from "../..";
-import { type Settings, useSettingsStore } from "../../settings";
+import { type Settings, type TokenStorageSetting, useSettingsStore } from "../../settings";
 import { TokenValidation } from "../../token";
 import { AutoRefreshIntervalControl } from "./AutoRefreshIntervalControl";
 import { LabelsControl } from "./LabelsControl";
@@ -104,6 +104,29 @@ const SettingsRoot: React.FC<Props> = ({ plugin }) => {
         description={i18n.general.apiToken.description}
       >
         <TokenChecker tester={TokenValidation.DefaultTester} />
+      </Setting.Root>
+      <Setting.Root
+        name={i18n.general.tokenStorage.label}
+        description={i18n.general.tokenStorage.description}
+      >
+        <Setting.DropdownControl
+          value={settings.tokenStorage}
+          options={[
+            {
+              label: i18n.general.tokenStorage.options.secrets,
+              value: "secrets",
+            },
+            {
+              label: i18n.general.tokenStorage.options.file,
+              value: "file",
+            },
+          ]}
+          onClick={async (val: TokenStorageSetting) => {
+            const oldStorage = settings.tokenStorage;
+            await plugin.services.token.migrateStorage(oldStorage, val);
+            await plugin.writeOptions({ tokenStorage: val });
+          }}
+        />
       </Setting.Root>
 
       <h2>{i18n.autoRefresh.header}</h2>

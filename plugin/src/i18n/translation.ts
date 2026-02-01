@@ -16,6 +16,14 @@ export type Translations = {
         description: string;
         buttonLabel: string;
       };
+      tokenStorage: {
+        label: string;
+        description: string;
+        options: {
+          secrets: string;
+          file: string;
+        };
+      };
     };
     autoRefresh: {
       header: string;

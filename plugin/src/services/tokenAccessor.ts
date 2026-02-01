@@ -1,5 +1,6 @@
 import type { SecretStorage, Vault } from "obsidian";
 
+import type { TokenStorageSetting } from "@/settings";
 import { useSettingsStore } from "@/settings";
 
 export class VaultTokenAccessor {
@@ -13,26 +14,88 @@ export class VaultTokenAccessor {
     this.path = `${vault.configDir}/todoist-token`;
   }
 
-  read(): string | null {
-    const secretId = useSettingsStore.getState().apiTokenSecretId;
-    return this.secrets.getSecret(secretId);
+  read(): Promise<string | null> {
+    const settings = useSettingsStore.getState();
+    return this.readFromStorage(settings.tokenStorage);
   }
 
-  write(token: string) {
-    const secretId = useSettingsStore.getState().apiTokenSecretId;
-    this.secrets.setSecret(secretId, token);
+  write(token: string): Promise<void> {
+    const settings = useSettingsStore.getState();
+    return this.writeToStorage(token, settings.tokenStorage);
   }
 
-  async migrateToSecrets(): Promise<void> {
-    const tokenExists = await this.vault.adapter.exists(this.path);
-    if (!tokenExists) {
+  async migrateStorage(from: TokenStorageSetting, to: TokenStorageSetting): Promise<void> {
+    if (from === to) {
       return;
     }
 
-    const token = await this.vault.adapter.read(this.path);
-    const secretId = useSettingsStore.getState().apiTokenSecretId;
+    const token = await this.readFromStorage(from);
+    if (token === null) {
+      return;
+    }
 
-    this.secrets.setSecret(secretId, token);
-    await this.vault.adapter.remove(this.path);
+    await this.writeToStorage(token, to);
+    await this.cleanupStorage(from);
+  }
+
+  private async readFromStorage(storage: TokenStorageSetting): Promise<string | null> {
+    switch (storage) {
+      case "file": {
+        const exists = await this.vault.adapter.exists(this.path);
+        if (!exists) {
+          return null;
+        }
+
+        const value = await this.vault.adapter.read(this.path);
+        return value === "" ? null : value;
+      }
+      case "secrets": {
+        const secretId = useSettingsStore.getState().apiTokenSecretId;
+        const value = this.secrets.getSecret(secretId);
+        return value === "" ? null : value;
+      }
+      default: {
+        const _: never = storage;
+        throw new Error("Unknown token storage setting");
+      }
+    }
+  }
+
+  private async writeToStorage(token: string, storage: TokenStorageSetting): Promise<void> {
+    switch (storage) {
+      case "file":
+        await this.vault.adapter.write(this.path, token);
+        return;
+      case "secrets": {
+        const secretId = useSettingsStore.getState().apiTokenSecretId;
+        this.secrets.setSecret(secretId, token);
+        return;
+      }
+      default: {
+        const _: never = storage;
+        throw new Error("Unknown token storage setting");
+      }
+    }
+  }
+
+  private async cleanupStorage(storage: TokenStorageSetting): Promise<void> {
+    switch (storage) {
+      case "file": {
+        const exists = await this.vault.adapter.exists(this.path);
+        if (exists) {
+          await this.vault.adapter.remove(this.path);
+        }
+        return;
+      }
+      case "secrets": {
+        const secretId = useSettingsStore.getState().apiTokenSecretId;
+        this.secrets.setSecret(secretId, "");
+        return;
+      }
+      default: {
+        const _: never = storage;
+        throw new Error("Unknown token storage setting");
+      }
+    }
   }
 }
