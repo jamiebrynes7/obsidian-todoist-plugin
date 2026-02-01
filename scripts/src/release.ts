@@ -370,7 +370,7 @@ async function updateAndPublishRelease(version: string): Promise<void> {
         name: string;
       }>;
 
-      const draftRelease = releaseList.find((r) => r.isDraft && r.tagName === version);
+      const draftRelease = releaseList.find((r) => r.isDraft && r.tagName.includes(version));
       return draftRelease !== undefined;
     },
     {
