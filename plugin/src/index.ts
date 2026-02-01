@@ -56,7 +56,7 @@ export default class TodoistPlugin extends Plugin {
 
   private async loadApiClient(): Promise<void> {
     const accessor = this.services.token;
-    const token = accessor.read();
+    const token = await accessor.read();
 
     if (token !== null) {
       await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
@@ -65,7 +65,7 @@ export default class TodoistPlugin extends Plugin {
 
     this.services.modals.onboarding({
       onTokenSubmit: async (token) => {
-        accessor.write(token);
+        await accessor.write(token);
         await this.services.todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       },
     });
@@ -95,7 +95,7 @@ export default class TodoistPlugin extends Plugin {
     const migrations: Record<number, () => Promise<void>> = {
       1: async () => {
         // Migration from 0 -> 1: migrate token to secrets
-        await this.services.token.migrateToSecrets();
+        await this.services.token.migrateStorage("file", "secrets");
       },
     };
 

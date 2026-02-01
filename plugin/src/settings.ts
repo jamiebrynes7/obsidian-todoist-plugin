@@ -6,6 +6,8 @@ export type AddTaskAction = "add" | "add-copy-app" | "add-copy-web";
 
 export type DueDateDefaultSetting = "none" | "today" | "tomorrow";
 
+export type TokenStorageSetting = "secrets" | "file";
+
 export type ProjectDefaultSetting = {
   projectId: string;
   projectName: string;
@@ -18,6 +20,7 @@ export type LabelsDefaultSetting = Array<{
 
 const defaultSettings: Settings = {
   apiTokenSecretId: "swt-todoist-api-token",
+  tokenStorage: "secrets",
 
   fadeToggle: true,
 
@@ -46,6 +49,7 @@ const defaultSettings: Settings = {
 
 export type Settings = {
   apiTokenSecretId: string;
+  tokenStorage: TokenStorageSetting;
 
   fadeToggle: boolean;
   autoRefreshToggle: boolean;

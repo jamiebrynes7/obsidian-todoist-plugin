@@ -18,6 +18,14 @@ export const en: Translations = {
         description: "The Todoist API token to use when fetching tasks",
         buttonLabel: "Setup",
       },
+      tokenStorage: {
+        label: "Token storage",
+        description: "Where the plugin should store your Todoist API token",
+        options: {
+          secrets: "Obsidian secrets",
+          file: "File-based",
+        },
+      },
     },
     autoRefresh: {
       header: "Auto-refresh",

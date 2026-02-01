@@ -27,7 +27,7 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
   useEffect(() => {
     setTokenState({ kind: "in-progress" });
     (async () => {
-      const token = tokenAccessor.read();
+      const token = await tokenAccessor.read();
       if (token === null) {
         setTokenState({
           kind: "error",
@@ -45,7 +45,7 @@ export const TokenChecker: React.FC<Props> = ({ tester }) => {
       onTokenSubmit: async (token) => {
         setTokenValidationCount((old) => old + 1);
 
-        tokenAccessor.write(token);
+        await tokenAccessor.write(token);
         await todoist.initialize(new TodoistApiClient(token, new ObsidianFetcher()));
       },
     });
