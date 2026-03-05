@@ -99,7 +99,6 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
 function compareTaskDeadline<T extends Task>(self: T, other: T): number {
   // We will sort items using the following algorithm:
   // 1. Any items without a deadline are always after those with.
-  // 2. Any items on the same day, but without time are always sorted after those with time.
 
   if (self.deadline === undefined) {
     if (other.deadline === undefined) {
