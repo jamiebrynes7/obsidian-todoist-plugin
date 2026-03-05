@@ -71,6 +71,8 @@ The `sorting` property allows you to specify the ordering for how your tasks are
 - `order`: sorts task according to the ordering defined in Todoist
 - `dateAdded` or `dateAddedAscending`: sorts tasks in ascending order based on the date the task was added
 - `dateAddedDescending`: sorts tasks in descending order based on the date the task was added
+- `deadline` or `deadlineAscending`: sorts tasks in ascending order based on the deadline
+- `deadlineDescending`: sorts tasks in descending order based on the deadline
 
 If no sorting option is provided, tasks will be sorted by their Todoist order.
 
