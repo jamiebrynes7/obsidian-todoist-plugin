@@ -114,10 +114,14 @@ function compareTaskDeadline<T extends Task>(self: T, other: T): number {
     return -1;
   }
 
-  const selfInfo = Deadline.parse(self.deadline).raw;
-  const otherInfo = Deadline.parse(other.deadline).raw;
+  const selfDeadline = Deadline.parse(self.deadline).raw;
+  const otherDeadline = Deadline.parse(other.deadline).raw;
 
-  return selfInfo < otherInfo ? -1 : 1;
+  if (isSameDay(selfDeadline, otherDeadline)) {
+    return 0;
+  }
+
+  return selfDeadline < otherDeadline ? -1 : 1;
 }
 
 function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
