@@ -28,6 +28,7 @@ function makeTask(id: string, opts?: Partial<Task>): Task {
     section: opts?.section,
 
     due: opts?.due,
+    deadline: opts?.deadline,
   };
 }
 
@@ -289,6 +290,82 @@ describe("sortTasks", () => {
         }),
         makeTask("a", {
           createdAt: "2020-03-02T11:00:00Z",
+        }),
+      ],
+    },
+    {
+      description: "can sort by deadline (ascending)",
+      input: [
+        makeTask("a", {
+          deadline: {
+            date: "2020-03-20",
+          },
+        }),
+        makeTask("b", {
+          deadline: {
+            date: "2020-03-19",
+          },
+        }),
+        makeTask("c", {
+          deadline: {
+            date: "2020-03-25",
+          },
+        }),
+      ],
+      sortingOpts: ["deadlineAscending"],
+      expectedOutput: [
+        makeTask("b", {
+          deadline: {
+            date: "2020-03-19",
+          },
+        }),
+        makeTask("a", {
+          deadline: {
+            date: "2020-03-20",
+          },
+        }),
+        makeTask("c", {
+          deadline: {
+            date: "2020-03-25",
+          },
+        }),
+      ],
+    },
+    {
+      description: "can sort by deadline (descending)",
+      input: [
+        makeTask("a", {
+          deadline: {
+            date: "2020-03-20",
+          },
+        }),
+        makeTask("b", {
+          deadline: {
+            date: "2020-03-19",
+          },
+        }),
+        makeTask("c", {
+          deadline: {
+            date: "2020-03-25",
+          },
+        }),
+      ],
+      sortingOpts: ["deadlineDescending"],
+      expectedOutput: [
+        makeTask("c", {
+          deadline: {
+            date: "2020-03-25",
+          },
+        }),
+        makeTask("a", {
+          deadline: {
+            date: "2020-03-20",
+          },
+        }),
+        makeTask("b", {
+          deadline: {
+            date: "2020-03-19",
+          },
         }),
       ],
     },

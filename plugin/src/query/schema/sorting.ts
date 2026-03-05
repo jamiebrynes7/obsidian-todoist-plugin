@@ -12,6 +12,8 @@ const sortingKeysSchema = z.union([
   z.literal("dateAddedDescending"),
   z.literal("alphabeticalAscending"),
   z.literal("alphabeticalDescending"),
+  z.literal("deadlineAscending"),
+  z.literal("deadlineDescending"),
 ]);
 
 export type SortingKey = z.infer<typeof sortingKeysSchema>;
@@ -30,6 +32,9 @@ export const sortingAliases: Record<string, z.infer<typeof sortingKeysSchema>> =
   alphabetical: "alphabeticalAscending",
   alphabeticalAscending: "alphabeticalAscending",
   alphabeticalDescending: "alphabeticalDescending",
+  deadline: "deadlineAscending",
+  deadlineAscending: "deadlineAscending",
+  deadlineDescending: "deadlineDescending",
 };
 
 export const sortingSchema = z.array(aliasedSchema(sortingKeysSchema, sortingAliases));
