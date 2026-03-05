@@ -2,6 +2,7 @@ import { parseAbsoluteToLocal } from "@internationalized/date";
 
 import type { Task } from "@/data//task";
 import { DueDate } from "@/data/dueDate";
+import { Deadline } from "@/data/deadline";
 import type { SortingKey } from "@/query/schema/sorting";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: SortingKey[]) {
@@ -43,6 +44,10 @@ function compareTask<T extends Task>(self: T, other: T, sorting: SortingKey): nu
       return compareTaskAlphabetical(self, other);
     case "alphabeticalDescending":
       return -compareTaskAlphabetical(self, other);
+    case "deadlineAscending":
+      return compareTaskDeadline(self, other);
+    case "deadlineDescending":
+      return -compareTaskDeadline(self, other);
     default:
       throw new Error(`Unexpected sorting type: '${sorting}'`);
   }
@@ -89,6 +94,31 @@ function compareTaskDate<T extends Task>(self: T, other: T): number {
   }
 
   return selfInfo.raw < otherInfo.raw ? -1 : 1;
+}
+
+function compareTaskDeadline<T extends Task>(self: T, other: T): number {
+  // We will sort items using the following algorithm:
+  // 1. Any items without a deadline are always after those with.
+  // 2. Any items on the same day, but without time are always sorted after those with time.
+
+  if (self.deadline === undefined) {
+    if (other.deadline === undefined) {
+      return 0;
+    }
+
+    // Self doesn't have deadline, but other does
+    return 1;
+  }
+
+  // Self has deadline, but other doesn't
+  if (other.deadline === undefined) {
+    return -1;
+  }
+
+  const selfInfo = Deadline.parse(self.deadline).raw;
+  const otherInfo = Deadline.parse(other.deadline).raw;
+
+  return selfInfo < otherInfo ? -1 : 1;
 }
 
 function compareTaskDateAdded<T extends Task>(self: T, other: T): number {
