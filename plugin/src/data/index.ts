@@ -1,36 +1,25 @@
-import { type TodoistApiClient, TodoistApiError } from "@/api";
+import type { TodoistApiClient } from "@/api";
 import type { Label, LabelId } from "@/api/domain/label";
 import type { Project, ProjectId } from "@/api/domain/project";
 import type { Section, SectionId } from "@/api/domain/section";
 import type { SyncToken } from "@/api/domain/sync";
 import type { Task as ApiTask, CreateTaskParams, TaskId } from "@/api/domain/task";
 import type { UserInfo } from "@/api/domain/user";
-import { StatusCode, StatusCodes } from "@/api/fetcher";
-import { Repository, type RepositoryReader } from "@/data/repository";
-import { SubscriptionManager, type UnsubscribeCallback } from "@/data/subscriptions";
+import { mapApiError } from "@/data/errors";
+import { type DataAccessor, hydrate } from "@/data/hydrate";
+import { Repository } from "@/data/repository";
+import {
+  type OnSubscriptionChange,
+  type Refresh,
+  SubscriptionManager,
+  type SubscriptionResult,
+  type UnsubscribeCallback,
+} from "@/data/subscriptions";
 import type { Task } from "@/data/task";
 import { Maybe } from "@/utils/maybe";
 
-export enum QueryErrorKind {
-  BadRequest = 0,
-  Unauthorized = 1,
-  Forbidden = 2,
-  ServerError = 3,
-  Unknown = 4,
-}
-
-export type SubscriptionResult =
-  | { type: "success"; tasks: Task[] }
-  | { type: "error"; kind: QueryErrorKind }
-  | { type: "not-ready" };
-export type OnSubscriptionChange = (result: SubscriptionResult) => void;
-export type Refresh = () => Promise<void>;
-
-type DataAccessor = {
-  projects: RepositoryReader<ProjectId, Project>;
-  sections: RepositoryReader<SectionId, Section>;
-  labels: RepositoryReader<LabelId, Label>;
-};
+export { QueryErrorKind } from "@/data/errors";
+export type { OnSubscriptionChange, Refresh, SubscriptionResult } from "@/data/subscriptions";
 
 export class TodoistAdapter {
   public actions = {
@@ -134,37 +123,8 @@ export class TodoistAdapter {
         return undefined;
       }
       const data = await this.api.withInner((api) => api.getTasks(query));
-      const hydrated = data.map((t) => this.hydrate(t));
+      const hydrated = data.map((t) => hydrate(t, this.data()));
       return hydrated;
-    };
-  }
-
-  private hydrate(apiTask: ApiTask): Task {
-    const project = this.projects.byId(apiTask.projectId);
-    const section = apiTask.sectionId
-      ? (this.sections.byId(apiTask.sectionId) ?? makeUnknownSection(apiTask.sectionId))
-      : undefined;
-
-    const labels = apiTask.labels.map((id) => this.labels.byName(id) ?? makeUnknownLabel());
-
-    return {
-      id: apiTask.id,
-      createdAt: apiTask.addedAt,
-
-      content: apiTask.content,
-      description: apiTask.description,
-
-      project: project ?? makeUnknownProject(apiTask.projectId),
-      section,
-      parentId: apiTask.parentId ?? undefined,
-
-      labels,
-      priority: apiTask.priority,
-
-      due: apiTask.due ?? undefined,
-      duration: apiTask.duration ?? undefined,
-      deadline: apiTask.deadline ?? undefined,
-      order: apiTask.childOrder,
     };
   }
 
@@ -193,39 +153,6 @@ export class TodoistAdapter {
     }
   }
 }
-
-const makeUnknownProject = (id: string): Project => {
-  return {
-    id,
-    parentId: null,
-    name: "Unknown Project",
-    childOrder: Number.MAX_SAFE_INTEGER,
-    inboxProject: false,
-    color: "grey",
-    isDeleted: false,
-    isArchived: false,
-  };
-};
-
-const makeUnknownSection = (id: string): Section => {
-  return {
-    id,
-    projectId: "unknown-project",
-    name: "Unknown Section",
-    sectionOrder: Number.MAX_SAFE_INTEGER,
-    isDeleted: false,
-    isArchived: false,
-  };
-};
-
-const makeUnknownLabel = (): Label => {
-  return {
-    id: "unknown-label",
-    name: "Unknown Label",
-    color: "grey",
-    isDeleted: false,
-  };
-};
 
 type SubscriptionFetcher = () => Promise<Task[] | undefined>;
 
@@ -262,23 +189,10 @@ class Subscription {
     } catch (error: unknown) {
       console.error(`Failed to refresh task query: ${error}`);
 
-      const result: SubscriptionResult = {
+      this.result = {
         type: "error",
-        kind: QueryErrorKind.Unknown,
+        kind: mapApiError(error),
       };
-      if (error instanceof TodoistApiError) {
-        if (error.statusCode === StatusCodes.BadRequest) {
-          result.kind = QueryErrorKind.BadRequest;
-        } else if (error.statusCode === StatusCodes.Unauthorized) {
-          result.kind = QueryErrorKind.Unauthorized;
-        } else if (error.statusCode === StatusCodes.Forbidden) {
-          result.kind = QueryErrorKind.Forbidden;
-        } else if (StatusCode.isServerError(error.statusCode)) {
-          result.kind = QueryErrorKind.ServerError;
-        }
-      }
-
-      this.result = result;
     }
 
     this.callback();

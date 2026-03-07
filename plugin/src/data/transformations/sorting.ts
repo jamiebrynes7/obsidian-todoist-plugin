@@ -1,8 +1,8 @@
 import { parseAbsoluteToLocal } from "@internationalized/date";
 
 import type { Task } from "@/data//task";
-import { DueDate } from "@/data/dueDate";
 import { Deadline } from "@/data/deadline";
+import { DueDate } from "@/data/dueDate";
 import type { SortingKey } from "@/query/schema/sorting";
 
 export function sortTasks<T extends Task>(tasks: T[], sort: SortingKey[]) {

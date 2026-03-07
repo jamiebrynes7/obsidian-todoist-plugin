@@ -2,35 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import type { Task } from "@/data/task";
 import { sortTasks } from "@/data/transformations/sorting";
+import { makeTask } from "@/factories/data";
 import type { SortingKey } from "@/query/schema/sorting";
-
-function makeTask(id: string, opts?: Partial<Task>): Task {
-  return {
-    id,
-    createdAt: opts?.createdAt ?? "1970-01-01",
-    parentId: opts?.parentId,
-    content: opts?.content ?? "",
-    description: "",
-    labels: [],
-    priority: opts?.priority ?? 1,
-    order: opts?.order ?? 0,
-
-    project: opts?.project ?? {
-      id: "foobar",
-      name: "Foobar",
-      childOrder: 1,
-      parentId: null,
-      inboxProject: false,
-      color: "grey",
-      isDeleted: false,
-      isArchived: false,
-    },
-    section: opts?.section,
-
-    due: opts?.due,
-    deadline: opts?.deadline,
-  };
-}
 
 describe("sortTasks", () => {
   type Testcase = {
