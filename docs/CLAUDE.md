@@ -1,52 +1,26 @@
-# CLAUDE.md
+# Docs CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Last verified: 2026-03-07
 
-## Project Overview
+## Commands
 
-This is the documentation site for the Sync with Todoist Plugin for Obsidian. The site is built using Docusaurus and contains user guides, configuration instructions, and contributing information.
+All commands run from this `docs/` directory:
 
-## Common Commands
-
-All commands should be run from this `docs/` directory:
-
-### Development
-
-- `npm start` - Start local development server (usually runs on http://localhost:3000)
+- `npm start` - Start local development server
 - `npm run build` - Build documentation site for production
 - `npm run serve` - Serve built site locally
 - `npm run clear` - Clear Docusaurus cache
-
-### Documentation Management
-
-- `npm run bump-version -- ${VERSION}` - Create new versioned documentation (e.g., `npm run bump-version -- 2.2.0`)
+- `npm run bump-version -- ${VERSION}` - Create new versioned docs (e.g., `npm run bump-version -- 2.2.0`)
 - `npm run write-translations` - Extract translatable strings
 - `npm run write-heading-ids` - Add heading IDs to markdown files
-
-### Quality
-
-- `npm run typecheck` - Run TypeScript type checking
+- `npm run typecheck` - TypeScript type checking
 
 ## Documentation Structure
 
-### Core Documentation (`docs/`)
-
-- `overview.md` - Main plugin introduction and features
-- `setup.md` - Installation and initial configuration
-- `configuration.md` - Detailed plugin settings
-- `query-blocks.md` - Query language documentation
-- `changelog.md` - Version history and changes
-
-### Commands Documentation (`docs/commands/`)
-
-- `add-task.md` - Creating tasks from Obsidian
-- `sync-with-todoist.md` - Manual sync functionality
-
-### Contributing Documentation (`docs/contributing/`)
-
-- `general.md` - Development setup and workflow
-- `release-process.md` - How to release new versions
-- `translation.mdx` - Translation contribution guide
+- `docs/` - Current documentation (markdown/MDX)
+- `docs/commands/` - Command-specific docs
+- `docs/contributing/` - Developer and contributor guides
+- `sidebars.ts` - Navigation structure (update when adding new pages)
 
 ## Versioned Documentation
 
@@ -83,7 +57,6 @@ The site supports versioned documentation with past versions stored in:
 ### Managing Versions
 
 - Only cut new documentation versions for minor/major releases
-- Patch releases typically don't need new doc versions
 - Version bumping copies current docs to versioned storage
 
 ### Translation Support
