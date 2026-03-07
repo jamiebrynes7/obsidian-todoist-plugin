@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import type { Deadline as ApiDeadline } from "@/api/domain/task";
 import { Deadline, type DeadlineInfo } from "@/data/deadline";
+import { makeDate } from "@/factories/data";
 
 vi.mock("../infra/time.ts", () => {
   return {
@@ -16,9 +17,6 @@ vi.mock("../infra/locale.ts", () => {
     locale: () => "en-US",
   };
 });
-
-const makeDate = (year: number, month: number, day: number): Date =>
-  new Date(Date.UTC(year, month, day, 0, 0));
 
 describe("parse", () => {
   type TestCase = {

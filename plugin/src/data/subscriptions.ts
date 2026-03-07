@@ -1,3 +1,14 @@
+import type { QueryErrorKind } from "@/data/errors";
+import type { Task } from "@/data/task";
+
+export type SubscriptionResult =
+  | { type: "success"; tasks: Task[] }
+  | { type: "error"; kind: QueryErrorKind }
+  | { type: "not-ready" };
+
+export type OnSubscriptionChange = (result: SubscriptionResult) => void;
+export type Refresh = () => Promise<void>;
+
 type SubscriptionId = number;
 export type UnsubscribeCallback = () => void;
 

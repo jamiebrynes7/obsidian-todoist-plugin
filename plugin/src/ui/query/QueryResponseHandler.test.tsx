@@ -2,21 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import type { SubscriptionResult } from "@/data";
-import type { TaskQuery } from "@/query/schema/tasks";
+import { makeQuery } from "@/factories/query";
 
 import { QueryResponseHandler } from "./QueryResponseHandler";
-
-function makeQuery(opts?: Partial<TaskQuery>): TaskQuery {
-  return {
-    filter: opts?.filter ?? "",
-    name: opts?.name,
-    autorefresh: opts?.autorefresh,
-    sorting: opts?.sorting,
-    show: opts?.show,
-    groupBy: opts?.groupBy,
-    view: opts?.view,
-  };
-}
 
 describe("QueryResponseHandler - no tasks rendering", () => {
   const emptyResult: SubscriptionResult = {

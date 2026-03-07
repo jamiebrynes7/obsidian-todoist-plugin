@@ -1,12 +1,9 @@
 import { CalendarDate, ZonedDateTime } from "@internationalized/date";
 import { describe, expect, it, vi } from "vitest";
 
-import type { DueDate } from "@/api/domain/dueDate";
-import type { Label } from "@/api/domain/label";
-import type { Project } from "@/api/domain/project";
-import type { Section } from "@/api/domain/section";
 import type { Task } from "@/data/task";
 import { type GroupedTasks, groupBy } from "@/data/transformations/grouping";
+import { makeDueDate, makeLabel, makeProject, makeSection, makeTask } from "@/factories/data";
 
 vi.mock("../../infra/time.ts", () => {
   return {
@@ -21,64 +18,6 @@ vi.mock("../../infra/locale.ts", () => {
     locale: () => "en-US",
   };
 });
-
-function makeTask(id: string, opts?: Partial<Task>): Task {
-  return {
-    id,
-    createdAt: opts?.createdAt ?? "1970-01-01",
-    parentId: opts?.parentId,
-    content: "",
-    description: "",
-    labels: opts?.labels ?? [],
-    priority: opts?.priority ?? 1,
-    order: opts?.order ?? 0,
-
-    project: opts?.project ?? makeProject("foobar"),
-    section: opts?.section,
-
-    due: opts?.due,
-  };
-}
-
-function makeProject(id: string, opts?: Partial<Project>): Project {
-  return {
-    id,
-    parentId: opts?.parentId ?? null,
-    name: opts?.name ?? "Project",
-    childOrder: opts?.childOrder ?? 1,
-    inboxProject: false,
-    color: "grey",
-    isDeleted: false,
-    isArchived: false,
-  };
-}
-
-function makeSection(id: string, projectId: string, opts?: Partial<Section>): Section {
-  return {
-    id,
-    projectId,
-    name: opts?.name ?? "Section",
-    sectionOrder: opts?.sectionOrder ?? 1,
-    isDeleted: false,
-    isArchived: false,
-  };
-}
-
-function makeDueDate(date: string): DueDate {
-  return {
-    isRecurring: false,
-    date,
-  };
-}
-
-function makeLabel(name: string): Label {
-  return {
-    id: name,
-    name,
-    color: "grey",
-    isDeleted: false,
-  };
-}
 
 type TestCase = {
   description: string;
@@ -250,12 +189,9 @@ describe("group by section", () => {
   const projectOne = makeProject("1", { name: "Project One", childOrder: 1 });
   const projectTwo = makeProject("2", { name: "Project Two", childOrder: 2 });
 
-  const sectionOne = makeSection("1", "1", { name: "Section One", sectionOrder: 1 });
-  const sectionTwo = makeSection("1", "2", { name: "Section Two", sectionOrder: 2 });
-  const sectionThree = makeSection("2", "3", {
-    name: "Section Three",
-    sectionOrder: 2,
-  });
+  const sectionOne = makeSection("1", { projectId: "1", name: "Section One", sectionOrder: 1 });
+  const sectionTwo = makeSection("1", { projectId: "2", name: "Section Two", sectionOrder: 2 });
+  const sectionThree = makeSection("2", { projectId: "3", name: "Section Three", sectionOrder: 2 });
 
   const testcases: TestCase[] = [
     {

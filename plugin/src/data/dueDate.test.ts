@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { DueDate as ApiDueDate } from "@/api/domain/dueDate";
 import type { Duration as ApiDuration } from "@/api/domain/task";
 import { DueDate } from "@/data/dueDate";
+import { makeDate } from "@/factories/data";
 
 vi.mock("../infra/time.ts", () => {
   return {
@@ -18,14 +19,6 @@ vi.mock("../infra/locale.ts", () => {
     locale: () => "en-US",
   };
 });
-
-const makeDate = (
-  year: number,
-  month: number,
-  day: number,
-  hours?: number,
-  minutes?: number,
-): Date => new Date(Date.UTC(year, month, day, hours ?? 0, minutes ?? 0));
 
 describe("parse", () => {
   type TestCase = {

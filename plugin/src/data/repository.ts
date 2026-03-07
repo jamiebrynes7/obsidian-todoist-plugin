@@ -1,4 +1,4 @@
-interface RepositoryItem<Id> {
+export interface RepositoryItem<Id> {
   id: Id;
   name: string;
   isDeleted: boolean;

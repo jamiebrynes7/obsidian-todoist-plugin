@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { makeQuery } from "@/factories/query";
 import { ParsingError, parseQuery, type QueryWarning } from "@/query/parser";
 import { type TaskQuery, taskQueryDefinition } from "@/query/schema/tasks";
 
@@ -132,18 +133,6 @@ describe("parseQuery - rejections", () => {
     });
   }
 });
-
-function makeQuery(opts?: Partial<TaskQuery>): TaskQuery {
-  return {
-    name: opts?.name,
-    filter: opts?.filter ?? "",
-    autorefresh: opts?.autorefresh,
-    sorting: opts?.sorting,
-    show: opts?.show,
-    groupBy: opts?.groupBy,
-    view: opts?.view,
-  };
-}
 
 describe("parseQuery", () => {
   type Testcase = {
