@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import type { SubscriptionResult } from "@/data";
+import { QueryErrorKind } from "@/data";
 import { makeQuery } from "@/factories/query";
 
 import { QueryResponseHandler } from "./QueryResponseHandler";
@@ -51,5 +52,76 @@ describe("QueryResponseHandler - no tasks rendering", () => {
     render(<QueryResponseHandler result={emptyResult} query={query} />);
 
     expect(screen.getByText("The query returned no tasks")).toBeInTheDocument();
+  });
+});
+
+describe("QueryResponseHandler - error rendering", () => {
+  const query = makeQuery({ filter: "today" });
+
+  it("should render ErrorDisplay for bad request errors", () => {
+    const result: SubscriptionResult = {
+      type: "error",
+      kind: QueryErrorKind.BadRequest,
+    };
+
+    render(<QueryResponseHandler result={result} query={query} />);
+
+    expect(screen.getByText("Error")).toBeInTheDocument();
+    expect(screen.getByText(/rejected the request/)).toBeInTheDocument();
+  });
+
+  it("should render ErrorDisplay for unauthorized errors", () => {
+    const result: SubscriptionResult = {
+      type: "error",
+      kind: QueryErrorKind.Unauthorized,
+    };
+
+    render(<QueryResponseHandler result={result} query={query} />);
+
+    expect(screen.getByText(/incorrect credentials/)).toBeInTheDocument();
+  });
+
+  it("should render ErrorDisplay for forbidden errors", () => {
+    const result: SubscriptionResult = {
+      type: "error",
+      kind: QueryErrorKind.Forbidden,
+    };
+
+    render(<QueryResponseHandler result={result} query={query} />);
+
+    expect(screen.getByText(/incorrect credentials/)).toBeInTheDocument();
+  });
+
+  it("should render ErrorDisplay for server errors", () => {
+    const result: SubscriptionResult = {
+      type: "error",
+      kind: QueryErrorKind.ServerError,
+    };
+
+    render(<QueryResponseHandler result={result} query={query} />);
+
+    expect(screen.getByText(/returned an error/)).toBeInTheDocument();
+  });
+
+  it("should render ErrorDisplay for unknown errors", () => {
+    const result: SubscriptionResult = {
+      type: "error",
+      kind: QueryErrorKind.Unknown,
+    };
+
+    render(<QueryResponseHandler result={result} query={query} />);
+
+    expect(screen.getByText(/Unknown error occurred/)).toBeInTheDocument();
+  });
+});
+
+describe("QueryResponseHandler - not ready rendering", () => {
+  it("should render NotReadyDisplay for not-ready results", () => {
+    const result: SubscriptionResult = { type: "not-ready" };
+    const query = makeQuery({ filter: "today" });
+
+    const { container } = render(<QueryResponseHandler result={result} query={query} />);
+
+    expect(container).toBeEmptyDOMElement();
   });
 });
