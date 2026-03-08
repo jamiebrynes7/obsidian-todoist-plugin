@@ -29,6 +29,7 @@ export function makeTask(id: string, opts?: Partial<Task>): Task {
     section: opts?.section,
 
     due: opts?.due,
+    duration: opts?.duration,
     deadline: opts?.deadline,
   };
 }
