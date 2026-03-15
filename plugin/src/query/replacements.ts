@@ -6,4 +6,8 @@ export function applyReplacements(query: TaskQuery, ctx: MarkdownPostProcessorCo
   // Replace {filename} with the base file name of file where the query originated.
   const baseFileName = ctx.sourcePath.replace(/.*\//, "").replace(/\.md$/i, "");
   query.filter = query.filter.replace(/{{filename}}/g, baseFileName);
+
+  // Normalize Unicode whitespace characters (e.g., non-breaking spaces, em spaces)
+  // to regular ASCII spaces to prevent API errors.
+  query.filter = query.filter.replace(/[\p{Zs}]/gu, " ").trim();
 }

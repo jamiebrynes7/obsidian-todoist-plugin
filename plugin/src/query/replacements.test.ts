@@ -61,4 +61,41 @@ describe("applyReplacements", () => {
       });
     }
   });
+
+  describe("unicode whitespace normalization", () => {
+    const testcases: TestCase[] = [
+      {
+        description: "should replace non-breaking spaces with regular spaces",
+        filter: "#Project\u00A0&\u00A0/section",
+        expectedFilter: "#Project & /section",
+      },
+      {
+        description: "should replace em spaces with regular spaces",
+        filter: "#Project\u2003&\u2003/section",
+        expectedFilter: "#Project & /section",
+      },
+      {
+        description: "should trim leading and trailing whitespace",
+        filter: "  #Project & /section  ",
+        expectedFilter: "#Project & /section",
+      },
+      {
+        description: "should not modify filters with only regular spaces",
+        filter: "#Project & /section",
+        expectedFilter: "#Project & /section",
+      },
+    ];
+
+    for (const tc of testcases) {
+      it(tc.description, () => {
+        const query: TaskQuery = {
+          filter: tc.filter,
+        };
+
+        applyReplacements(query, new FakeContext(tc.filePath ?? ""));
+
+        expect(query.filter).toBe(tc.expectedFilter);
+      });
+    }
+  });
 });

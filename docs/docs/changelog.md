@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now sort tasks by their deadlines by name using `deadline` or `deadlineDescending` in the sorting field.
 
+### 🐛 Bug Fixes
+
+- Filter strings now have Unicode whitespace characters (e.g., non-breaking spaces from copy-paste) normalized to regular spaces, preventing API errors.
+
 ## v2.6.0 (2026-02-01)
 
 ### ✨ Features
