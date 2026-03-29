@@ -75,6 +75,22 @@ describe("TodoistApiClient", () => {
       expect(pathname).toBe("/api/v1/tasks/filter");
       expect(params.get("query")).toBe("today");
     });
+
+    it("encodes filter with spaces using percent encoding", async () => {
+      const fetcher = makeFetcher();
+      fetcher.fetch.mockResolvedValueOnce(makePaginatedResponse([makeTask()]));
+
+      const client = new TodoistApiClient("test-token", fetcher);
+      await client.getTasks("(today | overdue) & assigned to: me");
+
+      const call = fetcher.fetch.mock.calls[0][0];
+      // Verify spaces are encoded as %20, not +
+      expect(call.url).toContain("%20");
+      expect(call.url).not.toContain("+");
+      // Verify the query param value is correct when decoded
+      const { params } = parseUrl(call.url);
+      expect(params.get("query")).toBe("(today | overdue) & assigned to: me");
+    });
   });
 
   describe("pagination", () => {
@@ -223,7 +239,7 @@ describe("TodoistApiClient", () => {
   });
 
   describe("sync", () => {
-    it("calls /sync with snakified query params", async () => {
+    it("calls /sync with JSON body containing snakified params", async () => {
       const fetcher = makeFetcher();
       fetcher.fetch.mockResolvedValueOnce({
         statusCode: 200,
@@ -242,9 +258,14 @@ describe("TodoistApiClient", () => {
 
       const call = fetcher.fetch.mock.calls[0][0];
       expect(call.method).toBe("POST");
-      const { params } = parseUrl(call.url);
-      expect(params.get("sync_token")).toBe("old-token");
-      expect(params.get("resource_types")).not.toBeNull();
+      expect(call.headers["Content-Type"]).toBe("application/json");
+
+      const body = JSON.parse(call.body as string);
+      expect(body.sync_token).toBe("old-token");
+      expect(body.resource_types).toEqual(["projects", "labels", "sections"]);
+
+      const { pathname } = parseUrl(call.url);
+      expect(pathname).toBe("/api/v1/sync");
     });
   });
 

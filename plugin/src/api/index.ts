@@ -47,11 +47,11 @@ export class TodoistApiClient {
   }
 
   public async sync(token: SyncToken): Promise<SyncResponse> {
-    const queryParams = snakify({
+    const body = snakify({
       syncToken: token,
-      resourceTypes: JSON.stringify(["projects", "labels", "sections"]),
+      resourceTypes: ["projects", "labels", "sections"],
     });
-    const response = await this.do("/sync", "POST", { queryParams });
+    const response = await this.do("/sync", "POST", { json: body });
     return parseApiResponse(syncResponseSchema, response.body);
   }
 
@@ -94,8 +94,10 @@ export class TodoistApiClient {
   ): Promise<WebResponse> {
     let queryString = "";
     if (opts.queryParams) {
-      const urlParams = new URLSearchParams(opts.queryParams);
-      queryString = `?${urlParams.toString()}`;
+      const parts = Object.entries(opts.queryParams).map(
+        ([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
+      );
+      queryString = `?${parts.join("&")}`;
     }
 
     const params: RequestParams = {
