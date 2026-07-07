@@ -1,5 +1,6 @@
 import { en } from "@/i18n/langs/en";
 import { nl } from "@/i18n/langs/nl";
+import { ptBR } from "@/i18n/langs/pt-BR";
 import type { Translations } from "@/i18n/translation";
 import { DeepPartial, type DeepReadonly } from "@/utils/types";
 
@@ -55,5 +56,10 @@ export const registry: Record<string, LanguageDefinition> = {
     name: "Nederlands",
     code: "nl",
     translations: nl,
+  },
+  "pt-BR": {
+    name: "Portugues do Brasil",
+    code: "pt-BR",
+    translations: ptBR,
   },
 };
